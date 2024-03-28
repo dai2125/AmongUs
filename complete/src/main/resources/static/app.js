@@ -66,5 +66,5 @@ function starGameButton() {
 
 }
 function startGame() {
-    window.location.href = "page1.html";
+    window.location.href = "http://localhost:4173";
 }
