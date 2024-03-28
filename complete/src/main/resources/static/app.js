@@ -2,11 +2,25 @@ const stompClient = new StompJs.Client({
     brokerURL: 'ws://localhost:8080/gs-guide-websocket'
 });
 
+function generateRandomString(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+const randomString = generateRandomString(10);
+localStorage.setItem('userId', randomString);
+const userId = randomString;
+
 stompClient.onConnect = (frame) => {
     setConnected(true);
-    console.log('Connected: ' + frame);
-    stompClient.subscribe('/topic/greetings', (greeting) => {
-        showGreeting(JSON.parse(greeting.body).content);
+    stompClient.subscribe(`/topic/user/${userId}`, (greeting) => {
+        const content = JSON.parse(greeting.body).content;
+        showGreeting(content);
     });
 };
 
@@ -43,12 +57,14 @@ function disconnect() {
 
 function sendName() {
     stompClient.publish({
-        destination: "/app/hello",
+        destination: `/app/user/${userId}`,
         body: JSON.stringify({'name': $("#name").val()})
     });
 }
 
-function showGreeting(message) {
+function showGreeting(message, sessionId) {
+    console.log('showGreeting');
+
     $("#greetings").append("<tr><td>" + message + "</td></tr>");
     $("#startGame").append("<tr><td><button id='startGameButton'>Start Game</button></td></tr>");
     starGameButton();
