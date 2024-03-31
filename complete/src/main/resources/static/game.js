@@ -1,10 +1,15 @@
-"use strict";
+import { Player } from "./gameMovement.js";
+
 class Game {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         this.context = this.canvas.getContext('2d');
-        this.player = new Player(100, 100, 50, 50, 'red');
+        this.player = new Player(100, 100, 50, 50, 'blue');
+        this.randomString = this.generateRandomString(10);
+        this.userId = this.randomString;
         this.setupKeyboardControls();
+        this.initializeWebSocket();
+
         this.map = [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -33,6 +38,107 @@ class Game {
         ];
         this.startGameLoop();
     }
+
+    initializeWebSocket() {
+        this.stompClient = new StompJs.Client({
+            brokerURL: 'ws://localhost:8080/gs-guide-websocket',
+            onConnect: () => {
+                console.log("Connected to WS");
+                this.subscribeToTopics();
+            },
+            onStompError: (frame) => {
+                console.error('Broker reported error: ' + frame.headers['message']);
+                console.error('Additional details: ' + frame.body);
+            },
+        });
+
+        this.stompClient.activate();
+    }
+
+    subscribeToTopics() {
+        this.stompClient.subscribe("/topic/movement/", this.callback);
+    }
+
+    callback = (message) => {
+        const parsedMessage = JSON.parse(message.body);
+        console.log(message.body);
+
+        switch(parsedMessage.action) {
+            case 'left':
+                this.player.moveLeft();
+                console.log("Bewegung nach links");
+                break;
+            case 'right':
+                this.player.moveRight();
+                console.log("Bewegung nach rechts");
+                break;
+            case 'up':
+                this.player.moveUp();
+                console.log("Bewegung nach oben");
+                break;
+            case 'down':
+                this.player.moveDown();
+                console.log("Bewegung nach unten");
+                break;
+            default:
+                console.log("Unbekannte Aktion");
+        }
+    };
+
+    sendMovementRight() {
+        this.stompClient.publish({
+            destination: `/app/movement/${this.userId}`,
+            body: JSON.stringify({ 'action': 'right',
+                                        'userId': this.userId })
+        });
+    }
+
+    sendMovementLeft() {
+        this.stompClient.publish({
+            destination: `/app/movement/${this.userId}`,
+            body: JSON.stringify({ 'action': 'left',
+                                        'userId': this.userId })
+        });
+    }
+
+    sendMovementUp() {
+        this.stompClient.publish({
+            destination: `/app/movement/${this.userId}`,
+            body: JSON.stringify({ 'action': 'up',
+                                        'userId': this.userId })
+        });
+    }
+
+    sendMovementDown() {
+        this.stompClient.publish({
+            destination: `/app/movement/${this.userId}`,
+            body: JSON.stringify({ 'action': 'down',
+                                        'userId': this.userId })
+        });
+    }
+
+    connect()
+    {
+        this.stompClient.activate();
+    }
+
+    disconnect()
+    {
+        this.stompClient.deactivate();
+        this.stompClient.setConnected(false);
+        console.log("Disconnected");
+    }
+
+    generateRandomString(length) {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+        const charactersLength = characters.length;
+        for (let i = 0; i < length; i++) {
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return result;
+    }
+
     startGameLoop() {
         requestAnimationFrame(() => this.gameLoop());
     }
@@ -66,26 +172,27 @@ class Game {
             }
         }
     }
+
     setupKeyboardControls() {
         window.addEventListener('keydown', (event) => {
             switch (event.key) {
                 case 'ArrowLeft':
-                    this.player.moveLeft();
+                    console.log("left");
+                    this.sendMovementLeft();
                     break;
                 case 'ArrowRight':
-                    this.player.moveRight();
+                    this.sendMovementRight();
                     break;
                 case 'ArrowUp':
-                    this.player.moveUp();
+                    this.sendMovementUp();
                     break;
                 case 'ArrowDown':
-                    this.player.moveDown();
+                    this.sendMovementDown();
                     break;
             }
         });
     }
 }
 window.onload = () => {
-    new Game("canvasId");
+    new Game("map");
 };
-//# sourceMappingURL=game.js.map
