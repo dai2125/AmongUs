@@ -2,7 +2,6 @@ package com.example.messagingstompwebsocket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -25,8 +24,11 @@ public class MovementController {
     private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
     private final HashSet<User> currentUsers = new HashSet<>();
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
+
+    public MovementController(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
 
     @MessageMapping("/movement/{userId}")
     @SendTo("/topic/movement/")
