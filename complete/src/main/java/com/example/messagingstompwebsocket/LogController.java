@@ -8,15 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class LogController {
 
-    Logger logger = LoggerFactory.getLogger(LogController.class);
+    private static final Logger logger = LoggerFactory.getLogger(LogController.class);
 
     @RequestMapping("/user/{userId}")
     public String log() {
-//        logger.trace("Log level: TRACE");
-//        logger.info("Log level: INFO");
-//        logger.debug("Log level: DEBUG");
-//        logger.error("Log level: ERROR");
-//        logger.warn("Log level: WARN");
+        logger.info("Log level: INFO");
+        logger.debug("Log level: DEBUG");
+        logger.error("Log level: ERROR");
+        logger.warn("Log level: WARN");
 
         return "Hey! You can check the output in the logs";
     }
