@@ -3,7 +3,7 @@ package com.example.messagingstompwebsocket;
 public class User {
     private String userId;
     private String action;
-//    private String color;
+//TODO    private String color;
 //    private int points;
 
     public User() {
