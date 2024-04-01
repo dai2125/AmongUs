@@ -8,7 +8,7 @@ export class Player {
         this.width = width;
         this.height = height;
         this.color = color;
-        this.speed = 5; // Geschwindigkeit des Spielers
+        this.speed = 5;
     }
     draw(context) {
         context.fillStyle = this.color;
