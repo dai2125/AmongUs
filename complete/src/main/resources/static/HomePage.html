@@ -9,7 +9,9 @@
 <body class="background">
     <div class="grid grid-rows-12 h-screen w-screen p-10">
 
-        <div class="w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2">
+        <div class="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2">
+            <div id="user-div" class="col-span-1"></div>
+            <div class="col-span-1 text-3xl text-cyan-500 text-center">KARIM</div>
         </div>
 
       <div class="grid row-span-10 grid-cols-3 mb-5 gap-2">
@@ -35,11 +37,15 @@
         <div class="bg-transparent border-double rounded-lg border-2 border-teal-400 col-span-2 w-full justify-self-start p-4">
             <div class="border-double rounded-lg border-2 border-teal-400 bg-cyan-400 bg-opacity-25 size-full grid grid-rows-9 p-4">
                 <div class="row-span-1 size-full flex justify-end">
-                    <button class="w-5 h-5 mr-12 text-3xl underline text-amber-600">PLAY</button>
+                    <button class="w-20 h-10 mr-12 text-3xl underline text-fuchsia-600 rounded-lg focus:ring-4
+                     focus:ring-fuchsia-600">PLAY</button>
                 </div>
-                <div class="row-span-8 grid grid-cols-2">
-                    <div class="row-span-1"></div>
-                    <div class="row-span-1"></div>
+                <div class="row-span-8 flex justify-center">
+                    <div class="h-4/6 w-1/3">
+                        <div class="grid grid-rows-4 border-double rounded-lg border-2 border-teal-400 row-span-3" id="local-img"></div>
+                        <button class="h-1/6 w-full grid grid-rows-4 border-double rounded-lg border-2 border-teal-400 row-span-1 justify-self-center
+                         text-3xl underline text-fuchsia-600 text-center rounded-lg focus:ring-4 focus:ring-cyan-500">LOCAL</button>
+                    </div>
                 </div>
             </div>
         </div>
