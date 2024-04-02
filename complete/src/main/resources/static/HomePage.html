@@ -9,24 +9,40 @@
 <body class="background">
     <div class="grid grid-rows-12 h-screen w-screen p-10">
 
-        <div class="w-full h-14 mt-3 bg-orange-200 border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2">
+        <div class="w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2">
         </div>
 
       <div class="grid row-span-10 grid-cols-3 mb-5 gap-2">
 
-        <div class="grid rows-8 bg-gray-600 border-double rounded-lg border-2 border-fuchsia-800 col-span-1 w-full h-full justify-self-end">
+        <div class="grid rows-8 bg-transparent border-double rounded-lg border-2 border-fuchsia-800 col-span-1 w-full h-full justify-self-end">
             <div class="row-span-1">
-                <p class="text-4xl text-center">Amomus</p>
+                <p class="text-5xl text-center font-light text-amber-600 underline">AMOMUS</p>
             </div>
-            <div class="p-4 grid grid-rows-3 row-span-7 border-double rounded-lg border-2 border-amber-500 w-11/12 h-5/6 justify-self-center align-items-center">
-                <button class="w-full h-5/6 row-span-1 bg-cyan-400 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600"><b>PLAY</b></button>
-                <button class="w-full h-5/6 row-span-1 bg-cyan-400 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-cyan-200"><b>Friends</b></button>
-                <button class="w-full h-5/6 row-span-1 bg-cyan-400 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-cyan-200"><b>Settings</b></button>
+            <div class="p-4 grid grid-rows-3 row-span-7 border-double rounded-lg border-2 border-fuchsia-800 w-11/12 h-5/6 justify-self-center align-items-center">
+                <button class="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
+                    <b class="text-3xl">PLAY</b>
+                </button>
+                <button class="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
+                    <b class="text-3xl">ACCOUNT</b>
+                </button>
+                <button class="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
+                    <b class="text-3xl">SETTINGS</b>
+                </button>
 
             </div>
         </div>
 
-        <div class="bg-gray-600 border-double rounded-lg border-2 border-teal-400 col-span-2 w-full justify-self-start"></div>
+        <div class="bg-transparent border-double rounded-lg border-2 border-teal-400 col-span-2 w-full justify-self-start p-4">
+            <div class="border-double rounded-lg border-2 border-teal-400 bg-cyan-400 bg-opacity-25 size-full grid grid-rows-9 p-4">
+                <div class="row-span-1 size-full flex justify-end">
+                    <button class="w-5 h-5 mr-12 text-3xl underline text-amber-600">PLAY</button>
+                </div>
+                <div class="row-span-8 grid grid-cols-2">
+                    <div class="row-span-1"></div>
+                    <div class="row-span-1"></div>
+                </div>
+            </div>
+        </div>
 
       </div>
 
