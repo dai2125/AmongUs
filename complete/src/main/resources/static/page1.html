@@ -7,6 +7,8 @@
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
     <script src="./app.js"></script>
+    <script src="main.css"></script>
+    <link href="output.css" rel="stylesheet">
     <style>
         #canvasId {
             /*border: 2px solid black;*/
@@ -22,13 +24,29 @@
         }
     </style>
 </head>
-<body>
-<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
-    enabled. Please enable
-    Javascript and reload this page!</h2></noscript>
-<h1>Game</h1>
-<canvas id="canvasId" width="800" height="600"></canvas>
-<canvas id="playerCanvas" width="25" height="25"></canvas>
+<body class="background">
+<div class="grid grid-rows-10 h-screen w-screen  ">
+    <div class="row-span-1 ">
+        <noscript><p class="text-center" style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being
+            enabled. Please enable
+            Javascript and reload this page!</p></noscript>
+        <p class="text-center text-5xl mt-3">Game</p>
+    </div>
+    <div class="grid grid-cols-12 row-span-9 gap-5 h-5/6">
+
+        <div class="col-span-3 border-solid rounded-lg w-1/2 justify-self-end">
+            <p class="font-bold m-10 underline-offset-1">Completed Tasks</p>
+        </div>
+        <div class="col-span-6 border-solid rounded-lg flex justify-center items-center">
+            <canvas id="canvasId" width="800" height="600"></canvas>
+            <canvas id="playerCanvas" width="25" height="25"></canvas>
+        </div>
+        <div class="col-span-3 border-solid rounded-lg w-1/2 justify-self-start">
+            <button class="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings</button>
+            <button class="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Map</button>
+        </div>
+    </div>
+</div>
 <!--<script src="/game.js"></script>-->
 <script src="./js/game.js"></script>
 <script src="./js/gameMovement.js"></script>

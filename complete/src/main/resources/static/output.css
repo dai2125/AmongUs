@@ -596,6 +596,14 @@ video {
   grid-column: span 2 / span 2;
 }
 
+.col-span-3 {
+  grid-column: span 3 / span 3;
+}
+
+.col-span-6 {
+  grid-column: span 6 / span 6;
+}
+
 .row-span-1 {
   grid-row: span 1 / span 1;
 }
@@ -612,6 +620,14 @@ video {
   grid-row: span 7 / span 7;
 }
 
+.row-span-9 {
+  grid-row: span 9 / span 9;
+}
+
+.m-10 {
+  margin: 2.5rem;
+}
+
 .mb-5 {
   margin-bottom: 1.25rem;
 }
@@ -622,6 +638,10 @@ video {
 
 .block {
   display: block;
+}
+
+.flex {
+  display: flex;
 }
 
 .table {
@@ -660,8 +680,16 @@ video {
   width: 100vw;
 }
 
+.w-1\/2 {
+  width: 50%;
+}
+
 .grid-cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-cols-12 {
+  grid-template-columns: repeat(12, minmax(0, 1fr));
 }
 
 .grid-rows-12 {
@@ -672,8 +700,24 @@ video {
   grid-template-rows: repeat(3, minmax(0, 1fr));
 }
 
+.grid-rows-10 {
+  grid-template-rows: repeat(10, minmax(0, 1fr));
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
 .gap-2 {
   gap: 0.5rem;
+}
+
+.gap-5 {
+  gap: 1.25rem;
 }
 
 .justify-self-start {
@@ -692,12 +736,20 @@ video {
   border-radius: 0.5rem;
 }
 
+.rounded {
+  border-radius: 0.25rem;
+}
+
 .border {
   border-width: 1px;
 }
 
 .border-2 {
   border-width: 2px;
+}
+
+.border-solid {
+  border-style: solid;
 }
 
 .border-double {
@@ -734,12 +786,27 @@ video {
   background-color: rgb(254 215 170 / var(--tw-bg-opacity));
 }
 
+.bg-gray-700 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(55 65 81 / var(--tw-bg-opacity));
+}
+
 .p-10 {
   padding: 2.5rem;
 }
 
 .p-4 {
   padding: 1rem;
+}
+
+.px-4 {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.py-2 {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
 .text-center {
@@ -749,6 +816,24 @@ video {
 .text-4xl {
   font-size: 2.25rem;
   line-height: 2.5rem;
+}
+
+.text-5xl {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-white {
+  --tw-text-opacity: 1;
+  color: rgb(255 255 255 / var(--tw-text-opacity));
+}
+
+.underline-offset-1 {
+  text-underline-offset: 1px;
 }
 
 body {
@@ -785,6 +870,11 @@ body {
 .hover\:bg-cyan-600:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(8 145 178 / var(--tw-bg-opacity));
+}
+
+.hover\:bg-gray-800:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
 }
 
 .focus\:ring-4:focus {
