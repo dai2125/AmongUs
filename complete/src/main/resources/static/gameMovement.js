@@ -1,5 +1,3 @@
-// import {stompClient} from "/app.js";
-// import * as StompJs from "@stomp/stompjs";
 
 export class Player {
     constructor(x, y, color, userId) {

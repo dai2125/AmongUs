@@ -2,7 +2,6 @@ package com.example.messagingstompwebsocket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -14,10 +13,16 @@ import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
+
 import java.awt.*;
 import java.awt.List;
 import java.security.Principal;
 import java.util.*;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +34,13 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 public class MovementController {
 
     private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
+    private final HashSet<User> currentUsers = new HashSet<>();
 
-    @Autowired
-    private SimpMessagingTemplate messagingTemplate;
+    private final SimpMessagingTemplate messagingTemplate;
+
+    public MovementController(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
 
     HashSet<User> userSet = new HashSet<>();
 
@@ -81,7 +90,12 @@ public class MovementController {
         MovementResponse movementResponse = new MovementResponse(user.getUserId(), user.getAction(), user.getColor(), user.getX(), user.getY());
         messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementResponse));
 
-        logger.atInfo().log("User %s performed action %s", user.getUserId(), user.getAction());
+
+        // Assuming currentUsers is a Set<User> containing unique users based on userId
+        if (currentUsers.stream().noneMatch(u -> u.getUserId().equals(user.getUserId()))) {
+            logger.warn("New user connected: {}", userId);
+            currentUsers.add(user);
+        }
 
         System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
     }
