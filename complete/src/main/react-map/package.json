@@ -1,5 +1,5 @@
 {
-  "name": "ingame",
+  "name": "vite-react-starter",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -17,11 +17,11 @@
     "@types/react": "^18.2.56",
     "@types/react-dom": "^18.2.19",
     "@vitejs/plugin-react": "^4.2.1",
-    "eslint": "^8.57.0",
+    "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "typescript": "^5.3.3",
     "typescript-eslint": "^7.0.1",
-    "vite": "^5.2.6",
-    "vite-plugin-pretty-css-modules": "^0.1.4"
+    "vite": "^5.1.4",
+    "vite-plugin-pretty-css-modules": "^0.1.3"
   }
 }
