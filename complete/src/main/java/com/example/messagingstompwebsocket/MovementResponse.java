@@ -1,16 +1,17 @@
 package com.example.messagingstompwebsocket;
 
-public class User {
+public class MovementResponse {
+
     private String userId;
     private String action;
     private String color;
     private int x;
     private int y;
 
-    public User() {
+    public MovementResponse() {
     }
 
-    public User(String userId, String action, String color, int x, int y) {
+    public MovementResponse(String userId, String action, String color, int x, int y) {
         this.userId = userId;
         this.action = action;
         this.color = color;
@@ -56,16 +57,5 @@ public class User {
 
     public void setY(int y) {
         this.y = y;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId='" + userId + '\'' +
-                ", action='" + action + '\'' +
-                ", color='" + color + '\'' +
-                ", x=" + x +
-                ", y=" + y +
-                '}';
     }
 }

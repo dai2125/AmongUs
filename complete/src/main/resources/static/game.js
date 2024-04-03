@@ -1,5 +1,9 @@
 import { Player } from "./gameMovement.js";
 
+let otherPlayers = [];
+let userId = "";
+let userColor = "";
+
 class Game {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
@@ -43,7 +47,6 @@ class Game {
         this.stompClient = new StompJs.Client({
             brokerURL: 'ws://localhost:8080/gs-guide-websocket',
             onConnect: () => {
-                console.log("Connected to WS");
                 this.subscribeToTopics();
             },
             onStompError: (frame) => {
@@ -51,37 +54,58 @@ class Game {
                 console.error('Additional details: ' + frame.body);
             },
         });
-
         this.stompClient.activate();
     }
 
     subscribeToTopics() {
+        this.stompClient.subscribe("/topic/register/", this.registerCallback);
+
+        this.stompClient.publish({
+            destination: `/app/register/${this.userId}`,
+            body: JSON.stringify({ 'userId': this.userId })
+        });
+        // setTimeout(() => {
+        //     this.stompClient.unsubscribe("/topic/register/", this.registerCallback);
+        // } , 1000);
+
         this.stompClient.subscribe("/topic/movement/", this.callback);
+    }
+
+    registerCallback = (message) => {
+        const parsedMessage = JSON.parse(message.body);
+        this.player.color = parsedMessage.color;
+        this.player.x = parsedMessage.x;
+        this.player.y = parsedMessage.y;
+        this.player.userId = parsedMessage.userId;
+        this.stompClient.unsubscribe("/topic/register/");
     }
 
     callback = (message) => {
         const parsedMessage = JSON.parse(message.body);
-        console.log(message.body);
+        const existingPlayers = otherPlayers.find(player => player.userId);
 
-        switch(parsedMessage.action) {
-            case 'left':
-                this.player.moveLeft();
-                console.log("Bewegung nach links");
-                break;
-            case 'right':
-                this.player.moveRight();
-                console.log("Bewegung nach rechts");
-                break;
-            case 'up':
-                this.player.moveUp();
-                console.log("Bewegung nach oben");
-                break;
-            case 'down':
-                this.player.moveDown();
-                console.log("Bewegung nach unten");
-                break;
-            default:
-                console.log("Unbekannte Aktion");
+        if (parsedMessage.userId === this.userId) {
+            switch (parsedMessage.action) {
+                case 'left':
+                    this.player.moveLeft(parsedMessage.x);
+                    break;
+                case 'right':
+                    this.player.moveRight(parsedMessage.x);
+                    break;
+                case 'up':
+                    this.player.moveUp(parsedMessage.y);
+                    break;
+                case 'down':
+                    this.player.moveDown(parsedMessage.y);
+                    break;
+                default:
+                    console.log("Unbekannte Aktion");
+            }
+        } else if(existingPlayers) {
+            updateOtherPlayerPosition(parsedMessage.x, parsedMessage.y, parsedMessage.userId, parsedMessage.action);
+        } else {
+            let newPlayer = new Player(parsedMessage.x, parsedMessage.y, 50, 50, parsedMessage.color, parsedMessage.userId);
+            otherPlayers.push(newPlayer);
         }
     };
 
@@ -89,6 +113,9 @@ class Game {
         this.stompClient.publish({
             destination: `/app/movement/${this.userId}`,
             body: JSON.stringify({ 'action': 'right',
+                                        'x': this.player.x,
+                                        'y': this.player.y,
+                                        'color': this.player.color,
                                         'userId': this.userId })
         });
     }
@@ -97,6 +124,9 @@ class Game {
         this.stompClient.publish({
             destination: `/app/movement/${this.userId}`,
             body: JSON.stringify({ 'action': 'left',
+                                        'x': this.player.x,
+                                        'y': this.player.y,
+                                        'color': this.player.color,
                                         'userId': this.userId })
         });
     }
@@ -105,6 +135,9 @@ class Game {
         this.stompClient.publish({
             destination: `/app/movement/${this.userId}`,
             body: JSON.stringify({ 'action': 'up',
+                                        'x': this.player.x,
+                                        'y': this.player.y,
+                                        'color': this.player.color,
                                         'userId': this.userId })
         });
     }
@@ -113,6 +146,9 @@ class Game {
         this.stompClient.publish({
             destination: `/app/movement/${this.userId}`,
             body: JSON.stringify({ 'action': 'down',
+                                        'x': this.player.x,
+                                        'y': this.player.y,
+                                        'color': this.player.color,
                                         'userId': this.userId })
         });
     }
@@ -146,6 +182,12 @@ class Game {
         this.clearScreen();
         this.drawMap();
         this.player.draw(this.context);
+
+        if(otherPlayers.length > 0) {
+            otherPlayers.forEach((newPlayer) => {
+                newPlayer.draw(this.context);
+            });
+        }
         requestAnimationFrame(() => this.gameLoop());
     }
     clearScreen() {
@@ -193,6 +235,28 @@ class Game {
         });
     }
 }
+
+function updateOtherPlayerPosition(x, y, userId, action) {
+    const player = otherPlayers.find(player => player.userId);
+
+    switch (action) {
+        case 'left':
+            player.moveLeft(x);
+            break;
+        case 'right':
+            player.moveRight(x);
+            break;
+        case 'up':
+            player.moveUp(y);
+            break;
+        case 'down':
+            player.moveDown(y);
+            break;
+        default:
+            console.log("Other Player Unbekannte Aktion");
+    }
+}
+
 window.onload = () => {
     new Game("map");
 };

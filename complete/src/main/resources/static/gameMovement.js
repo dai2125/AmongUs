@@ -2,36 +2,30 @@
 // import * as StompJs from "@stomp/stompjs";
 
 export class Player {
-    constructor(x, y, width, height, color) {
+    constructor(x, y, width, height, color, userId) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.color = color;
         this.speed = 5;
+        this.userId = userId;
     }
     draw(context) {
-        context.fillStyle = this.color;
+        // context.fillStyle = this.color;
         context.fillRect(this.x, this.y, this.width, this.height);
     }
-    moveUp() {
-        this.y -= this.speed;
-        console.log("left");
-
-        // movement(this.y);
-        // console.log(userId + " moved up");
+    moveUp(coordinate) {
+        this.y = coordinate - this.speed;
     }
-    moveDown() {
-        this.y += this.speed;
-        // movement(this.y);
+    moveDown(coordinate) {
+        this.y = coordinate + this.speed;
     }
-    moveLeft() {
-        this.x -= this.speed;
-        // movement(this.x);
+    moveLeft(coordinate) {
+        this.x = coordinate - this.speed;
     }
-    moveRight() {
-        this.x += this.speed;
-        // movement(this.x);
+    moveRight(coordinate) {
+        this.x = coordinate + this.speed;
     }
 }
 
