@@ -15,11 +15,9 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 import java.awt.*;
+import java.awt.List;
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +49,7 @@ public class MovementController {
     Random r = new Random();
     Map<String, String> response = new HashMap<>();
     int counter = 0;
+    ArrayList<User> users = new ArrayList<>();
 
 
     @MessageMapping("/register/{userId}")
@@ -59,12 +58,19 @@ public class MovementController {
         user.setColor(colors[counter++]);
         user.setX(r.nextInt(50) + 100);
         user.setY(r.nextInt(50) + 100);
-        System.out.println("REGISTER: " + user.toString());
+        System.out.println("REGISTER a new User: " + user.toString());
+        users.add(user);
+        for(User u : users) {
+            if(!u.getUserId().equals(user.getUserId())) {
+                System.out.println("List of users: " + u.toString());
+                MovementResponse movementResponse = new MovementResponse(u.getUserId(), u.getAction(), u.getColor(), u.getX(), u.getY());
+                messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(movementResponse));
+            }
+        }
         MovementResponse movementResponse = new MovementResponse(user.getUserId(), user.getAction(), user.getColor(), user.getX(), user.getY());
 
         messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(movementResponse));
     }
-
 
     @MessageMapping("/movement/{userId}")
     @SendTo("/topic/movement/")
@@ -77,6 +83,6 @@ public class MovementController {
 
         logger.atInfo().log("User %s performed action %s", user.getUserId(), user.getAction());
 
-        System.out.println(user.toString());
+        System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
     }
 }

@@ -8,7 +8,7 @@ class Game {
     constructor(canvasId) {
         this.canvas = document.getElementById(canvasId);
         this.context = this.canvas.getContext('2d');
-        this.player = new Player(100, 100, 50, 50, 'blue');
+        this.player = new Player(100, 100, 'blue', this.generateRandomString(10));
         this.randomString = this.generateRandomString(10);
         this.userId = this.randomString;
         this.setupKeyboardControls();
@@ -21,7 +21,7 @@ class Game {
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -73,16 +73,49 @@ class Game {
 
     registerCallback = (message) => {
         const parsedMessage = JSON.parse(message.body);
-        this.player.color = parsedMessage.color;
-        this.player.x = parsedMessage.x;
-        this.player.y = parsedMessage.y;
-        this.player.userId = parsedMessage.userId;
+        const existingPlayers = otherPlayers.find(player => parsedMessage.userId);
+
+        if(parsedMessage.userId === this.userId) {
+            this.player.color = parsedMessage.color;
+            this.player.x = parsedMessage.x;
+            this.player.y = parsedMessage.y;
+            this.player.userId = parsedMessage.userId;
+            this.player.draw(this.context);
+        } else if(parsedMessage.userId !== this.userId && !existingPlayers) {
+            let newPlayer = new Player(parsedMessage.x, parsedMessage.y, parsedMessage.color, parsedMessage.userId);
+            otherPlayers.push(newPlayer);
+            newPlayer.draw(this.context);
+        }
         this.stompClient.unsubscribe("/topic/register/");
     }
 
     callback = (message) => {
         const parsedMessage = JSON.parse(message.body);
-        const existingPlayers = otherPlayers.find(player => player.userId);
+        const existingPlayers = otherPlayers.find(player => parsedMessage.userId);
+
+        /*if(existingPlayers) {
+            updateOtherPlayerPosition(existingPlayers, parsedMessage.x, parsedMessage.y, parsedMessage.userId, parsedMessage.color);
+        } else if(!existingPlayers && parsedMessage.userId !== this.userId) {
+            let newPlayer = new Player(parsedMessage.x, parsedMessage.y, 50, 50, parsedMessage.userId, parsedMessage.color);
+            otherPlayers.push(newPlayer);
+        } else if (parsedMessage.userId === this.userId) {
+            switch (parsedMessage.action) {
+                case 'left':
+                    this.player.moveLeft(parsedMessage.x);
+                    break;
+                case 'right':
+                    this.player.moveRight(parsedMessage.x);
+                    break;
+                case 'up':
+                    this.player.moveUp(parsedMessage.y);
+                    break;
+                case 'down':
+                    this.player.moveDown(parsedMessage.y);
+                    break;
+                default:
+                    console.log("Unbekannte Aktion");
+            }
+        }*/
 
         if (parsedMessage.userId === this.userId) {
             switch (parsedMessage.action) {
@@ -102,10 +135,11 @@ class Game {
                     console.log("Unbekannte Aktion");
             }
         } else if(existingPlayers) {
-            updateOtherPlayerPosition(parsedMessage.x, parsedMessage.y, parsedMessage.userId, parsedMessage.action);
+            updateOtherPlayerPosition(existingPlayers, parsedMessage.x, parsedMessage.y, parsedMessage.userId, parsedMessage.action);
         } else {
-            let newPlayer = new Player(parsedMessage.x, parsedMessage.y, 50, 50, parsedMessage.color, parsedMessage.userId);
+            let newPlayer = new Player(parsedMessage.x, parsedMessage.y, parsedMessage.color, parsedMessage.userId);
             otherPlayers.push(newPlayer);
+            newPlayer.draw(this.context);
         }
     };
 
@@ -203,6 +237,14 @@ class Game {
             for (let col = 0; col < this.map[row].length; col++) {
                 if (this.map[row][col] === 1) {
                     this.context.fillStyle = 'black';
+                } else if(this.map[row][col] === 2) {
+                    this.context.fillStyle = 'green';
+                    window.addEventListener('space', (event) => {
+                        if(event.key === 'space') {
+                            this.context.fillStyle = 'yellow';
+                            console.log("Space pressed");
+                        }
+                    });
                 }
                 else {
                     this.context.fillStyle = 'white';
@@ -236,8 +278,8 @@ class Game {
     }
 }
 
-function updateOtherPlayerPosition(x, y, userId, action) {
-    const player = otherPlayers.find(player => player.userId);
+function updateOtherPlayerPosition(existingPlayer, x, y, userId, action) {
+    const player = otherPlayers.find(player => userId);
 
     switch (action) {
         case 'left':
