@@ -93,7 +93,7 @@ public class MovementController {
 
         // Assuming currentUsers is a Set<User> containing unique users based on userId
         if (currentUsers.stream().noneMatch(u -> u.getUserId().equals(user.getUserId()))) {
-            logger.warn("New user connected: {}", userId);
+            logger.warn("New user connected: {}", user.getUserId());
             currentUsers.add(user);
         }
 

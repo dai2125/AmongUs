@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import MapGrid from './MapGrid/MapGrid';
+import KeyInputs from "./KeyInputs/KeyInputs";
 import style from './AppStyle.module.css';
+
+
 
 const App: React.FC = () => {
   const [xPos, setXPos] = useState<number>(2);
@@ -15,6 +18,7 @@ const App: React.FC = () => {
   return (
       <div className={style.root}>
         <MapGrid xPos={xPos} yPos={yPos} onMove={handleMove} />
+        <KeyInputs/>
       </div>
   );
 }

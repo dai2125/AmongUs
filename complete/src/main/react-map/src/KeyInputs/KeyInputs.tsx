@@ -1,49 +1,45 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import Stomp from 'stompjs';
+import SockJS from 'sockjs-client';
 
 const WebSocketClient: React.FC = () => {
+    const [stompClient, setStompClient] = useState<any>(null); // State to hold the stompClient
+
     useEffect(() => {
-        // Create WebSocket connection
-        const socket = new WebSocket('ws://localhost:8080/gs-guide-websocket');
 
-        // Connection opened
-        socket.addEventListener('open', () => {
-            console.log('Connected to WebSocket server');
-
-            // Send identification message with ID to the server
-            const id = 'your_id_here'; // Replace 'your_id_here' with the actual ID
-            socket.send(JSON.stringify({ type: 'subscribe', id }));
-        });
-
-        // Listen for messages
-        socket.addEventListener('message', (event) => {
-            console.log('Received message:', event.data);
-        });
-
-        // Function to send key inputs to server
-        const sendKeyInputToServer = (input: string) => {
-            // Send key input as string to server
-            socket.send(input);
-        };
-
-        // Event listener for key presses
-        const handleKeyPress = (event: KeyboardEvent) => {
-            // Send key input to server when key is pressed
-            sendKeyInputToServer(event.key);
-        };
-
-        // Add event listener for key presses
-        window.addEventListener('keypress', handleKeyPress);
+        if (!stompClient) {
+            const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
+            const client = Stomp.over(socket);
+            client.connect({}, () => {
+                setStompClient(client);
+                console.log("WebSocket connection established");
+            }, (error) => {
+                console.error('Error connecting to WebSocket:', error);
+            });
+        }
 
         // Cleanup function
         return () => {
-            // Close WebSocket connection when component unmounts
-            socket.close();
-            console.log('Disconnected from WebSocket server');
-            window.removeEventListener('keypress', handleKeyPress);
+            // Disconnect only if stompClient is defined
+            stompClient && stompClient.disconnect({});
         };
-    }, []);
+    }, [stompClient]); // Dependency array includes stompClient
 
-    return <div></div>;
+    useEffect(() => {
+        if (stompClient) {
+            // Subscribe to desired destination
+            const subscription = stompClient.subscribe('/topic/test/', (message) => {
+                console.log('Received message:', message.body);
+            });
+
+            // Handle subscription error
+            subscription && subscription.error((error) => {
+                console.error('Error in subscription:', error);
+            });
+        }
+    }, [stompClient]); // Dependency array includes stompClient
+
+    return null; // This component doesn't render anything visible
 };
 
 export default WebSocketClient;
