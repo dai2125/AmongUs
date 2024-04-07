@@ -1,22 +1,17 @@
-package com.example.messagingstompwebsocket;
+package com.example.messagingstompwebsocket.GamingController;
 
+import com.example.messagingstompwebsocket.DataModel.MovementResponse;
+import com.example.messagingstompwebsocket.DataModel.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.event.EventListener;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 
 
-import java.awt.*;
-import java.awt.List;
-import java.security.Principal;
 import java.util.*;
 
 import java.util.HashMap;
@@ -26,8 +21,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.socket.messaging.SessionConnectEvent;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Controller
 @PropertySource("classpath:application.properties")
