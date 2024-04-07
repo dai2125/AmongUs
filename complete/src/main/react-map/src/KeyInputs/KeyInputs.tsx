@@ -63,7 +63,7 @@ const WebSocketClient: React.FC = () => {
                 // setTimeout(() => {
                 //     new Player(response.action, response.userId, response.color, response.x, response.y);
 
-                console.log('KeyInput.tsx DataModel ', getAction() + ' UserID ', response.userId + ' X ', response.x + ' Y ', response.y + ' Color ', response.color);
+                console.log('KeyInput.tsx DataModel action ', response.action + ' UserID ', response.userId + ' X ', response.x + ' Y ', response.y + ' Color ', response.color);
                 // new Player()
                 if(!userId) {
                     setUserId(response.userId);

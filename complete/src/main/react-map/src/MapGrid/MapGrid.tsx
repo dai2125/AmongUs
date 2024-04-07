@@ -42,17 +42,19 @@ const GameComponent = ({xPos, yPos, onMove}) => {
 
     useEffect(() => {
 
-        let id = getUserId();
+        // let id = getUserId();
+        let id = player.current.getUserId();
+        console.log ('IDDDDDDDDDD    ', id);
 
         const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
         const client = Stomp.over(socket);
         client.connect({}, () => {
-            client.subscribe('/topic/register/', (message) => {
+            client.subscribe(`/topic/register/${id}`, (message) => {
                 const response = JSON.parse(message.body);
-                console.log('Subscribe UserID ', response.userId + ' X ', response.x + ' Y ', response.y + ' Color ', response.color);
+                console.log('Subscribe UserID ', response.userId + ' action ', response.action + ' X ', response.x + ' Y ', response.y + ' Color ', response.color);
                 // player.setUserId(response.userId);
                 // player.
-                if(playerOne === false) {
+                // if(playerOne === false) {
                     player.current.setAction(response.action);
                     player.current.setUserId(response.userId);
                     player.current.setColor(response.color);
@@ -60,12 +62,12 @@ const GameComponent = ({xPos, yPos, onMove}) => {
                     player.current.setY(response.y);
                     setPlayerOne(true);
                     // gameLoop();
-                } else /*if(player.current.getUserId() !== response.userId)*/ {
-                    const newPlayer = new Player(response.action, response.userId, response.color, response.x, response.y);
-                    otherPlayers.push(newPlayer);
-                    console.log('OOOOOOOther Players instanziert', otherPlayers.length);
-                    // gameLoop();
-                }
+                // } else /*if(player.current.getUserId() !== response.userId)*/ {
+                //     const newPlayer = new Player(response.action, response.userId, response.color, response.x, response.y);
+                //     otherPlayers.push(newPlayer);
+                //     console.log('OOOOOOOther Players instanziert', otherPlayers.length);
+                //     // gameLoop();
+                // }
 
                 // new Player(response.action, response.userId, 'yellow', response.x, response.y);
 
@@ -77,7 +79,7 @@ const GameComponent = ({xPos, yPos, onMove}) => {
                 const x = response.x;
                 const y = response.y;
                 const action = response.action;
-                callback(id, color, x, y, action);
+                callback(action, id, color, x, y);
             });
         });
 
@@ -110,8 +112,8 @@ const GameComponent = ({xPos, yPos, onMove}) => {
         };
 
         function sendMovementUp(y: number) {
-            let id = getUserId();
-            // console.log('ID ', id);
+            // let id = getUserId();
+            let id = player.current.getUserId();
             player.current.setAction('ArrowUp');
 
             client.send(`/app/movement/${id}`, {}, JSON.stringify({
@@ -124,7 +126,8 @@ const GameComponent = ({xPos, yPos, onMove}) => {
         }
 
         function sendMovementDown(y: number) {
-            let id = getUserId();
+            // let id = getUserId();
+            let id = player.current.getUserId();
             player.current.setAction('ArrowDown');
 
             client.send(`/app/movement/${id}`, {}, JSON.stringify({
@@ -137,7 +140,8 @@ const GameComponent = ({xPos, yPos, onMove}) => {
         }
 
         function sendMovementLeft(x: number) {
-            let id = getUserId();
+            // let id = getUserId();
+            let id = player.current.getUserId();
             player.current.setAction('ArrowLeft');
 
             client.send(`/app/movement/${id}`, {}, JSON.stringify({
@@ -150,7 +154,8 @@ const GameComponent = ({xPos, yPos, onMove}) => {
         }
 
         function sendMovementRight(x: number) {
-            let id = getUserId();
+            // let id = getUserId();
+            let id = player.current.getUserId();
 
             player.current.setAction('ArrowRight');
 
@@ -164,8 +169,8 @@ const GameComponent = ({xPos, yPos, onMove}) => {
         }
 
         function sendMovement(move: string) {
-            let id = getUserId();
-
+            // let id = getUserId();
+            let id = player.current.getUserId();
             client.send(`/app/movement/${id}`, {}, JSON.stringify({
                 'action': move,
                 'userId': player.current.getUserId(),
@@ -175,7 +180,10 @@ const GameComponent = ({xPos, yPos, onMove}) => {
             }));
         }
 
-        function callback(id: string, color: string, x: number, y: number, action: string) {
+        function callback(action: string, id: string, color: string, x: number, y: number) {
+            console.log('XXXXX id ', id);
+            console.log('XXXXX pcid ', player.current.getUserId());
+
             if (id === player.current.getUserId()) {
             console.log('Callback Function ' + id + ' X ', x + ' Y ', y + ' Color ', color + ' Action ', action);
                 if (action === 'ArrowUp') {

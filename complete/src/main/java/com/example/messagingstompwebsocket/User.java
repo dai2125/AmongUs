@@ -17,6 +17,7 @@ public class User {
     }
 
     public User(String action, String userId, String color, int x, int y) {
+        this.action = action;
         this.userId = userId;
         this.color = color;
         this.x = x;
