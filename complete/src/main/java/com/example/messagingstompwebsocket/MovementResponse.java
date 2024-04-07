@@ -2,8 +2,8 @@ package com.example.messagingstompwebsocket;
 
 public class MovementResponse {
 
-    private String userId;
     private String action;
+    private String userId;
     private String color;
     private int x;
     private int y;
@@ -11,29 +11,31 @@ public class MovementResponse {
     public MovementResponse() {
     }
 
-    public MovementResponse(String userId, String action, String color, int x, int y) {
-        this.userId = userId;
+    public MovementResponse(String action, String userId, String color, int x, int y) {
         this.action = action;
+        this.userId = userId;
         this.color = color;
         this.x = x;
         this.y = y;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 
     public String getAction() {
         return action;
     }
 
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
 
-    public void setAction(String action) {
-        this.action = action;
-    }
 
     public String getColor() {
         return color;

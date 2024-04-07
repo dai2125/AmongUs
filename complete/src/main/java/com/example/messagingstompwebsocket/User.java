@@ -1,8 +1,9 @@
 package com.example.messagingstompwebsocket;
 
 public class User {
-    private String userId;
+
     private String action;
+    private String userId;
 
     private String color;
     private int x;
@@ -15,28 +16,26 @@ public class User {
     public User() {
     }
 
-    public User(String userId, String action, String color, int x, int y) {
+    public User(String action, String userId, String color, int x, int y) {
         this.userId = userId;
-        this.action = action;
         this.color = color;
         this.x = x;
         this.y = y;
-    }
-
-    public String getUserId() {
-        return userId;
     }
 
     public String getAction() {
         return action;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
     public void setAction(String action) {
         this.action = action;
+    }
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getColor() {
@@ -67,7 +66,6 @@ public class User {
     public String toString() {
         return "User{" +
                 "userId='" + userId + '\'' +
-                ", action='" + action + '\'' +
                 ", color='" + color + '\'' +
                 ", x=" + x +
                 ", y=" + y +

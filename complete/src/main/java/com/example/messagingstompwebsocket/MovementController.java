@@ -61,22 +61,36 @@ public class MovementController {
     ArrayList<User> users = new ArrayList<>();
 
 
-    @MessageMapping("/register/{userId}")
+    @MessageMapping("/register/")
     @SendTo("/topic/register/")
     public void register(@Payload User user) throws JsonProcessingException {
-        user.setColor(colors[counter++]);
-        user.setX(r.nextInt(50) + 100);
-        user.setY(r.nextInt(50) + 100);
-        System.out.println("REGISTER a new User: " + user.toString());
-        users.add(user);
-        for(User u : users) {
-            if(!u.getUserId().equals(user.getUserId())) {
-                System.out.println("List of users: " + u.toString());
-                MovementResponse movementResponse = new MovementResponse(u.getUserId(), u.getAction(), u.getColor(), u.getX(), u.getY());
-                messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(movementResponse));
+
+
+        if(!users.contains(user)) {
+            users.add(user);
+            user.setX(r.nextInt(1) + 3);
+            user.setY(r.nextInt(1) + 3);
+            user.setUserId(UUID.randomUUID().toString());
+            user.setAction("ArrowUp");
+            user.setColor(colors[counter++]);
+            if (counter == 5) {
+                counter = 0;
             }
+            System.out.println("REGISTER a new User: " + user.toString() + " " + users.size());
+        } else {
+            System.out.println("REGISTER user already exists: " + user.toString());
         }
-        MovementResponse movementResponse = new MovementResponse(user.getUserId(), user.getAction(), user.getColor(), user.getX(), user.getY());
+
+
+
+//        for(User u : users) {
+//            if(!u.getUserId().equals(user.getUserId())) {
+//                System.out.println("List of users: " + u.toString());
+//                MovementResponse movementResponse = new MovementResponse(u.getUserId(), u.getAction(), u.getColor(), u.getX(), u.getY());
+//                messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(movementResponse));
+//            }
+//        }
+        MovementResponse movementResponse = new MovementResponse(user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
 
         messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(movementResponse));
     }
@@ -85,17 +99,31 @@ public class MovementController {
     @SendTo("/topic/movement/")
     public void processMovement(/*@DestinationVariable String userId, */@Payload User user) throws JsonProcessingException {
 
-        user.setY(user.getY());
-        user.setX(user.getX());
-        MovementResponse movementResponse = new MovementResponse(user.getUserId(), user.getAction(), user.getColor(), user.getX(), user.getY());
+//        for(User u : users) {
+//            if(u.getUserId().equals(user.getUserId())) {
+//                u.setX(user.getX());
+//                u.setY(user.getY());
+//                u.setAction(user.getAction());
+//                u.setColor(user.getColor());
+//                System.out.println("Success");
+//            }
+//        }
+
+//        user.setUserId(user.getUserId());
+//        user.setAction(user.getAction());
+//        user.setColor(user.getColor());
+//        user.setY(user.getY());
+//        user.setX(user.getX());
+
+        MovementResponse movementResponse = new MovementResponse(user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
         messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementResponse));
 
 
         // Assuming currentUsers is a Set<User> containing unique users based on userId
-        if (currentUsers.stream().noneMatch(u -> u.getUserId().equals(user.getUserId()))) {
-            logger.warn("New user connected: {}", userId);
-            currentUsers.add(user);
-        }
+//        if (currentUsers.stream().noneMatch(u -> u.getUserId().equals(user.getUserId()))) {
+//            logger.warn("New user connected: {}", user.getUserId());
+//            currentUsers.add(user);
+//        }
 
         System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
     }
