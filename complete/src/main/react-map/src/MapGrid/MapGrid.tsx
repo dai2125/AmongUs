@@ -10,7 +10,7 @@ const GameComponent = ({xPos, yPos, onMove}) => {
 
     const canvasRef = useRef(null);
 
-    const player = useRef(new Player('null', 'test', 'blue', 7, 7));
+    const player = useRef(new Player("", "11",'blue', 7, 7));
     const [playerOne, setPlayerOne] = useState(false);
 
     const map = [
@@ -44,23 +44,25 @@ const GameComponent = ({xPos, yPos, onMove}) => {
 
         // let id = getUserId();
         let id = player.current.getUserId();
-        console.log ('IDDDDDDDDDD    ', id);
 
         const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
         const client = Stomp.over(socket);
         client.connect({}, () => {
-            client.subscribe(`/topic/register/${id}`, (message) => {
+            client.subscribe('/topic/register/', (message) => {
                 const response = JSON.parse(message.body);
                 console.log('Subscribe UserID ', response.userId + ' action ', response.action + ' X ', response.x + ' Y ', response.y + ' Color ', response.color);
                 // player.setUserId(response.userId);
                 // player.
                 // if(playerOne === false) {
+                if(player.current.getUserId() === '11') {
+
                     player.current.setAction(response.action);
                     player.current.setUserId(response.userId);
                     player.current.setColor(response.color);
                     player.current.setX(response.x);
                     player.current.setY(response.y);
                     setPlayerOne(true);
+                }
                     // gameLoop();
                 // } else /*if(player.current.getUserId() !== response.userId)*/ {
                 //     const newPlayer = new Player(response.action, response.userId, response.color, response.x, response.y);
@@ -72,6 +74,14 @@ const GameComponent = ({xPos, yPos, onMove}) => {
                 // new Player(response.action, response.userId, 'yellow', response.x, response.y);
 
             });
+
+            client.send(`/app/register/${player.current.getUserId()}`, {}, JSON.stringify({
+                'action': player.current.getAction(),
+                'userId': player.current.getUserId(),
+                'color': player.current.getColor(),
+                'x': player.current.getX(),
+                'y': player.current.getY()
+            }));
             client.subscribe(`/topic/movement/`, (message) => {
                 const response = JSON.parse(message.body);
                 const id = response.userId;
@@ -116,7 +126,7 @@ const GameComponent = ({xPos, yPos, onMove}) => {
             let id = player.current.getUserId();
             player.current.setAction('ArrowUp');
 
-            client.send(`/app/movement/${id}`, {}, JSON.stringify({
+            client.send(`/app/movement/${player.current.getUserId()}`, {}, JSON.stringify({
                 'action': player.current.getAction(),
                 'userId': player.current.getUserId(),
                 'color': player.current.getColor(),
@@ -208,6 +218,11 @@ const GameComponent = ({xPos, yPos, onMove}) => {
                 }
                 // gameLoop();
             } else {
+                console.log('CCCCCCCallback Function other player ' + id + ' X ', x + ' Y ', y + ' Color ', color + ' Action ', action);
+                const newPlayer = new Player(action, id, color, x, y);
+                otherPlayers.push(newPlayer);
+                newPlayer.draw(context);
+                drawGrid(map);
                 otherPlayers.forEach((newPlayer) => {
                     if (newPlayer.getUserId() === id) {
                         if (action === 'ArrowUp') {
@@ -296,55 +311,99 @@ const GameComponent = ({xPos, yPos, onMove}) => {
             });
         };
 
+        // TODO Logik Fehler bei der Bewegung der anderen Spieler
+        // TODO X und Y Parameter sind um 1 verschoben
         function drawGrid(grid: number[][]) {
             let cellSize = 25;
             const context = canvasRef.current.getContext('2d');
+            if (!context) {
+                console.error("Could not get canvas context");
+                return;
+            }
 
-            let x = player.current.getX();
-            let y = player.current.getY();
-
+            // Zeichne zuerst das gesamte Grid.
             for (let row = 0; row < grid.length; row++) {
                 for (let col = 0; col < grid[row].length; col++) {
                     const value = grid[row][col];
-
-                    for(let i = 0; i < otherPlayers.length; i++) {
-                        if (row === otherPlayers[i].getX() && col === otherPlayers[i].getY()) {
-                            context.fillStyle = otherPlayers[i].getColor();
-                        }
-                    }
-
-                    if (row === x && col === y) {
-                        context.fillStyle = player.current.getColor();
-                    } else if (grid[row][col] === 1) {
+                    if (value === 1) {
                         context.fillStyle = 'black';
-                    } else if (grid[row][col] === 0) {
+                    } else if (value === 0) {
                         context.fillStyle = 'white';
-                    } else if (grid[row][col] === 2) {
+                    } else if (value === 2) {
                         context.fillStyle = 'red';
                     }
-
-                    // for(let i = 0; i < otherPlayers.length; i++) {
-                    //     if (row === otherPlayers[i].getX() && col === otherPlayers[i].getY()) {
-                    //         context.fillStyle = otherPlayers[i].getColor();
-                    //     }
-                    // }
-
                     context.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
                     context.strokeStyle = 'grey';
                     context.lineWidth = 1;
                     context.strokeRect(col * cellSize, row * cellSize, cellSize, cellSize);
                 }
             }
-            // window.addEventListener('keydown', (event) => {
-            //     handleMove(event.key);
-            // });
-            return () => {
-                // Bereinige hier, z.B. trenne die WebSocket-Verbindung
-                // window.removeEventListener('keydown', (event) => {
-                //     handleMove(event.key);
-                // });
-            };
+
+            // Zeichne den Hauptspieler.
+            let x = player.current.getX();
+            let y = player.current.getY();
+            context.fillStyle = player.current.getColor();
+            context.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+
+            // Zeichne andere Spieler.
+            for (let i = 0; i < otherPlayers.length; i++) {
+                let playerX = otherPlayers[i].getX();
+                let playerY = otherPlayers[i].getY();
+                context.fillStyle = otherPlayers[i].getColor();
+                context.fillRect(playerX * cellSize, playerY * cellSize, cellSize, cellSize);
+            }
         }
+
+
+        // function drawGrid(grid: number[][]) {
+        //     let cellSize = 25;
+        //     const context = canvasRef.current.getContext('2d');
+        //
+        //     let x = player.current.getX();
+        //     let y = player.current.getY();
+        //
+        //     for (let row = 0; row < grid.length; row++) {
+        //         for (let col = 0; col < grid[row].length; col++) {
+        //             for(let i = 0; i < otherPlayers.length; i++) {
+        //
+        //             const value = grid[row][col];
+        //
+        //             if (row === otherPlayers[i].getX() && col === otherPlayers[i].getY()) {
+        //                 context.fillStyle = otherPlayers[i].getColor();
+        //             }
+        //             else if (row === x && col === y) {
+        //                 context.fillStyle = player.current.getColor();
+        //             } else if (grid[row][col] === 1) {
+        //                 context.fillStyle = 'black';
+        //             } else if (grid[row][col] === 0) {
+        //                 context.fillStyle = 'white';
+        //             } else if (grid[row][col] === 2) {
+        //                 context.fillStyle = 'red';
+        //             }
+        //
+        //             // for(let i = 0; i < otherPlayers.length; i++) {
+        //             //     if (row === otherPlayers[i].getX() && col === otherPlayers[i].getY()) {
+        //             //         context.fillStyle = otherPlayers[i].getColor();
+        //             //     }
+        //             // }
+        //
+        //             context.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        //             context.strokeStyle = 'grey';
+        //             context.lineWidth = 1;
+        //             context.strokeRect(col * cellSize, row * cellSize, cellSize, cellSize);
+        //         }
+        //         }
+        //     }
+        //     // window.addEventListener('keydown', (event) => {
+        //     //     handleMove(event.key);
+        //     // });
+        //     return () => {
+        //         // Bereinige hier, z.B. trenne die WebSocket-Verbindung
+        //         // window.removeEventListener('keydown', (event) => {
+        //         //     handleMove(event.key);
+        //         // });
+        //     };
+        // }
         window.addEventListener('keydown', (event) => {
             handleMove(event.key);
         });

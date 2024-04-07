@@ -24,7 +24,7 @@ const WebSocketClient: React.FC = () => {
     const [gamer, setGamer] = useState<Player | null>(null);
 
     useEffect(() => {
-
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxIn useEffect');
         if (!stompClient) {
             const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
             const client = Stomp.over(socket);
