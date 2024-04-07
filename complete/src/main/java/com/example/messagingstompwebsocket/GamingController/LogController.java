@@ -1,4 +1,4 @@
-package com.example.messagingstompwebsocket;
+package com.example.messagingstompwebsocket.GamingController;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
