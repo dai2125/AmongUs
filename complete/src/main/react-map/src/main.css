@@ -20,7 +20,7 @@ body {
 
 .background {
     /* Set background image */
-    background-image: url('stars.png');
+    background-image: url("stars.png");
 
     /* Specify background image size */
     background-size: cover; /* This will cover the entire background */
@@ -37,7 +37,7 @@ body {
 }
 
 #local-img {
-    background-image: url('Local.png');
+    background-image: url("Local.png");
     background-repeat: no-repeat;
     background-position: center;
     width: 100%;

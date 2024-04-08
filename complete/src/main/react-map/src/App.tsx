@@ -27,24 +27,24 @@ const App: React.FC = () => {
       <Router>
           <div>
               {/* Navigation */}
-              <nav>
-                  <ul>
-                      <li>
-                          <Link to="/">Home</Link>
-                      </li>
-                      <li>
-                          <Link to="/play">Play</Link>
-                      </li>
-                      <li>
-                          <Link to="/account">Account</Link>
-                      </li>
-                  </ul>
-              </nav>
+              {/*<nav>*/}
+              {/*    <ul>*/}
+              {/*        <li>*/}
+              {/*            <Link to="/">Home</Link>*/}
+              {/*        </li>*/}
+              {/*        <li>*/}
+              {/*            <Link to="/play">Play</Link>*/}
+              {/*        </li>*/}
+              {/*        <li>*/}
+              {/*            <Link to="/account">Account</Link>*/}
+              {/*        </li>*/}
+              {/*    </ul>*/}
+              {/*</nav>*/}
 
               {/* Routen */}
               <Routes>
                   <Route path="/" element={<HomePage />} />
-                  <Route path="/play" element={<MapGrid xPos={xPos} yPos={yPos} onMove={handleMove} />} />
+                  <Route path="/play" element={<MapGrid /*xPos={xPos} yPos={yPos} onMove={handleMove}*/ />} />
                   {/*<Route path="/account" element={<Account />} />*/}
               </Routes>
           </div>

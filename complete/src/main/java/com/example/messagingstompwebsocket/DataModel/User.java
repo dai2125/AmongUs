@@ -1,27 +1,43 @@
 package com.example.messagingstompwebsocket.DataModel;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "User")
 public class User {
 
+    @Id
+    private String sessionId;
     private String action;
     private String userId;
 
     private String color;
     private int x;
     private int y;
-
-//TODO    private String color;
-//    private int points;
+    private boolean connected;
 
 
     public User() {
     }
 
-    public User(String action, String userId, String color, int x, int y) {
+    public User(String sessionId, String action, String userId, String color, int x, int y) {
+        this.sessionId = sessionId;
         this.action = action;
         this.userId = userId;
         this.color = color;
         this.x = x;
         this.y = y;
+        this.connected = true;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     public String getAction() {
@@ -61,6 +77,14 @@ public class User {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    public boolean isConnected() {
+        return connected;
+    }
+
+    public void setConnected(boolean connected) {
+        this.connected = connected;
     }
 
     @Override

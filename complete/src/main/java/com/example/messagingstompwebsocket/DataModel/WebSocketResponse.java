@@ -1,6 +1,6 @@
 package com.example.messagingstompwebsocket.DataModel;
 
-public class MovementResponse {
+public class WebSocketResponse {
 
     private String action;
     private String userId;
@@ -8,10 +8,10 @@ public class MovementResponse {
     private int x;
     private int y;
 
-    public MovementResponse() {
+    public WebSocketResponse() {
     }
 
-    public MovementResponse(String action, String userId, String color, int x, int y) {
+    public WebSocketResponse(String action, String userId, String color, int x, int y) {
         this.action = action;
         this.userId = userId;
         this.color = color;

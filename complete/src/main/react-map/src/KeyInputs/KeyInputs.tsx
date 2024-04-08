@@ -25,6 +25,7 @@ const WebSocketClient: React.FC = () => {
 
     useEffect(() => {
         console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxIn useEffect');
+        console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxIn useEffect');
         if (!stompClient) {
             const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
             const client = Stomp.over(socket);
@@ -53,12 +54,12 @@ const WebSocketClient: React.FC = () => {
                 setUserId(response.userId);
 
                 console.log('KeyInput.tsx UserID ', response.userId + ' X ', response.x + ' Y ', response.y + ' Color ', response.color);
-                setUserIdStore(response.userId);
-                setAction(response.action);
-                setColor(response.color);
-                setX(response.x);
-                setY(response.y);
-                setGamer(new Player(response.action, response.userId, response.color, response.x, response.y));
+                // setUserIdStore(response.userId);
+                // setAction(response.action);
+                // setColor(response.color);
+                // setX(response.x);
+                // setY(response.y);
+                // setGamer(new Player(response.action, response.userId, response.color, response.x, response.y));
                 // delay(1000);
                 // setTimeout(() => {
                 //     new Player(response.action, response.userId, response.color, response.x, response.y);
@@ -66,18 +67,18 @@ const WebSocketClient: React.FC = () => {
                 console.log('KeyInput.tsx DataModel action ', response.action + ' UserID ', response.userId + ' X ', response.x + ' Y ', response.y + ' Color ', response.color);
                 // new Player()
                 if(!userId) {
-                    setUserId(response.userId);
                     // setUserId(response.userId);
-                    setAction(response.action);
-                    setUserIdStore(response.userId);
-                    setColor(response.color);
-                    setX(response.x);
-                    setY(response.y);
+                    // setUserId(response.userId);
+                    // setAction(response.action);
+                    // setUserIdStore(response.userId);
+                    // setColor(response.color);
+                    // setX(response.x);
+                    // setY(response.y);
                     console.log('UserID ', response.userId + ' X ', response.x + ' Y ', response.y + ' Color ', response.color);
                 } else if (response.userId !== userId) {
                     // TODO Reagiert nicht auf die Nachrichten
-                    let newPlayer = new Player(response.action, response.userId, response.color, response.x, response.y);
-                    otherPlayers.push(newPlayer);
+                    // let newPlayer = new Player(response.action, response.userId, response.color, response.x, response.y);
+                    // otherPlayers.push(newPlayer);
 
                     console.log('New Player: ', response.userId + ' X ', response.x + ' Y ', response.y + ' Color ', response.color);
                     // createNewPlayer(response.action, response.userId, response.x, response.y, response.color);

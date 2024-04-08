@@ -1,11 +1,6 @@
 export class Player {
-    constructor(
-        private action: string,
-        private userId: string,
-        private color: string,
-        private x: number,
-        private y: number
-    ) {
+
+    constructor(private action: string, private userId: string, private color: string, private x: number, private y: number) {
         this.action = action;
         this.userId = userId;
         this.color = color;
