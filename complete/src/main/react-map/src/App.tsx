@@ -10,6 +10,7 @@ import {
 } from 'react-router-dom';
 import HomePage from "./HomePage";
 import GameComponent from "./MapGrid/MapGrid";
+import LogIn from "./Log-in";
 
 const App: React.FC = () => {
   const [xPos, setXPos] = useState<number>(2);
@@ -45,7 +46,7 @@ const App: React.FC = () => {
               <Routes>
                   <Route path="/" element={<HomePage />} />
                   <Route path="/play" element={<MapGrid xPos={xPos} yPos={yPos} onMove={handleMove} />} />
-                  {/*<Route path="/account" element={<Account />} />*/}
+                  <Route path="/account" element={<LogIn />} />
               </Routes>
           </div>
       </Router>

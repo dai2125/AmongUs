@@ -2,12 +2,12 @@ import React from 'react';
 import './main.css'
 import './output.css';
 
-const HomePage: React.FC = () => {
+export default function HomePage() {
     return (
         <div className="background grid grid-rows-12 h-screen w-screen p-10">
             <div className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2">
                 <div id="user-div" className="col-span-1"></div>
-                <div className="col-span-1 text-3xl text-cyan-500 text-center">KARIM</div>
+                <div className="col-span-1 text-3xl text-cyan-500 text-center">User</div>
             </div>
 
             <div className="grid row-span-10 grid-cols-3 mb-5 gap-2">
@@ -31,5 +31,3 @@ const HomePage: React.FC = () => {
         </div>
     );
 };
-
-export default HomePage;
