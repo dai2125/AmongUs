@@ -1,4 +1,4 @@
-package com.example.messagingstompwebsocket.Database;
+/*package com.example.messagingstompwebsocket.Database;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,3 +17,4 @@ public class LoginController {
         return "Person added successfully";
     }
 }
+*/

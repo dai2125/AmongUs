@@ -1,7 +1,13 @@
-export default function CreateAccount(){
+type Props = {
+    onCreateClick(): void;
+    onLoginNavClick(): void;
+}
+
+export default function CreateAccount({onCreateClick, onLogInNavClick}, Props){
+
     return(
-        <div className="grid grid-rows-10 justify-center bg-transparent border-double rounded-lg border-2 border-fuchsia-800 w-1/2 h-80">
-            <div className="row-span-2 flex items-center justify-center"><b>LOG-IN</b></div>
+        <div className="grid grid-rows-10 justify-center bg-transparent border-double rounded-lg border-2 border-fuchsia-800 w-1/2 h-96">
+            <div className="row-span-2 flex items-center justify-center"><b>Create Account</b></div>
             <div className="row-span-7">
                 <form className="p-3">
                     <div>
@@ -14,13 +20,13 @@ export default function CreateAccount(){
                     </div>
 
                     <div className="flex justify-center">
-                        <button className="bg-blue-500 hover:bg-gray-400 text-slate-50 font-bold py-2 px-4 rounded mt-3" type="submit">Log-In</button>
+                        <button onClick={onCreateClick} className="bg-blue-500 hover:bg-gray-400 text-slate-50 font-bold py-2 px-4 rounded mt-3" type="submit">Log-In</button>
                     </div>
                 </form>
             </div>
             <div className="row-span-1 flex justify-between px-4">
-                <p className="">Account created</p>
-                <a href="" className="underline text-blue-500">Log-in</a>
+                <p className="">Already have an account?</p>
+                <button onClick={onLogInNavClick} className="underline text-blue-500">Log-in</button>
             </div>
         </div>
     );

@@ -2,7 +2,13 @@ import React from 'react';
 import './main.css'
 import './output.css';
 
-export default function HomePage() {
+type Props ={
+    onPlayButtonClick(): void;
+}
+
+export default function HomePage({onPlayButtonClick}: Props) {
+
+
     return (
         <div className="background grid grid-rows-12 h-screen w-screen p-10">
             <div className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2">
@@ -17,7 +23,13 @@ export default function HomePage() {
                     </div>
                     <div className="p-4 grid grid-rows-3 row-span-7 border-double rounded-lg border-2 border-fuchsia-800 w-11/12 h-5/6 justify-self-center align-items-center">
                         <button className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
+                            <b className="text-3xl">Home</b>
+                        </button>
+                        <button onClick={onPlayButtonClick} className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
                             <b className="text-3xl">PLAY</b>
+                        </button>
+                        <button className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
+                            <b className="text-3xl">ACCOUNT</b>
                         </button>
                         {/* Wiederhole für die anderen Buttons */}
                     </div>

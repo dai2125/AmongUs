@@ -4,9 +4,16 @@ import {getAction, getColor, getUserId, getX, getY} from "../store";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
+import '../main.css';
+import '../output.css';
+
 let otherPlayers: Player[] = [];
 
-const GameComponent = ({xPos, yPos, onMove}) => {
+type Props ={
+    onQuit(): void;
+}
+
+const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
     const canvasRef = useRef(null);
 
@@ -351,8 +358,35 @@ const GameComponent = ({xPos, yPos, onMove}) => {
         }, []);
 
     return (
-        <div>
-            <canvas ref={canvasRef} width="775" height="600" style={{ backgroundColor: 'blue' }}/>
+        <div className="background">
+
+            <div className="grid grid-rows-10 h-screen w-screen  ">
+                <div className="row-span-1 ">
+
+                    <p className="text-center text-white text-5xl mt-3">Game</p>
+                </div>
+                <div className="grid grid-cols-12 row-span-9 gap-5 h-5/6">
+
+                    <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-end">
+                        <p className="font-bold m-10 underline-offset-1">Completed Tasks</p>
+                    </div>
+                    <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
+                        <canvas ref={canvasRef} width="775" height="600" style={{ backgroundColor: 'blue' }}/>
+                    </div>
+                    <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-start">
+                        <button
+                            className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings
+                        </button>
+                        <button
+                            className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Map
+                        </button>
+                        <button
+                           onClick={onQuit} className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Quit
+                        </button>
+                    </div>
+                </div>
+            </div>
+
         </div>
     );
 };
