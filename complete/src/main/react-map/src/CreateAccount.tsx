@@ -6,9 +6,9 @@ type Props = {
 export default function CreateAccount({onCreateClick, onLogInNavClick}, Props){
 
     return(
-        <div className="grid grid-rows-10 justify-center bg-transparent border-double rounded-lg border-2 border-fuchsia-800 w-1/2 h-96">
+        <div className="grid grid-rows-10 bg-transparent border-double rounded-lg border-2 border-fuchsia-800 w-1/2 h-96">
             <div className="row-span-2 flex items-center justify-center"><b>Create Account</b></div>
-            <div className="row-span-7">
+            <div className="row-span-7 justify-self-center">
                 <form className="p-3">
                     <div>
                         <label>E-mail:</label><br/>
