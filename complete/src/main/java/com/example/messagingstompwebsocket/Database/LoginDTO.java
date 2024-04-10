@@ -6,6 +6,7 @@ public class LoginDTO {
 
     public LoginDTO() {}
 
+
     public LoginDTO(String name, String password) {
         this.name = name;
         this.password = password;
@@ -26,4 +27,5 @@ public class LoginDTO {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }

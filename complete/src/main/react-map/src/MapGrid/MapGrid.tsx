@@ -1,6 +1,5 @@
 import { Player } from "./Player";
 import {useEffect, useRef, useState} from "react";
-import {getAction, getColor, getUserId, getX, getY} from "../store";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
@@ -9,41 +8,43 @@ import '../output.css';
 
 let otherPlayers: Player[] = [];
 
+
 type Props ={
     onQuit(): void;
 }
 
 const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
+
     const canvasRef = useRef(null);
 
-    const player = useRef(new Player('null', 'test', 'blue', 7, 7));
+    const player = useRef(new Player("", "11",'', 0, 0));
     const [playerOne, setPlayerOne] = useState(false);
 
     const map = [
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 0, 0, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ];
 
@@ -51,34 +52,37 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
         // let id = getUserId();
         let id = player.current.getUserId();
-        console.log ('IDDDDDDDDDD    ', id);
 
         const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
         const client = Stomp.over(socket);
         client.connect({}, () => {
-            client.subscribe(`/topic/register/${id}`, (message) => {
+            client.subscribe('/topic/register/', (message) => {
                 const response = JSON.parse(message.body);
-                console.log('Subscribe UserID ', response.userId + ' action ', response.action + ' X ', response.x + ' Y ', response.y + ' Color ', response.color);
-                // player.setUserId(response.userId);
-                // player.
-                // if(playerOne === false) {
+
+                if(player.current.getUserId() === '11') {
+                    player.current = null;
+                    player.current = new Player(response.action, response.userId, response.color, response.x, response.y);
                     player.current.setAction(response.action);
                     player.current.setUserId(response.userId);
                     player.current.setColor(response.color);
                     player.current.setX(response.x);
                     player.current.setY(response.y);
-                    setPlayerOne(true);
-                    // gameLoop();
-                // } else /*if(player.current.getUserId() !== response.userId)*/ {
-                //     const newPlayer = new Player(response.action, response.userId, response.color, response.x, response.y);
-                //     otherPlayers.push(newPlayer);
-                //     console.log('OOOOOOOther Players instanziert', otherPlayers.length);
-                //     // gameLoop();
-                // }
-
-                // new Player(response.action, response.userId, 'yellow', response.x, response.y);
-
+                    // setPlayerOne(true);
+                    gameLoop();
+                } else if(player.current.getUserId() !== response.userId) {
+                    const newPlayer = new Player(response.action, response.userId, response.color, response.x, response.y);
+                    otherPlayers.push(newPlayer);
+                    gameLoop();
+                }
             });
+
+            client.send(`/app/register/${player.current.getUserId()}`, {}, JSON.stringify({
+                'action': player.current.getAction(),
+                'userId': player.current.getUserId(),
+                'color': player.current.getColor(),
+                'x': player.current.getX(),
+                'y': player.current.getY()
+            }));
             client.subscribe(`/topic/movement/`, (message) => {
                 const response = JSON.parse(message.body);
                 const id = response.userId;
@@ -92,47 +96,44 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
 
         const handleMove = (event: string) => {
-            let x = player.current.getX();
-            let y = player.current.getY();
-
             switch (event) {
                 case 'ArrowUp':
                     console.log('ArrowUp');
-                    sendMovementUp(player.current.getY());
+                    sendMovementUp('ArrowUp');
                     // sendMovement(x , y);
                     break;
                 case 'ArrowDown':
                     console.log('ArrowDown');
-                    sendMovementDown(player.current.getY());
+                    sendMovementDown('ArrowDown');
                     break;
                 case 'ArrowLeft':
                     console.log('ArrowLeft');
-                    sendMovementLeft(player.current.getX());
+                    sendMovementLeft('ArrowLeft');
                     break;
                 case 'ArrowRight':
                     console.log('ArrowRight');
-                    sendMovementRight(player.current.getX());
+                    sendMovementRight('ArrowRight');
                     break;
                 default:
                     break;
             }
         };
 
-        function sendMovementUp(y: number) {
+        function sendMovementUp(action: string) {
             // let id = getUserId();
             let id = player.current.getUserId();
             player.current.setAction('ArrowUp');
 
-            client.send(`/app/movement/${id}`, {}, JSON.stringify({
+            client.send(`/app/movement/${player.current.getUserId()}`, {}, JSON.stringify({
                 'action': player.current.getAction(),
                 'userId': player.current.getUserId(),
                 'color': player.current.getColor(),
                 'x': player.current.getX(),
-                'y': player.current.getY() + 1
+                'y': player.current.getY()
             }));
         }
 
-        function sendMovementDown(y: number) {
+        function sendMovementDown(action: string) {
             // let id = getUserId();
             let id = player.current.getUserId();
             player.current.setAction('ArrowDown');
@@ -142,11 +143,11 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
                 'userId': player.current.getUserId(),
                 'color': player.current.getColor(),
                 'x': player.current.getX(),
-                'y': player.current.getY() - 1
+                'y': player.current.getY()
             }));
         }
 
-        function sendMovementLeft(x: number) {
+        function sendMovementLeft(action: string) {
             // let id = getUserId();
             let id = player.current.getUserId();
             player.current.setAction('ArrowLeft');
@@ -155,31 +156,17 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
                 'action': player.current.getAction(),
                 'userId': player.current.getUserId(),
                 'color': player.current.getColor(),
-                'x': player.current.getX() - 1,
+                'x': player.current.getX(),
                 'y': player.current.getY()
             }));
         }
 
-        function sendMovementRight(x: number) {
-            // let id = getUserId();
+        function sendMovementRight(action: string) {
             let id = player.current.getUserId();
-
             player.current.setAction('ArrowRight');
 
             client.send(`/app/movement/${id}`, {}, JSON.stringify({
                 'action': player.current.getAction(),
-                'userId': player.current.getUserId(),
-                'color': player.current.getColor(),
-                'x': player.current.getX() + 1,
-                'y': player.current.getY()
-            }));
-        }
-
-        function sendMovement(move: string) {
-            // let id = getUserId();
-            let id = player.current.getUserId();
-            client.send(`/app/movement/${id}`, {}, JSON.stringify({
-                'action': move,
                 'userId': player.current.getUserId(),
                 'color': player.current.getColor(),
                 'x': player.current.getX(),
@@ -188,67 +175,109 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
         }
 
         function callback(action: string, id: string, color: string, x: number, y: number) {
-            console.log('XXXXX id ', id);
-            console.log('XXXXX pcid ', player.current.getUserId());
+            let existingPlayer = otherPlayers.find((player) => player.getUserId() === id);
 
             if (id === player.current.getUserId()) {
-            console.log('Callback Function ' + id + ' X ', x + ' Y ', y + ' Color ', color + ' Action ', action);
                 if (action === 'ArrowUp') {
-                    player.current.setX(x - 1);
-                    player.current.draw(context);
+                    player.current.setY(y);
+                    // player.current.setX(x - 1);
+                    // player.current.setY(y - 1);
+                    // player.current.draw(context);
                     // xPos = xPos - 1;
                 } else if (action === 'ArrowDown') {
-                    player.current.setX(x + 1);
-                    player.current.draw(context);
+                    player.current.setY(y);
+                    // player.current.setX(x + 1);
+                    // player.current.setY(y + 1);
+                    // player.current.draw(context);
 
                     // xPos = xPos + 1;
                 } else if (action === 'ArrowLeft') {
-                    player.current.setY(y - 1);
-                    player.current.draw(context);
+                    player.current.setX(x);
+                    // player.current.setY(y - 1);
+                    // player.current.setX(x - 1);
+                    // player.current.draw(context);
 
                     // yPos = yPos - 1;
                 } else if (action === 'ArrowRight') {
-                    player.current.setY(y + 1);
-                    player.current.draw(context);
+                    player.current.setX(x);
+                    // player.current.setY(y + 1);
+                    // player.current.setX(x + 1);
+                    // player.current.draw(context);
 
                     // yPos = yPos + 1;
                 }
                 // gameLoop();
+            } else if(existingPlayer) {
+                if (action === 'ArrowUp') {
+                    existingPlayer.setX(x);
+                    existingPlayer.setY(y);
+                    existingPlayer.setAction(action);
+                    existingPlayer.draw(context);
+                    // TODO return einfügen
+                } else if (action === 'ArrowDown') {
+                    existingPlayer.setX(x);
+                    existingPlayer.setY(y);
+                    existingPlayer.setAction(action);
+                    existingPlayer.draw(context);
+                } else if (action === 'ArrowLeft') {
+                    existingPlayer.setY(y);
+                    existingPlayer.setX(x);
+                    existingPlayer.setAction(action);
+                    existingPlayer.draw(context);
+                } else if (action === 'ArrowRight') {
+                    existingPlayer.setY(y);
+                    existingPlayer.setX(x);
+                    existingPlayer.setAction(action);
+                    existingPlayer.draw(context);
+                }
             } else {
-                otherPlayers.forEach((newPlayer) => {
-                    if (newPlayer.getUserId() === id) {
-                        if (action === 'ArrowUp') {
-                            newPlayer.setX(x - 1);
-                            newPlayer.draw(context);
-                            newPlayer.setY(y);
-                            newPlayer.draw(context);
-                            newPlayer.setAction(action);
-                        } else if (action === 'ArrowDown') {
-                            newPlayer.setX(x + 1);
-                            newPlayer.draw(context);
-                            newPlayer.setY(y);
-                            newPlayer.draw(context);
-                            newPlayer.setAction(action);
-                            newPlayer.draw(context);
-                        } else if (action === 'ArrowLeft') {
-                            newPlayer.setY(y - 1);
-                            newPlayer.draw(context);
-                            newPlayer.setX(x);
-                            newPlayer.draw(context);
-                            newPlayer.setAction(action);
-                            newPlayer.draw(context);
-                        } else if (action === 'ArrowRight') {
-                            newPlayer.setY(y + 1);
-                            newPlayer.draw(context);
-                            newPlayer.setX(x);
-                            newPlayer.draw(context);
-                            newPlayer.setAction(action);
-                            newPlayer.draw(context);
-                        }
-                        // gameLoop();
-
-                    }
-                });
+                const newPlayer = new Player(action, id, color, x, y);
+                otherPlayers.pop();
+                otherPlayers.push(newPlayer);
+                // newPlayer.draw(context);
+                // drawGrid(map);
+                // otherPlayers.forEach((newPlayer) => {
+                //     if (newPlayer.getUserId() === id) {
+                //         if (action === 'ArrowUp') {
+                //             newPlayer.setX(x - 1);
+                //             newPlayer.draw(context);
+                //             newPlayer.setY(y);
+                //             newPlayer.draw(context);
+                //             newPlayer.setAction(action);
+                //             return;
+                //             // TODO return einfügen
+                //         } else if (action === 'ArrowDown') {
+                //             newPlayer.setX(x + 1);
+                //             newPlayer.draw(context);
+                //             newPlayer.setY(y);
+                //             newPlayer.draw(context);
+                //             newPlayer.setAction(action);
+                //             newPlayer.draw(context);
+                //             return;
+                //
+                //         } else if (action === 'ArrowLeft') {
+                //             newPlayer.setY(y - 1);
+                //             newPlayer.draw(context);
+                //             newPlayer.setX(x);
+                //             newPlayer.draw(context);
+                //             newPlayer.setAction(action);
+                //             newPlayer.draw(context);
+                //             return;
+                //
+                //         } else if (action === 'ArrowRight') {
+                //             newPlayer.setY(y + 1);
+                //             newPlayer.draw(context);
+                //             newPlayer.setX(x);
+                //             newPlayer.draw(context);
+                //             newPlayer.setAction(action);
+                //             newPlayer.draw(context);
+                //             return;
+                //
+                //         }
+                //         // gameLoop();
+                //
+                //     }
+                // });
             }
         }
 
@@ -260,21 +289,17 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
             clearScreen();
             drawGrid(map);
             player.current.draw(context);
-            // player.draw(context);
-            // console.log('ZZZZZZZZZZZZZZZZZZZZZZZ');
-            if(otherPlayers.length > 0) {
-                otherPlayers.forEach((newPlayer) => {
-                    // console.log('GGGGGGGGAME LOOP Other Players ', newPlayer.getUserId() + ' X ', newPlayer.getX() + ' Y ', newPlayer.getY() + ' Color ', newPlayer.getColor());
-                    newPlayer.draw(context);
-                });
-            }
+            // if(otherPlayers.length > 0) {
+            //     otherPlayers.forEach((newPlayer) => {
+            //         newPlayer.draw(context);
+            //     });
+            // }
             requestAnimationFrame(() => gameLoop());
         }
 
         const clearScreen = () => {
             context.clearRect(0, 0, canvas.width, canvas.height);
         }
-
 
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
@@ -285,73 +310,48 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
         } else {
             drawGrid(map);
         }
-
-        // initializeWebSocket();
         startGameLoop();
 
-        function initializeWebSocket() {
-            const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
-            const client = Stomp.over(socket);
-            let id = getUserId();
-            client.connect({}, () => {
-                // client.subscribe(`/topic/movement/${id}` , (message) => {
-                client.subscribe('/topic/movement/', (message) => {
-
-                    const response = JSON.parse(message.body);
-                    // callback(response);
-                });
-            });
-        };
-
+        // TODO Logik Fehler bei der Bewegung der anderen Spieler
+        // TODO X und Y Parameter sind um 1 verschoben
         function drawGrid(grid: number[][]) {
             let cellSize = 25;
             const context = canvasRef.current.getContext('2d');
-
-            let x = player.current.getX();
-            let y = player.current.getY();
+            if (!context) {
+                console.error("Could not get canvas context");
+                return;
+            }
 
             for (let row = 0; row < grid.length; row++) {
                 for (let col = 0; col < grid[row].length; col++) {
                     const value = grid[row][col];
-
-                    for(let i = 0; i < otherPlayers.length; i++) {
-                        if (row === otherPlayers[i].getX() && col === otherPlayers[i].getY()) {
-                            context.fillStyle = otherPlayers[i].getColor();
-                        }
-                    }
-
-                    if (row === x && col === y) {
-                        context.fillStyle = player.current.getColor();
-                    } else if (grid[row][col] === 1) {
+                    if (value === 1) {
                         context.fillStyle = 'black';
-                    } else if (grid[row][col] === 0) {
+                    } else if (value === 0) {
                         context.fillStyle = 'white';
-                    } else if (grid[row][col] === 2) {
-                        context.fillStyle = 'red';
+                    } else if (value === 2) {
+                        context.fillStyle = 'purple';
                     }
-
-                    // for(let i = 0; i < otherPlayers.length; i++) {
-                    //     if (row === otherPlayers[i].getX() && col === otherPlayers[i].getY()) {
-                    //         context.fillStyle = otherPlayers[i].getColor();
-                    //     }
-                    // }
-
                     context.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
                     context.strokeStyle = 'grey';
                     context.lineWidth = 1;
                     context.strokeRect(col * cellSize, row * cellSize, cellSize, cellSize);
                 }
             }
-            // window.addEventListener('keydown', (event) => {
-            //     handleMove(event.key);
-            // });
-            return () => {
-                // Bereinige hier, z.B. trenne die WebSocket-Verbindung
-                // window.removeEventListener('keydown', (event) => {
-                //     handleMove(event.key);
-                // });
-            };
+
+            let x = player.current.getX();
+            let y = player.current.getY();
+            context.fillStyle = player.current.getColor();
+            context.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+
+            for (let i = 0; i < otherPlayers.length; i++) {
+                let playerX = otherPlayers[i].getX();
+                let playerY = otherPlayers[i].getY();
+                context.fillStyle = otherPlayers[i].getColor();
+                context.fillRect(playerX * cellSize, playerY * cellSize, cellSize, cellSize);
+            }
         }
+
         window.addEventListener('keydown', (event) => {
             handleMove(event.key);
         });
@@ -387,12 +387,7 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
                 </div>
             </div>
 
-        </div>
     );
 };
-
-const delay = (ms) => {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
 
 export default GameComponent;

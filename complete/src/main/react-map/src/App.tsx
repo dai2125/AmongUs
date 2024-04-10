@@ -1,6 +1,5 @@
 
 import React, { useState } from 'react';
-//import KeyInputs from "./KeyInputs/KeyInputs";
 import MapGrid from './MapGrid/MapGrid';
 //import style from './AppStyle.module.css';
 import HomePage from "./HomePage";
@@ -10,6 +9,7 @@ import CreateAccount from "./CreateAccount";
 import {User} from "./User";
 
 const App: React.FC = () => {
+
     const [xPos, setXPos] = useState<number>(2);
     const [yPos, setYPos] = useState<number>(2);
     const [showMapGrid, setShowMapGrid] = useState<boolean>(false);
@@ -119,18 +119,7 @@ const App: React.FC = () => {
             {showMapGrid && <MapGrid xPos={xPos} yPos={yPos} onMove={handleMove} onQuit={handleQuit} />}
             {showCreateAccount && <CreateAccount onCreateClick={handleCreate} onLoginNavClick={handleLogInNav}/>}
         </div>
-    );
-};
+    );};
 
-
-// return (
-//     <div className={style.root}>
-//         {/*<MapGrid canvasId="canvasId"/>*/}
-//         {/*<MapGrid/>*/}
-//         <KeyInputs/>
-//         <MapGrid xPos={xPos} yPos={yPos} onMove={handleMove} />
-//     </div>
-// );
-// }
 
 export default App;
