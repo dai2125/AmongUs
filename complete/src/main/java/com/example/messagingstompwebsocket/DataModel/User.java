@@ -66,8 +66,8 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "userId='" + userId + '\'' +
-                ", color='" + color + '\'' +
+                "userId=" + userId + '\'' +
+                ", color=" + color + '\'' +
                 ", x=" + x +
                 ", y=" + y +
                 '}';
