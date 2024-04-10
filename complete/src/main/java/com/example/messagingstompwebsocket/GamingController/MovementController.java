@@ -2,6 +2,7 @@ package com.example.messagingstompwebsocket.GamingController;
 
 import com.example.messagingstompwebsocket.DataModel.MovementResponse;
 import com.example.messagingstompwebsocket.DataModel.User;
+import com.example.messagingstompwebsocket.Map.DefaultMap;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.PropertySource;
@@ -30,6 +31,7 @@ public class MovementController {
     private final HashSet<User> currentUsers = new HashSet<>();
 
     private final SimpMessagingTemplate messagingTemplate;
+    private DefaultMap defaultMap = new DefaultMap();
 
     public MovementController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
@@ -53,20 +55,15 @@ public class MovementController {
     int counter = 0;
     ArrayList<User> users = new ArrayList<>();
 
-
     @MessageMapping("/register/{userId}")
     @SendTo("/topic/register/")
     public void register(@Payload User user) throws JsonProcessingException {
-//        User newUser = new User();
-        System.out.println("REGISTER so kommt der User an: " + user.toString());
         if(user.getUserId().equals("null")  || user.getUserId().equals("11") || user.getUserId().contains("11")) {
-//            user.setUserId(r.nextInt(1000) + "");
             user.setUserId(UUID.randomUUID().toString());
             user.setColor(colors[counter++]);
             user.setAction("null");
             user.setX(r.nextInt(5) + 2);
             user.setY(r.nextInt(5) + 2);
-//            User newUser = new User("null", UUID.randomUUID().toString(), colors[counter++], r.nextInt(5) + 2, r.nextInt(5) + 2);
             System.out.println("REGISTER a new User: " + user.toString());
             MovementResponse movementResponse = new MovementResponse(user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
 
@@ -75,35 +72,33 @@ public class MovementController {
         if(counter ==  colors.length - 1) {
             counter = 0;
         }
-//        user.setX(r.nextInt(50) + 100);
-//        user.setY(r.nextInt(50) + 100);
-//        if(user.getUserId() == null || user.getUserId().isEmpty()) {
-//            user.setUserId(r.nextInt(1000) + "");
-//            System.out.println("userId changed to: " + user.getUserId());
-//        }
-        System.out.println("REGISTER a new User: " + user.toString());
-//        users.add(user);
-//        for(User u : users) {
-//            if(!u.getUserId().equals(user.getUserId())) {
-//                System.out.println("List of users: " + u.toString());
-//                MovementResponse movementResponse = new MovementResponse(u.getUserId(), u.getAction(), u.getColor(), u.getX(), u.getY());
-//                messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(movementResponse));
-//            }
-//        }
-        MovementResponse movementResponse = new MovementResponse(user.getUserId(), user.getAction(), user.getColor(), user.getX(), user.getY());
-
-        messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(movementResponse));
     }
 
     @MessageMapping("/movement/{userId}")
     @SendTo("/topic/movement/")
     public void processMovement(/*@DestinationVariable String userId, */@Payload User user) throws JsonProcessingException {
 
+        if (user.getAction().equals("ArrowUp") && !defaultMap.isWall(user.getY() - 1, user.getX())) {
+            user.setY(user.getY() - 1);
+            MovementResponse movementResponse = new MovementResponse(user.getAction(), user.getUserId() , user.getColor(), user.getX(), user.getY());
+            messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementResponse));
+        } else if (user.getAction().equals("ArrowDown") && !defaultMap.isWall(user.getY() + 1, user.getX())) {
+            user.setY(user.getY() + 1);
+            MovementResponse movementResponse = new MovementResponse(user.getAction(), user.getUserId() , user.getColor(), user.getX(), user.getY());
+            messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementResponse));
+        } else if (user.getAction().equals("ArrowLeft") && !defaultMap.isWall(user.getY(), user.getX() - 1)) {
+            user.setX(user.getX() - 1);
+            MovementResponse movementResponse = new MovementResponse(user.getAction(), user.getUserId() , user.getColor(), user.getX(), user.getY());
+            messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementResponse));
+        } else if (user.getAction().equals("ArrowRight") && !defaultMap.isWall(user.getY(), user.getX() + 1)) {
+            user.setX(user.getX() + 1);
+            MovementResponse movementResponse = new MovementResponse(user.getAction(), user.getUserId() , user.getColor(), user.getX(), user.getY());
+            messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementResponse));
+        }
 
-        user.setY(user.getY());
-        user.setX(user.getX());
-        MovementResponse movementResponse = new MovementResponse(user.getAction(), user.getUserId() , user.getColor(), user.getX(), user.getY());
-        messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementResponse));
+//            user.setY(user.getY());
+//            user.setX(user.getX());
+
 
 
         // Assuming currentUsers is a Set<User> containing unique users based on userId
