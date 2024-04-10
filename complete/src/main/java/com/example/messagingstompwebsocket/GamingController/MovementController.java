@@ -12,13 +12,11 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
-
 import java.util.*;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +35,6 @@ public class MovementController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    HashSet<User> userSet = new HashSet<>();
-
 //    @EventListener
 //    public void sessionConnectEvent(SessionConnectEvent event) {
 //        System.out.println("SessionConnectEvent : " );
@@ -51,9 +47,7 @@ public class MovementController {
 
     String[] colors = {"#FF0000", "#FF8000", "#0080FF", "#FF00FF", "#FF007F", "#808080"};
     Random r = new Random();
-    Map<String, String> response = new HashMap<>();
     int counter = 0;
-    ArrayList<User> users = new ArrayList<>();
 
     @MessageMapping("/register/{userId}")
     @SendTo("/topic/register/")
@@ -76,37 +70,34 @@ public class MovementController {
 
     @MessageMapping("/movement/{userId}")
     @SendTo("/topic/movement/")
-    public void processMovement(/*@DestinationVariable String userId, */@Payload User user) throws JsonProcessingException {
+    public void processMovement(@Payload User user) throws JsonProcessingException {
 
         if (user.getAction().equals("ArrowUp") && !defaultMap.isWall(user.getY() - 1, user.getX())) {
             user.setY(user.getY() - 1);
             MovementResponse movementResponse = new MovementResponse(user.getAction(), user.getUserId() , user.getColor(), user.getX(), user.getY());
             messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementResponse));
+            System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
         } else if (user.getAction().equals("ArrowDown") && !defaultMap.isWall(user.getY() + 1, user.getX())) {
             user.setY(user.getY() + 1);
             MovementResponse movementResponse = new MovementResponse(user.getAction(), user.getUserId() , user.getColor(), user.getX(), user.getY());
             messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementResponse));
+            System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
         } else if (user.getAction().equals("ArrowLeft") && !defaultMap.isWall(user.getY(), user.getX() - 1)) {
             user.setX(user.getX() - 1);
             MovementResponse movementResponse = new MovementResponse(user.getAction(), user.getUserId() , user.getColor(), user.getX(), user.getY());
             messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementResponse));
+            System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
         } else if (user.getAction().equals("ArrowRight") && !defaultMap.isWall(user.getY(), user.getX() + 1)) {
             user.setX(user.getX() + 1);
             MovementResponse movementResponse = new MovementResponse(user.getAction(), user.getUserId() , user.getColor(), user.getX(), user.getY());
             messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementResponse));
+            System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
         }
 
-//            user.setY(user.getY());
-//            user.setX(user.getX());
-
-
-
-        // Assuming currentUsers is a Set<User> containing unique users based on userId
         if (currentUsers.stream().noneMatch(u -> u.getUserId().equals(user.getUserId()))) {
             logger.warn("New user connected: {}"/*, userId*/);
             currentUsers.add(user);
         }
 
-        System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
     }
 }
