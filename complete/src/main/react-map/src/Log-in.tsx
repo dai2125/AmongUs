@@ -28,9 +28,9 @@ export default function LogIn({onLogIn, onCreateAccountNav,}: Props){
                     <div className="row-span-7 justify-self-center">
                         <form onSubmit={onFormSubmit} className="p-3">
                             <div>
-                                <label>name:</label><br/>
+                                <label className="text-white">name:</label><br/>
                                 <input name="name" className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" /><br/>
-                                <label>PassWord:</label><br/>
+                                <label className="text-white">PassWord:</label><br/>
                                 <input name="password" className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500" /><br/>
                             </div>
 

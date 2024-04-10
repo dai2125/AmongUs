@@ -29,11 +29,11 @@ export default function CreateAccount({onCreateClick, onLoginNavClick}: Props){
                     <div className="row-span-7 justify-self-center">
                         <form onSubmit={onFormSubmit} className="p-3">
                             <div>
-                                <label>Username:</label><br/>
+                                <label className="text-white">Username:</label><br/>
                                 <input name="name" className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"/><br/>
-                                <label>E-mail:</label><br/>
+                                <label className="text-white">E-mail:</label><br/>
                                 <input name="email" className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"/><br/>
-                                <label>PassWord:</label><br/>
+                                <label className="text-white">PassWord:</label><br/>
                                 <input name="password" className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500"/><br/>
                             </div>
 

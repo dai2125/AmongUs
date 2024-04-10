@@ -39,12 +39,15 @@ const App: React.FC = () => {
                 console.log(data);
 
                 loggedInUser = new User(data.name, data.email, data.password);
-                setShowLogIn(false);
-                setShowHomePage(true);
+
             })
             .catch(error => {
+
                 console.error('false log in credentials:', error);
             });
+
+        setShowLogIn(false);
+        setShowHomePage(true);
 
 
     };
@@ -68,6 +71,8 @@ const App: React.FC = () => {
                 //handle the response
                 if (data != null){
                     console.log('Successful');
+                    setShowHomePage(true);
+                    setShowCreateAccount(false);
                 }
 
             })
@@ -75,8 +80,7 @@ const App: React.FC = () => {
                 console.error('Error:', error);
             });
 
-        setShowHomePage(true);
-        setShowCreateAccount(false);
+
     };
     // navigation
     const handleCreateNav = () => {
@@ -110,7 +114,7 @@ const App: React.FC = () => {
 
     return (
         <div>
-            {showHomePage && <HomePage loggedInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
+            {showHomePage && <HomePage onPlayButtonClick={handlePlay}/>}
             {showLogIn && <LogIn onLogIn={handleLogin} onCreateAccountNav={handleCreateNav}/>}
             {showMapGrid && <MapGrid xPos={xPos} yPos={yPos} onMove={handleMove} onQuit={handleQuit} />}
             {showCreateAccount && <CreateAccount onCreateClick={handleCreate} onLoginNavClick={handleLogInNav}/>}
