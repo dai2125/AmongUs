@@ -386,7 +386,7 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
                     </div>
                 </div>
             </div>
-
+        </div>
     );
 };
 
