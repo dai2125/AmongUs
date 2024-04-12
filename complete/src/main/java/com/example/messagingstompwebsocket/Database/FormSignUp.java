@@ -11,6 +11,5 @@ public class FormSignUp {
 
     @NotNull
     @Size(min=2, max=10)
-    @
-    private String password
+    private String password;
 }

@@ -6,8 +6,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Service
 public class ControllerSignUp implements WebMvcConfigurer {
 
-    @GetMapping("/SignUp")
-    public void
+//    @GetMapping("/SignUp")
+//    public void
 
 
 

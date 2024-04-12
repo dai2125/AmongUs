@@ -1,6 +1,7 @@
 package com.example.messagingstompwebsocket.Database;
 
 import jakarta.validation.Valid;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
