@@ -12,7 +12,7 @@ export default function LogIn({onLogIn, onCreateAccountNav,}: Props){
         event.preventDefault();
 
         const form = event.currentTarget;
-        const  data = new FormData(form);
+        const data = new FormData(form);
         const name = data.get('name') as string;
         const password = data.get('password') as string;
 
