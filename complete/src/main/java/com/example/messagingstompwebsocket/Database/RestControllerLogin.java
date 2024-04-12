@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class RestControllerLogin {
 
     @Autowired
-    PersonRepository personRepository;
+//    PersonRepository personRepository;
 
     @PostMapping("/addPerson")
     public String addPerson(@RequestBody Person person) {
