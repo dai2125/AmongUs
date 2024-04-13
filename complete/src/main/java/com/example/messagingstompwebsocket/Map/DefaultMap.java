@@ -37,4 +37,8 @@ public class DefaultMap {
         }
         return false;
     }
+
+    public int[][] getMap() {
+        return map;
+    }
 }

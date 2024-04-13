@@ -6,9 +6,12 @@ import com.example.messagingstompwebsocket.Map.DefaultMap;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.event.EventListener;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
@@ -17,53 +20,85 @@ import java.util.HashSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.socket.messaging.SessionConnectEvent;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 @Controller
 @PropertySource("classpath:application.properties")
 public class MovementController {
 
-    private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
-    private final HashSet<User> currentUsers = new HashSet<>();
-
-    private final SimpMessagingTemplate messagingTemplate;
-    private DefaultMap defaultMap = new DefaultMap();
-
     public MovementController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }
 
-//    @EventListener
-//    public void sessionConnectEvent(SessionConnectEvent event) {
-//        System.out.println("SessionConnectEvent : " );
-//    }
+    private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
 
-//    @EventListener
-//    public void handleMovement(SessionDisconnectEvent event) {
-//        System.out.println("SessionDisconnectEvent : ");
-//    }
+    private final HashSet<User> currentUsers = new HashSet<>();
+    private final SimpMessagingTemplate messagingTemplate;
+
+    private DefaultMap defaultMap = new DefaultMap();
+    ArrayList<User> userArrayList = new ArrayList<>();
+
+    @EventListener
+    public void sessionConnectEvent(SessionConnectEvent event) throws InterruptedException {
+        System.out.println("SessionConnectEvent : " + event.toString());
+
+        SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
+
+        String sessionId = headers.getSessionId();
+        User user = new User(sessionId, "online", UUID.randomUUID().toString(), colors[counter++], r.nextInt(5) + 2, r.nextInt(5) + 2); //r.nextInt(5) + 2
+        userArrayList.add(user);
+//        Thread.sleep(1000);
+        playerConnected(sessionId, user);
+        if(counter ==  colors.length - 1) {
+            counter = 0;
+        }
+
+    }
+
+    @EventListener
+    public void handleMovement(SessionDisconnectEvent event) {
+        // TODO message all Players a connection got lost
+        System.out.println("SessionDisconnectEvent : " + event.toString());
+
+
+        playerDisconnected(event.getSessionId());
+        event.getSessionId();
+    }
 
     String[] colors = {"#FF0000", "#FF8000", "#0080FF", "#FF00FF", "#FF007F", "#808080"};
     Random r = new Random();
     int counter = 0;
 
-    @MessageMapping("/register/{userId}")
-    @SendTo("/topic/register/")
-    public void register(@Payload User user) throws JsonProcessingException {
-        if(user.getUserId().equals("null")  || user.getUserId().equals("11") || user.getUserId().contains("11")) {
-            user.setUserId(UUID.randomUUID().toString());
-            user.setColor(colors[counter++]);
-            user.setAction("null");
-            user.setX(r.nextInt(5) + 2);
-            user.setY(r.nextInt(5) + 2);
-            System.out.println("REGISTER a new User: " + user.toString());
-            UserMovement userMovement = new UserMovement(user.getUserId(), user.getAction(), user.getColor(), user.getX(), user.getY());
+//    @MessageMapping("/register/{userId}")
+//    @SendTo("/topic/register/")
+//    public void register(@Payload User user, @Header("simpSessionId") String sessionId) throws JsonProcessingException {
 
-            messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(userMovement));
-        }
-        if(counter ==  colors.length - 1) {
-            counter = 0;
-        }
-    }
+
+//        System.out.println("Register SessionConnectEvent : " + sessionId);
+//
+//        if(user.getUserId().equals("null")  || user.getUserId().equals("11") || user.getUserId().contains("11")) {
+//            user.setSessionId(sessionId);
+//            user.setUserId(UUID.randomUUID().toString());
+//            user.setColor(colors[counter++]);
+//            user.setAction("null");
+//            user.setX(r.nextInt(5) + 2);
+//            user.setY(r.nextInt(5) + 2);
+//
+//            userArrayList.add(user);
+//
+//            System.out.println("REGISTER a new User: " + user.toString());
+//            UserMovement userMovement = new UserMovement(user.getSessionId(), user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
+//
+////            for(User u : userArrayList) {
+//                messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(userMovement));
+//            }
+//            messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(userMovement));
+//        }
+//        if(counter ==  colors.length - 1) {
+//            counter = 0;
+//        }
+//    }
 
     @MessageMapping("/movement/{userId}")
     @SendTo("/topic/movement/")
@@ -71,22 +106,22 @@ public class MovementController {
 
         if (user.getAction().equals("ArrowUp") && !defaultMap.isWall(user.getY() - 1, user.getX())) {
             user.setY(user.getY() - 1);
-            UserMovement userMovement = new UserMovement(user.getUserId(), user.getAction(), user.getColor(), user.getX(), user.getY());
+            UserMovement userMovement = new UserMovement(user.getSessionId(), user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
             messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(userMovement));
             System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
         } else if (user.getAction().equals("ArrowDown") && !defaultMap.isWall(user.getY() + 1, user.getX())) {
             user.setY(user.getY() + 1);
-            UserMovement userMovement = new UserMovement(user.getUserId(), user.getAction(), user.getColor(), user.getX(), user.getY());
+            UserMovement userMovement = new UserMovement(user.getSessionId(), user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
             messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(userMovement));
             System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
         } else if (user.getAction().equals("ArrowLeft") && !defaultMap.isWall(user.getY(), user.getX() - 1)) {
             user.setX(user.getX() - 1);
-            UserMovement userMovement = new UserMovement(user.getUserId(), user.getAction(), user.getColor(), user.getX(), user.getY());
+            UserMovement userMovement = new UserMovement(user.getSessionId(), user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
             messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(userMovement));
             System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
         } else if (user.getAction().equals("ArrowRight") && !defaultMap.isWall(user.getY(), user.getX() + 1)) {
             user.setX(user.getX() + 1);
-            UserMovement userMovement = new UserMovement(user.getUserId(), user.getAction(), user.getColor(), user.getX(), user.getY());
+            UserMovement userMovement = new UserMovement(user.getSessionId(), user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
             messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(userMovement));
             System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
         }
@@ -96,4 +131,31 @@ public class MovementController {
             currentUsers.add(user);
         }
     }
+
+    private void playerDisconnected(String sessionId) {
+        User user = userArrayList.stream().filter(u -> u.getSessionId().equals(sessionId)).findFirst().orElse(null);
+        if (user != null) {
+            user.setAction("offline");
+            UserMovement userMovement = new UserMovement(user.getSessionId(), user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
+            messagingTemplate.convertAndSend("/topic/register/", userMovement);
+            userArrayList.remove(user);
+        }
+    }
+
+    private void  playerConnected(String sessionId, User user) {
+//        String sessionId = sessionId2.substring(sessionId2.indexOf("sessionId=") + 10, sessionId2.indexOf(","));
+        System.out.println("playerConnected:" + sessionId);
+        if (user != null) {
+//            user.setAction("online");
+//            for(int i = 0; i < userArrayList.size(); i++) {
+//                if(!userArrayList.get(i).getSessionId().equals(sessionId)) {
+//                    UserMovement userMovement = new UserMovement(userArrayList.get(i).getSessionId(), userArrayList.get(i).getAction(), userArrayList.get(i).getUserId(), userArrayList.get(i).getColor(), userArrayList.get(i).getX(), userArrayList.get(i).getY());
+                    UserMovement userMovement = new UserMovement(user.getSessionId(), user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
+                    messagingTemplate.convertAndSend("/topic/register/", userMovement);
+                }
+            }
+//            UserMovement userMovement = new UserMovement(user.getUserId(), user.getAction(), user.getColor(), user.getX(), user.getY());
+//            messagingTemplate.convertAndSend("/topic/register/", userMovement);
+//        }
+//    }
 }

@@ -18,7 +18,7 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
     const canvasRef = useRef(null);
 
-    const player = useRef(new Player("", "11",'', 0, 0));
+    const player = useRef(new Player("", "11",'yellow', 2, 2));
     const [playerOne, setPlayerOne] = useState(false);
 
     const map = [
@@ -59,7 +59,15 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
             client.subscribe('/topic/register/', (message) => {
                 const response = JSON.parse(message.body);
 
-                if(player.current.getUserId() === '11') {
+                console.log('Player went online:', response.sessionId + ' ' + response.userId + ' ' + response.color + ' ' + response.x + ' ' + response.y);
+
+                if(response.action === 'offline') {
+                    const index = otherPlayers.findIndex((player) => player.getUserId() === response.userId);
+                    if (index !== -1) {
+                        otherPlayers.splice(index, 1);
+                        console.log('Player went offline:', otherPlayers);
+                    }
+                } else if(player.current.getUserId() === '11' && player.current.getColor() === 'yellow') {
                     player.current = null;
                     player.current = new Player(response.action, response.userId, response.color, response.x, response.y);
                     player.current.setAction(response.action);
@@ -67,11 +75,13 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
                     player.current.setColor(response.color);
                     player.current.setX(response.x);
                     player.current.setY(response.y);
+
                     // setPlayerOne(true);
                     gameLoop();
                 } else if(player.current.getUserId() !== response.userId) {
                     const newPlayer = new Player(response.action, response.userId, response.color, response.x, response.y);
                     otherPlayers.push(newPlayer);
+                    console.log('other player moved ' + otherPlayers);
                     gameLoop();
                 }
             });
