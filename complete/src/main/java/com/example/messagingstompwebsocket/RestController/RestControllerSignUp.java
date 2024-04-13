@@ -27,7 +27,7 @@ public class RestControllerSignUp {
         if(personService.signUpRequest(signUpDTO)) {
             return ResponseEntity.ok( ResponseStatusSuccesMessage.USER_CREATED.getMessage());
         }
-        // TODO muss das return wirklich geworfen werden?
+        // TODO must this return stay here?
         return ResponseEntity.badRequest().body(ResponseStatusExceptionMessage.USER_ALREADY_EXISTS.getMessage());
     }
 }

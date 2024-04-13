@@ -2,6 +2,7 @@ package com.example.messagingstompwebsocket.DataModel;
 
 public class MovementResponse {
 
+    private String sessionId;
     private String action;
     private String userId;
     private String color;
@@ -11,12 +12,21 @@ public class MovementResponse {
     public MovementResponse() {
     }
 
-    public MovementResponse(String action, String userId, String color, int x, int y) {
+    public MovementResponse(String sessionId, String action, String userId, String color, int x, int y) {
+        this.sessionId = sessionId;
         this.action = action;
         this.userId = userId;
         this.color = color;
         this.x = x;
         this.y = y;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     public String getAction() {
@@ -31,11 +41,9 @@ public class MovementResponse {
         return userId;
     }
 
-
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
 
     public String getColor() {
         return color;
