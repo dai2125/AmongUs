@@ -56,10 +56,11 @@ const App: React.FC = () => {
         const newUser ={
             name: name,
             email: email,
-            password: password
+            password: password,
+            passwordConfirm: password
         }
 
-        fetch('http://localhost:8080/addPerson',{
+        fetch('http://localhost:8080/signUp',{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -69,10 +70,13 @@ const App: React.FC = () => {
             .then(response => response.json())
             .then(data => {
                 //handle the response
+                // TODO if data is 200 || correct || user created
                 if (data != null){
                     console.log('Successful');
-                    setShowHomePage(true);
+                    // setShowHomePage(true);
+                    // setShowCreateAccount(false);
                     setShowCreateAccount(false);
+                    setShowLogIn(true);
                 }
 
             })
