@@ -619,17 +619,22 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
                 }
             });
 
-            client.subscribe('topic/newPlayer/', (message) => {
+            client.subscribe('/topic/connected/', (message) => {
+            // client.subscribe(`topic/connected/${player.current.getUserId()}`, (message) => {
+                console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
                 const response = JSON.parse(message.body);
-                const id = response.userId;
-                const color = response.color;
-                const x = response.x;
-                const y = response.y;
-                const action = response.action;
-                const newPlayer = new Player(action, id, color, x, y);
-                otherPlayers.push(newPlayer);
-                console.log('new player created ' + otherPlayers.entries());
-                gameLoop();
+                const existingPlayer = otherPlayers.find((player) => player.getUserId() === response.userId);
+                if(!existingPlayer && response.userId !== player.current.getUserId()) {
+                    const id = response.userId;
+                    const color = response.color;
+                    const x = response.x;
+                    const y = response.y;
+                    const action = response.action;
+                    const newPlayer = new Player(action, id, color, x, y);
+                    otherPlayers.push(newPlayer);
+                    console.log('nnnnnnnnew player created ' + otherPlayers.entries());
+                    gameLoop();
+                }
             });
 
 

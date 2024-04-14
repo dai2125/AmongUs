@@ -21,6 +21,7 @@ public class RestControllerLogin {
         this.personService = personService;
     }
 
+    // TODO Exception with wrong Postman parameters not catched
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginDTO loginDTO) {
         if(personService.loginRequest(loginDTO)) {
