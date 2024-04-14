@@ -24,9 +24,18 @@ public class RestControllerLogin {
     @PostMapping("/login")
     public ResponseEntity<String> login(@Valid @RequestBody LoginDTO loginDTO) {
         if(personService.loginRequest(loginDTO)) {
-            return ResponseEntity.ok(ResponseStatusSuccesMessage.USER_LOGGED_IN.getMessage());
+            return ResponseEntity.ok(ResponseStatusSuccesMessage.USER_LOG_IN.getMessage());
         }
         return ResponseEntity.badRequest().body(ResponseStatusExceptionMessage.USER_NOT_FOUND.getMessage());
     }
+
+//    @PostMapping("/login")
+//    public ResponseEntity<String> logOut(@Valid @RequestBody LogOutDTO logOutDTO) {
+//        if(personService.logOutRequest(logOutDTO)) {
+//            return ResponseEntity.ok(ResponseStatusSuccesMessage.USER_LOG_IN.getMessage());
+//        }
+        // TODO another exception
+//        return ResponseEntity.badRequest().body(ResponseStatusExceptionMessage.USER_NOT_FOUND.getMessage());
+//    }
 
 }

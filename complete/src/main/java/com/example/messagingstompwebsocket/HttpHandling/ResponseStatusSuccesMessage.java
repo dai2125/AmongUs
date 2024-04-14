@@ -5,8 +5,8 @@ public enum ResponseStatusSuccesMessage {
     USER_CREATED("User created"),
     USER_DELETED("User deleted"),
     USER_UPDATED("User updated"),
-    USER_LOGGED_IN("User logged in"),
-    USER_LOGGED_OUT("User logged out"),
+    USER_LOG_IN("User logged in"),
+    USER_LOG_OUT("User logged out"),
     USER_CHANGED_PASSWORD("User changed password");
 
     private final String message;

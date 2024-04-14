@@ -1,4 +1,6 @@
 export class Player {
+    // constructor() {}
+
     constructor(
         private action: string,
         private userId: string,
