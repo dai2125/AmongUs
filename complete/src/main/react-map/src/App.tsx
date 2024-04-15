@@ -22,11 +22,11 @@ const App: React.FC = () => {
     const handleLogin = (name:string, password: string) => {
 
         const user ={
-            name: name,
+            name : name,
             password: password
         }
 
-        fetch('http://localhost:8080/getPerson',{
+        fetch('http://localhost:8080/login',{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -18,10 +18,7 @@ public final class PersonValidationUtil {
     }
 
     public static boolean validatePersonPasswordEqualsPasswordConfirm(String password, String passwordConfirm) {
-        if(password.equals(passwordConfirm)) {
-            return true;
-        }
-        return false;
+        return password.equals(passwordConfirm);
     }
 
     public static boolean validatePersonPassword(String password) {
