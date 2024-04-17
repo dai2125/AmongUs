@@ -560,7 +560,7 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
                 console.log('register....')
                 const response = JSON.parse(message.body);
 
-                console.log('Player went online:', response.sessionId + ' ' + response.userId + ' ' + response.color + ' ' + response.x + ' ' + response.y);
+                console.log('Player went online:', + response.userId + ' ' + response.color + ' ' + response.x + ' ' + response.y);
 
                     if(player.current.getUserId() === '' && player.current.getColor() === '') {
                     player.current = null;
@@ -621,15 +621,14 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
             client.subscribe('/topic/connected/', (message) => {
             // client.subscribe(`topic/connected/${player.current.getUserId()}`, (message) => {
-                console.log('xxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
                 const response = JSON.parse(message.body);
                 const existingPlayer = otherPlayers.find((player) => player.getUserId() === response.userId);
                 if(!existingPlayer && response.userId !== player.current.getUserId()) {
+                    const action = response.action;
                     const id = response.userId;
                     const color = response.color;
                     const x = response.x;
                     const y = response.y;
-                    const action = response.action;
                     const newPlayer = new Player(action, id, color, x, y);
                     otherPlayers.push(newPlayer);
                     console.log('nnnnnnnnew player created ' + otherPlayers.entries());

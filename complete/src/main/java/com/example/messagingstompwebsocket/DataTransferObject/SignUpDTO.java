@@ -1,7 +1,7 @@
 package com.example.messagingstompwebsocket.DataTransferObject;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Size;
+//import jakarta.validation.constraints.Email;
+//import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @AllArgsConstructor
@@ -20,12 +20,12 @@ public class SignUpDTO {
     private String password;
 
 //    @NotNull
-    @Size(min=4, max=10)
+//    @Size(min=4, max=10)
     private String passwordConfirm;
 
 //    @NotNull
 //    @Email
-    @Size(min=2, max=30)
+//    @Size(min=2, max=30)
     private String email;
 
 }

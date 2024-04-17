@@ -13,8 +13,8 @@ import org.springframework.web.server.ResponseStatusException;
 import static com.example.messagingstompwebsocket.HttpHandling.ResponseStatusExceptionMessage.INVALID_NAME;
 
 @Service
-public class PersonService {
-
+public class PersonService implements IPersonService {
+    // TODO interface, because easier to mock and extensions
     private final PersonRepository personRepository;
     private final PersonValidationUtil personValidationUtil;
 
@@ -24,6 +24,7 @@ public class PersonService {
         this.personValidationUtil = personValidationUtil;
     }
 
+    @Override
     public boolean signUpRequest(SignUpDTO signUpDTO) throws ResponseStatusException {
         if(!PersonValidationUtil.validatePersonName(signUpDTO.getName())) {
             throw new ResponseStatusExceptionCustom(INVALID_NAME);
@@ -49,6 +50,7 @@ public class PersonService {
         } throw new ResponseStatusExceptionCustom(ResponseStatusExceptionMessage.USER_ALREADY_EXISTS);
     }
 
+    @Override
     public boolean loginRequest(LoginDTO loginDTO) {
         if(!personRepository.existsByNameAndPassword(loginDTO.getName(), loginDTO.getPassword())) {
             throw new ResponseStatusExceptionCustom(ResponseStatusExceptionMessage.USER_NOT_FOUND);

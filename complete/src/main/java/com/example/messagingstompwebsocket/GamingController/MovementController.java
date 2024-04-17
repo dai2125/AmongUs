@@ -38,7 +38,8 @@ public class MovementController {
         this.messagingTemplate = messagingTemplate;
     }
 
-    private RegisterService registerService = new RegisterService(messagingTemplate);
+//    private SimpMessagingTemplate simpMessagingTemplate;
+    private RegisterService registerService = new RegisterService();
 
 
     @EventListener
@@ -50,21 +51,23 @@ public class MovementController {
 
     @EventListener
     public void sessionDisconnectEvent(SessionDisconnectEvent event) throws JsonProcessingException {
-        // TODO message all Players a connection got lost
-        System.out.println("SessionDisconnectEvent : " + event.toString());
-        event.getSessionId();
 
-        for(User u : userList) {
-            if(u.getUserId().equals(event.getSessionId())) {
-                u.setAction("offline");
-                UserMovement userMovement = new UserMovement(u.getAction(), u.getUserId(), u.getColor(), u.getX(), u.getY());
-                messagingTemplate.convertAndSend("/topic/disconnected/",
-                                                    new ObjectMapper().writeValueAsString(userMovement));
-                userList.remove(u);
-                break;
-            }
-        }
-        messagingTemplate.convertAndSend("/topic/disconnected/", event.getSessionId());
+        messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(registerService.disconnectUser(event.getSessionId())));
+        // TODO message all Players a connection got lost
+//        System.out.println("SessionDisconnectEvent : " + event.toString());
+//        event.getSessionId();
+//
+//        for(User u : userList) {
+//            if(u.getUserId().equals(event.getSessionId())) {
+//                u.setAction("offline");
+//                UserMovement userMovement = new UserMovement(u.getAction(), u.getUserId(), u.getColor(), u.getX(), u.getY());
+//                messagingTemplate.convertAndSend("/topic/disconnected/",
+//                                                    new ObjectMapper().writeValueAsString(userMovement));
+//                userList.remove(u);
+//                break;
+//            }
+//        }
+//        messagingTemplate.convertAndSend("/topic/disconnected/", event.getSessionId());
     }
 
 
@@ -72,8 +75,12 @@ public class MovementController {
     @MessageMapping("/register/")
     @SendTo("/topic/register/")
     public void register(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        registerService.registerUser(user, simpMessageHeaderAccessor);
-        registerService.updateAllUserWithTheNewUser();
+        messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(registerService.registerUser(user, simpMessageHeaderAccessor)));
+        messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(registerService.updateAllUserWithTheNewUser()));
+
+//        registerService.registerUser(user, simpMessageHeaderAccessor);
+//        registerService.updateAllUserWithTheNewUser();
+
 //        if(user.getUserId().isEmpty()) {
 //            user.setUserId(simpMessageHeaderAccessor.getSessionId());
 //            user.setColor(colors[counter++]);

@@ -27,5 +27,4 @@ public final class PersonValidationUtil {
     public static boolean validatePersonPassword(String password) {
         return password.matches(PASSWORD_REGEX);
     }
-    // TODO Password_Regex not used
 }
