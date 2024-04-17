@@ -4,7 +4,6 @@ import com.example.messagingstompwebsocket.DataModel.User;
 import com.example.messagingstompwebsocket.DataTransferObject.UserMovementDTO;
 import com.example.messagingstompwebsocket.Map.DefaultMap;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 public class MovementService {
 
