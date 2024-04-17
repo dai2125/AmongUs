@@ -23,7 +23,7 @@ const App: React.FC = () => {
     const handleLogin = (name:string, password: string) => {
 
         const user ={
-            name: name,
+            name : name,
             password: password
         }
 

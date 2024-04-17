@@ -26,8 +26,10 @@ public class RestControllerSignUp {
         if(personService.signUpRequest(personSignUpDTO)) {
             return ResponseEntity.ok( ResponseStatusSuccesMessage.USER_CREATED.getMessage());
         }
+      
         // No records only DTO´s
         // TODO must this return stay here?
+
         return ResponseEntity.badRequest().body(ResponseStatusExceptionMessage.USER_ALREADY_EXISTS.getMessage());
     }
 }

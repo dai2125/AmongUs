@@ -1,7 +1,6 @@
 package com.example.messagingstompwebsocket.HttpHandling;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 
 public enum ResponseStatusExceptionMessage {
 
