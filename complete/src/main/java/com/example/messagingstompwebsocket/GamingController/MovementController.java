@@ -1,8 +1,6 @@
 package com.example.messagingstompwebsocket.GamingController;
 
 import com.example.messagingstompwebsocket.DataModel.User;
-import com.example.messagingstompwebsocket.DataModel.UserMovement;
-import com.example.messagingstompwebsocket.Map.DefaultMap;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.PropertySource;
@@ -15,7 +13,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 
 import java.util.*;
-import java.util.HashSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,135 +23,98 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 @PropertySource("classpath:application.properties")
 public class MovementController {
 
+    private SimpMessagingTemplate messagingTemplate;
+    private MovementService movementService = new MovementService();
+    private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
+
+    String[] colors = {"#FF0000", "#FF8000", "#0080FF", "#FF00FF", "#FF007F", "#808080"};
+    List<User> userList = new ArrayList<>();
+    Random r = new Random();
+    private int counter = 0;
+
+
     public MovementController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
+//    private SimpMessagingTemplate simpMessagingTemplate;
+    private RegisterService registerService = new RegisterService();
 
-    private final HashSet<User> currentUsers = new HashSet<>();
-    private final SimpMessagingTemplate messagingTemplate;
-
-    private DefaultMap defaultMap = new DefaultMap();
-    ArrayList<User> userArrayList = new ArrayList<>();
 
     @EventListener
-    public void sessionConnectEvent(SessionConnectEvent event) throws InterruptedException {
-        System.out.println("SessionConnectEvent : " + event.toString());
-
+    public void sessionConnectEvent(SessionConnectEvent event) throws InterruptedException, JsonProcessingException {
         SimpMessageHeaderAccessor headers = SimpMessageHeaderAccessor.wrap(event.getMessage());
-
+        System.out.println("SessionConnectEvent headers.getSessiondId() : " + headers.getSessionId());
         String sessionId = headers.getSessionId();
-        User user = new User(sessionId, "online", UUID.randomUUID().toString(), colors[counter++], r.nextInt(5) + 2, r.nextInt(5) + 2); //r.nextInt(5) + 2
-        userArrayList.add(user);
-//        Thread.sleep(1000);
-        playerConnected(sessionId, user);
-        if(counter ==  colors.length - 1) {
-            counter = 0;
-        }
-
-    }
+     }
 
     @EventListener
-    public void handleMovement(SessionDisconnectEvent event) {
+    public void sessionDisconnectEvent(SessionDisconnectEvent event) throws JsonProcessingException {
+
+        messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(registerService.disconnectUser(event.getSessionId())));
         // TODO message all Players a connection got lost
-        System.out.println("SessionDisconnectEvent : " + event.toString());
-
-
-        playerDisconnected(event.getSessionId());
-        event.getSessionId();
+//        System.out.println("SessionDisconnectEvent : " + event.toString());
+//        event.getSessionId();
+//
+//        for(User u : userList) {
+//            if(u.getUserId().equals(event.getSessionId())) {
+//                u.setAction("offline");
+//                UserMovement userMovement = new UserMovement(u.getAction(), u.getUserId(), u.getColor(), u.getX(), u.getY());
+//                messagingTemplate.convertAndSend("/topic/disconnected/",
+//                                                    new ObjectMapper().writeValueAsString(userMovement));
+//                userList.remove(u);
+//                break;
+//            }
+//        }
+//        messagingTemplate.convertAndSend("/topic/disconnected/", event.getSessionId());
     }
 
-    String[] colors = {"#FF0000", "#FF8000", "#0080FF", "#FF00FF", "#FF007F", "#808080"};
-    Random r = new Random();
-    int counter = 0;
+    @MessageMapping("/register/")
+    @SendTo("/topic/register/")
+    public void register(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+        messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(registerService.registerUser(user, simpMessageHeaderAccessor)));
+        messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(registerService.updateAllUserWithTheNewUser()));
 
-//    @MessageMapping("/register/{userId}")
-//    @SendTo("/topic/register/")
-//    public void register(@Payload User user, @Header("simpSessionId") String sessionId) throws JsonProcessingException {
+//        registerService.registerUser(user, simpMessageHeaderAccessor);
+//        registerService.updateAllUserWithTheNewUser();
 
-
-//        System.out.println("Register SessionConnectEvent : " + sessionId);
-//
-//        if(user.getUserId().equals("null")  || user.getUserId().equals("11") || user.getUserId().contains("11")) {
-//            user.setSessionId(sessionId);
-//            user.setUserId(UUID.randomUUID().toString());
+//        if(user.getUserId().isEmpty()) {
+//            user.setUserId(simpMessageHeaderAccessor.getSessionId());
 //            user.setColor(colors[counter++]);
 //            user.setAction("null");
 //            user.setX(r.nextInt(5) + 2);
 //            user.setY(r.nextInt(5) + 2);
 //
-//            userArrayList.add(user);
+//            userList.add(user);
 //
-//            System.out.println("REGISTER a new User: " + user.toString());
-//            UserMovement userMovement = new UserMovement(user.getSessionId(), user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
+//            UserMovement userMovement = new UserMovement(user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
 //
-////            for(User u : userArrayList) {
-//                messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(userMovement));
+//            messagingTemplate.convertAndSend("/topic/register/",
+//                                                new ObjectMapper().writeValueAsString(userMovement));
 //            }
-//            messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(userMovement));
+//
+//        for(int i = 0; i < userList.size(); i++) {
+//            UserMovement userMovement1 = new UserMovement(userList.get(i).getAction(), userList.get(i).getUserId(), userList.get(i).getColor(), userList.get(i).getX(), userList.get(i).getY());
+//            messagingTemplate.convertAndSend("/topic/connected/",
+//                                                new ObjectMapper().writeValueAsString(userMovement1));
 //        }
 //        if(counter ==  colors.length - 1) {
 //            counter = 0;
 //        }
-//    }
+    }
 
     @MessageMapping("/movement/{userId}")
     @SendTo("/topic/movement/")
-    public void processMovement(@Payload User user) throws JsonProcessingException {
-
-        if (user.getAction().equals("ArrowUp") && !defaultMap.isWall(user.getY() - 1, user.getX())) {
-            user.setY(user.getY() - 1);
-            UserMovement userMovement = new UserMovement(user.getSessionId(), user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
-            messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(userMovement));
-            System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
-        } else if (user.getAction().equals("ArrowDown") && !defaultMap.isWall(user.getY() + 1, user.getX())) {
-            user.setY(user.getY() + 1);
-            UserMovement userMovement = new UserMovement(user.getSessionId(), user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
-            messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(userMovement));
-            System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
-        } else if (user.getAction().equals("ArrowLeft") && !defaultMap.isWall(user.getY(), user.getX() - 1)) {
-            user.setX(user.getX() - 1);
-            UserMovement userMovement = new UserMovement(user.getSessionId(), user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
-            messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(userMovement));
-            System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
-        } else if (user.getAction().equals("ArrowRight") && !defaultMap.isWall(user.getY(), user.getX() + 1)) {
-            user.setX(user.getX() + 1);
-            UserMovement userMovement = new UserMovement(user.getSessionId(), user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
-            messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(userMovement));
-            System.out.println("Movement: User=" + user.getUserId() + " moved=" + user.getX() + ", " + user.getY());
-        }
-
-        if (currentUsers.stream().noneMatch(u -> u.getUserId().equals(user.getUserId()))) {
-            logger.warn("New user connected: {}"/*, userId*/);
-            currentUsers.add(user);
-        }
+    public void processMovement(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+        messagingTemplate.convertAndSend("/topic/movement/",
+                                            new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
     }
 
-    private void playerDisconnected(String sessionId) {
-        User user = userArrayList.stream().filter(u -> u.getSessionId().equals(sessionId)).findFirst().orElse(null);
-        if (user != null) {
-            user.setAction("offline");
-            UserMovement userMovement = new UserMovement(user.getSessionId(), user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
-            messagingTemplate.convertAndSend("/topic/register/", userMovement);
-            userArrayList.remove(user);
-        }
+    @MessageMapping("/movement/CLOSED/{userId}")
+//    @SendTo("/topic/movement/{userId}")
+    public void movementUserId(@Payload User user) throws JsonProcessingException {
+        messagingTemplate.convertAndSend("/topic/movement/{userId}",
+                                            new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
     }
 
-    private void  playerConnected(String sessionId, User user) {
-//        String sessionId = sessionId2.substring(sessionId2.indexOf("sessionId=") + 10, sessionId2.indexOf(","));
-        System.out.println("playerConnected:" + sessionId);
-        if (user != null) {
-//            user.setAction("online");
-//            for(int i = 0; i < userArrayList.size(); i++) {
-//                if(!userArrayList.get(i).getSessionId().equals(sessionId)) {
-//                    UserMovement userMovement = new UserMovement(userArrayList.get(i).getSessionId(), userArrayList.get(i).getAction(), userArrayList.get(i).getUserId(), userArrayList.get(i).getColor(), userArrayList.get(i).getX(), userArrayList.get(i).getY());
-                    UserMovement userMovement = new UserMovement(user.getSessionId(), user.getAction(), user.getUserId(), user.getColor(), user.getX(), user.getY());
-                    messagingTemplate.convertAndSend("/topic/register/", userMovement);
-                }
-            }
-//            UserMovement userMovement = new UserMovement(user.getUserId(), user.getAction(), user.getColor(), user.getX(), user.getY());
-//            messagingTemplate.convertAndSend("/topic/register/", userMovement);
-//        }
-//    }
 }

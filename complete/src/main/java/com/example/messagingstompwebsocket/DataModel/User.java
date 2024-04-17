@@ -2,7 +2,6 @@ package com.example.messagingstompwebsocket.DataModel;
 
 public class User {
 
-    private String sessionId;
     private String action;
     private String userId;
     private String color;
@@ -12,21 +11,12 @@ public class User {
     public User() {
     }
 
-    public User(String sessionId, String action, String userId, String color, int x, int y) {
-        this.sessionId = sessionId;
+    public User(String action, String userId, String color, int x, int y) {
         this.action = action;
         this.userId = userId;
         this.color = color;
         this.x = x;
         this.y = y;
-    }
-
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
     }
 
     public String getAction() {
@@ -72,7 +62,6 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "sessionId=" + sessionId + '\'' +
                 "userId=" + userId + '\'' +
                 ", color=" + color + '\'' +
                 ", x=" + x +

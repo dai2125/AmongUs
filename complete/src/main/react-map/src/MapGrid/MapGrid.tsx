@@ -7,7 +7,7 @@ import '../main.css';
 import '../output.css';
 
 let otherPlayers: Player[] = [];
-
+let clientId = "";
 
 type Props ={
     onQuit(): void;
@@ -15,11 +15,11 @@ type Props ={
 
 const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
-
     const canvasRef = useRef(null);
 
-    const player = useRef(new Player("", "11",'yellow', 2, 2));
+    const player = useRef(new Player("", "",'', 2, 2));
     const [playerOne, setPlayerOne] = useState(false);
+    const [signIn, setSignIn] = useState(false);
 
     const map = [
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -50,24 +50,16 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
     useEffect(() => {
 
-        // let id = getUserId();
-        let id = player.current.getUserId();
-
         const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
         const client = Stomp.over(socket);
         client.connect({}, () => {
             client.subscribe('/topic/register/', (message) => {
+                console.log('register....')
                 const response = JSON.parse(message.body);
 
-                console.log('Player went online:', response.sessionId + ' ' + response.userId + ' ' + response.color + ' ' + response.x + ' ' + response.y);
+                console.log('Player went online:', + response.userId + ' ' + response.color + ' ' + response.x + ' ' + response.y);
 
-                if(response.action === 'offline') {
-                    const index = otherPlayers.findIndex((player) => player.getUserId() === response.userId);
-                    if (index !== -1) {
-                        otherPlayers.splice(index, 1);
-                        console.log('Player went offline:', otherPlayers);
-                    }
-                } else if(player.current.getUserId() === '11' && player.current.getColor() === 'yellow') {
+                if(player.current.getUserId() === '' && player.current.getColor() === '') {
                     player.current = null;
                     player.current = new Player(response.action, response.userId, response.color, response.x, response.y);
                     player.current.setAction(response.action);
@@ -75,24 +67,70 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
                     player.current.setColor(response.color);
                     player.current.setX(response.x);
                     player.current.setY(response.y);
-
-                    // setPlayerOne(true);
                     gameLoop();
                 } else if(player.current.getUserId() !== response.userId) {
-                    const newPlayer = new Player(response.action, response.userId, response.color, response.x, response.y);
-                    otherPlayers.push(newPlayer);
-                    console.log('other player moved ' + otherPlayers);
+                    const existingPlayer = otherPlayers.find((player) => player.getUserId() === response.userId);
+                    if(!existingPlayer) {
+                        const newPlayer = new Player(response.action, response.userId, response.color, response.x, response.y);
+                        otherPlayers.push(newPlayer);
+                        console.log('other player created ' + otherPlayers.entries());
+                        gameLoop();
+                    }
+                }
+            });
+
+            if(!signIn) {
+                client.send('/app/register/', {}, JSON.stringify({
+                    // client.send(`/app/register/${player.current.getUserId()}`, {}, JSON.stringify({
+                    'action': player.current.getAction(),
+                    'userId': player.current.getUserId(),
+                    'color': player.current.getColor(),
+                    'x': player.current.getX(),
+                    'y': player.current.getY()
+                    })
+                );
+                client.subscribe('topic/getAllPlayers/', (message) => {
+                    const response = JSON.parse(message.body);
+                    console.log('get all players ' + response);
+                    otherPlayers = response;
+                    gameLoop();
+                });
+                setSignIn(true);
+            }
+
+            client.subscribe('/topic/disconnected/', (message) => {
+                const response = JSON.parse(message.body);
+                const id = response.userId;
+                const index = otherPlayers.findIndex(player => player.getUserId() === response.userId);
+
+                if (index !== -1) {
+                    otherPlayers.splice(index, 1);
+                    console.log('Player with ID ' + response.userId + ' was removed from otherPlayers');
+                    otherPlayers.forEach(player => {
+                        console.log(player);
+                    });
                     gameLoop();
                 }
             });
 
-            client.send(`/app/register/${player.current.getUserId()}`, {}, JSON.stringify({
-                'action': player.current.getAction(),
-                'userId': player.current.getUserId(),
-                'color': player.current.getColor(),
-                'x': player.current.getX(),
-                'y': player.current.getY()
-            }));
+            client.subscribe('/topic/connected/', (message) => {
+            // client.subscribe(`topic/connected/${player.current.getUserId()}`, (message) => {
+                const response = JSON.parse(message.body);
+                const existingPlayer = otherPlayers.find((player) => player.getUserId() === response.userId);
+                if(!existingPlayer && response.userId !== player.current.getUserId()) {
+                    const action = response.action;
+                    const id = response.userId;
+                    const color = response.color;
+                    const x = response.x;
+                    const y = response.y;
+                    const newPlayer = new Player(action, id, color, x, y);
+                    otherPlayers.push(newPlayer);
+                    console.log('nnnnnnnnew player created ' + otherPlayers.entries());
+                    gameLoop();
+                }
+            });
+
+
             client.subscribe(`/topic/movement/`, (message) => {
                 const response = JSON.parse(message.body);
                 const id = response.userId;
@@ -103,7 +141,6 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
                 callback(action, id, color, x, y);
             });
         });
-
 
         const handleMove = (event: string) => {
             switch (event) {
@@ -242,52 +279,8 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
                 }
             } else {
                 const newPlayer = new Player(action, id, color, x, y);
-                otherPlayers.pop();
+                // otherPlayers.pop();
                 otherPlayers.push(newPlayer);
-                // newPlayer.draw(context);
-                // drawGrid(map);
-                // otherPlayers.forEach((newPlayer) => {
-                //     if (newPlayer.getUserId() === id) {
-                //         if (action === 'ArrowUp') {
-                //             newPlayer.setX(x - 1);
-                //             newPlayer.draw(context);
-                //             newPlayer.setY(y);
-                //             newPlayer.draw(context);
-                //             newPlayer.setAction(action);
-                //             return;
-                //             // TODO return einfügen
-                //         } else if (action === 'ArrowDown') {
-                //             newPlayer.setX(x + 1);
-                //             newPlayer.draw(context);
-                //             newPlayer.setY(y);
-                //             newPlayer.draw(context);
-                //             newPlayer.setAction(action);
-                //             newPlayer.draw(context);
-                //             return;
-                //
-                //         } else if (action === 'ArrowLeft') {
-                //             newPlayer.setY(y - 1);
-                //             newPlayer.draw(context);
-                //             newPlayer.setX(x);
-                //             newPlayer.draw(context);
-                //             newPlayer.setAction(action);
-                //             newPlayer.draw(context);
-                //             return;
-                //
-                //         } else if (action === 'ArrowRight') {
-                //             newPlayer.setY(y + 1);
-                //             newPlayer.draw(context);
-                //             newPlayer.setX(x);
-                //             newPlayer.draw(context);
-                //             newPlayer.setAction(action);
-                //             newPlayer.draw(context);
-                //             return;
-                //
-                //         }
-                //         // gameLoop();
-                //
-                //     }
-                // });
             }
         }
 
@@ -299,11 +292,6 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
             clearScreen();
             drawGrid(map);
             player.current.draw(context);
-            // if(otherPlayers.length > 0) {
-            //     otherPlayers.forEach((newPlayer) => {
-            //         newPlayer.draw(context);
-            //     });
-            // }
             requestAnimationFrame(() => gameLoop());
         }
 
@@ -322,8 +310,6 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
         }
         startGameLoop();
 
-        // TODO Logik Fehler bei der Bewegung der anderen Spieler
-        // TODO X und Y Parameter sind um 1 verschoben
         function drawGrid(grid: number[][]) {
             let cellSize = 25;
             const context = canvasRef.current.getContext('2d');

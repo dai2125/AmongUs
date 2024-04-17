@@ -2,7 +2,6 @@ package com.example.messagingstompwebsocket.PersonManagement;
 
 import org.springframework.stereotype.Service;
 
-@Service
 public final class PersonValidationUtil {
 
     private final static String NAME_REGEX = "^[a-zA-ZäöüÄÖÜß -]*$";
@@ -24,5 +23,4 @@ public final class PersonValidationUtil {
     public static boolean validatePersonPassword(String password) {
         return password.matches(PASSWORD_REGEX);
     }
-    // TODO Password_Regex not used
 }

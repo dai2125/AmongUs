@@ -9,11 +9,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SignUpDTO {
+public class UserMovementDTO {
 
-    private String name;
-    private String email;
-    private String password;
-    private String passwordConfirm;
+    private String action;
+    private String sessionId;
+    private String color;
+    private int x;
+    private int y;
 
 }
