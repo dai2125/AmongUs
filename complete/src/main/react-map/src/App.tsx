@@ -18,7 +18,6 @@ const App: React.FC = () => {
     const [showLogIn, setShowLogIn] = useState<boolean>(true);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
 
-
     // navigation and login
     const handleLogin = (name:string, password: string) => {
 
