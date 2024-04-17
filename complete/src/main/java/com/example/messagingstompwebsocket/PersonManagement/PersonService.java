@@ -23,29 +23,29 @@ public class PersonService implements IPersonService {
     private PersonRepository personRepository;
 
     @Override
-    public boolean signUpRequest(PersonSignUpDTO personSignUp) throws ResponseStatusException {
-        if(!PersonValidationUtil.validatePersonName(personSignUp.getName())) {
+    public boolean signUpRequest(PersonSignUpDTO personSignUpDTO) throws ResponseStatusException {
+        if(!PersonValidationUtil.validatePersonName(personSignUpDTO.getName())) {
             throw new ResponseStatusExceptionCustom(INVALID_NAME);
         }
 
-        if(!PersonValidationUtil.validatePersonEmail(personSignUp.getEmail())) {
+        if(!PersonValidationUtil.validatePersonEmail(personSignUpDTO.getEmail())) {
 //            logger.info("Invalid email: %s".formatted(signUpDTO.getEmail()));
           throw new ResponseStatusExceptionCustom(ResponseStatusExceptionMessage.INVALID_EMAIL);
         }
 
-        if(!PersonValidationUtil.validatePersonPassword(personSignUp.getPassword())) {
+        if(!PersonValidationUtil.validatePersonPassword(personSignUpDTO.getPassword())) {
 //            logger.info("Passwords do not match: %s".formatted(signUpDTO.getPassword()));
 
           throw new ResponseStatusExceptionCustom(ResponseStatusExceptionMessage.INVALID_PASSWORD);
         }
 
-        if(!PersonValidationUtil.validatePersonPasswordEqualsPasswordConfirm(personSignUp.getPassword(), personSignUp.getPasswordConfirm())) {
+        if(!PersonValidationUtil.validatePersonPasswordEqualsPasswordConfirm(personSignUpDTO.getPassword(), personSignUpDTO.getPasswordConfirm())) {
             throw new ResponseStatusExceptionCustom(ResponseStatusExceptionMessage.INVALID_EMAIL);
         }
 
-        Person person = this.personRepository.findByNameAndEmail(personSignUp.getName(), personSignUp.getEmail());
+        Person person = this.personRepository.findByNameAndEmail(personSignUpDTO.getName(), personSignUpDTO.getEmail());
         if(person == null) {
-            personRepository.save(Person.builder().name(personSignUp.getName()).email(personSignUp.getEmail()).password(personSignUp.getPassword()).build());
+            personRepository.save(Person.builder().name(personSignUpDTO.getName()).email(personSignUpDTO.getEmail()).password(personSignUpDTO.getPassword()).build());
             return true;
         }
 //        logger.info("User already exists: %s".formatted(signUpDTO.getName()));
@@ -53,20 +53,20 @@ public class PersonService implements IPersonService {
     }
 
     @Override
-    public boolean loginRequest(PersonLoginDTO personLogin) {
-        if(!personRepository.existsByNameAndPassword(personLogin.getName(), personLogin.getPassword())) {
+    public boolean loginRequest(PersonLoginDTO personLoginDTO) {
+        if(!personRepository.existsByNameAndPassword(personLoginDTO.getName(), personLoginDTO.getPassword())) {
 //            logger.info("User not found: %s".formatted(loginDTO.getName()));
            
           throw new ResponseStatusExceptionCustom(ResponseStatusExceptionMessage.USER_NOT_FOUND);
         }
 
-        if(!personRepository.existsByNameAndPasswordAndOnlineIsFalse(personLogin.getName(), personLogin.getPassword())) {
+        if(!personRepository.existsByNameAndPasswordAndOnlineIsFalse(personLoginDTO.getName(), personLoginDTO.getPassword())) {
 //            logger.info("User already online: %s".formatted(loginDTO.getName()));
             throw new ResponseStatusExceptionCustom(ResponseStatusExceptionMessage.USER_ALREADY_ONLINE);
         }
 
-        if(personRepository.existsByNameAndPasswordAndOnlineIsFalse(personLogin.getName(), personLogin.getPassword())) {
-            personRepository.updatePersonOnlineStatus(personLogin.getName(), personLogin.getPassword());
+        if(personRepository.existsByNameAndPasswordAndOnlineIsFalse(personLoginDTO.getName(), personLoginDTO.getPassword())) {
+            personRepository.updatePersonOnlineStatus(personLoginDTO.getName(), personLoginDTO.getPassword());
             return true;
         }
         return false;
