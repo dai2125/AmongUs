@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import MapGrid from './MapGrid/MapGrid';
 //import style from './AppStyle.module.css';
@@ -7,6 +6,8 @@ import HomePage from "./HomePage";
 import LogIn from "./Log-in";
 import CreateAccount from "./CreateAccount";
 import {User} from "./User";
+
+let loggedInUser: string;
 
 const App: React.FC = () => {
 
@@ -17,7 +18,7 @@ const App: React.FC = () => {
     const [showLogIn, setShowLogIn] = useState<boolean>(true);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
 
-    let loggedInUser: User;
+
     // navigation and login
     const handleLogin = (name:string, password: string) => {
 
@@ -26,70 +27,68 @@ const App: React.FC = () => {
             password: password
         }
 
-        fetch('http://localhost:8080/getPerson',{
+        fetch('http://localhost:8080/login',{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(user),
         })
-            .then(response => response.json())
             .then(data => {
-                //handle the response
-                console.log(data);
-
-                loggedInUser = new User(data.name, data.email, data.password);
-
+                if(data.status === 200){
+                    alert("Log In Successful");
+                    console.log(data);
+                    setShowHomePage(true);
+                    setShowLogIn(false);
+                    loggedInUser = name;
+                }else{
+                    alert("Name or Password is wrong");
+                    console.log(data.status);
+                }
             })
             .catch(error => {
-
-                console.error('false log in credentials:', error);
+                console.error('Error:', error);
             });
-
-        setShowLogIn(false);
-        setShowHomePage(true);
-
-
     };
-    const handleCreate = (name:string, email: string, password: string) => {
+
+    const handleCreate = (name:string, email: string, password: string, passwordConfirm: string) => {
 
         const newUser ={
             name: name,
             email: email,
             password: password,
-            passwordConfirm: password
+            passwordConfirm: passwordConfirm
         }
 
-        fetch('http://localhost:8080/signUp',{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(newUser),
-        })
-            .then(response => response.json())
-            .then(data => {
-                //handle the response
-                // TODO if data is 200 || correct || user created
-                if (data != null){
-                    console.log('Successful');
-                    // setShowHomePage(true);
-                    // setShowCreateAccount(false);
-                    setShowCreateAccount(false);
-                    setShowLogIn(true);
-                }
+        if(!(password === passwordConfirm)){
+            alert("password and confirm-password do not match")
+        }else {
 
+            fetch('http://localhost:8080/signUp',{
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newUser),
             })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-
-
+                .then((data) => {
+                    if (data.status === 200){
+                        alert("Account Created Successfully");
+                        setShowCreateAccount(false);
+                        setShowLogIn(true);
+                    }else{
+                        alert("Failed to create account, please make sure to enter all fields correctly");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
     };
     // navigation
     const handleCreateNav = () => {
-      setShowCreateAccount(true);
-      setShowLogIn(false);
+        setShowCreateAccount(true);
+        setShowLogIn(false);
     };
     // navigation
     const handleLogInNav = () => {
@@ -107,7 +106,6 @@ const App: React.FC = () => {
         setShowHomePage(true);
     };
 
-
     const handleMove = (newX: number, newY: number) => {
         // Perform validation here if needed
         setXPos(newX);
@@ -115,15 +113,13 @@ const App: React.FC = () => {
         console.log('App.tsx: handleMove: newX: ', newX, ' newY: ', newY);
     };
 
-
     return (
         <div>
-            {showHomePage && <HomePage onPlayButtonClick={handlePlay}/>}
+            {showHomePage && <HomePage loggesInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
             {showLogIn && <LogIn onLogIn={handleLogin} onCreateAccountNav={handleCreateNav}/>}
             {showMapGrid && <MapGrid xPos={xPos} yPos={yPos} onMove={handleMove} onQuit={handleQuit} />}
             {showCreateAccount && <CreateAccount onCreateClick={handleCreate} onLoginNavClick={handleLogInNav}/>}
         </div>
     );};
-
 
 export default App;
