@@ -1,7 +1,6 @@
 package com.example.messagingstompwebsocket.GamingController;
 
 import com.example.messagingstompwebsocket.DataModel.User;
-import com.example.messagingstompwebsocket.DataModel.UserMovement;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.PropertySource;
@@ -69,8 +68,6 @@ public class MovementController {
 //        }
 //        messagingTemplate.convertAndSend("/topic/disconnected/", event.getSessionId());
     }
-
-
 
     @MessageMapping("/register/")
     @SendTo("/topic/register/")

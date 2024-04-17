@@ -1,20 +1,16 @@
 package com.example.messagingstompwebsocket.DataTransferObject;
 
-
-import jakarta.validation.constraints.Size;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Builder
-public class LoginDTO {
+public class PersonLoginDTO {
 
-    @Size(min=2, max=30)
     private String name;
-
-    @Size(min=4, max=10)
     private String password;
-
 }

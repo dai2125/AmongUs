@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Repository
+//@Repository
+@Service
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
     Person findByNameAndEmail(String name, String email);
@@ -22,4 +24,5 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     @Query("UPDATE Person person set person.online = TRUE WHERE person.name = :name AND person.password = :password")
     void updatePersonOnlineStatus(String name, String password);
 }
+
 

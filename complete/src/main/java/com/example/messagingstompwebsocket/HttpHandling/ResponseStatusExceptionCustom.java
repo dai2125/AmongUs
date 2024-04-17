@@ -6,6 +6,7 @@ public class ResponseStatusExceptionCustom extends RuntimeException {
 
     private final HttpStatus _status;
 
+    // TODO no runtime exception and no http, no extends RuntimeException, try & catch
     public ResponseStatusExceptionCustom(ResponseStatusExceptionMessage exceptionMessage) {
         super(exceptionMessage.getMessage());
         _status = exceptionMessage.getStatus();

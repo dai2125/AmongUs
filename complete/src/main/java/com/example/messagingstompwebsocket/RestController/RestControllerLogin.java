@@ -1,6 +1,6 @@
 package com.example.messagingstompwebsocket.RestController;
 
-import com.example.messagingstompwebsocket.DataTransferObject.LoginDTO;
+import com.example.messagingstompwebsocket.DataTransferObject.PersonLoginDTO;
 import com.example.messagingstompwebsocket.HttpHandling.ResponseStatusExceptionMessage;
 import com.example.messagingstompwebsocket.HttpHandling.ResponseStatusSuccesMessage;
 import com.example.messagingstompwebsocket.PersonManagement.IPersonService;
@@ -21,21 +21,12 @@ public class RestControllerLogin {
     }
 
     // TODO Exception with wrong Postman parameters not catched
+    // TODO missed one layer
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO) {
-        if(personService.loginRequest(loginDTO)) {
+    public ResponseEntity<String> login(@RequestBody PersonLoginDTO personLoginDTO) {
+        if(personService.loginRequest(personLoginDTO)) {
             return ResponseEntity.ok(ResponseStatusSuccesMessage.USER_LOG_IN.getMessage());
         }
         return ResponseEntity.badRequest().body(ResponseStatusExceptionMessage.USER_NOT_FOUND.getMessage());
     }
-
-//    @PostMapping("/login")
-//    public ResponseEntity<String> logOut(@Valid @RequestBody LogOutDTO logOutDTO) {
-//        if(personService.logOutRequest(logOutDTO)) {
-//            return ResponseEntity.ok(ResponseStatusSuccesMessage.USER_LOG_IN.getMessage());
-//        }
-        // TODO another exception
-//        return ResponseEntity.badRequest().body(ResponseStatusExceptionMessage.USER_NOT_FOUND.getMessage());
-//    }
-
 }
