@@ -27,17 +27,10 @@ public class MovementController {
     private MovementService movementService = new MovementService();
     private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
 
-    String[] colors = {"#FF0000", "#FF8000", "#0080FF", "#FF00FF", "#FF007F", "#808080"};
-    List<User> userList = new ArrayList<>();
-    Random r = new Random();
-    private int counter = 0;
-
-
     public MovementController(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
     }
 
-//    private SimpMessagingTemplate simpMessagingTemplate;
     private RegisterService registerService = new RegisterService();
 
 

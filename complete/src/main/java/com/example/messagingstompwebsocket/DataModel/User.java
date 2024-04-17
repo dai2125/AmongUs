@@ -3,7 +3,7 @@ package com.example.messagingstompwebsocket.DataModel;
 public class User {
 
     private String action;
-    private String userId;
+    private String sessionId;
     private String color;
     private int x;
     private int y;
@@ -11,9 +11,9 @@ public class User {
     public User() {
     }
 
-    public User(String action, String userId, String color, int x, int y) {
+    public User(String action, String sessionId, String color, int x, int y) {
         this.action = action;
-        this.userId = userId;
+        this.sessionId = sessionId;
         this.color = color;
         this.x = x;
         this.y = y;
@@ -27,12 +27,12 @@ public class User {
         this.action = action;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getSessionId() {
+        return sessionId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
     public String getColor() {
@@ -62,7 +62,8 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "userId=" + userId + '\'' +
+                "action=" + action + '\'' +
+                "sessionId=" + sessionId + '\'' +
                 ", color=" + color + '\'' +
                 ", x=" + x +
                 ", y=" + y +
