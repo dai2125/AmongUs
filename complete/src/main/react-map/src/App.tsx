@@ -14,8 +14,8 @@ const App: React.FC = () => {
     const [xPos, setXPos] = useState<number>(2);
     const [yPos, setYPos] = useState<number>(2);
     const [showMapGrid, setShowMapGrid] = useState<boolean>(false);
-    const [showHomePage, setShowHomePage] = useState<boolean>(false);
-    const [showLogIn, setShowLogIn] = useState<boolean>(true);
+    const [showHomePage, setShowHomePage] = useState<boolean>(true);
+    const [showLogIn, setShowLogIn] = useState<boolean>(false);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
 
     // navigation and login
@@ -52,7 +52,7 @@ const App: React.FC = () => {
 
     const handleCreate = (name:string, email: string, password: string, passwordConfirm: string) => {
 
-        const newUser ={
+        const newUser = {
             name: name,
             email: email,
             password: password,

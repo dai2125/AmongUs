@@ -70,7 +70,7 @@ body {
 
 /*
 1. Add the correct height in Firefox.
-2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.cgi?id=190655)
+2. Correct the inheritance of border color in Firefox. (https://bugzilla.mozilla.org/show_bug.c=190655)
 3. Ensure horizontal rules are visible by default.
 */
 
@@ -1051,4 +1051,128 @@ button:hover {
 
 p {
   color: white;
+}
+
+/*.chatbox {*/
+/*  width: 800px;*/
+/*  height: 600px;*/
+/*  min-width: 800px;*/
+/*  max-width: 800px;*/
+/*  min-height: 600px;*/
+/*  max-height: 600px; */
+/*}*/
+
+.chatbox {
+  width: 50%;       /* 50% der Container-Breite */
+  height: 90vh;     /* 30% der Viewport-Höhe */
+  min-height: 380px;
+  max-height: 650px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Stellt sicher, dass der Inhalt gleichmäßig verteilt ist */
+  /*height: 100%; !* Nimm die volle Höhe ein, die ihm zugewiesen ist *!*/
+  /*position: relative;*/
+  /*justify-content: space-between;*/
+}
+
+.message-list p, .message-list-other p {
+  /*color: black;*/
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  margin: 5px 0;
+  padding: 8px;
+  border-radius: 10px;
+  width: fit-content;
+  max-width: 80%;
+}
+
+.message-list {
+  /*background-color: #f0f0f0;*/
+  color: black;
+  float: right;
+  clear: both;
+}
+
+.message-list-other {
+  background-color: #fff0f0;
+  color: red;
+  float: left;
+  clear: both;
+}
+
+.message-list-my {
+  background-color: #fff0f0;
+  color: blue;
+  float: right;
+  clear: both;
+}
+
+/*.chatbox-send-button button {*/
+/*    width: 10%;*/
+/*    height: 10%;*/
+/*    background-color: #4D96FF; !* Leuchtendes Blau *!*/
+/*    color: white;*/
+/*    border: none;*/
+/*    border-radius: 8px;*/
+/*    font-size: 20px;*/
+/*    font-weight: bold;*/
+/*    margin: 10px 0;*/
+/*    cursor: pointer;*/
+/*}*/
+
+.input-area {
+  display: flex;
+  justify-content: space-between;
+  /*padding: 5px;*/
+  padding-top: 5px;
+  padding-bottom: 2px;
+  padding-right: 40px;
+}
+
+.input-field {
+  flex-grow: 1;
+  margin-right: 10px;
+}
+
+.message-list, .message-list-other {
+  overflow-y: auto; /* Ermöglicht das Scrollen innerhalb der Listen */
+  flex-grow: 1; /* Lässt die Listen den verfügbaren Platz einnehmen */
+}
+
+.socialbox {
+  width: 300px;
+  height: 500px;
+  grid-column: 2;
+  position: absolute;
+  top: 80px;
+  /*overflow: auto;*/
+  transition: all 0.3s ease-in-out;
+  /*right: 0;*/
+  /*background-image: url('../resources/images/Social_box_background.png');*/
+  /*background-color: red;*/
+  background-image: url('../resources/images/Social_box_background.png');
+  /*background-image: url('Social_box_background.png');*/
+
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+
+}
+
+.socialbox-header, .socialbox-body {
+  padding: 10px;
+}
+
+.socialbox-body-content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.myMessages {
+  color: #1A73E8;
+}
+
+.otherMessages {
+  color: red;
 }

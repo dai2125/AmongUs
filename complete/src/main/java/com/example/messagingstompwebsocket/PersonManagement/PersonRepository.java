@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-//@Repository
 @Service
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
@@ -21,5 +20,3 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     @Query("UPDATE Person person set person.online = TRUE WHERE person.name = :name AND person.password = :password")
     void updatePersonOnlineStatus(String name, String password);
 }
-
-

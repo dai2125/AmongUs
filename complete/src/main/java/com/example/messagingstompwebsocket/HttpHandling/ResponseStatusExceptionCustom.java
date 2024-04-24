@@ -2,7 +2,7 @@ package com.example.messagingstompwebsocket.HttpHandling;
 
 import org.springframework.http.HttpStatus;
 
-public class ResponseStatusExceptionCustom extends RuntimeException {
+public class ResponseStatusExceptionCustom extends Exception {
 
     private final HttpStatus _status;
 

@@ -1,7 +1,11 @@
 import { Player } from "./Player";
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import SockJS from "sockjs-client";
-import Stomp from "stompjs";
+import Stomp from "stompjs"
+import chatButton from "../../../resources/images/chat_button.png";
+
+import { ChatItem } from 'react-chat-elements'
+import Chatbox from "../Chatbox";
 
 import '../main.css';
 import '../output.css';
@@ -13,6 +17,8 @@ type Props ={
     onQuit(): void;
 }
 
+// TODO if you open the chatbox and close it immediately the browser displays a white screen
+
 const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
     const canvasRef = useRef(null);
@@ -20,6 +26,15 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
     const player = useRef(new Player("", "",'', 2, 2));
     const [playerOne, setPlayerOne] = useState(false);
     const [signIn, setSignIn] = useState(false);
+    const [chatVisible, setChatVisible] = useState(false);
+
+    const toggleChat = () => {
+        if(!chatVisible) {
+            setChatVisible(true);
+        } else {
+            setChatVisible(false);
+        }
+    };
 
     const map = [
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -57,21 +72,22 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
                 console.log('register....')
                 const response = JSON.parse(message.body);
 
-                console.log('Player went online:', + response.userId + ' ' + response.color + ' ' + response.x + ' ' + response.y);
-
                 if(player.current.getUserId() === '' && player.current.getColor() === '') {
                     player.current = null;
-                    player.current = new Player(response.action, response.userId, response.color, response.x, response.y);
-                    player.current.setAction(response.action);
-                    player.current.setUserId(response.userId);
-                    player.current.setColor(response.color);
-                    player.current.setX(response.x);
-                    player.current.setY(response.y);
+                    player.current = new Player(response.action, response.sessionId, response.color, response.x, response.y);
+                    // player.current.setAction(response.action);
+                    // player.current.setUserId(response.sessionId);
+                    // player.current.setColor(response.color);
+                    // player.current.setX(response.x);
+                    // player.current.setY(response.y);
                     gameLoop();
-                } else if(player.current.getUserId() !== response.userId) {
-                    const existingPlayer = otherPlayers.find((player) => player.getUserId() === response.userId);
+
+                    console.log('Player went online:', + response.sessionId + ' ' + response.color + ' ' + response.x + ' ' + response.y);
+
+                } else if(player.current.getUserId() !== response.sessionId) {
+                    const existingPlayer = otherPlayers.find((player) => player.getUserId() === response.sessionId);
                     if(!existingPlayer) {
-                        const newPlayer = new Player(response.action, response.userId, response.color, response.x, response.y);
+                        const newPlayer = new Player(response.action, response.sessionId, response.color, response.x, response.y);
                         otherPlayers.push(newPlayer);
                         console.log('other player created ' + otherPlayers.entries());
                         gameLoop();
@@ -80,10 +96,10 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
             });
 
             if(!signIn) {
-                client.send('/app/register/', {}, JSON.stringify({
+                    client.send('/app/register/', {}, JSON.stringify({
                     // client.send(`/app/register/${player.current.getUserId()}`, {}, JSON.stringify({
                     'action': player.current.getAction(),
-                    'userId': player.current.getUserId(),
+                    'sessionId': player.current.getUserId(),
                     'color': player.current.getColor(),
                     'x': player.current.getX(),
                     'y': player.current.getY()
@@ -100,12 +116,12 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
             client.subscribe('/topic/disconnected/', (message) => {
                 const response = JSON.parse(message.body);
-                const id = response.userId;
-                const index = otherPlayers.findIndex(player => player.getUserId() === response.userId);
+                const id = response.sessionId;
+                const index = otherPlayers.findIndex(player => player.getUserId() === response.sessionId);
 
                 if (index !== -1) {
                     otherPlayers.splice(index, 1);
-                    console.log('Player with ID ' + response.userId + ' was removed from otherPlayers');
+                    console.log('Player with ID ' + response.sessionId + ' was removed from otherPlayers');
                     otherPlayers.forEach(player => {
                         console.log(player);
                     });
@@ -116,10 +132,10 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
             client.subscribe('/topic/connected/', (message) => {
             // client.subscribe(`topic/connected/${player.current.getUserId()}`, (message) => {
                 const response = JSON.parse(message.body);
-                const existingPlayer = otherPlayers.find((player) => player.getUserId() === response.userId);
-                if(!existingPlayer && response.userId !== player.current.getUserId()) {
+                const existingPlayer = otherPlayers.find((player) => player.getUserId() === response.sessionId);
+                if(!existingPlayer && response.sessionId !== player.current.getUserId()) {
                     const action = response.action;
-                    const id = response.userId;
+                    const id = response.sessionId;
                     const color = response.color;
                     const x = response.x;
                     const y = response.y;
@@ -133,7 +149,7 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
             client.subscribe(`/topic/movement/`, (message) => {
                 const response = JSON.parse(message.body);
-                const id = response.userId;
+                const id = response.sessionId;
                 const color = response.color;
                 const x = response.x;
                 const y = response.y;
@@ -173,7 +189,7 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
             client.send(`/app/movement/${player.current.getUserId()}`, {}, JSON.stringify({
                 'action': player.current.getAction(),
-                'userId': player.current.getUserId(),
+                'sessionId': player.current.getUserId(),
                 'color': player.current.getColor(),
                 'x': player.current.getX(),
                 'y': player.current.getY()
@@ -187,7 +203,7 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
             client.send(`/app/movement/${id}`, {}, JSON.stringify({
                 'action': player.current.getAction(),
-                'userId': player.current.getUserId(),
+                'sessionId': player.current.getUserId(),
                 'color': player.current.getColor(),
                 'x': player.current.getX(),
                 'y': player.current.getY()
@@ -201,7 +217,7 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
             client.send(`/app/movement/${id}`, {}, JSON.stringify({
                 'action': player.current.getAction(),
-                'userId': player.current.getUserId(),
+                'sessionId': player.current.getUserId(),
                 'color': player.current.getColor(),
                 'x': player.current.getX(),
                 'y': player.current.getY()
@@ -214,7 +230,7 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
             client.send(`/app/movement/${id}`, {}, JSON.stringify({
                 'action': player.current.getAction(),
-                'userId': player.current.getUserId(),
+                'sessionId': player.current.getUserId(),
                 'color': player.current.getColor(),
                 'x': player.current.getX(),
                 'y': player.current.getY()
@@ -351,6 +367,7 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
         window.addEventListener('keydown', (event) => {
             handleMove(event.key);
         });
+
         }, []);
 
     return (
@@ -358,12 +375,22 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
 
             <div className="grid grid-rows-10 h-screen w-screen  ">
                 <div className="row-span-1 ">
-
-                    <p className="text-center text-white text-5xl mt-3">Game</p>
+                    <div
+                        className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2">
+                        <div id="user-div" className="col-span-1"></div>
+                        {/*<button onClick={toggleChat} className="text-white bg-gray-700 hover:bg-gray-800 font-bold py-2 px-4 rounded m-10">*/}
+                        {/*    Press me*/}
+                        {/*</button>*/}
+                        <button onClick={toggleChat}><img className="w-10 b-10" src={chatButton}></img></button>
+                        {/* Chat-Fenster, das nur sichtbar ist, wenn chatVisible true ist */}
+                        {chatVisible ?
+                            <Chatbox/> : <div></div>
+                         }
+                    </div>
                 </div>
                 <div className="grid grid-cols-12 row-span-9 gap-5 h-5/6">
 
-                    <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-end">
+                <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-end">
                         <p className="font-bold m-10 underline-offset-1">Completed Tasks</p>
                     </div>
                     <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">

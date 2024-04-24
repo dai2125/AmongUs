@@ -15,12 +15,8 @@ public class RegisterService {
     List<User> userList = new ArrayList();
     Random r = new Random();
     private int counter = 0;
-//    private final SimpMessagingTemplate simpMessagingTemplate;
     private ObjectMapper objectMapper = new ObjectMapper();
 
-//    public RegisterService(SimpMessagingTemplate simpMessagingTemplate) {
-//        this.simpMessagingTemplate = simpMessagingTemplate;
-//    }
 
     public RegisterService() {
     }
@@ -31,11 +27,11 @@ public class RegisterService {
         UserRegisterDTO userRegisterDTO = new UserRegisterDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
         resetCounter(counter);
         return userRegisterDTO;
-//        messagingTemplate.convertAndSend("/topic/register/", objectMapper.writeValueAsString(userRegister));
     }
 
     public UserRegisterDTO updateAllUserWithTheNewUser() throws JsonProcessingException {
         for(int i = 0; i < userList.size(); i++) {
+
             UserRegisterDTO userRegisterDTO = new UserRegisterDTO(userList.get(i).getAction(), userList.get(i).getSessionId(), userList.get(i).getColor(), userList.get(i).getX(), userList.get(i).getY());
             return userRegisterDTO;
 //            messagingTemplate.convertAndSend("/topic/connected/", objectMapper.writeValueAsString(userRegister));
