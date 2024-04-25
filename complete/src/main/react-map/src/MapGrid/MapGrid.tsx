@@ -381,7 +381,7 @@ const GameComponent = ({xPos, yPos, onMove, onQuit}) => {
                         {/*<button onClick={toggleChat} className="text-white bg-gray-700 hover:bg-gray-800 font-bold py-2 px-4 rounded m-10">*/}
                         {/*    Press me*/}
                         {/*</button>*/}
-                        <button onClick={toggleChat}><img className="w-10 b-10" src={chatButton}></img></button>
+                            <button onClick={toggleChat}><img className="w-10 b-10" src={chatButton}></img></button>
                         {/* Chat-Fenster, das nur sichtbar ist, wenn chatVisible true ist */}
                         {chatVisible ?
                             <Chatbox/> : <div></div>

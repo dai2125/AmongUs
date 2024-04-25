@@ -14,8 +14,8 @@ const App: React.FC = () => {
     const [xPos, setXPos] = useState<number>(2);
     const [yPos, setYPos] = useState<number>(2);
     const [showMapGrid, setShowMapGrid] = useState<boolean>(false);
-    const [showHomePage, setShowHomePage] = useState<boolean>(true);
-    const [showLogIn, setShowLogIn] = useState<boolean>(false);
+    const [showHomePage, setShowHomePage] = useState<boolean>(false);
+    const [showLogIn, setShowLogIn] = useState<boolean>(true);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
 
     // navigation and login
