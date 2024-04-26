@@ -19,32 +19,27 @@ public class ChatController {
         }
 
         private ChatService chatService = new ChatService();
+        RestChatController restChatController = new RestChatController();
 
         @MessageMapping("/ingoing/")
         @SendTo("topic/ingoing/")
         public void ingoing(@Payload Message message) {
             chatService.processMessage(message);
             messagingTemplate.convertAndSend("/topic/ingoing/", message);
-        }
 
-        // TODO funktioniert nicht
-//        @MessageMapping("/ingoing/{userId}")
-////        @SendTo("/topic/ingoing/{userId}")
-//        public void ingoingUserId(@Payload Message message, @DestinationVariable("userId") String userId) {
-//            chatService.processMessage(message);
-//
-//            System.out.println("Ingoing userId: " + message.getMessage() + " " + message.getUserId());
-////            messagingTemplate.convertAndSend("/topic/ingoing/{userId}", message);
-//            messagingTemplate.convertAndSend(String.format("/topic/ingoing/%s", userId), message);
-//        }
+//            message.setMessage(restChatController.sendToWebService(message.getMessage()));
+//            System.out.println("ChatController: " + message.getMessage());
+        }
 
     @MessageMapping("/ingoing/{userId}")
     public void ingoingUserId(@Payload Message message, @DestinationVariable String userId) {
         chatService.processMessage(message);
+//        messagingTemplate.convertAndSend(String.format("/topic/ingoing/%s", userId), message);
+//        messagingTemplate.convertAndSend("/topic/ingoing/", message);
+
+        message.setMessage(restChatController.sendToWebService(message.getMessage()));
+        System.out.println("ChatController: " + message.getMessage());
         messagingTemplate.convertAndSend(String.format("/topic/ingoing/%s", userId), message);
         messagingTemplate.convertAndSend("/topic/ingoing/", message);
     }
-
-//            messagingTemplate.convertAndSend("/topic/ingoing/", message);
-        }
-//}
+}

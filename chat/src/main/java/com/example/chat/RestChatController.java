@@ -1,22 +1,22 @@
 package com.example.chat;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class RestChatController {
 
     ChatService chatService = new ChatService();
 
-    @PostMapping("/chat/ingoing/{userId}")
-//    @MessageMapping("/chat/outgoing")
-    public ResponseEntity<?> chatMessage(@RequestBody Message message) {
+    @GetMapping("https://www.purgomalum.com/service/json?text={message}")
+    public String sendToWebService(@PathVariable String message) {
 
-//        message.setMessage(chatService.processMessage(message));
-        return ResponseEntity.ok(message);
+        System.out.println("RestChatController: " + message);
+
+        return message;
     }
+
 }

@@ -1,7 +1,7 @@
 import React, {FormEvent, useState} from 'react';
 import './main.css'
 import './output.css';
-import Socialbox from "./Socialbox";
+// import Socialbox from "./Socialbox";
 import chatButton from '../../resources/images/chat_button.png';
 // import image from '../ressources/images/chat_button.png';
 
@@ -83,7 +83,7 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
                 </button>
                 {showSocialBox ?
                     <div>
-                        <Socialbox></Socialbox>
+                        {/*<Socialbox></Socialbox>*/}
                     </div> :
                     <div>
 
