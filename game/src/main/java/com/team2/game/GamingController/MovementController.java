@@ -84,6 +84,7 @@ public class MovementController {
     @SendTo("/topic/movement/")
     public void processMovement(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
         messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
+        registerService.updatePlayerPosition(user);
 //        rabbitTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
 
     }

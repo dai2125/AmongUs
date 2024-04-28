@@ -1,20 +1,15 @@
 import React, { useState } from 'react';
-import MapGrid from './MapGrid/MapGrid';
-//import style from './AppStyle.module.css';
+
 import HomePage from "./HomePage";
-// import AllPlayer from "./AllPlayer";
-//import GameComponent from "./MapGrid/MapGrid";
 import LogIn from "./Log-in";
 import CreateAccount from "./CreateAccount";
 import AllPlayer from "./AllPlayer";
-// import {User} from "./User";
+import CurrentPlayers from "./MapGrid/CurrentPlayers";
 
 let loggedInUser: string;
 
 const App: React.FC = () => {
 
-    const [xPos, setXPos] = useState<number>(2);
-    const [yPos, setYPos] = useState<number>(2);
     const [showMapGrid, setShowMapGrid] = useState<boolean>(true);
     const [showHomePage, setShowHomePage] = useState<boolean>(false);
     const [showLogIn, setShowLogIn] = useState<boolean>(false);
@@ -108,12 +103,6 @@ const App: React.FC = () => {
         setShowHomePage(true);
     };
 
-    const handleMove = (newX: number, newY: number) => {
-        // Perform validation here if needed
-        setXPos(newX);
-        setYPos(newY);
-        console.log('App.tsx: handleMove: newX: ', newX, ' newY: ', newY);
-    };
 
     const handleStart = () => {
         setShowMapGrid(false);
@@ -125,7 +114,7 @@ const App: React.FC = () => {
         <div>
             {showHomePage && <HomePage loggesInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
             {showLogIn && <LogIn onLogIn={handleLogin} onCreateAccountNav={handleCreateNav}/>}
-            {showMapGrid && <MapGrid xPos={xPos} yPos={yPos} onMove={handleMove} onQuit={handleQuit} onStart={handleStart}/>}
+            {showMapGrid && <CurrentPlayers onQuit={handleQuit} onStart={handleStart}/>}
             {showCreateAccount && <CreateAccount onCreateClick={handleCreate} onLoginNavClick={handleLogInNav}/>}
             {showAllPlayer && <AllPlayer/>}
         </div>

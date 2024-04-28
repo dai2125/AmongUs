@@ -81,4 +81,12 @@ public class RegisterService {
             user.setX(r.nextInt(5) + 2);
         }
     }
+    public void updatePlayerPosition(User user) {
+        for(User u : userList) {
+            if(u.getSessionId().equals(user.getSessionId())) {
+                u.setX(user.getX());
+                u.setY(user.getY());
+            }
+        }
+    }
 }
