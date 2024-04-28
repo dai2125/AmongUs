@@ -1,0 +1,5 @@
+rootProject.name = 'AmongUs'
+//include('chat')
+//include('complete')
+
+include("game", "chat")
