@@ -1,0 +1,65 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.5'
+	id 'io.spring.dependency-management' version '1.1.4'
+	id 'dev.hilla' version '2.5.5'
+}
+
+group = 'com.team2'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+}
+
+ext {
+	set('hillaVersion', "2.5.5")
+	set('springAiVersion', "0.8.1")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+
+//	implementation 'dev.hilla:hilla-react-spring-boot-starter'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+
+	//q: how to add a dependency to a subproject?
+	//a: add the dependency to the subproject's build.gradle file
+	//q: i need to import from the complete project the User class
+	//a: add the dependency to the complete project's build.gradle file
+
+//	implementation project(':complete')
+	implementation(project(':game'))
+}
+
+dependencyManagement {
+	imports {
+//		mavenBom "dev.hilla:hilla-bom:${hillaVersion}"
+//		mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+
+
+	}
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

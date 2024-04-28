@@ -1,0 +1,2 @@
+//rootProject.name = 'AmongUs'
+rootProject.parent = 'AmongUs'
