@@ -1,4 +1,4 @@
-package com.team2.chat;
+package com.team2.chat.DataModel;
 
 import com.team2.game.DataModel.User;
 import lombok.Getter;
@@ -17,7 +17,4 @@ public class UserChat extends User {
         this.userName = userName;
         this.email = email;
     }
-
-
-
 }

@@ -1,5 +1,7 @@
-package com.team2.chat;
+package com.team2.chat.Controller;
 
+import com.team2.chat.Service.ChatService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -10,13 +12,16 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class ChatController {
 
+        @Autowired
         private SimpMessagingTemplate messagingTemplate;
 
-        public ChatController(SimpMessagingTemplate messagingTemplate) {
-            this.messagingTemplate = messagingTemplate;
-        }
+//        public ChatController(SimpMessagingTemplate messagingTemplate) {
+//            this.messagingTemplate = messagingTemplate;
+//        }
 
-        private ChatService chatService = new ChatService();
+        @Autowired
+        private ChatService chatService;
+
         RestChatController restChatController = new RestChatController();
 
         @MessageMapping("/ingoing/")
