@@ -156,7 +156,7 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
                                 </label>
                                 <label>
                                     <p className="text-2xl text-left font-light text-amber-600 ">Old Password</p>
-                                    <input name="newPassword" type="text"
+                                    <input name="oldPassword" type="text"
                                            className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                            placeholder="Old Password" required/>
                                 </label>
