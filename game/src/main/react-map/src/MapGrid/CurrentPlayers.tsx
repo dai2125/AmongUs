@@ -39,6 +39,12 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
         }
     };
 
+    const [showPopup, setShowPopup] = useState(false);
+
+    const togglePopup = () => {
+        setShowPopup(!showPopup);
+    };
+
     return (
         <div>
             <div className="background">
@@ -69,7 +75,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
                             />
                         </div>
                         <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-start">
-                            <button
+                            <button onClick={togglePopup}
                                 className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings
                             </button>
                             <button
@@ -84,6 +90,18 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
                 </div>
             </div>
             <KeyInput onKeyPress={handleKeyPress}/>
+
+            {showPopup && (
+                <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white p-8 rounded-lg">
+                        {/* Your input fields or content for settings popup */}
+                        <input type="text" placeholder="Enter value" className="mb-4" />
+                        <button onClick={togglePopup} className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
