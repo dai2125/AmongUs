@@ -5,14 +5,15 @@ import LogIn from "./Log-in";
 import CreateAccount from "./CreateAccount";
 import AllPlayer from "./AllPlayer";
 import CurrentPlayers from "./MapGrid/CurrentPlayers";
+import {User} from "./User";
 
-let loggedInUser: string;
+let loggedInUser= new User();
 
 const App: React.FC = () => {
 
-    const [showMapGrid, setShowMapGrid] = useState<boolean>(true);
+    const [showMapGrid, setShowMapGrid] = useState<boolean>(false);
     const [showHomePage, setShowHomePage] = useState<boolean>(false);
-    const [showLogIn, setShowLogIn] = useState<boolean>(false);
+    const [showLogIn, setShowLogIn] = useState<boolean>(true);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
     const [showAllPlayer, setShowAllPlayer] = useState<boolean>(false);
 
@@ -37,7 +38,8 @@ const App: React.FC = () => {
                     console.log(data);
                     setShowHomePage(true);
                     setShowLogIn(false);
-                    loggedInUser = name;
+                    loggedInUser.setUsername(name);
+                    loggedInUser.setPassword(password);
                 }else{
                     alert("Name or Password is wrong");
                     console.log(data.status);

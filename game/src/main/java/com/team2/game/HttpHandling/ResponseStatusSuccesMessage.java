@@ -7,7 +7,7 @@ public enum ResponseStatusSuccesMessage {
     USER_UPDATED("User updated"),
     USER_LOG_IN("User logged in"),
     USER_LOG_OUT("User logged out"),
-    USER_CHANGED_PASSWORD("User changed password");
+    USER_CHANGED_ACCOUNT_DETAILS("User changed account details");
 
     private final String message;
 

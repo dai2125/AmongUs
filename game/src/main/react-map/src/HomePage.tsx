@@ -1,12 +1,13 @@
 import React, {FormEvent, useState} from 'react';
 import './main.css'
 import './output.css';
+import {User} from "./User";
 // import Socialbox from "./Socialbox";
 import chatButton from '../../resources/images/chat_button.png';
 // import image from '../ressources/images/chat_button.png';
 
 type Props ={
-    loggesInUser: string;
+    loggesInUser: User;
     onPlayButtonClick(): void;
 }
 
@@ -25,33 +26,50 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
         const data = new FormData(form);
 
         const user = {
-            name: data.get('newUsername') as string,
-            email: data.get('newEmail') as string,
-            password: data.get('newPassword') as string,
+            oldName: loggesInUser.getUsername(),
+            oldPassword: loggesInUser.getPassword(),
+            newName: data.get('newUsername') as string,
+            newEmail: data.get('newEmail') as string,
+            oldPasswordInput: data.get('oldPassword') as string,
+            newPassword: data.get('newPassword') as string,
             passwordConfirm: data.get('newPasswordConfirm') as string,
         }
 
-        fetch('http://localhost:8080/myAccount',{
+        const passwordRegex = /^.{8,}$/;
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailRegex.test(user.newEmail)
+            && (passwordRegex.test(user.newPassword))
+            && (user.newPassword == user.passwordConfirm)
+            &&(user.oldPassword == user.oldPasswordInput))
+        {fetch('http://localhost:8080/accountDetails', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(user),
-        })
+            })
             .then((data) => {
-                if (data.status === 200){
+                if (data.status === 200) {
                     setSuccessMessage("Account Changed Successfully");
+                    setErrorMessage("");
                     // alert("Account Created Successfully");
+                    loggesInUser.setUsername(user.newName);
+                    loggesInUser.setPassword(user.newPassword);
 
+                } else if(data.status == 400){
+                    setErrorMessage("Email is already taken");
+                    setSuccessMessage("");
                 } else {
                     setErrorMessage("Failed to create account, please make sure to enter all fields correctly");
+                    setSuccessMessage("");
                     // alert("Failed to create account, please make sure to enter all fields correctly");
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
             });
-        }
+        }else{alert("Email or password is not valid");}
+    }
 
         const onMyAccountButtonClick = () => {
             if(!showAccountSettings) {
@@ -76,7 +94,7 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
             <div
                 className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2 ">
                 <div id="user-div" className="col-span-1"></div>
-                <div className="col-span-01 text-3xl text-cyan-500 text-center">{loggesInUser}</div>
+                <div className="col-span-01 text-3xl text-cyan-500 text-center">{loggesInUser.getUsername()}</div>
                 <button onClick={onFriendsButtonClick}
                         className="col-span-10 w-1/6 h-10 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
                     <b className="text-3xl">FRIENDS</b>
@@ -123,38 +141,44 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
                         <div>
                             <form onSubmit={handleMyAccount}>
                                 <p className="text-3xl text-left font-light text-amber-600 ">Account Settings
-                                    for {loggesInUser}</p>
+                                    for {loggesInUser.getUsername()}</p>
                                 <label>
                                     <p className="text-2xl text-left font-light text-amber-600 ">New Username</p>
                                     <input name="newUsername"
                                            className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                           type="text" placeholder="New Username"/>
+                                           type="text" placeholder="Old or New Username" required/>
                                 </label>
                                 <label>
                                     <p className="text-2xl text-left font-light text-amber-600 ">New Email</p>
                                     <input name="newEmail"
                                            className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                           type="text" placeholder="New Email"/>
+                                           type="text" placeholder="New Email" required/>
                                 </label>
                                 <label>
                                     <p className="text-2xl text-left font-light text-amber-600 ">Old Password</p>
-                                    <input name="newPassword" type="text"
+                                    <input name="oldPassword" type="text"
                                            className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                           placeholder="Old Password"/>
+                                           placeholder="Old Password" required/>
                                 </label>
-                                <label>
-                                    <p className="text-2xl text-left font-light text-amber-600 ">New Password</p>
-                                    <input name="newPassword" type="text"
-                                           className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                           placeholder="New Password"/>
-                                </label>
-                                <label>
-                                    <p className="text-2xl text-left font-light text-amber-600 ">Confirm New
-                                        Password</p>
-                                    <input name="newPasswordConfirm" type="text"
-                                           className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                           placeholder="Confirm Password"/>
-                                </label>
+                                <div className="flex">
+                                    <div className="mr-12">
+                                        <label>
+                                            <p className="text-2xl text-left font-light text-amber-600">New Password</p>
+                                            <input name="newPassword" type="text"
+                                                   className="input-field min-w-0 w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                                   placeholder="New Password" required/>
+                                        </label>
+                                    </div>
+                                    <div>
+                                        <label>
+                                            <p className="text-2xl text-left font-light text-amber-600">Confirm New
+                                                Password</p>
+                                            <input name="newPasswordConfirm" type="text"
+                                                   className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                                   placeholder="Confirm Password" required/>
+                                        </label>
+                                    </div>
+                                </div>
                                 <br/>
                                 <button type="submit"
                                         className="w-full-myAccount h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
