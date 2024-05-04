@@ -92,11 +92,23 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
             <KeyInput onKeyPress={handleKeyPress}/>
 
             {showPopup && (
-                <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+                <div id="popup"
+                     className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-80">
+                    <div className="row-span-2 flex items-center justify-center text-white"><b>Player settings</b></div>
                     <div className="bg-white p-8 rounded-lg">
                         {/* Your input fields or content for settings popup */}
-                        <input type="text" placeholder="Enter value" className="mb-4" />
-                        <button onClick={togglePopup} className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded">
+                        <label className="">Number of players:</label><br/>
+                        <input type="number" max="15"
+                               className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 "
+                               placeholder="Number of players" required/>
+
+                        <label className="">Number of imposters:</label><br/>
+                        <input type="number" max="5"
+                               className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 "
+                               placeholder="Number of imposters" required/>
+
+                        <button onClick={togglePopup}
+                                className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded">
                             Save
                         </button>
                     </div>
