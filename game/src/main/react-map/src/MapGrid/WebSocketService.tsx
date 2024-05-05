@@ -2,8 +2,7 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { Player } from './Player';
 import React, {useState} from 'react';
-import currentPlayers from "./CurrentPlayers";
-import CurrentPlayers from "./CurrentPlayers";
+import React from 'react';
 
 interface RegistrationData {
     action?: string | null;
@@ -59,6 +58,14 @@ class WebSocketService {
                     );
                     this.signedIn = true;
                     console.log('Updated playerRef:', playerRef.current);
+                        registrationData.x,
+                        registrationData.y
+                    );
+                    this.signedIn = true;
+                    console.log('Updated playerRef:', playerRef.current);
+                    this.sendMovement("ArrowUp");
+                    this.sendMovement("ArrowDown");
+
                 }
                 const otherPlayer = new Player(
                     registrationData.action ?? '',
@@ -70,6 +77,7 @@ class WebSocketService {
                     '',
                     '',
                     ''
+                    registrationData.y ?? 2
                 )
 
                 if (registrationData.sessionId !== playerRef.current.getSessionId()) {
