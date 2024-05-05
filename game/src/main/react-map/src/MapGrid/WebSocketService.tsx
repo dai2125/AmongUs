@@ -2,8 +2,6 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { Player } from './Player';
 import React, {useState} from 'react';
-import currentPlayers from "./CurrentPlayers";
-import CurrentPlayers from "./CurrentPlayers";
 
 interface RegistrationData {
     action?: string | null;

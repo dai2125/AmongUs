@@ -2,9 +2,6 @@ import React, {FormEvent, useState} from 'react';
 import './main.css'
 import './output.css';
 import amongUsIcon from '../src/Among_Us_logo.png';
-// import Socialbox from "./Socialbox";
-import chatButton from '../../resources/images/chat_button.png';
-// import image from '../ressources/images/chat_button.png';
 
 type Props ={
     loggesInUser: string;

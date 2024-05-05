@@ -3,11 +3,7 @@ import React, { useState } from 'react';
 import HomePage from "./HomePage";
 import LogIn from "./Log-in";
 import CreateAccount from "./CreateAccount";
-import Shhhhh from "./Shhhhh";
 import CurrentPlayers from "./MapGrid/CurrentPlayers";
-import ThereIsAImpostorAmoungUs from "./ThereIsAImpostorAmongUs";
-import Role from "./Role";
-import MapGrid2 from "./MapGrid/MapGrid2";
 
 let loggedInUser: string;
 
@@ -133,10 +129,6 @@ const App: React.FC = () => {
             {showLogIn && <LogIn onLogIn={handleLogin} onCreateAccountNav={handleCreateNav}/>}
             {showMapGrid && <CurrentPlayers onQuit={handleQuit} />}
             {showCreateAccount && <CreateAccount onCreateClick={handleCreate} onLoginNavClick={handleLogInNav}/>}
-            {/*{showShhhhh && <Shhhhh onStart={handleShhhhh}/>}*/}
-            {/*{showThereIsAImpostorAmoungUs && <ThereIsAImpostorAmoungUs onStart={handleThereIsAImpostorAmongUs}/>}*/}
-            {/*{showRole && <Role onStart={handleRole}/>}*/}
-            {/*{showMapGrid2 && <MapGrid2 }*/}
         </div>
     );};
 
