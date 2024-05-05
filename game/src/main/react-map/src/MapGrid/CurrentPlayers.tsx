@@ -118,10 +118,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
                             { showTaskBar ?
                                 <TaskBar/> : <div></div>
                             }
-                            <p className="font-bold m-10 underline-offset-1">Completed Tasks</p>
+                            {/*<p className="font-bold m-10 underline-offset-1">Completed Tasks</p>*/}
                         </div>
                         <div>
                             <TaskList/>
+                            {/*{ showTaskList ?`*/}
+                            {/*    <TaskList/> : <div></div>`*/}
+                            {/*}*/}
                         </div>
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {mapVisible ?

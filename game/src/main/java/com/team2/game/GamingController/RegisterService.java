@@ -86,7 +86,7 @@ public class RegisterService {
     public TaskDTO getTask() {
         return groupManager.distributeTask();
     }
-  
+
     public void updatePlayerPosition(User user) {
         for(User u : userList) {
             if(u.getSessionId().equals(user.getSessionId())) {

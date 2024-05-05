@@ -6,13 +6,13 @@ import CreateAccount from "./CreateAccount";
 import ThereIsAImpostorAmoungUs from "./ThereIsAImpostorAmongUs";
 import CurrentPlayers from "./MapGrid/CurrentPlayers";
 
-let loggedInUser = string;
+let loggedInUser: string;
 
 const App: React.FC = () => {
 
-    const [showMapGrid, setShowMapGrid] = useState<boolean>(false);
+    const [showMapGrid, setShowMapGrid] = useState<boolean>(true);
     const [showHomePage, setShowHomePage] = useState<boolean>(false);
-    const [showLogIn, setShowLogIn] = useState<boolean>(true);
+    const [showLogIn, setShowLogIn] = useState<boolean>(false);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
     // const [showShhhhh, setShowShhhhh] = useState<boolean>(false);
     // const [showThereIsAImpostorAmoungUs, setShowThereIsAImpostorAmoungUs] = useState<boolean>(false);

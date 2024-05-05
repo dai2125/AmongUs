@@ -2,6 +2,7 @@ import React, {FormEvent, useState} from 'react';
 import './main.css'
 import './output.css';
 import amongUsIcon from '../src/Among_Us_logo.png';
+import {User} from "./User";
 
 type Props ={
     loggesInUser: User;

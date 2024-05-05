@@ -15,7 +15,7 @@ function TaskList() {
     }, []);
 
     return (
-        <div className="absolute top-40 left-10 w-100 h-100 bg-white bg-opacity-80 border  px-4 py-1"
+        <div className="absolute top-32 left-1 w-100 h-100 bg-white bg-opacity-80 border  px-4 py-1"
              style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', display: 'flex', alignItems: 'center'}}>
             <div style={{ flex: 1, minHeight: '100%', borderRight: '1px solid #ccc' }}>
                 {myTasks.map((task, index) => (
