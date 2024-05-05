@@ -12,6 +12,7 @@ import ThereIsAImpostorAmongUs from "../ThereIsAImpostorAmongUs";
 import Shhhhh from "../Shhhhh";
 import RoleImpostor from "../RoleImpostor";
 import TaskBar from "../TaskBar";
+import TaskList from "../TaskList";
 
 type Props ={
     onQuit: () => void;
@@ -28,7 +29,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
     const [showThereIsAImpostorAmoungUs, setShowThereIsAImpostorAmoungUs] = useState(false);
     const [showRole, setShowRole] = useState(false);
     const [showRoleImpostor, setShowRoleImpostor] = useState(false);
-    const [showTaskBar, setShowTaskBar] = useState(false);
+    const [showTaskBar, setShowTaskBar] = useState(true);
 
     const toggleChat = () => {
         if(!chatVisible) {
@@ -110,6 +111,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
                                 <TaskBar/> : <div></div>
                             }
                             <p className="font-bold m-10 underline-offset-1">Completed Tasks</p>
+                        </div>
+                        <div>
+                            <TaskList/>
                         </div>
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {mapVisible ?
