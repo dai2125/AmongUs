@@ -1,7 +1,5 @@
 package com.team2.game.PersonManagement;
 
-import org.springframework.stereotype.Service;
-
 public final class PersonValidationUtil {
 
     private final static String NAME_REGEX = "^[a-zA-ZäöüÄÖÜß -]*$";

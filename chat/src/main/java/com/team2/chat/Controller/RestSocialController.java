@@ -1,5 +1,6 @@
-package com.team2.chat;
+package com.team2.chat.Controller;
 
+import com.team2.chat.DataModel.UserChat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;

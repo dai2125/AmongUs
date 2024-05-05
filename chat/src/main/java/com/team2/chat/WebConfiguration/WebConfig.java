@@ -1,4 +1,4 @@
-package com.team2.chat;
+package com.team2.chat.WebConfiguration;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;

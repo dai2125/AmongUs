@@ -1,4 +1,4 @@
-package com.team2.chat;
+package com.team2.chat.Service;
 
 import java.util.Arrays;
 import java.util.List;
