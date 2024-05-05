@@ -1,7 +1,6 @@
 import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { Player } from './Player';
-import React, {useState} from 'react';
 import React from 'react';
 
 interface RegistrationData {
