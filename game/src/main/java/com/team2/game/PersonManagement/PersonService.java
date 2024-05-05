@@ -1,6 +1,7 @@
 package com.team2.game.PersonManagement;
 
 import com.team2.game.DataModel.Person;
+import com.team2.game.DataTransferObject.ChangeDetailDTO;
 import com.team2.game.DataTransferObject.PersonLoginDTO;
 import com.team2.game.DataTransferObject.PersonSignUpDTO;
 import com.team2.game.HttpHandling.ResponseStatusExceptionCustom;
@@ -86,5 +87,20 @@ public class PersonService implements IPersonService {
             throw new ResponseStatusExceptionCustom(ResponseStatusExceptionMessage.USER_NOT_FOUND);
         }
 //        return false;
+    }
+
+    @Override
+    public boolean changeAccountDetail(ChangeDetailDTO changeDetailDTO) {
+
+        if (!personRepository.existsByEmail(changeDetailDTO.getNewEmail())){
+            personRepository.updatePersonDetails(
+                    changeDetailDTO.getOldName(),
+                    changeDetailDTO.getOldPassword(),
+                    changeDetailDTO.getNewName(),
+                    changeDetailDTO.getNewEmail(),
+                    changeDetailDTO.getNewPassword());
+            return true;
+        }
+        return false;
     }
 }

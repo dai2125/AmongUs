@@ -14,6 +14,7 @@ public class MovementService {
     public UserMovementDTO wallCollision(User user) throws JsonProcessingException {
         if(user.getAction().equals(Actions.UP.getAction()) && !DefaultMap.isWall(user.getY() - 1, user.getX())) {
             user.setY(user.getY() - 1);
+
             return new UserMovementDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
         } else if(user.getAction().equals(Actions.DOWN.getAction()) && !DefaultMap.isWall(user.getY() + 1, user.getX())) {
             user.setY(user.getY() + 1);

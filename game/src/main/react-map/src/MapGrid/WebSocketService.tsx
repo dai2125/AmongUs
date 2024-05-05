@@ -2,6 +2,7 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { Player } from './Player';
 import React, {useState} from 'react';
+import React from 'react';
 
 interface RegistrationData {
     action?: string | null;
@@ -56,7 +57,11 @@ class WebSocketService {
                         ''
                     );
                     this.signedIn = true;
+                    this.signedIn = true;
                     console.log('Updated playerRef:', playerRef.current);
+                    this.sendMovement("ArrowUp");
+                    this.sendMovement("ArrowDown");
+
                 }
                 const otherPlayer = new Player(
                     registrationData.action ?? '',
@@ -112,16 +117,7 @@ class WebSocketService {
                 })
             })
 
-            // this.client.subscribe(`/topic/startGame/${this.playerRef.current.getSessionId()}`, (message) => {
             this.client.subscribe('/topic/startGame/', () => {
-                // const task = JSON.parse(message.body);
-                // this.playerRef.current.setTask1(task.task1);
-                // this.playerRef.current.setTask2(task.task2);
-                // this.playerRef.current.setTask3(task.task3);
-                // this.playerRef.current.setRole(task.role);
-
-                // console.log('Received task: ' + task.task1 + '' + task.task2 + ' ' + task.task3 + ' ' + task.role);
-
                 this.startTimer();
                 this.gimmeWork();
             });
@@ -183,8 +179,6 @@ class WebSocketService {
                 }
             })
             .then((data: TaskResponse) => {
-                console.log('Response from task Controller');
-                // Hier können Sie auf die Daten zugreifen, ohne dass sie rot markiert werden
                 this.playerRef.current.setTask1(data.task1);
                 this.playerRef.current.setTask2(data.task2);
                 this.playerRef.current.setTask3(data.task3);

@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import HomePage from "./HomePage";
 import LogIn from "./Log-in";
 import CreateAccount from "./CreateAccount";
+import ThereIsAImpostorAmoungUs from "./ThereIsAImpostorAmongUs";
 import CurrentPlayers from "./MapGrid/CurrentPlayers";
 
 let loggedInUser: string;
@@ -37,7 +38,8 @@ const App: React.FC = () => {
                     console.log(data);
                     setShowHomePage(true);
                     setShowLogIn(false);
-                    loggedInUser = name;
+                    loggedInUser.setUsername(name);
+                    loggedInUser.setPassword(password);
                 }else{
                     alert("Name or Password is wrong");
                     console.log(data.status);

@@ -84,6 +84,14 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
         }
     };
 
+    const [showPopup, setShowPopup] = useState(false);
+
+    const togglePopup = () => {
+        setShowPopup(!showPopup);
+    };
+
+
+
     return (
         <div>
             <div className="background">
@@ -127,6 +135,43 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
                         <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-start">
                             <button
                                 className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings
+
+                    {showPopup && (
+                        <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+                            <div className="bg-white p-8 rounded-lg">
+                                {/* Your input fields or content for settings popup */}
+                                <label className="text-white">Number of players:</label><br/>
+                                <input type="number" max="15"
+                                       className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                       placeholder="Number of players" required/>
+
+                                <label className="text-white">Number of imposters:</label><br/>
+                                <input type="number" max="5"
+                                       className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                       placeholder="Number of imposters" required/>
+
+                                <button onClick={togglePopup}
+                                        className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    )}
+
+                    <div className="grid grid-cols-12 row-span-9 gap-5 h-5/6">
+
+                        <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-end">
+                            <p className="font-bold m-10 underline-offset-1">Completed Tasks</p>
+                        </div>
+                        <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
+                            <MapGrid
+                                currentPlayer={playerRef.current}
+                                otherPlayers={otherPlayers || []}
+                            />
+                        </div>
+                        <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-start">
+                            <button onClick={togglePopup}
+                                    className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings
                             </button>
                             <button
                                 className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Map
