@@ -15,8 +15,6 @@ import TaskBar from "../TaskBar";
 
 type Props ={
     onQuit: () => void;
-    // onStart: () => void;
-    // startTimer: () => void;
 };
 
 const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
@@ -43,7 +41,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
     const handleStartTimer = () => {
         if(!timerStarted) {
             setTimerStarted(true);
-            // setShowShhhhh(true);
         }
     }
 
@@ -54,13 +51,11 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
 
     const handleShhhhh = () => {
         setShowShhhhh(false);
-        setShowThereIsAImpostorAmoungUs(true); // "thereIsAImpostorAmoungUs" anzeigen
+        setShowThereIsAImpostorAmoungUs(true);
     }
 
     const handleThereIsAImpostorAmongUs = () => {
         setShowThereIsAImpostorAmoungUs(false);
-
-        console.log('CurrentPlayer your Role is: ' + playerRef.current.getRole());
         if(playerRef.current.getRole() === "impostor") {
             setShowRoleImpostor(true);
         } else {
