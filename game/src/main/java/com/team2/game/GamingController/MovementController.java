@@ -54,8 +54,9 @@ public class MovementController {
             messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(u));
         }
 
-        if(registerService.startGame) {
+        if(registerService.startGame && !registerService.sendAlready) {
             messagingTemplate.convertAndSend("/topic/startGame/", "test");
+            registerService.sendAlready = true;
         }
     }
 

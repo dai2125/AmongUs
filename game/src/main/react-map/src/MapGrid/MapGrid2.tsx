@@ -7,7 +7,7 @@ interface MapGridProps {
     otherPlayers: Player[];
 }
 
-const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
+const MapGrid2: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
     const [gridKey, setGridKey] = useState(0);
 
     useEffect(() => {
@@ -87,4 +87,4 @@ const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
     );
 };
 
-export default MapGrid;
+export default MapGrid2;

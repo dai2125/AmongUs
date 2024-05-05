@@ -20,7 +20,7 @@ public class RegisterService {
     private int counter = 0;
     private ObjectMapper objectMapper = new ObjectMapper();
     public boolean startGame = false;
-
+    public boolean sendAlready = false;
 
     @Autowired
     private GroupManager groupManager;
@@ -35,10 +35,11 @@ public class RegisterService {
         resetCounter(counter);
         groupManager.addToTheGroup(user);
 
-        if(groupManager.groupIsFull()) {
+        if(groupManager.groupIsFull() && !sendAlready) {
             groupManager.setTheImposter();
 //            groupManager.distributeTaskToUser();
             startGame = true;
+//            sendAlready = true;
         }
         return userRegisterDTO;
     }
@@ -80,5 +81,9 @@ public class RegisterService {
             user.setY(r.nextInt(5) + 2);
             user.setX(r.nextInt(5) + 2);
         }
+    }
+
+    public TaskDTO getTask() {
+        return groupManager.distributeTask();
     }
 }
