@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import thereIsAImpostorAmongUs from "../src/ThereIsAImpostorAmongUs.jpg"
+import thereIsAImpostorAmongUs from "./images/ThereIsAImpostorAmongUs.jpg"
 
 const ThereIsAImpostorAmongUs = ({onStart}) => {
 

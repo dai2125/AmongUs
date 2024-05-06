@@ -3,20 +3,16 @@ import React, { useState } from 'react';
 import HomePage from "./HomePage";
 import LogIn from "./Log-in";
 import CreateAccount from "./CreateAccount";
-import ThereIsAImpostorAmoungUs from "./ThereIsAImpostorAmongUs";
 import CurrentPlayers from "./MapGrid/CurrentPlayers";
 
 let loggedInUser: string;
 
 const App: React.FC = () => {
 
-    const [showMapGrid, setShowMapGrid] = useState<boolean>(true);
+    const [showMapGrid, setShowMapGrid] = useState<boolean>(false);
     const [showHomePage, setShowHomePage] = useState<boolean>(false);
-    const [showLogIn, setShowLogIn] = useState<boolean>(false);
+    const [showLogIn, setShowLogIn] = useState<boolean>(true);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
-    // const [showShhhhh, setShowShhhhh] = useState<boolean>(false);
-    // const [showThereIsAImpostorAmoungUs, setShowThereIsAImpostorAmoungUs] = useState<boolean>(false);
-    // const [showRole, setShowRole] = useState<boolean>(false);
 
     const handleLogin = (name:string, password: string) => {
 
@@ -40,7 +36,7 @@ const App: React.FC = () => {
                     setShowLogIn(false);
                     loggedInUser.setUsername(name);
                     loggedInUser.setPassword(password);
-                }else{
+                } else {
                     alert("Name or Password is wrong");
                     console.log(data.status);
                 }
@@ -104,26 +100,6 @@ const App: React.FC = () => {
         setShowMapGrid(false);
         setShowHomePage(true);
     };
-
-    // const handleStart = () => {
-    //     setShowMapGrid(false);
-    //     setShowShhhhh(true);
-    // }
-
-    // const handleShhhhh = () => {
-    //     setShowShhhhh(false);
-    //     setShowThereIsAImpostorAmoungUs(true);
-    // }
-
-    // const handleThereIsAImpostorAmongUs = () => {
-    //     setShowThereIsAImpostorAmoungUs(false);
-    //     setShowRole(true);
-    // }
-
-    // const handleRole = () => {
-    //     setShowRole(false);
-    //     setShowMapGrid(true);
-    // }
 
     return (
         <div>

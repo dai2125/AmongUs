@@ -97,8 +97,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
             <div className="background">
                 <div className="grid grid-rows-10 h-screen w-screen  ">
                     <div className="row-span-1 ">
-                        <div
-                            className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2">
+                        <div className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2">
                             <div id="user-div" className="col-span-1"></div>
                             {/*<button onClick={toggleChat} className="text-white bg-gray-700 hover:bg-gray-800 font-bold py-2 px-4 rounded m-10">*/}
                             {/*    Press me*/}
@@ -133,8 +132,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
                             }
                         </div>
                         <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-start">
-                            <button
-                                className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings
+                            <button className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings</button>
 
                     {showPopup && (
                         <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
@@ -159,7 +157,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
                     )}
 
                     <div className="grid grid-cols-12 row-span-9 gap-5 h-5/6">
-
                         <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-end">
                             <p className="font-bold m-10 underline-offset-1">Completed Tasks</p>
                         </div>
@@ -200,6 +197,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
                 </div>
             </div>
             <KeyInput onKeyPress={handleKeyPress}/>
+        </div>
+            </div>
         </div>
     );
 };

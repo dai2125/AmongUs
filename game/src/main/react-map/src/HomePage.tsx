@@ -1,11 +1,12 @@
 import React, {FormEvent, useState} from 'react';
 import './main.css'
 import './output.css';
-import amongUsIcon from '../src/Among_Us_logo.png';
-import {User} from "./User";
+import amongUsIcon from './images/Among_Us_logo.png';
+import AppearanceBox from "./AppearanceBox";
+// import {User} from "./User";
 
 type Props ={
-    loggesInUser: User;
+    loggesInUser: string;
     onPlayButtonClick(): void;
 }
 
@@ -15,6 +16,7 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
     const [showSocialBox, setShowSocialBox] = useState(false);
     const [errorMessage , setErrorMessage] = useState("");
     const [successMessage , setSuccessMessage] = useState("");
+    const [showAppearanceBox, setShowAppearanceBox] = useState(false);
 
     const handleMyAccount = (event: FormEvent<HTMLFormElement>) => {
 
@@ -24,8 +26,8 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
         const data = new FormData(form);
 
         const user = {
-            oldName: loggesInUser.getUsername(),
-            oldPassword: loggesInUser.getPassword(),
+            // oldName: loggesInUser.getUsername(),
+            // oldPassword: loggesInUser.getPassword(),
             newName: data.get('newUsername') as string,
             newEmail: data.get('newEmail') as string,
             oldPasswordInput: data.get('oldPassword') as string,
@@ -51,8 +53,8 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
                     setSuccessMessage("Account Changed Successfully");
                     setErrorMessage("");
                     // alert("Account Created Successfully");
-                    loggesInUser.setUsername(user.newName);
-                    loggesInUser.setPassword(user.newPassword);
+                    // loggesInUser.setUsername(user.newName);
+                    // loggesInUser.setPassword(user.newPassword);
 
                 } else if(data.status == 400){
                     setErrorMessage("Email is already taken");
@@ -66,7 +68,9 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
             .catch(error => {
                 console.error('Error:', error);
             });
-        }else{alert("Email or password is not valid");}
+        } else {
+            alert("Email or password is not valid");
+        }
     }
 
         const onMyAccountButtonClick = () => {
@@ -87,12 +91,21 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
             }
         }
 
+    const onMyAppearancesButtonClick = () => {
+        if(!showAppearanceBox) {
+            setShowAppearanceBox(true);
+        } else {
+            setShowSocialBox(false);
+            setShowAccountSettings(false)
+        }
+    }
+
     return (
         <div className="background grid grid-rows-12 min-h-screen w-screen p-10">
             <div
                 className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2 ">
                 <div id="user-div" className="col-span-1"></div>
-                <div className="col-span-01 text-3xl text-cyan-500 text-center">{loggesInUser.getUsername()}</div>
+                <div className="col-span-01 text-3xl text-cyan-500 text-center">{loggesInUser}</div>
                 <button onClick={onFriendsButtonClick}
                         className="col-span-10 w-1/6 h-10 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
                     <b className="text-3xl">FRIENDS</b>
@@ -114,8 +127,8 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
                         <img alt="amongUsIcon" src={amongUsIcon}></img>
                     {/*<p className="text-5xl text-center font-light text-amber-600 underline">AMONG US</p>*/}
                 </div>
-                <div
-                    className="p-4 grid grid-rows-3 row-span-7 border-double rounded-lg border-2 border-fuchsia-800 w-11/12 h-5/6 justify-self-center align-items-center">
+                    <div
+                        className="p-4 grid grid-rows-3 row-span-7 border-double rounded-lg border-2 border-fuchsia-800 w-11/12 h-5/6 justify-self-center align-items-center">
                         <button onClick={onPlayButtonClick}
                                 className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
                             <b className="text-3xl">PLAY</b>
@@ -123,60 +136,56 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
 
                         {/* Wiederhole für die anderen Buttons */}
                         <button onClick={onMyAccountButtonClick}
-                        /*<button*/
+                            /*<button*/
                                 className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
                             <b className="text-3xl">MY ACCOUNT</b>
+                        </button>
+                        <button onClick={onMyAppearancesButtonClick}
+                                className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
+                            <b className="text-3xl">MY APPEARANCE</b>
                         </button>
                     </div>
 
                 </div>
-
-                {/* Zweite Hauptspalte */}
                 <div
                     className="bg-transparent border-double rounded-lg border-2 border-teal-400 col-span-2 w-full justify-self-start p-4">
-                    {/* Inhalt der zweiten Spalte */}
                     {showAccountSettings ? (
-                        // TODO add old PasswordField for security reasons
                         <div>
                             <form onSubmit={handleMyAccount}>
-                                <p className="text-3xl text-left font-light text-amber-600 ">Account Settings
-                                    for {loggesInUser.getUsername()}</p>
+                                <p className="text-2xl text-left font-light text-amber-600 ">Account Settings
+                                    for {loggesInUser}</p>
                                 <label>
-                                    <p className="text-2xl text-left font-light text-amber-600 ">New Username</p>
+                                    <p className="text-1xl text-left font-light text-amber-600 ">New Username</p>
                                     <input name="newUsername"
                                            className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                            type="text" placeholder="Old or New Username" required/>
                                 </label>
                                 <label>
-                                    <p className="text-2xl text-left font-light text-amber-600 ">New Email</p>
+                                    <p className="text-1xl text-left font-light text-amber-600 ">New Email</p>
                                     <input name="newEmail"
                                            className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                            type="text" placeholder="New Email" required/>
                                 </label>
                                 <label>
-                                    <p className="text-2xl text-left font-light text-amber-600 ">Old Password</p>
+                                    <p className="text-1xl text-left font-light text-amber-600 ">Old Password</p>
                                     <input name="oldPassword" type="text"
-                                           className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                           className="input-field min-w-0 w-full bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                            placeholder="Old Password" required/>
                                 </label>
-                                <div className="flex">
-                                    <div className="mr-12">
-                                        <label>
-                                            <p className="text-2xl text-left font-light text-amber-600">New Password</p>
-                                            <input name="newPassword" type="text"
-                                                   className="input-field min-w-0 w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                                   placeholder="New Password" required/>
-                                        </label>
-                                    </div>
-                                    <div>
-                                        <label>
-                                            <p className="text-2xl text-left font-light text-amber-600">Confirm New
-                                                Password</p>
-                                            <input name="newPasswordConfirm" type="text"
-                                                   className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                                   placeholder="Confirm Password" required/>
-                                        </label>
-                                    </div>
+                                <label>
+                                    <p className="text-1xl text-left font-light text-amber-600">New Password</p>
+                                    <input name="newPassword" type="text"
+                                           className="input-field min-w-0 w-full bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                           placeholder="New Password" required/>
+                                </label>
+                                <div>
+                                    <label>
+                                        <p className="text-1xl text-left font-light text-amber-600">Confirm New
+                                            Password</p>
+                                        <input name="newPasswordConfirm" type="text"
+                                               className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                               placeholder="Confirm Password" required/>
+                                    </label>
                                 </div>
                                 <br/>
                                 <button type="submit"
@@ -193,7 +202,17 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
                     ) : (
                         <div>Select an option</div>
                     )}
+                    <div>
+                        {showAppearanceBox ?
+                            <div>
+                                <AppearanceBox></AppearanceBox>
+                            </div> :
+                            <div>
+                            </div>
+                        }
+                    </div>
                 </div>
+
             </div>
         </div>
     );
