@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import shhhhh from "../src/shhhhh.png"
+import shhhhh from "./images/shhhhh.png"
 
 const Shhhhh = ({onStart}) => {
 

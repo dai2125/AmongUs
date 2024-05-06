@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import roleImpostor from "../src/Impostor_Role_Reveal.jpg"
+import roleImpostor from "./images/Impostor_Role_Reveal.jpg"
 // import roleImpostor from "../src/Impostor_Role_Reveal.jpg"
 
 // TODO if role is impostor, show roleImpostor else show roleCrewmate
