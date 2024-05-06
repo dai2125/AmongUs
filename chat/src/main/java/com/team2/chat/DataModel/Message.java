@@ -13,4 +13,5 @@ public class Message {
 
     private String userId;
     private String message;
+    private String color;
 }
