@@ -1,5 +1,6 @@
 package com.team2.chat.Controller;
 
+import com.team2.chat.DataModel.Message;
 import com.team2.chat.Service.ChatService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -12,27 +13,27 @@ import org.springframework.stereotype.Controller;
 @Controller
 public class ChatController {
 
-        @Autowired
-        private SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate;
 
 //        public ChatController(SimpMessagingTemplate messagingTemplate) {
 //            this.messagingTemplate = messagingTemplate;
 //        }
 
-        @Autowired
-        private ChatService chatService;
+    @Autowired
+    private ChatService chatService;
 
-        RestChatController restChatController = new RestChatController();
+    RestChatController restChatController = new RestChatController();
 
-        @MessageMapping("/ingoing/")
-        @SendTo("topic/ingoing/")
-        public void ingoing(@Payload Message message) {
-            chatService.processMessage(message);
-            messagingTemplate.convertAndSend("/topic/ingoing/", message);
+    @MessageMapping("/ingoing/")
+    @SendTo("topic/ingoing/")
+    public void ingoing(@Payload Message message) {
+        chatService.processMessage(message);
+        messagingTemplate.convertAndSend("/topic/ingoing/", message);
 
 //            message.setMessage(restChatController.sendToWebService(message.getMessage()));
 //            System.out.println("ChatController: " + message.getMessage());
-        }
+    }
 
     @MessageMapping("/ingoing/{userId}")
     public void ingoingUserId(@Payload Message message, @DestinationVariable String userId) {
@@ -41,7 +42,7 @@ public class ChatController {
 //        messagingTemplate.convertAndSend("/topic/ingoing/", message);
 
         message.setMessage(restChatController.sendToWebService(message.getMessage()));
-        System.out.println("ChatController: " + message.getMessage());
+//        System.out.println("ChatController: " + message.getMessage() + " " + message.getColor());
         messagingTemplate.convertAndSend(String.format("/topic/ingoing/%s", userId), message);
         messagingTemplate.convertAndSend("/topic/ingoing/", message);
     }

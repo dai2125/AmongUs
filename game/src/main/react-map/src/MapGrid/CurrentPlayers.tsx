@@ -117,7 +117,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
                             { showTaskBar ?
                                 <TaskBar/> : <div></div>
                             }
-                            {/*<p className="font-bold m-10 underline-offset-1">Completed Tasks</p>*/}
                         </div>
                         <div>
                             <TaskList/>
@@ -126,10 +125,11 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
                             {/*}*/}
                         </div>
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
-                            {mapVisible ?
-                                <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
-                                <MapGrid2 currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/>
-                            }
+                            <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/>
+                            {/*{mapVisible ?*/}
+                            {/*    <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :*/}
+                            {/*    <div></div>*/}
+                            {/*}*/}
                         </div>
                         <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-start">
                             <button className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings</button>
@@ -157,15 +157,15 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
                     )}
 
                     <div className="grid grid-cols-12 row-span-9 gap-5 h-5/6">
-                        <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-end">
-                            <p className="font-bold m-10 underline-offset-1">Completed Tasks</p>
-                        </div>
-                        <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
-                            <MapGrid
-                                currentPlayer={playerRef.current}
-                                otherPlayers={otherPlayers || []}
-                            />
-                        </div>
+                        {/*<div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-end">*/}
+                            {/*<p className="font-bold m-10 underline-offset-1">Completed Tasks</p>*/}
+                        {/*</div>*/}
+                        {/*<div className="col-span-6 border-solid rounded-lg flex justify-center items-center">*/}
+                        {/*    <MapGrid*/}
+                        {/*        currentPlayer={playerRef.current}*/}
+                        {/*        otherPlayers={otherPlayers || []}*/}
+                        {/*    />*/}
+                        {/*</div>*/}
                         <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-start">
                             <button onClick={togglePopup}
                                     className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings

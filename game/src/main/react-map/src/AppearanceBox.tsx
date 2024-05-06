@@ -1,18 +1,18 @@
 import React from 'react';
 import '../src/CSS/rainbowButton.css';
+import red from './images/Characters/red.jpg';
 import blue from '../src/images/Characters/Blue.jpg';
-import red from '../src/images/Characters/Red.jpg';
-import green from '../src/images/Characters/Green.jpg';
-import orange from '../src/images/Characters/Orange.jpg';
-import yellow from '../src/images/Characters/Yellow.png';
-import purple from '../src/images/Characters/Purple.jpg';
-import brown from '../src/images/Characters/Brown.jpg';
 import cyan from '../src/images/Characters/Cyan.jpg';
 import lime from '../src/images/Characters/Lime.jpg';
 import pink from '../src/images/Characters/Pink.jpg';
+import gray from '../src/images/Characters/Gray.jpg';
+import green from '../src/images/Characters/Green.jpg';
+import brown from '../src/images/Characters/Brown.jpg';
 import white from '../src/images/Characters/White.jpg';
 import black from '../src/images/Characters/Black.jpg';
-import gray from '../src/images/Characters/Gray.jpg';
+import orange from '../src/images/Characters/Orange.jpg';
+import yellow from '../src/images/Characters/Yellow.png';
+import purple from '../src/images/Characters/Purple.jpg';
 
 function AppearanceBox() {
 
