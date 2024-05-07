@@ -1,15 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {FormEvent, useEffect, useRef, useState} from 'react';
 import WebSocketService from './WebSocketService';
 import MapGrid from './MapGrid';
 import KeyInput from './KeyInputs';
 import { Player } from './Player';
 import chatButton from "../../../resources/images/chat_button.png";
 import Chatbox from "../Chatbox";
+import {Game} from "../Game";
 
 type Props ={
     onQuit: () => void;
     onStart: () => void;
 };
+
+let activeGame= new Game();
 
 const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
     const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
@@ -42,6 +45,37 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
     const [showPopup, setShowPopup] = useState(false);
 
     const togglePopup = () => {
+        setShowPopup(!showPopup);
+    };
+
+    const handleSave = (event: FormEvent<HTMLFormElement>) => {
+
+        event.preventDefault();
+
+        const form = event.currentTarget;
+        const data = new FormData(form);
+
+        const game = {
+            players: data.get('players')
+        }
+
+        fetch('http://localhost:8080/gameSettings',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(game),
+        })
+            .then(data => {
+                if(data.status === 200){
+                    //setShowPopup(!showPopup);
+                }else{
+
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
         setShowPopup(!showPopup);
     };
 
@@ -92,26 +126,14 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
             <KeyInput onKeyPress={handleKeyPress}/>
 
             {showPopup && (
-                <div id="popup"
-                     className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-80">
-                    <div className="row-span-2 flex items-center justify-center text-white"><b>Player settings</b></div>
-                    <div className="bg-white p-8 rounded-lg">
+                <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+                    <form onSubmit={handleSave} className="bg-white p-8 rounded-lg">
                         {/* Your input fields or content for settings popup */}
-                        <label className="">Number of players:</label><br/>
-                        <input type="number" max="15"
-                               className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 "
-                               placeholder="Number of players" required/>
-
-                        <label className="">Number of imposters:</label><br/>
-                        <input type="number" max="5"
-                               className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 "
-                               placeholder="Number of imposters" required/>
-
-                        <button onClick={togglePopup}
-                                className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded">
+                        <input name="players" type="text" placeholder="Enter value" className="mb-4" />
+                        <button className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded">
                             Save
                         </button>
-                    </div>
+                    </form>
                 </div>
             )}
         </div>
