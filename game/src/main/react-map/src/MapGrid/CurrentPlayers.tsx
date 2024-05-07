@@ -135,23 +135,33 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
 
             {showPopup && (
                 <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
-                    <form onSubmit={handleSave} className="bg-white p-8 rounded-lg">
-                        {/* Your input fields or content for settings popup */}
-                        <label className="text-white">Number of players:</label><br/>
-                        <input  name="players" type="number" max="15"
-                               className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20"
-                               placeholder="Number of players" required/>
+                    <div
+                        className="grid grid-rows-10 bg-black border-double rounded-lg border-2 border-black w-1/4 h-96">
+                        <div className="row-span-2 flex items-center justify-center text-white"><b>Player settings</b>
+                        </div>
+                        <div className="row-span-7 justify-self-center">
+                            <form onSubmit={handleSave} className="p-3">
+                                <div>
+                                    <label className="text-white">Number of players:</label><br/>
+                                    <input type="number"
+                                           className=" bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                           max="15" min="3" placeholder="min 3" required/><br/>
 
-                        <label className="text-white">Number of imposters:</label><br/>
-                        <input name="imposters" type="number" max="5"
-                               className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20"
-                               placeholder="Number of imposters" required/>
+                                    <label className="text-white">Number of imposters:</label><br/>
+                                    <input type="number"
+                                           className=" bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                           max="5" min="1" placeholder=" min 1" required/><br/>
+                                </div>
 
-                        <button
-                                className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded">
-                            Save
-                        </button>
-                    </form>
+                                <div className="flex justify-center">
+                                    <button onClick={togglePopup}
+                                            className="bg-gray-500 hover:bg-gray-400 text-slate-50 font-bold py-2 px-4 rounded mt-3">Save
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
                 </div>
             )}
         </div>
