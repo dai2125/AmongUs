@@ -19,8 +19,10 @@ public class Game {
 
     @Column(nullable = false, name = "players")
     private int players;
+
     @Column(nullable = false, name = "crew-mates")
     private int crewMates;
+
     @Column(nullable = false, name = "imposters")
     private int imposters;
 
