@@ -3,6 +3,7 @@ package com.team2.game.RestController;
 import com.team2.game.DataTransferObject.GameDTO;
 import com.team2.game.GameManagement.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +17,10 @@ public class RestControllerGameSettings {
     public RestControllerGameSettings(GameService gameService) {this.gameService = gameService;}
 
     @PostMapping("/gameSettings")
-    public boolean gameSettings(@RequestBody GameDTO gameDTO) {
-        return gameService.gameSettings(gameDTO);
+    public ResponseEntity<Void> gameSettings(@RequestBody GameDTO gameDTO) {
+        if (gameService.gameSettings(gameDTO)){
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.badRequest().build();
     }
 }

@@ -55,9 +55,16 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
         const form = event.currentTarget;
         const data = new FormData(form);
 
+        const players = Number(data.get('players'));
+        const imposters = Number(data.get('imposters'));
+
+        const crewMates = players - imposters;
+
         const game = {
-            players: data.get('players')
-        }
+            players: players,
+            imposters: imposters,
+            crewMates: crewMates
+        };
 
         fetch('http://localhost:8080/gameSettings',{
             method: 'POST',
@@ -129,8 +136,18 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
                 <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
                     <form onSubmit={handleSave} className="bg-white p-8 rounded-lg">
                         {/* Your input fields or content for settings popup */}
-                        <input name="players" type="text" placeholder="Enter value" className="mb-4" />
-                        <button className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded">
+                        <label className="text-white">Number of players:</label><br/>
+                        <input  name="players" type="number" max="15"
+                               className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20"
+                               placeholder="Number of players" required/>
+
+                        <label className="text-white">Number of imposters:</label><br/>
+                        <input name="imposters" type="number" max="5"
+                               className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20"
+                               placeholder="Number of imposters" required/>
+
+                        <button onClick={togglePopup}
+                                className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded">
                             Save
                         </button>
                     </form>
