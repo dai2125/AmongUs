@@ -14,17 +14,19 @@ import lombok.*;
 @ToString
 public class Game {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column
     private long id;
 
     @Column(nullable = false, name = "players")
     private int players;
 
+    @Column(nullable = false, name = "imposters")
+    private int imposters;
+
     @Column(nullable = false, name = "crew-mates")
     private int crewMates;
 
-    @Column(nullable = false, name = "imposters")
-    private int imposters;
+
 
 
 }
