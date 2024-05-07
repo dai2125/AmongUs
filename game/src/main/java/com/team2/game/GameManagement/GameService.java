@@ -16,7 +16,7 @@ public class GameService implements IGameService{
     @Override
     public boolean createGame(GameDTO gameDTO) throws ResponseStatusExceptionCustom {
         try {
-            Game game = this.gameRepository.findById(gameDTO.getId());
+            Game game = this.gameRepository.findById(123456789012345L);
             if (game == null) {
                 gameRepository.save(Game.builder().players(gameDTO.getPlayers()).imposters(gameDTO.getImposters()).crewMates(gameDTO.getCrewMates()).build());
                 return true;
@@ -29,9 +29,11 @@ public class GameService implements IGameService{
     }
 
     @Override
-    public boolean gameSettings(GameDTO gameDTO){
-        if (!gameRepository.existsById(gameDTO.getId())){
-            gameRepository.updateGameSettings(gameDTO.getId(), gameDTO.getPlayers(), gameDTO.getImposters(), gameDTO.getCrewMates());
+    public boolean gameSettings(GameDTO gameDTO) throws ResponseStatusExceptionCustom {
+        if (!gameRepository.existsById(123456789012345L)){
+            this.createGame(gameDTO);
+            gameRepository.updateGameSettings(123456789012345L, gameDTO.getPlayers(), gameDTO.getImposters(), gameDTO.getCrewMates());
+            return true;
         }
         return false;
     }

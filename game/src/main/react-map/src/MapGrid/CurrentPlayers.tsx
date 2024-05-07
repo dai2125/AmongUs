@@ -66,6 +66,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
             crewMates: crewMates
         };
 
+        console.log(game.players);
         fetch('http://localhost:8080/gameSettings',{
             method: 'POST',
             headers: {
@@ -75,7 +76,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
         })
             .then(data => {
                 if(data.status === 200){
-                    //setShowPopup(!showPopup);
+                    setShowPopup(!showPopup);
                 }else{
 
                 }
@@ -83,7 +84,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
             .catch(error => {
                 console.error('Error:', error);
             });
-        setShowPopup(!showPopup);
+
     };
 
     return (
@@ -146,7 +147,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
                                className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20"
                                placeholder="Number of imposters" required/>
 
-                        <button onClick={togglePopup}
+                        <button
                                 className="bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded">
                             Save
                         </button>
