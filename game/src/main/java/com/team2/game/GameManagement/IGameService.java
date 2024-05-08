@@ -6,6 +6,6 @@ import com.team2.game.HttpHandling.ResponseStatusExceptionCustom;
 
 public interface IGameService {
 
-    boolean createGame(GameDTO gameDTO) throws ResponseStatusExceptionCustom;
+    //boolean createGame(GameDTO gameDTO) throws ResponseStatusExceptionCustom;
     boolean gameSettings(GameDTO gameDTO) throws ResponseStatusExceptionCustom;
 }

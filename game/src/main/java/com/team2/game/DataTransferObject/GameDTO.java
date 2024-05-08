@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 public class GameDTO {
 
+    private long id;
     private int players;
     private int imposters;
     private int crewMates;

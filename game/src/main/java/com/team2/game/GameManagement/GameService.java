@@ -12,13 +12,13 @@ public class GameService implements IGameService{
 
     @Autowired
     private GameRepository gameRepository;
-
+/*
     @Override
     public boolean createGame(GameDTO gameDTO) throws ResponseStatusExceptionCustom {
         try {
-            Game game = this.gameRepository.findById(123456789012345L);
+            Game game = this.gameRepository.findById(gameDTO.getId());
             if (game == null) {
-                gameRepository.save(Game.builder().players(gameDTO.getPlayers()).imposters(gameDTO.getImposters()).crewMates(gameDTO.getCrewMates()).build());
+                gameRepository.save(Game.builder().id(gameDTO.getId()).players(gameDTO.getPlayers()).imposters(gameDTO.getImposters()).crewMates(gameDTO.getCrewMates()).build());
                 return true;
             }else {
                 return false;
@@ -27,14 +27,16 @@ public class GameService implements IGameService{
             throw new ResponseStatusExceptionCustom(ResponseStatusExceptionMessage.GAME_ALREADY_EXISTS);
         }
     }
-
+*/
     @Override
     public boolean gameSettings(GameDTO gameDTO) throws ResponseStatusExceptionCustom {
-        if (!gameRepository.existsById(123456789012345L)){
-            this.createGame(gameDTO);
-            gameRepository.updateGameSettings(123456789012345L, gameDTO.getPlayers(), gameDTO.getImposters(), gameDTO.getCrewMates());
+        if (!gameRepository.existsById(gameDTO.getId())){
+            //TODO create game in a different method
+            gameRepository.save(Game.builder().id(gameDTO.getId()).players(gameDTO.getPlayers()).imposters(gameDTO.getImposters()).crewMates(gameDTO.getCrewMates()).build());
+            return true;
+        }else {
+            gameRepository.updateGameSettings(gameDTO.getId(), gameDTO.getPlayers(), gameDTO.getImposters(), gameDTO.getCrewMates());
             return true;
         }
-        return false;
     }
 }

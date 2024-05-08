@@ -12,7 +12,7 @@ type Props ={
     onStart: () => void;
 };
 
-let activeGame= new Game();
+//let activeGame= new Game();
 
 const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
     const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
@@ -57,16 +57,16 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
 
         const players = Number(data.get('players'));
         const imposters = Number(data.get('imposters'));
-
         const crewMates = players - imposters;
+        const id = 1;
 
         const game = {
+            id: id,
             players: players,
             imposters: imposters,
             crewMates: crewMates
         };
 
-        console.log(game.players);
         fetch('http://localhost:8080/gameSettings',{
             method: 'POST',
             headers: {
@@ -78,7 +78,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
                 if(data.status === 200){
                     setShowPopup(!showPopup);
                 }else{
-
+                    alert("Something went wrong, try again")
                 }
             })
             .catch(error => {
@@ -134,27 +134,27 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, onStart}) => {
             <KeyInput onKeyPress={handleKeyPress}/>
 
             {showPopup && (
-                <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
+                <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
                     <div
-                        className="grid grid-rows-10 bg-black border-double rounded-lg border-2 border-black w-1/4 h-96">
+                        className="grid grid-rows-10 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-2/6 h-80">
                         <div className="row-span-2 flex items-center justify-center text-white"><b>Player settings</b>
                         </div>
                         <div className="row-span-7 justify-self-center">
                             <form onSubmit={handleSave} className="p-3">
                                 <div>
                                     <label className="text-white">Number of players:</label><br/>
-                                    <input type="number"
+                                    <input name="players" type="number"
                                            className=" bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                            max="15" min="3" placeholder="min 3" required/><br/>
 
                                     <label className="text-white">Number of imposters:</label><br/>
-                                    <input type="number"
+                                    <input name="imposters" type="number"
                                            className=" bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                            max="5" min="1" placeholder=" min 1" required/><br/>
                                 </div>
 
                                 <div className="flex justify-center">
-                                    <button onClick={togglePopup}
+                                    <button
                                             className="bg-gray-500 hover:bg-gray-400 text-slate-50 font-bold py-2 px-4 rounded mt-3">Save
                                     </button>
                                 </div>

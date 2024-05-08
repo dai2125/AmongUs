@@ -19,7 +19,6 @@ public class RestControllerGameSettings {
 
     @PostMapping("/gameSettings")
     public ResponseEntity<Void> gameSettings(@RequestBody GameDTO gameDTO) throws ResponseStatusExceptionCustom {
-        System.out.println( " crewmates: " + gameDTO.getCrewMates());
         if (gameService.gameSettings(gameDTO)){
             return ResponseEntity.ok().build();
         }

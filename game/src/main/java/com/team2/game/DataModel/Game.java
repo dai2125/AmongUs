@@ -14,7 +14,7 @@ import lombok.*;
 @ToString
 public class Game {
     @Id
-    @Column
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
     @Column(nullable = false, name = "players")
