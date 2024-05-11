@@ -1,0 +1,78 @@
+.chatbox {
+    position: absolute;
+    top: 20%;
+    left: 25%;
+    width: 50%;
+    height: 70%;
+    background-color: rgba(255, 255, 255, 0.9);
+    /*background-opacity: 0.8;*/
+    /*opacity: 0.9;*/
+    border: 1px solid;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.message-list, .message-list-other {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.message-list {
+    /*background-color: #f0f0f0;*/
+    color: black;
+    float: right;
+    clear: both;
+}
+
+.message-list-other {
+    background-color: #fff0f0;
+    /*color: red;*/
+    float: left;
+    clear: both;
+}
+
+.message-list-my {
+    background-color: #fff0f0;
+    /*color: blue;*/
+    float: right;
+    clear: both;
+}
+
+.input-area {
+    display: flex;
+    justify-content: space-between;
+    /*padding: 5px;*/
+    padding-top: 5px;
+    padding-bottom: 2px;
+    /*padding-right: 2px;*/
+    /*border: 5px solid;*/
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    flex-grow: 1;
+    margin-right: 10px;
+
+    /*border: 1px solid;*/
+    /*border-style: dashed;*/
+    /*border-radius: 5px;*/
+    /*border-width: 5px;*/
+}
+
+/*.input-field {*/
+/**/
+/*}*/
+/**/
+.send-button {
+    width: 43px;
+    height: 42px;
+    position: relative;
+    background-color: transparent;
+    background-image: url("../images/Buttons/send_button.png");
+}
+
+.send-button:hover {
+    background-color: rgb(255, 255, 255, 0.4);
+}
+

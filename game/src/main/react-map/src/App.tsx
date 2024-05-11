@@ -3,11 +3,9 @@ import React, { useState } from 'react';
 import HomePage from "./HomePage";
 import LogIn from "./Log-in";
 import CreateAccount from "./CreateAccount";
-import AllPlayer from "./AllPlayer";
 import CurrentPlayers from "./MapGrid/CurrentPlayers";
-import {User} from "./User";
 
-let loggedInUser= new User();
+let loggedInUser: string;
 
 const App: React.FC = () => {
 
@@ -15,9 +13,7 @@ const App: React.FC = () => {
     const [showHomePage, setShowHomePage] = useState<boolean>(false);
     const [showLogIn, setShowLogIn] = useState<boolean>(true);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
-    const [showAllPlayer, setShowAllPlayer] = useState<boolean>(false);
 
-    // navigation and login
     const handleLogin = (name:string, password: string) => {
 
         const user ={
@@ -40,7 +36,7 @@ const App: React.FC = () => {
                     setShowLogIn(false);
                     loggedInUser.setUsername(name);
                     loggedInUser.setPassword(password);
-                }else{
+                } else {
                     alert("Name or Password is wrong");
                     console.log(data.status);
                 }
@@ -105,20 +101,12 @@ const App: React.FC = () => {
         setShowHomePage(true);
     };
 
-
-    const handleStart = () => {
-        setShowMapGrid(false);
-        // TODO show all players -> show the role of the player -> then to the game
-        setShowAllPlayer(true);
-    }
-
     return (
         <div>
             {showHomePage && <HomePage loggesInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
             {showLogIn && <LogIn onLogIn={handleLogin} onCreateAccountNav={handleCreateNav}/>}
-            {showMapGrid && <CurrentPlayers onQuit={handleQuit} onStart={handleStart}/>}
+            {showMapGrid && <CurrentPlayers onQuit={handleQuit} />}
             {showCreateAccount && <CreateAccount onCreateClick={handleCreate} onLoginNavClick={handleLogInNav}/>}
-            {showAllPlayer && <AllPlayer/>}
         </div>
     );};
 

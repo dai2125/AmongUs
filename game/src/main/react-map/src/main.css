@@ -20,7 +20,7 @@ body {
 
 .background {
     /* Set background image */
-    background-image: url('stars.png');
+    background-image: url('images/stars.png');
 
     /* Specify background image size */
     background-size: cover; /* This will cover the entire background */
@@ -44,14 +44,14 @@ body {
     height: 100%;
 }
 #user-div {
-    background-image: url("Purple.png");
+    background-image: url("images/Purple.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100% 100%;
     width: 50%;
 }
 
-.input-field {
-    width: 100%;
-    padding: 10px;
-}
+/*.input-field {*/
+/*    width: 100%;*/
+/*    padding: 10px;*/
+/*}*/

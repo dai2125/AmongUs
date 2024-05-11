@@ -948,7 +948,7 @@ body {
 
 .background {
   /* Set background image */
-  background-image: url('stars.png');
+  background-image: url('images/stars.png');
   /* Specify background image size */
   background-size: cover;
   /* This will cover the entire background */
@@ -973,7 +973,7 @@ body {
 }
 
 #user-div {
-  background-image: url("Purple.png");
+  background-image: url("images/Purple.png");
   background-repeat: no-repeat;
   background-position: center;
   background-size: 100% 100%;
@@ -1086,26 +1086,26 @@ p {
   max-width: 80%;
 }
 
-.message-list {
-  /*background-color: #f0f0f0;*/
-  color: black;
-  float: right;
-  clear: both;
-}
+/*.message-list {*/
+/*  !*background-color: #f0f0f0;*!*/
+/*  color: black;*/
+/*  float: right;*/
+/*  clear: both;*/
+/*}*/
 
-.message-list-other {
-  background-color: #fff0f0;
-  color: red;
-  float: left;
-  clear: both;
-}
+/*.message-list-other {*/
+/*  background-color: #fff0f0;*/
+/*  color: red;*/
+/*  float: left;*/
+/*  clear: both;*/
+/*}*/
 
-.message-list-my {
-  background-color: #fff0f0;
-  color: blue;
-  float: right;
-  clear: both;
-}
+/*.message-list-my {*/
+/*  background-color: #fff0f0;*/
+/*  color: blue;*/
+/*  float: right;*/
+/*  clear: both;*/
+/*}*/
 
 /*.chatbox-send-button button {*/
 /*    width: 10%;*/
@@ -1120,24 +1120,24 @@ p {
 /*    cursor: pointer;*/
 /*}*/
 
-.input-area {
-  display: flex;
-  justify-content: space-between;
-  /*padding: 5px;*/
-  padding-top: 5px;
-  padding-bottom: 2px;
-  padding-right: 40px;
-}
+/*.input-area {*/
+/*  display: flex;*/
+/*  justify-content: space-between;*/
+/*  !*padding: 5px;*!*/
+/*  padding-top: 5px;*/
+/*  padding-bottom: 2px;*/
+/*  padding-right: 40px;*/
+/*}*/
 
-.input-field {
-  flex-grow: 1;
-  margin-right: 10px;
-}
+/*.input-field {*/
+/*  flex-grow: 1;*/
+/*  margin-right: 10px;*/
+/*}*/
 
-.message-list, .message-list-other {
-  overflow-y: auto; /* Ermöglicht das Scrollen innerhalb der Listen */
-  flex-grow: 1; /* Lässt die Listen den verfügbaren Platz einnehmen */
-}
+/*.message-list, .message-list-other {*/
+/*  overflow-y: auto;*/
+/*  flex-grow: 1;*/
+/*}*/
 
 .socialbox {
   width: 300px;
