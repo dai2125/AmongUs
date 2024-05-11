@@ -3,14 +3,15 @@ import './main.css'
 import './output.css';
 import amongUsIcon from './images/Among_Us_logo.png';
 import AppearanceBox from "./AppearanceBox";
+import {User} from "./User";
 // import {User} from "./User";
 
 type Props ={
-    loggesInUser: string;
+    loggedInUser: User;
     onPlayButtonClick(): void;
 }
 
-export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
+export default function HomePage({loggedInUser, onPlayButtonClick}: Props) {
 
     const [showAccountSettings, setShowAccountSettings] = useState(false);
     const [showSocialBox, setShowSocialBox] = useState(false);
@@ -26,8 +27,8 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
         const data = new FormData(form);
 
         const user = {
-            // oldName: loggesInUser.getUsername(),
-            // oldPassword: loggesInUser.getPassword(),
+            oldName: loggedInUser.getUsername(),
+            oldPassword: loggedInUser.getPassword(),
             newName: data.get('newUsername') as string,
             newEmail: data.get('newEmail') as string,
             oldPasswordInput: data.get('oldPassword') as string,
@@ -53,8 +54,8 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
                     setSuccessMessage("Account Changed Successfully");
                     setErrorMessage("");
                     // alert("Account Created Successfully");
-                    // loggesInUser.setUsername(user.newName);
-                    // loggesInUser.setPassword(user.newPassword);
+                     loggedInUser.setUsername(user.newName);
+                     loggedInUser.setPassword(user.newPassword);
 
                 } else if(data.status == 400){
                     setErrorMessage("Email is already taken");
@@ -105,7 +106,7 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
             <div
                 className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2 ">
                 <div id="user-div" className="col-span-1"></div>
-                <div className="col-span-01 text-3xl text-cyan-500 text-center">{loggesInUser}</div>
+                <div className="col-span-01 text-3xl text-cyan-500 text-center">{loggedInUser.getUsername()}</div>
                 <button onClick={onFriendsButtonClick}
                         className="col-span-10 w-1/6 h-10 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
                     <b className="text-3xl">FRIENDS</b>
@@ -153,7 +154,7 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
                         <div>
                             <form onSubmit={handleMyAccount}>
                                 <p className="text-2xl text-left font-light text-amber-600 ">Account Settings
-                                    for {loggesInUser}</p>
+                                    for {loggedInUser.getUsername()}</p>
                                 <label>
                                     <p className="text-1xl text-left font-light text-amber-600 ">New Username</p>
                                     <input name="newUsername"

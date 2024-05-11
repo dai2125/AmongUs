@@ -4,14 +4,15 @@ import HomePage from "./HomePage";
 import LogIn from "./Log-in";
 import CreateAccount from "./CreateAccount";
 import CurrentPlayers from "./MapGrid/CurrentPlayers";
+import {User} from "./User";
 
-let loggedInUser: string;
+let loggedInUser = new User();
 
 const App: React.FC = () => {
 
-    const [showMapGrid, setShowMapGrid] = useState<boolean>(false);
+    const [showMapGrid, setShowMapGrid] = useState<boolean>(true);
     const [showHomePage, setShowHomePage] = useState<boolean>(false);
-    const [showLogIn, setShowLogIn] = useState<boolean>(true);
+    const [showLogIn, setShowLogIn] = useState<boolean>(false);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
 
     const handleLogin = (name:string, password: string) => {
@@ -103,7 +104,7 @@ const App: React.FC = () => {
 
     return (
         <div>
-            {showHomePage && <HomePage loggesInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
+            {showHomePage && <HomePage loggedInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
             {showLogIn && <LogIn onLogIn={handleLogin} onCreateAccountNav={handleCreateNav}/>}
             {showMapGrid && <CurrentPlayers onQuit={handleQuit} />}
             {showCreateAccount && <CreateAccount onCreateClick={handleCreate} onLoginNavClick={handleLogInNav}/>}

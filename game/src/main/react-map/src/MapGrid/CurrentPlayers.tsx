@@ -173,7 +173,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
                         </div>
                         <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-start">
 
-                            <button className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings</button>
+                            <button onClick={togglePopup} className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings</button>
 
                     {showPopup && (
                         <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
