@@ -3,6 +3,8 @@ package com.team2.game.GamingController;
 import com.team2.game.DataModel.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Service;
@@ -22,49 +24,58 @@ public class RegisterService {
     public boolean startGame = false;
     public boolean sendAlready = false;
 
+    private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
+
     @Autowired
     private GroupManager groupManager;
 
     public RegisterService() {
     }
 
-    public UserRegisterDTO registerUser(User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        initializeUser(user, simpMessageHeaderAccessor);
-        userList.add(user);
-        UserRegisterDTO userRegisterDTO = new UserRegisterDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
-        resetCounter(counter);
-        groupManager.addToTheGroup(user);
+    public UserRegisterDTO registerUser(User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
+        try {
+            initializeUser(user, simpMessageHeaderAccessor);
+            userList.add(user);
+            UserRegisterDTO userRegisterDTO = new UserRegisterDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
+            resetCounter(counter);
+            groupManager.addToTheGroup(user);
 
-        if(groupManager.groupIsFull() && !sendAlready) {
-            groupManager.setTheImposter();
-//            groupManager.distributeTaskToUser();
-            startGame = true;
-//            sendAlready = true;
+            if(groupManager.groupIsFull() && !sendAlready) {
+                groupManager.setTheImposter();
+                startGame = true;
+            }
+            return userRegisterDTO;
+        } catch (Exception e) {
+
+            logger.error("An unexpected error occurred while registering User: {}", e.getMessage());
+            return null;
         }
-        return userRegisterDTO;
     }
 
-    public UserRegisterDTO updateAllUserWithTheNewUser() throws JsonProcessingException {
-        for(int i = 0; i < userList.size(); i++) {
 
-            UserRegisterDTO userRegisterDTO = new UserRegisterDTO(userList.get(i).getAction(), userList.get(i).getSessionId(), userList.get(i).getColor(), userList.get(i).getX(), userList.get(i).getY());
-            return userRegisterDTO;
-//            messagingTemplate.convertAndSend("/topic/connected/", objectMapper.writeValueAsString(userRegister));
+    public UserRegisterDTO updateAllUserWithTheNewUser() {
+        try {
+            for(int i = 0; i < userList.size(); i++) {
+                UserRegisterDTO userRegisterDTO = new UserRegisterDTO(userList.get(i).getAction(), userList.get(i).getSessionId(), userList.get(i).getColor(), userList.get(i).getX(), userList.get(i).getY());
+                return userRegisterDTO;
+                //messagingTemplate.convertAndSend("/topic/connected/", objectMapper.writeValueAsString(userRegister));
+            }
+        } catch (Exception e) {
+            logger.error("An unexpected error occurred while updating Users: {}", e.getMessage());
         }
         return null;
     }
 
-    public UserRegisterDTO  disconnectUser(String sessiondId) {
-        for(User u : userList) {
-            if(u.getSessionId().equals(sessiondId)) {
-//                u.setAction("offline");
+    public UserRegisterDTO disconnectUser(String sessionId) throws UserNotFoundException {
+        for (User u : userList) {
+            if (u.getSessionId().equals(sessionId)) {
+                //u.setAction("offline");
                 UserRegisterDTO userRegisterDTO = new UserRegisterDTO(u.getAction(), u.getSessionId(), u.getColor(), u.getX(), u.getY());
-
                 userList.remove(u);
                 return userRegisterDTO;
             }
         }
-        return null;
+        throw new UserNotFoundException("User with sessionId " + sessionId + " not found");
     }
 
     private void resetCounter(int currentCounter) {
@@ -93,6 +104,12 @@ public class RegisterService {
                 u.setX(user.getX());
                 u.setY(user.getY());
             }
+        }
+    }
+
+    public class UserNotFoundException extends Exception {
+        public UserNotFoundException(String message) {
+            super(message);
         }
     }
 }

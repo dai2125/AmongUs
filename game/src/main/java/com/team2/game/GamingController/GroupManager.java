@@ -1,6 +1,8 @@
 package com.team2.game.GamingController;
 
 import com.team2.game.DataModel.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ public class GroupManager {
 
     private static final int GROUP_FULL = 3;
 
+    private static final Logger logger = LoggerFactory.getLogger(LogController.class);
 
     private List<User> userList = new ArrayList<>();
     private List<String> taskList = Arrays.asList(TASK1, TASK2, TASK3, TASK4, TASK5, TASK6, TASK7, TASK8, TASK9);
@@ -93,7 +96,7 @@ public class GroupManager {
         }
 
         counter++;
-        System.out.println("impostorIndex: " + impostorIndex);
+        logger.info("impostorIndex: {}", impostorIndex);
         return taskDTO;
     }
 
