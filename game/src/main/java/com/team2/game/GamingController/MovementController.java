@@ -1,11 +1,8 @@
 package com.team2.game.GamingController;
 
 import com.team2.game.DataModel.User;
-//import com.example.messagingstompwebsocket.chat.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team2.game.WebConfiguration.RabbitMQConfig;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.event.EventListener;
@@ -37,37 +34,65 @@ public class MovementController {
     private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
 
     @EventListener
+
     public void sessionConnectEvent(SessionConnectEvent event) throws InterruptedException, JsonProcessingException {
      }
 
     @EventListener
-    public void sessionDisconnectEvent(SessionDisconnectEvent event) throws JsonProcessingException {
-        messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(registerService.disconnectUser(event.getSessionId())));
+    public void sessionDisconnectEvent(SessionDisconnectEvent event) {
+        try {
+            messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(registerService.disconnectUser(event.getSessionId())));
+            logger.info("User disconnected: {}", event.getUser());
+        } catch (JsonProcessingException e) {
+            logger.error("Error processing UserDisconnect JSON: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("An unexpected error at UserDisconnect occurred: {}", e.getMessage());
+        }
     }
 
     @MessageMapping("/register/")
     @SendTo("/topic/register/")
-    public void register(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(registerService.registerUser(user, simpMessageHeaderAccessor)));
+    public void register(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
+        try {
+            messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(registerService.registerUser(user, simpMessageHeaderAccessor)));
 
-        for(User u : registerService.userList) {
-            messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(u));
-        }
+            for(User u : registerService.userList) {
+                messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(u));
+            }
 
-        if(registerService.startGame && !registerService.sendAlready) {
-            messagingTemplate.convertAndSend("/topic/startGame/", "test");
-            registerService.sendAlready = true;
+            if(registerService.startGame && !registerService.sendAlready) {
+                messagingTemplate.convertAndSend("/topic/startGame/", "test");
+                registerService.sendAlready = true;
+            }
+        } catch (JsonProcessingException e) {
+            logger.error("Error processing Registration JSON: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("An unexpected error at Registration occurred: {}", e.getMessage());
         }
     }
+
 
     @MessageMapping("/movement/{userId}")
     @SendTo("/topic/movement/")
-    public void processMovement(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
+    public void processMovement(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
+        try{
+            messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
+        } catch (JsonProcessingException e) {
+            logger.error("Error processing new Position JSON: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("An unexpected error at new Position occurred: {}", e.getMessage());
+        }
     }
 
     @MessageMapping("/movement/CLOSED/{userId}")
-    public void movementUserId(@Payload User user) throws JsonProcessingException {
+    public void movementUserId(@Payload User user){
+        try{
         messagingTemplate.convertAndSend("/topic/movement/{userId}", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
+
+        } catch (JsonProcessingException e) {
+            logger.error("Error processing Movement JSON: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("An unexpected error at Movement occurred: {}", e.getMessage());
+        }
     }
 }
