@@ -69,7 +69,6 @@ public class RegisterService {
     public UserRegisterDTO disconnectUser(String sessionId) throws UserNotFoundException {
         for (User u : userList) {
             if (u.getSessionId().equals(sessionId)) {
-                //u.setAction("offline");
                 UserRegisterDTO userRegisterDTO = new UserRegisterDTO(u.getAction(), u.getSessionId(), u.getColor(), u.getX(), u.getY());
                 userList.remove(u);
                 return userRegisterDTO;

@@ -41,7 +41,8 @@ public class MovementController {
     @EventListener
     public void sessionDisconnectEvent(SessionDisconnectEvent event) {
         try {
-            messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(registerService.disconnectUser(event.getSessionId())));
+            messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(registerService.
+                    disconnectUser(event.getSessionId())));
             logger.info("User disconnected: {}", event.getUser());
         } catch (JsonProcessingException e) {
             logger.error("Error processing UserDisconnect JSON: {}", e.getMessage());

@@ -59,8 +59,9 @@ class WebSocketService {
                     this.signedIn = true;
                     console.log('Updated playerRef:', playerRef.current);
                     this.sendMovement("ArrowUp");
-                    this.sendMovement("ArrowDown");
-
+                    setTimeout(() => {
+                        this.sendMovement("ArrowDown");
+                    }, 50);
                 }
                 const otherPlayer = new Player(
                     registrationData.action ?? '',
@@ -88,10 +89,11 @@ class WebSocketService {
             this.sendRegistrationData();
 
             this.client.subscribe('/topic/disconnected/', (message) => {
-                const disconnectedPlayer: Player = JSON.parse(message.body);
+                const disconnectedPlayer = JSON.parse(message.body);
                 console.log('Player disconnected:', disconnectedPlayer);
+                const disconnectedPlayerID = disconnectedPlayer.sessionId;
                 setOtherPlayers((prevOtherPlayers) => {
-                    return prevOtherPlayers.filter((p) => p.getSessionId() !== disconnectedPlayer.getSessionId());
+                    return prevOtherPlayers.filter((p) => p.getSessionId() !== disconnectedPlayerID);
                 });
             })
 
