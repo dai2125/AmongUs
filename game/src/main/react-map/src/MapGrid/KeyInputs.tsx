@@ -17,6 +17,15 @@ const KeyInput: React.FC<{ onKeyPress: (key: string) => void }> = ({ onKeyPress 
                 case 'ArrowRight':
                     onKeyPress('ArrowRight');
                     break;
+                case 'space':
+                    onKeyPress('Space');
+                    break;
+                case 'w':
+                    onKeyPress('w');
+                    break;
+                case 'e':
+                    onKeyPress('e');
+                    break;
                 default:
                     break;
             }

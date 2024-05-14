@@ -1,0 +1,29 @@
+.grid-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.grid-row {
+    flex: 1;
+    display: flex;
+}
+
+.grid-cell {
+    flex: 1;
+    background-repeat: no-repeat;
+}
+
+.style.root {
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+#game {
+    position: relative;
+    /*left: -50px;*/
+    /*top: -50px;*/
+    /*left: -100px;  !* Verschiebt das Canvas um 100 Pixel nach links *!*/
+    border: 1px solid black;
+}

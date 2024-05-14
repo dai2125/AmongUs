@@ -1,4 +1,5 @@
-import React from 'react';
+import React, {useState} from 'react';
+// import {User} from "./User";
 import '../src/CSS/rainbowButton.css';
 import red from './images/Characters/red.jpg';
 import blue from '../src/images/Characters/Blue.jpg';
@@ -13,10 +14,22 @@ import black from '../src/images/Characters/Black.jpg';
 import orange from '../src/images/Characters/Orange.jpg';
 import yellow from '../src/images/Characters/Yellow.png';
 import purple from '../src/images/Characters/Purple.jpg';
+import {User} from "./User";
 
-function AppearanceBox() {
+// const user;
+// user.setColor('red');
+// let color = user.getColor();
 
-    const [showRed, setShowRed] = React.useState<boolean>(false);
+// interface Props {
+//     userColor: string;
+//     user: User;
+// }
+
+const AppearanceBox = ({setUserColor}) => {
+
+    const [color, setColor] = useState('red')
+
+    const [showRed, setShowRed] = React.useState<boolean>(true);
     const [showBlue, setShowBlue] = React.useState<boolean>(false);
     const [showCyan, setShowCyan] = React.useState<boolean>(false);
     const [showGray, setShowGray] = React.useState<boolean>(false);
@@ -32,6 +45,8 @@ function AppearanceBox() {
 
 
     const redButtonClicked = () => {
+        setUserColor('red');
+        setColor('red');
         setShowRed(true);
         setShowCyan(false);
         setShowBlue(false);
@@ -48,6 +63,8 @@ function AppearanceBox() {
     }
 
     const orangeButtonClicked = () => {
+        setUserColor('orange');
+        setColor('orange');
         setShowOrange(true);
         setShowRed(false);
         setShowCyan(false);
@@ -64,6 +81,8 @@ function AppearanceBox() {
     }
 
     const yellowButtonClicked = () => {
+        setUserColor('yellow');
+        setColor('yellow');
         setShowYellow(true);
         setShowRed(false);
         setShowCyan(false);
@@ -80,6 +99,8 @@ function AppearanceBox() {
     }
 
     const greenButtonClicked = () => {
+        setUserColor('green');
+        setColor('green');
         setShowGreen(true);
         setShowRed(false);
         setShowCyan(false);
@@ -96,6 +117,8 @@ function AppearanceBox() {
     }
 
     const cyanButtonClicked = () => {
+        setUserColor('cyan');
+        setColor('cyan');
         setShowCyan(true);
         setShowRed(false);
         setShowBlue(false);
@@ -112,6 +135,8 @@ function AppearanceBox() {
     }
 
     const blueButtonClicked = () => {
+        setUserColor('blue');
+        setColor('blue');
         setShowBlue(true);
         setShowRed(false);
         setShowCyan(false);
@@ -128,6 +153,8 @@ function AppearanceBox() {
     }
 
     const purpleButtonClicked = () => {
+        setColor('purple');
+        setUserColor('purple');
         setShowPurple(true);
         setShowRed(false);
         setShowCyan(false);
@@ -144,6 +171,8 @@ function AppearanceBox() {
     }
 
     const brownButtonClicked = () => {
+        setUserColor('brown');
+        setColor('brown');
         setShowBrown(true);
         setShowRed(false);
         setShowCyan(false);
@@ -160,6 +189,8 @@ function AppearanceBox() {
     }
 
     const grayButtonClicked = () => {
+        setColor('gray');
+        setUserColor('gray');
         setShowGray(true);
         setShowRed(false);
         setShowCyan(false);
@@ -176,6 +207,8 @@ function AppearanceBox() {
     }
 
     const limeButtonClicked = () => {
+        setUserColor('lime');
+        setColor('lime');
         setShowLime(true);
         setShowRed(false);
         setShowCyan(false);
@@ -192,6 +225,8 @@ function AppearanceBox() {
     }
 
     const pinkButtonClicked = () => {
+        setUserColor('pink');
+        setColor('pink');
         setShowPink(true);
         setShowRed(false);
         setShowCyan(false);
@@ -208,6 +243,8 @@ function AppearanceBox() {
     }
 
     const blackButtonClicked = () => {
+        setUserColor('black');
+        setColor('black');
         setShowBlack(true);
         setShowRed(false);
         setShowCyan(false);
@@ -224,6 +261,8 @@ function AppearanceBox() {
     }
 
     const whiteButtonClicked = () => {
+        setUserColor('white');
+        setColor('white');
         setShowWhite(true);
         setShowRed(false);
         setShowCyan(false);
@@ -258,19 +297,19 @@ function AppearanceBox() {
 
             </div>
             <div className="button-box">
-                <button className="red-button"      onClick={redButtonClicked}      ></button>
-                <button className="orange-button"   onClick={orangeButtonClicked}   ></button>
-                <button className="yellow-button"   onClick={yellowButtonClicked}   ></button>
-                <button className="green-button"    onClick={greenButtonClicked}    ></button>
-                <button className="cyan-button"     onClick={cyanButtonClicked}     ></button>
-                <button className="blue-button"     onClick={blueButtonClicked}     ></button>
-                <button className="purple-button"   onClick={purpleButtonClicked}   ></button>
-                <button className="brown-button"    onClick={brownButtonClicked}    ></button>
-                <button className="gray-button"     onClick={grayButtonClicked}     ></button>
-                <button className="lime-button"     onClick={limeButtonClicked}     ></button>
-                <button className="pink-button"     onClick={pinkButtonClicked}     ></button>
-                <button className="black-button"    onClick={blackButtonClicked}    ></button>
-                <button className="white-button"    onClick={whiteButtonClicked}    ></button>
+                <button className="red-button" onClick={redButtonClicked}></button>
+                <button className="cyan-button" onClick={cyanButtonClicked}></button>
+                <button className="blue-button" onClick={blueButtonClicked}></button>
+                <button className="gray-button" onClick={grayButtonClicked}></button>
+                <button className="lime-button" onClick={limeButtonClicked}></button>
+                <button className="pink-button" onClick={pinkButtonClicked}></button>
+                <button className="brown-button" onClick={brownButtonClicked}></button>
+                <button className="green-button" onClick={greenButtonClicked}></button>
+                <button className="black-button" onClick={blackButtonClicked}></button>
+                <button className="white-button" onClick={whiteButtonClicked}></button>
+                <button className="yellow-button" onClick={yellowButtonClicked}></button>
+                <button className="purple-button" onClick={purpleButtonClicked}></button>
+                <button className="orange-button" onClick={orangeButtonClicked}></button>
             </div>
         </div>
     );

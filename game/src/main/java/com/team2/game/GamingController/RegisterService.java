@@ -29,6 +29,7 @@ public class RegisterService {
     }
 
     public UserRegisterDTO registerUser(User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+
         initializeUser(user, simpMessageHeaderAccessor);
         userList.add(user);
         UserRegisterDTO userRegisterDTO = new UserRegisterDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
@@ -75,11 +76,14 @@ public class RegisterService {
 
     private void initializeUser(User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
         if(user.getSessionId().isEmpty()) {
+            user.setUserName(user.getUserName());
             user.setAction("null");
             user.setUserId(simpMessageHeaderAccessor.getSessionId());
-            user.setColor(colors[counter++]);
-            user.setY(r.nextInt(5) + 2);
-            user.setX(r.nextInt(5) + 2);
+//            user.setColor(colors[counter++]);
+//            user.setY(r.nextInt(5) + 2);
+//            user.setX(r.nextInt(5) + 2);
+            user.setY(r.nextInt(14) + 2);
+            user.setX(r.nextInt(11) + 35);
         }
     }
 
@@ -94,5 +98,12 @@ public class RegisterService {
                 u.setY(user.getY());
             }
         }
+    }
+
+    public boolean groupIsFull() {
+        if(groupManager.groupIsFull()) {
+            return true;
+        }
+        return false;
     }
 }

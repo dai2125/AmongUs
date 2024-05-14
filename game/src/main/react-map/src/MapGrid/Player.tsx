@@ -1,6 +1,7 @@
 export class Player {
 
     constructor(
+        private userName: string,
         private action: string,
         private sessionId: string,
         private color: string,
@@ -9,8 +10,10 @@ export class Player {
         private task1: string,
         private task2: string,
         private task3: string,
-        private role: string
+        private role: string,
+        private movable : boolean = true
     ) {
+        this.userName = userName;
         this.action = "";
         this.sessionId = sessionId;
         this.color = color;
@@ -22,6 +25,7 @@ export class Player {
         this.role = role;
     }
 
+    getUserName() { return this.userName; }
     getAction() { return this.action; }
     getSessionId() { return this.sessionId; }
     getColor() { return this.color; }
@@ -31,7 +35,9 @@ export class Player {
     getTask2() { return this.task2; }
     getTask3() { return this.task3; }
     getRole() { return this.role; }
+    getMovable() { return this.movable; }
 
+    setUserName(userName: string) { this.userName = userName; }
     setAction(action: string) { this.action = action; }
     setSessionId(SessionId: string) { this.sessionId = SessionId; }
     setColor(color: string) { this.color = color; }
@@ -41,4 +47,5 @@ export class Player {
     setTask2(task2: string) { this.task2 = task2; }
     setTask3(task3: string) { this.task3 = task3; }
     setRole(role: string) { this.role = role; }
+    setMovable(movable: boolean) { this.movable = movable; }
 }

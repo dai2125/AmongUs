@@ -20,7 +20,7 @@ public class GroupManager {
     private static final String TASK8 = "task8";
     private static final String TASK9 = "task9";
 
-    private static final int GROUP_FULL = 3;
+    private static final int GROUP_FULL = 4;
 
 
     private List<User> userList = new ArrayList<>();
@@ -88,12 +88,14 @@ public class GroupManager {
         if(counter == impostorIndex && !impostor) {
             taskDTO.setRole("impostor");
             impostor = true;
+            taskDTO.setTask1("kill");
+            taskDTO.setTask2("sabotage");
+            taskDTO.setTask3("vent");
         } else {
             taskDTO.setRole("crewmate");
         }
 
         counter++;
-        System.out.println("impostorIndex: " + impostorIndex);
         return taskDTO;
     }
 

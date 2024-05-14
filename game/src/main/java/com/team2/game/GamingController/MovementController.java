@@ -34,6 +34,9 @@ public class MovementController {
     @Autowired
     private RegisterService registerService;
 
+    @Autowired
+    private ActionService actionService;
+
     private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
 
     @EventListener
@@ -42,28 +45,62 @@ public class MovementController {
 
     @EventListener
     public void sessionDisconnectEvent(SessionDisconnectEvent event) throws JsonProcessingException {
-        messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(registerService.disconnectUser(event.getSessionId())));
+//        messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(registerService.disconnectUser(event.getSessionId())));
+
+
+        for(User u : registerService.userList) {
+            registerService.userList.remove(u);
+            messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(event.getSessionId()));
+        }
     }
 
     @MessageMapping("/register/")
     @SendTo("/topic/register/")
     public void register(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(registerService.registerUser(user, simpMessageHeaderAccessor)));
 
-        for(User u : registerService.userList) {
-            messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(u));
-        }
+            messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(registerService.registerUser(user, simpMessageHeaderAccessor)));
 
-        if(registerService.startGame && !registerService.sendAlready) {
-            messagingTemplate.convertAndSend("/topic/startGame/", "test");
-            registerService.sendAlready = true;
-        }
+            for(User u : registerService.userList) {
+                messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(u));
+            }
+            if(registerService.startGame && !registerService.sendAlready) {
+                messagingTemplate.convertAndSend("/topic/startGame/", "test");
+                registerService.sendAlready = true;
+            }
     }
 
     @MessageMapping("/movement/{userId}")
     @SendTo("/topic/movement/")
     public void processMovement(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+        System.out.println("Movement: " + user.getSessionId() + " " + user.getX() + " " + user.getY() + " " + user.getAction());
+        System.out.println("Group: " + registerService.userList);
         messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
+    }
+
+    @MessageMapping("/task/{userId}")
+    @SendTo("/topic/task/{userId}")
+    public void processAction(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+        System.out.println("Action: " + user.getAction());
+//        messagingTemplate.convertAndSend("/topic/action/{userId}", new ObjectMapper().writeValueAsString(actionService.test(user)));
+    }
+
+    @MessageMapping("/kill/{userName}")
+    public void processKill(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+
+        for(User u : registerService.userList) {
+            if(!u.getSessionId().equals(user.getSessionId())) {
+                if (u.getY() == user.getY() + 1 || u.getY() == user.getY() - 1 || u.getX() == user.getX() + 1 || u.getX() == user.getX() - 1) {
+
+                    System.out.println("victim: " + u.getUserName() + " " + u.getSessionId() + " " + u.getY() + " " + u.getX());
+                    System.out.println("killer: " + user.getUserName() + " "  + user.getSessionId() + " " + user.getY() + " " + user.getX());
+//                    messagingTemplate.convertAndSend("/topic/kill/", new ObjectMapper().writeValueAsString("dead"));
+                    messagingTemplate.convertAndSend("/topic/kill/" + user.getUserName(), new ObjectMapper().writeValueAsString("you killed " + u.getUserName()));
+                    messagingTemplate.convertAndSend("/topic/kill/" + u.getUserName(), new ObjectMapper().writeValueAsString("your dead"));
+                }
+            }
+//            messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(user.getSessionId()));
+        }
+
     }
 
     @MessageMapping("/movement/CLOSED/{userId}")

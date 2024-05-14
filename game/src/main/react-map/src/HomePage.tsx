@@ -3,31 +3,54 @@ import './main.css'
 import './output.css';
 import amongUsIcon from './images/Among_Us_logo.png';
 import AppearanceBox from "./AppearanceBox";
+import {User} from "./User";
+import './CSS/HomePage.css';
 // import {User} from "./User";
 
 type Props ={
-    loggesInUser: string;
-    onPlayButtonClick(): void;
+    loggesInUser: User;
+    onPlayButtonClick(userColor): void;
+    setUserColor(color: string): void;
 }
 
-export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
+export default function HomePage({loggesInUser, onPlayButtonClick, setUserColor}: Props) {
 
-    const [showAccountSettings, setShowAccountSettings] = useState(false);
-    const [showSocialBox, setShowSocialBox] = useState(false);
+    const [color, setColor] = useState("pink");
+
+    const [errorName, setErrorName] = useState("");
+    const [errorEmail, setErrorEmail] = useState("");
     const [errorMessage , setErrorMessage] = useState("");
+    const [errorPassword, setErrorPassword] = useState("");
     const [successMessage , setSuccessMessage] = useState("");
+    const [showSocialBox, setShowSocialBox] = useState(false);
+    const [errorOldPassword, setErrorOldPassword] = useState("");
     const [showAppearanceBox, setShowAppearanceBox] = useState(false);
+    const [showAccountSettings, setShowAccountSettings] = useState(false);
 
     const handleMyAccount = (event: FormEvent<HTMLFormElement>) => {
 
         event.preventDefault();
+        clearErrorMessages();
 
         const form = event.currentTarget;
         const data = new FormData(form);
 
+        if (data.get('newUsername') === '' && data.get('newEmail')  === '') {
+            // setErrorName("At least one field must be filled out");
+            // setErrorEmail("At least one field must be filled out");
+            setErrorOldPassword("Password must be entered")
+            return;
+        } else if (data.get('newPassword')  !== data.get('newPasswordConfirm') ) {
+            setErrorPassword("Passwords do not match");
+            return;
+        } else if (data.get('oldPassword')  === '') {
+            setErrorPassword("Please enter your old password");
+            return;
+        }
+
         const user = {
-            // oldName: loggesInUser.getUsername(),
-            // oldPassword: loggesInUser.getPassword(),
+            oldName: loggesInUser.getUsername(),
+            oldPassword: loggesInUser.getPassword(),
             newName: data.get('newUsername') as string,
             newEmail: data.get('newEmail') as string,
             oldPasswordInput: data.get('oldPassword') as string,
@@ -35,13 +58,17 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
             passwordConfirm: data.get('newPasswordConfirm') as string,
         }
 
+
+
         const passwordRegex = /^.{8,}$/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (emailRegex.test(user.newEmail)
-            && (passwordRegex.test(user.newPassword))
-            && (user.newPassword == user.passwordConfirm)
-            &&(user.oldPassword == user.oldPasswordInput))
-        {fetch('http://localhost:8080/accountDetails', {
+
+        if (emailRegex.test(user.newEmail) &&
+            (passwordRegex.test(user.newPassword)) &&
+            (user.newPassword == user.passwordConfirm) &&
+            (user.oldPassword == user.oldPasswordInput)) {
+
+            fetch('http://localhost:8080/accountDetails', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -53,8 +80,8 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
                     setSuccessMessage("Account Changed Successfully");
                     setErrorMessage("");
                     // alert("Account Created Successfully");
-                    // loggesInUser.setUsername(user.newName);
-                    // loggesInUser.setPassword(user.newPassword);
+                    loggesInUser.setUsername(user.newName);
+                    loggesInUser.setPassword(user.newPassword);
 
                 } else if(data.status == 400){
                     setErrorMessage("Email is already taken");
@@ -76,6 +103,7 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
         const onMyAccountButtonClick = () => {
             if(!showAccountSettings) {
                 setShowAccountSettings(true);
+                setShowAppearanceBox(false);
             } else {
                 setShowAccountSettings(false);
                 setSuccessMessage("");
@@ -94,10 +122,27 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
     const onMyAppearancesButtonClick = () => {
         if(!showAppearanceBox) {
             setShowAppearanceBox(true);
+            setShowAccountSettings(false);
         } else {
             setShowSocialBox(false);
             setShowAccountSettings(false)
         }
+    }
+
+    const clearErrorMessages = () => {
+        setErrorName("");
+        setErrorEmail("");
+        setErrorPassword("");
+        setErrorOldPassword("");
+    }
+
+    // const setUserColor = (color: string) => {
+    //     loggesInUser.setColor(color);
+    // }
+
+    const handleColorChange = (newColor) => {
+        setColor(newColor);
+        setUserColor(newColor);
     }
 
     return (
@@ -105,7 +150,9 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
             <div
                 className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2 ">
                 <div id="user-div" className="col-span-1"></div>
-                <div className="col-span-01 text-3xl text-cyan-500 text-center">{loggesInUser}</div>
+                <div className="col-span-01 text-3xl text-cyan-500 text-center">
+                    {/*{loggesInUser.getUsername()}*/}
+                </div>
                 <button onClick={onFriendsButtonClick}
                         className="col-span-10 w-1/6 h-10 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
                     <b className="text-3xl">FRIENDS</b>
@@ -138,11 +185,11 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
                         <button onClick={onMyAccountButtonClick}
                             /*<button*/
                                 className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
-                            <b className="text-3xl">MY ACCOUNT</b>
+                            <b className="text-3xl">ACCOUNT</b>
                         </button>
                         <button onClick={onMyAppearancesButtonClick}
                                 className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
-                            <b className="text-3xl">MY APPEARANCE</b>
+                            <b className="text-3xl">APPEARANCE</b>
                         </button>
                     </div>
 
@@ -153,50 +200,53 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
                         <div>
                             <form onSubmit={handleMyAccount}>
                                 <p className="text-2xl text-left font-light text-amber-600 ">Account Settings
-                                    for {loggesInUser}</p>
-                                <label>
-                                    <p className="text-1xl text-left font-light text-amber-600 ">New Username</p>
-                                    <input name="newUsername"
-                                           className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                           type="text" placeholder="Old or New Username" required/>
-                                </label>
-                                <label>
-                                    <p className="text-1xl text-left font-light text-amber-600 ">New Email</p>
-                                    <input name="newEmail"
-                                           className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                           type="text" placeholder="New Email" required/>
-                                </label>
-                                <label>
-                                    <p className="text-1xl text-left font-light text-amber-600 ">Old Password</p>
-                                    <input name="oldPassword" type="text"
-                                           className="input-field min-w-0 w-full bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                           placeholder="Old Password" required/>
-                                </label>
-                                <label>
-                                    <p className="text-1xl text-left font-light text-amber-600">New Password</p>
-                                    <input name="newPassword" type="text"
-                                           className="input-field min-w-0 w-full bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                           placeholder="New Password" required/>
-                                </label>
-                                <div>
-                                    <label>
-                                        <p className="text-1xl text-left font-light text-amber-600">Confirm New
-                                            Password</p>
-                                        <input name="newPasswordConfirm" type="text"
-                                               className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                               placeholder="Confirm Password" required/>
-                                    </label>
+                                    {/*for {loggesInUser.getUsername()}*/}
+                                </p>
+                                <label className="form-label">New Username</label>
+                                <div className="form-row">
+                                        <input name="newUsername"
+                                               className="input-field"
+                                               type="text" placeholder="Old or New Username"/>
+                                        <div className="error-notification">{errorName}</div>
                                 </div>
-                                <br/>
-                                <button type="submit"
-                                        className="w-full-myAccount h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
-                                    UPDATE MY ACCOUNT
-                                </button>
-                                // TODO disable error and success message when re-open the account settings
-                                {successMessage &&
-                                    <p className="text-2xl-success text-left font-light text-amber-600 ">{successMessage}</p>}
-                                {errorMessage &&
-                                    <p className="text-2xl-error text-left font-light text-amber-600 ">{successMessage}</p>}
+                                <label className="form-label">New Email</label>
+                                <div className="form-row">
+                                        <input name="newEmail"
+                                               className="input-field"
+                                               type="text" placeholder="New Email"/>
+                                        <div className="error-notification">{errorEmail}</div>
+                                </div>
+                                <label className="text-1xl text-left font-light text-amber-600 ">Password</label>
+                                <div className="form-row">
+                                        <input name="oldPassword" type="text"
+                                               className="input-field"
+                                               placeholder="Password"/>
+                                        <div className="error-notification">{errorOldPassword}</div>
+                                </div>
+                                <label className="text-1xl text-left font-light text-amber-600">New Password</label>
+                                <div className="form-row">
+                                        <input name="newPassword" type="text"
+                                               className="input-field"
+                                               placeholder="New Password"/>
+                                        <div className="error-notification">{errorPassword}</div>
+                                </div>
+                                <label className="text-1xl text-left font-light text-amber-600">Confirm New Password</label>
+                                <div className="form-row">
+                                            <input name="newPasswordConfirm" type="text"
+                                                   className="input-field"
+                                                   placeholder="Confirm Password"/>
+                                            <div className="error-notification">{errorPassword}</div>
+                                    </div>
+                                    <br/>
+                                    <button type="submit"
+                                            className="w-full-myAccount h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
+                                        UPDATE MY ACCOUNT
+                                    </button>
+                                    // TODO disable error and success message when re-open the account settings
+                                    {successMessage &&
+                                        <p className="text-2xl-success text-left font-light text-amber-600 ">{successMessage}</p>}
+                                    {errorMessage &&
+                                        <p className="text-2xl-error text-left font-light text-amber-600 ">{successMessage}</p>}
                             </form>
                         </div>
                     ) : (
@@ -205,7 +255,7 @@ export default function HomePage({loggesInUser, onPlayButtonClick}: Props) {
                     <div>
                         {showAppearanceBox ?
                             <div>
-                                <AppearanceBox></AppearanceBox>
+                                <AppearanceBox setUserColor={handleColorChange} ></AppearanceBox>
                             </div> :
                             <div>
                             </div>

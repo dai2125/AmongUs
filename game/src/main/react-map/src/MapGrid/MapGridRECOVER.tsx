@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import style from './MapGridStyle.module.css';
 import { Player } from './Player';
+import redImage from '../images/Character_Movement/Red_Standing_South.png';
+import TestImage from "./TestImage";
+import purple from "../images/Character_Movement/Purple.png";
 
 interface MapGridProps {
     currentPlayer: Player;
     otherPlayers: Player[];
 }
 
-const MapGrid2: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
+const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
     const [gridKey, setGridKey] = useState(0);
 
     useEffect(() => {
@@ -54,6 +57,10 @@ const MapGrid2: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
     const paddingTop = Math.max(0, radius - (currentPlayer.getY() - startRow)) * 30;
     const paddingLeft = Math.max(0, radius - (currentPlayer.getX() - startCol)) * 30;
 
+    // const TestImage = () => (
+    //     <img src={redImage} alt="Red Standing South" />
+    // );
+
     return (
         <div key={gridKey} className={style.root} style={{ paddingTop, paddingLeft }}>
             {grid.slice(startRow, endRow + 1).map((row, rowIndex) => (
@@ -70,9 +77,17 @@ const MapGrid2: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
                             );
                         } else if (startRow + rowIndex === currentPlayer.getY() && startCol + colIndex === currentPlayer.getX()) {
                             // If it's the current player, use "@" symbol with current player's color
-                            const playerColor = currentPlayer.getColor();
+                            const playerColor = currentPlayer.getColor(); // Spielerfarbe
+                            const playerImage = '../images/Character_Movement/Purple.png';
+
                             cellContent = (
-                                <span style={{ color: playerColor }}>{'@'}</span>
+                                <span style={{
+                                    backgroundImage: `url(${purple})`,
+                                    backgroundSize: 'cover',
+                                    width: '25px',
+                                    height: '25px'
+                                }}>
+                        </span>
                             );
                         }
                         return (
@@ -87,4 +102,4 @@ const MapGrid2: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
     );
 };
 
-export default MapGrid2;
+export default MapGrid;

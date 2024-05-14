@@ -1,0 +1,35 @@
+.error-notification {
+    /*flex-grow: 2;*/
+    color: red;
+    font-size: 16px;
+    text-align: left;
+    /*margin-top: 10px;*/
+    padding-top: 15px;
+    min-width: 350px;
+    font: bold 16px/14px 'VCR OSD Mono', monospace;
+    /*width: 100%;*/
+}
+
+.form-row {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin-bottom: 2px;
+}
+
+.form-label {
+    margin-bottom: 5px;
+    @apply text-left font-light text-amber-600;
+}
+
+.input-field {
+    flex-grow: 1;
+    margin-right: 10px;
+
+    max-width: 250px;
+    @apply bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white;
+}
+
+.error-notification, .input-field {
+    width: 250px;
+}

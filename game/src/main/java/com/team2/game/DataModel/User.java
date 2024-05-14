@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class User {
 
+    private String userName;
     private String action;
     private String sessionId;
     private String color;
@@ -12,7 +13,7 @@ public class User {
     private boolean isImpostor;
     private ArrayList<String> tasks = new ArrayList<>();
 
-    private String userName;
+//    private String userName;
     private String email;
 
     public User() {
@@ -23,13 +24,22 @@ public class User {
         this.email = email;
     }
 
-    public User(String action, String sessionId, String color, int x, int y) {
+    public User(String userName, String action, String sessionId, String color, int x, int y) {
+        this.userName = userName;
         this.action = action;
         this.sessionId = sessionId;
         this.color = color;
         this.x = x;
         this.y = y;
         this.isImpostor = false;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getAction() {

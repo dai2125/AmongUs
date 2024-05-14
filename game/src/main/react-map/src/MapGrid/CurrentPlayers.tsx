@@ -3,41 +3,56 @@ import WebSocketService from './WebSocketService';
 import MapGrid from './MapGrid';
 import KeyInput from './KeyInputs';
 import { Player } from './Player';
-import chatButton from "../../../resources/images/chat_button.png";
 import Chatbox from "../Chatbox";
 import Timer from "../Timer";
-import MapGrid2 from "./MapGrid2";
 import Role from "../Role";
 import ThereIsAImpostorAmongUs from "../ThereIsAImpostorAmongUs";
 import Shhhhh from "../Shhhhh";
 import RoleImpostor from "../RoleImpostor";
 import TaskBar from "../TaskBar";
 import TaskList from "../TaskList";
+import { GridService } from "./GridService";
+import KillCrewMate from "../KillCrewMate";
 
-type Props ={
+interface Props {
+    userColor : string;
+    userName : string;
     onQuit: () => void;
-};
+}
 
-const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
-    const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
-    const webSocketServiceRef = useRef<WebSocketService | null>(null);
-    const playerRef = useRef<Player>(new Player('', '', '', 2, 2, '', '', '', ''));
+const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
+    // const [mapVisible, setMapVisible] = useState(false);
+    const [task1, setTask1] = useState('');
+    const [task2, setTask2] = useState('');
+    const [task3, setTask3] = useState('');
+    const [tasks, setTasks] = useState({ task1: '', task2: '', task3: '' });
+    const [showKillCrewMate, setShowKillCrewMate] = useState(false);
+    const [showKillImpostor, setShowKillImpostor] = useState(false);
+    const [crewmateDead, setCrewmateDead] = useState(false);
+    const [showRole, setShowRole] = useState(false);
+    const [showShhhhh, setShowShhhhh] = useState(false);
+    const [showTaskBar, setShowTaskBar] = useState(true);
     const [chatVisible, setChatVisible] = useState(false);
     const [timerStarted, setTimerStarted] = useState(false);
-    const [mapVisible, setMapVisible] = useState(false);
-    const [showShhhhh, setShowShhhhh] = useState(false);
-    const [showThereIsAImpostorAmoungUs, setShowThereIsAImpostorAmoungUs] = useState(false);
-    const [showRole, setShowRole] = useState(false);
+    const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
     const [showRoleImpostor, setShowRoleImpostor] = useState(false);
-    const [showTaskBar, setShowTaskBar] = useState(true);
+    const [showThereIsAImpostorAmoungUs, setShowThereIsAImpostorAmoungUs] = useState(false);
 
-    const toggleChat = () => {
-        if(!chatVisible) {
-            setChatVisible(true);
-        } else {
-            setChatVisible(false);
-        }
-    };
+    const webSocketServiceRef = useRef<WebSocketService | null>(null);
+    const playerRef = useRef<Player>(new Player(userName, '', '', '', 2, 2, '', '', '', ''));
+
+
+    useEffect(() => {
+        playerRef.current.setColor(userColor);
+    }, [userColor]);
+
+    // const toggleChat = () => {
+    //     if(!chatVisible) {
+    //         setChatVisible(true);
+    //     } else {
+    //         setChatVisible(false);
+    //     }
+    // };
 
     const handleStartTimer = () => {
         if(!timerStarted) {
@@ -71,14 +86,26 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
     }
 
     useEffect(() => {
-        webSocketServiceRef.current = new WebSocketService(playerRef, setOtherPlayers, handleStartTimer);
+        webSocketServiceRef.current = new WebSocketService(playerRef,
+                                                            setOtherPlayers,
+                                                            handleStartTimer,
+                                                            setTasks,
+                                                            setCrewmateDead);
         webSocketServiceRef.current.connect();
         return () => {
         };
     }, []);
 
+
     const handleKeyPress = (key: string) => {
-        if (webSocketServiceRef.current) {
+        if(key === 'w') {
+            console.log('wwwwwwwwwwwwwwwwwwwwww');
+            taskAction();
+        }
+        else if(key === 'e') {
+            taskKill(key);
+        }
+        else if (webSocketServiceRef.current) {
             const { current: webSocketService } = webSocketServiceRef;
             webSocketService.sendMovement(key);
         }
@@ -90,36 +117,58 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
         setShowPopup(!showPopup);
     };
 
+    const taskAction = () => {
+        if(GridService.isTask(playerRef.current.getY(), playerRef.current.getX())) {
+            // TODO open task box
+            // TODO if task is completed send message to MovementController
+        }
+    }
 
+    const taskKill = (key: string) => {
+        console.log(playerRef.current.getUserName() + 'kill');
+
+        webSocketServiceRef.current.sendKill(key);
+
+    }
 
     return (
         <div>
             <div className="background">
                 <div className="grid grid-rows-10 h-screen w-screen  ">
                     <div className="row-span-1 ">
-                        <div className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2">
+                        <div
+                            className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2">
                             <div id="user-div" className="col-span-1"></div>
                             {/*<button onClick={toggleChat} className="text-white bg-gray-700 hover:bg-gray-800 font-bold py-2 px-4 rounded m-10">*/}
                             {/*    Press me*/}
                             {/*</button>*/}
-                            <button className="w-10 h-10" onClick={toggleChat}><img alt="chatButton"
-                                                                                    className="w-10 b-10 "
-                                                                                    src={chatButton}></img></button>
+
+                            {/*<button className="w-10 h-10" onClick={toggleChat}><img alt="chatButton"*/}
+                            {/*                                                        className="w-10 b-10 "*/}
+                            {/*                                                        src={chatButton}></img></button>*/}
+
                             {/* Chat-Fenster, das nur sichtbar ist, wenn chatVisible true ist */}
-                            {chatVisible ?
-                                <Chatbox/> : <div></div>
-                            }
+
+                            {/*{chatVisible ?*/}
+                            {/*    <Chatbox/> : <div></div>*/}
+                            {/*}*/}
+                            {/*<div className={chatVisible ? "" : "hidden"}>*/}
+                            {/*    <Chatbox/>*/}
+                            {/*</div>*/}
+                            <Chatbox></Chatbox>
                         </div>
                     </div>
+                    {/*<div >{purple}</div>*/}
                     <div className="grid grid-cols-12 row-span-9 gap-5 h-5/6">
-
-                        <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-">
+                    <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-">
                             { showTaskBar ?
                                 <TaskBar/> : <div></div>
                             }
                         </div>
+
                         <div>
-                            <TaskList/>
+                            <TaskList tasks={tasks} />
+                            {/*<TaskList/>*/}
                             {/*{ showTaskList ?`*/}
                             {/*    <TaskList/> : <div></div>`*/}
                             {/*}*/}
@@ -131,8 +180,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
                             {/*    <div></div>*/}
                             {/*}*/}
                         </div>
-                        <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-start">
-                            <button className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings</button>
+                        {/*<div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-start">*/}
+                        {/*    <button className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings</button>*/}
 
                     {showPopup && (
                         <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
@@ -156,29 +205,20 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
                         </div>
                     )}
 
-                    <div className="grid grid-cols-12 row-span-9 gap-5 h-5/6">
-                        {/*<div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-end">*/}
-                            {/*<p className="font-bold m-10 underline-offset-1">Completed Tasks</p>*/}
-                        {/*</div>*/}
-                        {/*<div className="col-span-6 border-solid rounded-lg flex justify-center items-center">*/}
-                        {/*    <MapGrid*/}
-                        {/*        currentPlayer={playerRef.current}*/}
-                        {/*        otherPlayers={otherPlayers || []}*/}
-                        {/*    />*/}
-                        {/*</div>*/}
-                        <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-start">
-                            <button onClick={togglePopup}
-                                    className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings
-                            </button>
-                            <button
-                                className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Map
-                            </button>
-                            <button
-                                onClick={onQuit}
-                                className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Quit
-                            </button>
-                        </div>
-                    </div>
+                    {/*<div className="grid grid-cols-12 row-span-9 gap-5 h-5/6">*/}
+                    {/*    <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-start">*/}
+                    {/*        <button onClick={togglePopup}*/}
+                    {/*                className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings*/}
+                    {/*        </button>*/}
+                    {/*        <button*/}
+                    {/*            className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Map*/}
+                    {/*        </button>*/}
+                    {/*        <button*/}
+                    {/*            onClick={onQuit}*/}
+                    {/*            className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Quit*/}
+                    {/*        </button>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                     <div style={{ position: 'absolute', bottom: '0', right: '0', marginRight: '10px', marginBottom: '10px' }}>
                         { timerStarted ? <Timer onStart={onStart}/> : <div></div> }
                     </div>
@@ -194,7 +234,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
                     <div>
                         { showRoleImpostor ? <RoleImpostor onStart={handleRole}/> : <div></div> }
                     </div>
-                </div>
+                    <div>
+                        { showKillCrewMate ? <KillCrewMate onStart={handleRole}/> : <div></div> }
+                    </div>
+                    <div>
+                        {/*{ showKillImpostor ? <KillImpostor onStart={handleRole}/> : <div></div> }*/}
+                    </div>
+                {/*</div>*/}
             </div>
             <KeyInput onKeyPress={handleKeyPress}/>
         </div>

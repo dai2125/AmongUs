@@ -17,5 +17,5 @@ public class ChangeDetailDTO {
     private String newEmail;
     private String newPassword;
     private String passwordConfirm;
-
+    private String password;
 }
