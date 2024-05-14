@@ -23,10 +23,18 @@ type Props ={
 
 const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
     const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
+
+
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
+
     const playerRef = useRef<Player>(new Player('', '', '', 2, 2, '', '', '', ''));
+
     const [chatVisible, setChatVisible] = useState(false);
+
+
     const [timerStarted, setTimerStarted] = useState(false);
+
+
     const [mapVisible, setMapVisible] = useState(false);
     const [showShhhhh, setShowShhhhh] = useState(false);
     const [showThereIsAImpostorAmoungUs, setShowThereIsAImpostorAmoungUs] = useState(false);
