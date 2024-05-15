@@ -18,7 +18,7 @@ import TaskList from "../TaskList";
 type Props ={
     onQuit: () => void;
 };
-
+let callback = true;
 //let activeGame= new Game();
 
 const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
@@ -83,7 +83,20 @@ const CurrentPlayers: React.FC<Props> = ({onQuit}) => {
 
     useEffect(() => {
         webSocketServiceRef.current = new WebSocketService(playerRef, setOtherPlayers, handleStartTimer);
-        webSocketServiceRef.current.connect();
+        webSocketServiceRef.current.connect()
+            .then(registrationSuccessful => {
+                console.log("Registration successful:", registrationSuccessful);
+                callback = true
+                // Do something based on whether registration was successful
+            })
+            .catch(error => {
+                console.error("Error occurred during registration:", error);
+                // Handle error if registration fails
+                callback = false
+                onQuit();
+                console.log("CALLBACK", callback);
+            });;
+
         return () => {
         };
     }, []);

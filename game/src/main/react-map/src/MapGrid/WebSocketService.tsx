@@ -2,6 +2,9 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { Player } from './Player';
 import React from 'react';
+//import {i} from "vite/dist/node/types.d-aGj9QkWt";
+import {Simulate} from "react-dom/test-utils";
+import error = Simulate.error;
 
 interface RegistrationData {
     action?: string | null;
@@ -32,19 +35,44 @@ class WebSocketService {
     }
 
     connect() {
-        const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
-        this.client = Stomp.over(socket);
+        return new Promise((resolve, reject) => {
+            const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
+            this.client = Stomp.over(socket);
 
-        const { playerRef, setOtherPlayers } = this;
+            const {playerRef, setOtherPlayers} = this;
 
-        this.client.connect({}, () => {
+            this.client.connect({}, () => {
 
-            this.client.subscribe('/topic/register/', (message) => {
-                const registrationData: RegistrationData = JSON.parse(message.body);
-                console.log('Received registration data:', registrationData);
+                this.client.subscribe('/topic/register/', (message) => {
+                    const registrationData: RegistrationData = JSON.parse(message.body);
+                    console.log('Received registration data:', registrationData);
 
-                if(!this.signedIn){
-                    playerRef.current = new Player(
+                    if (registrationData.sessionId){
+                        resolve(true);
+                    }else {
+                        reject(error);
+                    }
+
+                    if (!this.signedIn) {
+                        playerRef.current = new Player(
+                            registrationData.action ?? '',
+                            registrationData.sessionId ?? '',
+                            registrationData.color ?? '',
+                            registrationData.x ?? 2,
+                            registrationData.y ?? 2,
+                            '',
+                            '',
+                            '',
+                            ''
+                        );
+                        this.signedIn = true;
+                        this.signedIn = true;
+                        console.log('Updated playerRef:', playerRef.current);
+                        this.sendMovement("ArrowUp");
+                        this.sendMovement("ArrowDown");
+
+                    }
+                    const otherPlayer = new Player(
                         registrationData.action ?? '',
                         registrationData.sessionId ?? '',
                         registrationData.color ?? '',
@@ -54,75 +82,60 @@ class WebSocketService {
                         '',
                         '',
                         ''
-                    );
-                    this.signedIn = true;
-                    this.signedIn = true;
-                    console.log('Updated playerRef:', playerRef.current);
-                    this.sendMovement("ArrowUp");
-                    this.sendMovement("ArrowDown");
+                    )
 
-                }
-                const otherPlayer = new Player(
-                    registrationData.action ?? '',
-                    registrationData.sessionId ?? '',
-                    registrationData.color ?? '',
-                    registrationData.x ?? 2,
-                    registrationData.y ?? 2,
-                    '',
-                    '',
-                    '',
-                    ''
-                )
+                    if (registrationData.sessionId !== playerRef.current.getSessionId()) {
+                        setOtherPlayers((prevOtherPlayers) => {
+                            const existingPlayer = prevOtherPlayers.find((p) => p.getSessionId() === registrationData.sessionId);
+                            if (!existingPlayer) {
+                                console.log('New player joined:', otherPlayer);
+                                return [...prevOtherPlayers, otherPlayer];
+                            }
+                            return prevOtherPlayers;
+                        });
+                    }
 
-                if (registrationData.sessionId !== playerRef.current.getSessionId()) {
-                    setOtherPlayers((prevOtherPlayers) => {
-                        const existingPlayer = prevOtherPlayers.find((p) => p.getSessionId() === registrationData.sessionId);
-                        if (!existingPlayer) {
-                            console.log('New player joined:', otherPlayer);
-                            return [...prevOtherPlayers, otherPlayer];
-                        }
-                        return prevOtherPlayers;
-                    });
-                }
-            });
-            this.sendRegistrationData();
-
-            this.client.subscribe('/topic/disconnected/', (message) => {
-                const disconnectedPlayer: Player = JSON.parse(message.body);
-                console.log('Player disconnected:', disconnectedPlayer);
-                setOtherPlayers((prevOtherPlayers) => {
-                    return prevOtherPlayers.filter((p) => p.getSessionId() !== disconnectedPlayer.getSessionId());
                 });
-            })
+                this.sendRegistrationData();
 
-            this.client.subscribe('/topic/movement/', (message) => {
-                const movementData = JSON.parse(message.body);
 
-                if(movementData.sessionId === playerRef.current.getSessionId()) {
-                    this.playerRef.current.setX(movementData.x);
-                    this.playerRef.current.setY(movementData.y);
-                    console.log('Move Player to:', movementData);
-                }
-                setOtherPlayers((prevOtherPlayers) => {
-                    const updatedPlayers = prevOtherPlayers.map((p) => {
-                        if (p.getSessionId() === movementData.sessionId) {
-                            // Update existing player's positions
-                            p.setX(movementData.x);
-                            p.setY(movementData.y);
-                        }
-                        return p;
+                this.client.subscribe('/topic/disconnected/', (message) => {
+                    const disconnectedPlayer: Player = JSON.parse(message.body);
+                    console.log('Player disconnected:', disconnectedPlayer);
+                    setOtherPlayers((prevOtherPlayers) => {
+                        return prevOtherPlayers.filter((p) => p.getSessionId() !== disconnectedPlayer.getSessionId());
                     });
-                    return updatedPlayers;
                 })
-            })
 
-            this.client.subscribe('/topic/startGame/', () => {
-                this.startTimer();
-                this.gimmeWork();
+                this.client.subscribe('/topic/movement/', (message) => {
+                    const movementData = JSON.parse(message.body);
+
+                    if (movementData.sessionId === playerRef.current.getSessionId()) {
+                        this.playerRef.current.setX(movementData.x);
+                        this.playerRef.current.setY(movementData.y);
+                        console.log('Move Player to:', movementData);
+                    }
+                    setOtherPlayers((prevOtherPlayers) => {
+                        const updatedPlayers = prevOtherPlayers.map((p) => {
+                            if (p.getSessionId() === movementData.sessionId) {
+                                // Update existing player's positions
+                                p.setX(movementData.x);
+                                p.setY(movementData.y);
+                            }
+                            return p;
+                        });
+                        return updatedPlayers;
+                    })
+                })
+
+                this.client.subscribe('/topic/startGame/', () => {
+                    this.startTimer();
+                    this.gimmeWork();
+                });
+
+            }, (error) => {
+                console.error('WebSocket connection error:', error);
             });
-
-        }, (error) => {
-            console.error('WebSocket connection error:', error);
         });
     }
 
