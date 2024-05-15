@@ -34,16 +34,33 @@ public class RegisterService {
 
     public UserRegisterDTO registerUser(User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
         try {
+            UserRegisterDTO userRegisterDTO  = new UserRegisterDTO();
+            if (!groupManager.groupIsFull()){
+                initializeUser(user, simpMessageHeaderAccessor);
+                userList.add(user);
+                userRegisterDTO.setAction(user.getAction());
+                userRegisterDTO.setSessionId(user.getSessionId());
+                userRegisterDTO.setColor(user.getColor());
+                userRegisterDTO.setX(user.getX());
+                userRegisterDTO.setY(user.getY());
+                resetCounter(counter);
+                groupManager.addToTheGroup(user);
+            }
+
+
+            /*
+
             initializeUser(user, simpMessageHeaderAccessor);
             userList.add(user);
             UserRegisterDTO userRegisterDTO = new UserRegisterDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
             resetCounter(counter);
             groupManager.addToTheGroup(user);
-
+*/
             if(groupManager.groupIsFull() && !sendAlready) {
                 groupManager.setTheImposter();
                 startGame = true;
             }
+
             return userRegisterDTO;
         } catch (Exception e) {
 
