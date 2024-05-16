@@ -77,6 +77,7 @@ public class MovementController {
 
         if(movementService.wallCollision2(user)) {
             registerService.updatePlayerPosition(user);
+            System.out.println("USER: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
             messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(user));
         }
 

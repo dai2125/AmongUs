@@ -13,7 +13,7 @@ import TaskBar from "../TaskBar";
 import TaskList from "../TaskList";
 import { GridService } from "./GridService";
 import KillCrewMate from "../KillCrewMate";
-import MapGridRECOVER from "./MapGridRECOVER";
+import MapGridRECOVER from "./MapGrid";
 
 interface Props {
     userColor : string;
@@ -197,9 +197,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                             {/*}*/}
                         </div>
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
-                            <MapGridRECOVER currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/>
+                            <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/>
                             {/*{mapVisible ?*/}
-                            {/*    <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :*/}
+                            {/*    <MapGridRECOVERY2 currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :*/}
                             {/*    <div></div>*/}
                             {/*}*/}
                         </div>
