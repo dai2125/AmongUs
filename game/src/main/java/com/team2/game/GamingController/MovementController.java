@@ -72,16 +72,25 @@ public class MovementController {
     @MessageMapping("/movement/{userId}")
     @SendTo("/topic/movement/")
     public void processMovement(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        System.out.println("Movement: " + user.getSessionId() + " " + user.getX() + " " + user.getY() + " " + user.getAction());
-        System.out.println("Group: " + registerService.userList);
-        messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
+//        registerService.updatePlayerPosition(user);
+//        messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
+
+        if(movementService.wallCollision2(user)) {
+            registerService.updatePlayerPosition(user);
+            messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(user));
+        }
+
     }
 
     @MessageMapping("/task/{userId}")
     @SendTo("/topic/task/{userId}")
     public void processAction(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        System.out.println("Action: " + user.getAction());
-//        messagingTemplate.convertAndSend("/topic/action/{userId}", new ObjectMapper().writeValueAsString(actionService.test(user)));
+//        messagingTemplate.convertAndSend("/topic/task/" + user.getUserName(), new ObjectMapper().writeValueAsString("check"));
+
+        // TODO
+        for (User u : registerService.userList) {
+            messagingTemplate.convertAndSend("/topic/task/" + u.getUserName(), new ObjectMapper().writeValueAsString("task"));
+        }
     }
 
     @MessageMapping("/kill/{userName}")
@@ -89,13 +98,16 @@ public class MovementController {
 
         for(User u : registerService.userList) {
             if(!u.getSessionId().equals(user.getSessionId())) {
-                if (u.getY() == user.getY() + 1 || u.getY() == user.getY() - 1 || u.getX() == user.getX() + 1 || u.getX() == user.getX() - 1) {
+                if (u.getY() == user.getY() + 1 || u.getY() == user.getY() - 1 || u.getY() == user.getY() && u.getX() == user.getX() + 1 || u.getX() == user.getX() - 1 ||  u.getY() == user.getY()) {
+                    messagingTemplate.convertAndSend("/topic/kill/" + user.getUserName(), new ObjectMapper().writeValueAsString("kill"));
+                    messagingTemplate.convertAndSend("/topic/dead/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
 
-                    System.out.println("victim: " + u.getUserName() + " " + u.getSessionId() + " " + u.getY() + " " + u.getX());
-                    System.out.println("killer: " + user.getUserName() + " "  + user.getSessionId() + " " + user.getY() + " " + user.getX());
-//                    messagingTemplate.convertAndSend("/topic/kill/", new ObjectMapper().writeValueAsString("dead"));
-                    messagingTemplate.convertAndSend("/topic/kill/" + user.getUserName(), new ObjectMapper().writeValueAsString("you killed " + u.getUserName()));
-                    messagingTemplate.convertAndSend("/topic/kill/" + u.getUserName(), new ObjectMapper().writeValueAsString("your dead"));
+//                    for(User u2 : registerService.userList) {
+//                        if(!u2.getUserName().equals(u.getUserName()) && !u2.getUserName().equals(user.getUserName())) {
+//                            System.out.println("SUBSCRIBER: " + u2.getUserName() + " " + u2.getSessionId() + " x: " + u2.getX() + " y: " + u2.getY());
+                            messagingTemplate.convertAndSend("/topic/someoneGotKilled/", new ObjectMapper().writeValueAsString(u.getSessionId()));
+//                        }
+//                    }
                 }
             }
 //            messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(user.getSessionId()));

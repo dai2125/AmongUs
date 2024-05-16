@@ -31,7 +31,6 @@ public class ChatService {
         }
         message = filteredMessage;
 
-        System.out.println("ChatService getSomething: " + message);
         return message;
     }
 }

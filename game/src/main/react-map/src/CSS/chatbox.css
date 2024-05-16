@@ -14,7 +14,7 @@
     max-height: 70%;
     min-width: 50%;
     min-height: 70%;
-
+    z-index: 1000;
 }
 
 .message-list, .message-list-other {

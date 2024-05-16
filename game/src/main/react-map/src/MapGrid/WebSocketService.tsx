@@ -26,17 +26,23 @@ class WebSocketService {
     private startTimer: () => void;
     private setTasks: React.Dispatch<React.SetStateAction<{task1: string, task2: string, task3: string}>>;
     private setCrewmateDead: React.Dispatch<React.SetStateAction<boolean>>;
+    private updateTasks: () => void;
+    private dead: () => void;
 
     constructor(playerRef: React.MutableRefObject<Player>,
                 setOtherPlayers: React.Dispatch<React.SetStateAction<Player[]>>,
                 startTimer: () => void,
                 setTasks: React.Dispatch<React.SetStateAction<{task1: string, task2: string, task3: string}>>,
-                setCrewmateDead: React.Dispatch<React.SetStateAction<boolean>>) {
+                setCrewmateDead: React.Dispatch<React.SetStateAction<boolean>>,
+                updateTasks: () => void,
+                dead: () => void) {
         this.playerRef = playerRef;
         this.setOtherPlayers = setOtherPlayers;
         this.startTimer = startTimer;
         this.setTasks = setTasks;
         this.setCrewmateDead = setCrewmateDead;
+        this.updateTasks = updateTasks;
+        this.dead = dead;
     }
 
     connect() {
@@ -49,7 +55,6 @@ class WebSocketService {
 
             this.client.subscribe('/topic/register/', (message) => {
                 const registrationData: RegistrationData = JSON.parse(message.body);
-                console.log('Received registration data:', registrationData);
 
                 if(!this.signedIn){
                     playerRef.current = new Player(
@@ -66,7 +71,6 @@ class WebSocketService {
                     );
                     this.signedIn = true;
                     this.signedIn = true;
-                    console.log('Updated playerRef:', playerRef.current);
                     this.sendMovement("ArrowUp");
                     this.sendMovement("ArrowDown");
 
@@ -88,7 +92,6 @@ class WebSocketService {
                     setOtherPlayers((prevOtherPlayers) => {
                         const existingPlayer = prevOtherPlayers.find((p) => p.getSessionId() === registrationData.sessionId);
                         if (!existingPlayer) {
-                            console.log('New player joined:', otherPlayer);
                             return [...prevOtherPlayers, otherPlayer];
                         }
                         return prevOtherPlayers;
@@ -99,7 +102,6 @@ class WebSocketService {
 
             this.client.subscribe('/topic/disconnected/', (message) => {
                 const disconnectedPlayer: Player = JSON.parse(message.body);
-                console.log('Player disconnected:', disconnectedPlayer);
 
 
                 setOtherPlayers((prevOtherPlayers) => {
@@ -113,7 +115,6 @@ class WebSocketService {
                 if(movementData.sessionId === playerRef.current.getSessionId()) {
                     this.playerRef.current.setX(movementData.x);
                     this.playerRef.current.setY(movementData.y);
-                    console.log('Move Player to:', movementData);
                 }
 
                 setOtherPlayers((prevOtherPlayers) => {
@@ -136,23 +137,39 @@ class WebSocketService {
             });
 
             this.client.subscribe(`/topic/task/${playerRef.current.getUserName()}`, (message) => {
-                console.log(message);
+                this.updateTasks();
+            });
+
+            this.client.subscribe(`/topic/dead/${playerRef.current.getUserName()}`, (message) => {
+                // TODO display Screen
+                // TODO Dead Body stays on the x y coordinate
+                playerRef.current.setMovable(false);
+                playerRef.current.setColor("dead");
+                this.dead();
+                // playerRef.current.setImage(deadPlayer.image);
             });
 
             this.client.subscribe(`/topic/kill/${playerRef.current.getUserName()}`, (message) => {
-                // console.log('Youre a Dead player:', message.body)
-                console.log('/topic/kill ' + message.body);
+            });
+
+            // this.client.subscribe(`/topic/someoneGotKilled/${playerRef.current.getUserName()}`, (message) => {
+            this.client.subscribe('/topic/someoneGotKilled/', (message) => {
 
                 const deadPlayer = JSON.parse(message.body);
-                // playerRef.current.setRole(deadPlayer.role);
-                // playerRef.current.setImage(deadPlayer.image);
-                // TODO display Screen
-                // TODO Dead Body stays on the x y coordinate
-                // this.setCrewmateDead(true);
-                playerRef.current.setMovable(false);
-                // playerRef.current.setImage(deadPlayer.image);
 
+                setOtherPlayers((prevOtherPlayers) => {
+                    const updatedPlayers = prevOtherPlayers.map((p) => {
+                        if (p.getSessionId() === deadPlayer) {
+                            // Update existing player's positions
+                            p.setColor('dead');
+                        }
+                        return p;
+                    });
+                    return updatedPlayers;
+                });
+                // playerRef.current.setImage(deadPlayer.image);
             });
+
 
         }, (error) => {
             console.error('WebSocket connection error:', error);
@@ -183,6 +200,7 @@ class WebSocketService {
             player.setAction(key);
 
             const payload = JSON.stringify({
+                userName: player.getUserName(),
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
                 color: player.getColor(),
@@ -210,7 +228,6 @@ class WebSocketService {
                 if(response.status === 200){
                     return response.json(); // JSON-Daten aus der Antwort extrahieren
                 } else {
-                    console.log(response.status);
                     throw new Error('Name or Password is wrong');
                 }
             })
@@ -221,7 +238,6 @@ class WebSocketService {
                 this.playerRef.current.setRole(data.role);
 
                 this.setTasks({ task1: data.task1, task2: data.task2, task3: data.task3 });
-                console.log(data.task1 + ' ' + data.task2 + ' ' + data.task3 + ' ' + data.role);
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -243,6 +259,24 @@ class WebSocketService {
             });
 
             this.client.send(`/app/kill/${player.getUserName()}`, {}, payload);
+        }
+    }
+
+    sendTaskDone(task: string) {
+        if (this.client) {
+            const player = this.playerRef.current;
+            player.setAction(task);
+
+            const payload = JSON.stringify({
+                userName: player.getUserName(),
+                action: player.getAction(),
+                sessionId: player.getSessionId(),
+                color: player.getColor(),
+                x: player.getX(),
+                y: player.getY()
+            });
+
+            this.client.send(`/app/task/${player.getUserName()}`, {}, payload);
         }
     }
 }

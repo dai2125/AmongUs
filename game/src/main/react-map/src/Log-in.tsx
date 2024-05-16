@@ -28,7 +28,7 @@ export default function LogIn({onLogIn, onCreateAccountNav,}: Props){
         onLogIn(name, password);
         setName('');
         setPassword('');
-        setErrorMessage('Wrong credentials');
+        // setErrorMessage('Wrong credentials');
     }
 
     return(

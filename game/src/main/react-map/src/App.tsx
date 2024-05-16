@@ -36,19 +36,14 @@ const App: React.FC = () => {
             .then(data => {
                 if(data.status === 200){
                     // alert("Log In Successful");
-                    console.log(data);
                     setShowHomePage(true);
                     setShowLogIn(false);
                     setUserName(name);
-                    console.log('App.tsx: ' + name);
-
-                    console.log('App.tsx: ' + userName);
                     loggedInUser.setUsername(name);
                     loggedInUser.setPassword(password);
                     loggedInUser.setColor("red");
                 } else {
                     // alert("Name or Password is wrong");
-                    console.log(data.status);
                 }
             })
             .catch(error => {
@@ -112,7 +107,6 @@ const App: React.FC = () => {
     };
 
     useEffect(() => {
-        console.log('Aktualisierter userName: ' + userName);
     }, [userName]);
 
     return (

@@ -13,6 +13,7 @@ import TaskBar from "../TaskBar";
 import TaskList from "../TaskList";
 import { GridService } from "./GridService";
 import KillCrewMate from "../KillCrewMate";
+import MapGridRECOVER from "./MapGridRECOVER";
 
 interface Props {
     userColor : string;
@@ -25,6 +26,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [task1, setTask1] = useState('');
     const [task2, setTask2] = useState('');
     const [task3, setTask3] = useState('');
+    const [totalTasks, setTotalTasks] = useState(9);
     const [tasks, setTasks] = useState({ task1: '', task2: '', task3: '' });
     const [showKillCrewMate, setShowKillCrewMate] = useState(false);
     const [showKillImpostor, setShowKillImpostor] = useState(false);
@@ -37,6 +39,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
     const [showRoleImpostor, setShowRoleImpostor] = useState(false);
     const [showThereIsAImpostorAmoungUs, setShowThereIsAImpostorAmoungUs] = useState(false);
+    const [completedTasksCount, setCompletedTasksCount] = useState(0);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
     const playerRef = useRef<Player>(new Player(userName, '', '', '', 2, 2, '', '', '', ''));
@@ -45,6 +48,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     useEffect(() => {
         playerRef.current.setColor(userColor);
     }, [userColor]);
+
+
 
     // const toggleChat = () => {
     //     if(!chatVisible) {
@@ -90,7 +95,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                                                             setOtherPlayers,
                                                             handleStartTimer,
                                                             setTasks,
-                                                            setCrewmateDead);
+                                                            setCrewmateDead,
+                                                            updateTasks,
+                                                            dead);
         webSocketServiceRef.current.connect();
         return () => {
         };
@@ -98,11 +105,10 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
 
 
     const handleKeyPress = (key: string) => {
-        if(key === 'w') {
-            console.log('wwwwwwwwwwwwwwwwwwwwww');
+        if(key === 'w' && playerRef.current.getRole() === 'crewmate') {
             taskAction();
         }
-        else if(key === 'e') {
+        else if(key === 'e' && playerRef.current.getRole() === 'impostor') {
             taskKill(key);
         }
         else if (webSocketServiceRef.current) {
@@ -121,15 +127,31 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         if(GridService.isTask(playerRef.current.getY(), playerRef.current.getX())) {
             // TODO open task box
             // TODO if task is completed send message to MovementController
+            webSocketServiceRef.current.sendTaskDone("task1");
         }
     }
 
     const taskKill = (key: string) => {
-        console.log(playerRef.current.getUserName() + 'kill');
-
         webSocketServiceRef.current.sendKill(key);
 
     }
+
+    const updateTasks = () => {
+        if(completedTasksCount < 9) {
+            setCompletedTasksCount(prevCount => prevCount + 1);
+        }
+    }
+
+    const dead = () => {
+        playerRef.current.setColor("dead");
+        setShowKillCrewMate(true);
+
+        // TODO should close automatically, counter is set in the KillCrewMate.tsx but doesnt work
+        setTimeout(() => {
+            setShowKillCrewMate(false);
+        }, 3000);
+    }
+
 
     return (
         <div>
@@ -162,7 +184,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                     <div className="grid grid-cols-12 row-span-9 gap-5 h-5/6">
                     <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-">
                             { showTaskBar ?
-                                <TaskBar/> : <div></div>
+                                // <TaskBar  /> : <div></div>
+                                <TaskBar completedTasksCount={completedTasksCount} /> : <div></div>
                             }
                         </div>
 
@@ -174,7 +197,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                             {/*}*/}
                         </div>
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
-                            <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/>
+                            <MapGridRECOVER currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/>
                             {/*{mapVisible ?*/}
                             {/*    <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :*/}
                             {/*    <div></div>*/}
