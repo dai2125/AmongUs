@@ -22,7 +22,7 @@ public class GroupManager {
     private static final String TASK8 = "task8";
     private static final String TASK9 = "task9";
 
-    private static final int GROUP_FULL = 2;
+    private static final int GROUP_FULL = 4;
 
     private static final Logger logger = LoggerFactory.getLogger(LogController.class);
 
@@ -33,25 +33,6 @@ public class GroupManager {
     private boolean impostor = false;
     int impostorIndex = (int) (Math.random() * GROUP_FULL);
     int counter = 0;
-
-   /* public void increaseCounter() {
-        playerCounter++;
-    }
-    public void clearCounter() {
-        playerCounter = 0;
-    }
-    public boolean isFull(){
-        if (playerCounter == GROUP_FULL) {
-            return true;
-        }else {
-            return false;
-        }
-    }
-
-    public void addGroup(List<User> userListt) {
-        List<User> newUserList = new ArrayList<>();
-        newUserList.addAll(userListt);
-    }*/
 
     public void addToTheGroup(User user) {
         userList.add(user);

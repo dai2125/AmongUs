@@ -10,9 +10,9 @@ let loggedInUser = new User();
 
 const App: React.FC = () => {
 
-    const [showMapGrid, setShowMapGrid] = useState<boolean>(false);
+    const [showMapGrid, setShowMapGrid] = useState<boolean>(true);
     const [showHomePage, setShowHomePage] = useState<boolean>(false);
-    const [showLogIn, setShowLogIn] = useState<boolean>(true);
+    const [showLogIn, setShowLogIn] = useState<boolean>(false);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
 
     const handleLogin = (name:string, password: string) => {

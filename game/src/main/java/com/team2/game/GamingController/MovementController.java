@@ -78,6 +78,7 @@ public class MovementController {
     public void processMovement(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
         try{
             messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
+            registerService.updatePlayerPosition(user);
         } catch (JsonProcessingException e) {
             logger.error("Error processing new Position JSON: {}", e.getMessage());
         } catch (Exception e) {
