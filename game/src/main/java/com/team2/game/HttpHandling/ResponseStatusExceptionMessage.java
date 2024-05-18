@@ -11,8 +11,9 @@ public enum ResponseStatusExceptionMessage {
     PASSWORD_WRONG("Wrong password", HttpStatus.UNAUTHORIZED),
     USER_ALREADY_EXISTS("User already exists", HttpStatus.CONFLICT),
     USER_ALREADY_ONLINE("User already online", HttpStatus.CONFLICT),
-    USER_NOT_FOUND("User not found", HttpStatus.NOT_FOUND);
+    USER_NOT_FOUND("User not found", HttpStatus.NOT_FOUND),
 
+    GAME_ALREADY_EXISTS("Game already exists", HttpStatus.CONFLICT),;
     private final String _message;
     private final HttpStatus _status;
 
