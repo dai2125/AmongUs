@@ -91,6 +91,7 @@ public class RegisterService {
         for (User u : userList) {
             if(u.getSessionId().equals(sessionId)) {
                 userList.remove(u);
+                groupManager.removePlayerFromList(u);
             }
         }
         System.out.println("User disconnected: " + sessionId);
