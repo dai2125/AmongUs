@@ -20,7 +20,7 @@ public class GroupManager {
     private static final String TASK8 = "task8";
     private static final String TASK9 = "task9";
 
-    private static final int GROUP_FULL = 2;
+    private static final int GROUP_FULL = 4;
     private int taskCounter = 0;
 
     private List<User> userList = new ArrayList<>();
