@@ -35,6 +35,7 @@ public class ChatController {
     public void ingoingUserId(@Payload Message message, @DestinationVariable String userId) {
         message.setMessage(chatService.getSomething(message.getMessage()));
 
+        System.out.println("ChatController: " + message.getMessage() + " " + "userId: " + userId + " " + message.getUserName());
         messagingTemplate.convertAndSend(String.format("/topic/ingoing/%s", userId), message);
         messagingTemplate.convertAndSend("/topic/ingoing/", message);
     }

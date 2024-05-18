@@ -237,7 +237,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                             {/*<div className={chatVisible ? "" : "hidden"}>*/}
                             {/*    <Chatbox/>*/}
                             {/*</div>*/}
-                            <Chatbox></Chatbox>
+                            <Chatbox playerColor={ playerRef.current.getColor() } playerName={ playerRef.current.getUserName()} ></Chatbox>
                         </div>
                     </div>
                     {/*<div >{purple}</div>*/}

@@ -5,7 +5,6 @@ import amongUsIcon from '../Images/Homepage/Among_Us_logo.png';
 import AppearanceBox from "./AppearanceBox";
 import {User} from "../User";
 import '../CSS/HomePage.css';
-// import {User} from "./User";
 
 type Props ={
     loggesInUser: User;
@@ -13,7 +12,7 @@ type Props ={
     setUserColor(color: string): void;
 }
 
-export default function HomePage({loggesInUser, onPlayButtonClick, setUserColor}: Props) {
+export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor }: Props) {
 
     const [color, setColor] = useState("pink");
 

@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 public class Message {
 
-    private String userId;
+    private String userName;
     private String message;
     private String color;
 }

@@ -11,11 +11,12 @@ function getRandomIntInclusive(): number {
     return Math.floor(Math.random() * 100) + 1;
 }
 
-function ChatBox() {
+function ChatBox({ playerColor, playerName }) {
+
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
     const [client, setClient] = useState(null);
-    const [userId, setUserId] = useState(0);
+    const [userId, setUserId] = useState(playerName);
     const messageEndRef = useRef(null);
     const [chatVisible, setChatVisible] = useState(false);
     const [chatIcon, setChatIcon] = useState(chatButton);
@@ -34,9 +35,10 @@ function ChatBox() {
 
             stompClient.subscribe('/topic/ingoing/', message => {
                 const messageData = JSON.parse(message.body);
-                if (messageData.userId.toString() !== userId.toString()) {
+                if (messageData.userName !== userId) {
+                    console.log('RECEIVED MESSAGE messageData.userName: ', messageData.userName + ' userId: ', userId);
                     setMessages(prev => [...prev, {
-                        userId: messageData.userId,
+                        userId: messageData.userName,
                         text: messageData.message,
                         isOwnMessage: false,
                         color: messageData.color
@@ -47,10 +49,12 @@ function ChatBox() {
                 }
             });
 
-            stompClient.subscribe(`/topic/ingoing/${userId}`, message => {
+            stompClient.subscribe(`/topic/ingoing/${ playerName }`, message => {
                 const messageData = JSON.parse(message.body);
+                console.log('RECEIVED MESSAGE2 messageData.userName: ', messageData.userName + ' userId: ', userId);
+
                 setMessages(prev => [...prev, {
-                    userId: messageData.userId,
+                    userId: messageData.userName,
                     text: messageData.message,
                     isOwnMessage: true,
                     color: messageData.color
@@ -75,12 +79,12 @@ function ChatBox() {
 
     const sendMessage = () => {
         if (inputValue.trim() !== '') {
-
+            console.log('SENDING MESSAGE: ' + playerName);
             // client.send('/app/ingoing/', {}, JSON.stringify({
             client.send(`/app/ingoing/${userId}`, {}, JSON.stringify({
-                'userId': userId,
+                'userName': playerName,
                 'message': inputValue,
-                'color': 'orange'
+                'color': playerColor
             }));
             setInputValue('');
         }
