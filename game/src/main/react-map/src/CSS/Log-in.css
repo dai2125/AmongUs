@@ -1,0 +1,7 @@
+.error-notification {
+    color: red;
+    font-size: 16px;
+    text-align: center;
+    margin-top: 10px;
+    font: bold 16px/14px 'VCR OSD Mono', monospace;
+}

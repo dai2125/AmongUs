@@ -1,0 +1,14 @@
+{ "columns":31,
+ "image":"..\/..\/..\/..\/..\/..\/..\/..\/..\/..\/Desktop\/Maps\/TileSet.png",
+ "imageheight":812,
+ "imagewidth":1000,
+ "margin":0,
+ "name":"TileSet",
+ "spacing":0,
+ "tilecount":775,
+ "tiledversion":"1.10.2",
+ "tileheight":32,
+ "tilewidth":32,
+ "type":"tileset",
+ "version":"1.10"
+}

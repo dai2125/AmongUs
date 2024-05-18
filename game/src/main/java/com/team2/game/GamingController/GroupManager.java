@@ -1,8 +1,6 @@
 package com.team2.game.GamingController;
 
 import com.team2.game.DataModel.User;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,12 +20,12 @@ public class GroupManager {
     private static final String TASK8 = "task8";
     private static final String TASK9 = "task9";
 
-    private static final int GROUP_FULL = 3;
-
-    private static final Logger logger = LoggerFactory.getLogger(LogController.class);
+    private static final int GROUP_FULL = 2;
+    private int taskCounter = 0;
 
     private List<User> userList = new ArrayList<>();
     private List<String> taskList = Arrays.asList(TASK1, TASK2, TASK3, TASK4, TASK5, TASK6, TASK7, TASK8, TASK9);
+    private List<String> taskListCopy = new ArrayList<>(taskList);
 
     private boolean impostor = false;
     int impostorIndex = (int) (Math.random() * GROUP_FULL);
@@ -87,26 +85,51 @@ public class GroupManager {
                 taskDTO.setTask3(taskList.get(random));
             }
         }
-
-        if(counter == impostorIndex && !impostor) {
+            taskCounter++;
+//        if(counter == impostorIndex && !impostor) {
+        if(counter == 1) {
             taskDTO.setRole("impostor");
             impostor = true;
+            taskDTO.setTask1("kill");
+            taskDTO.setTask2("sabotage");
+            taskDTO.setTask3("vent");
         } else {
             taskDTO.setRole("crewmate");
         }
 
         counter++;
-        logger.info("impostorIndex: {}", impostorIndex);
         return taskDTO;
     }
 
-    public void distributeTaskToUser() {
-        for(int i = 0; i < userList.size(); i++) {
-            int random = (int) (Math.random() * taskList.size());
-            if(!userList.get(i).getImpostor() && userList.get(i).getTaskSize() < 3) {
-                userList.get(i).setTask(taskList.get(random));
-                taskList.remove(random);
+    public boolean allCrewmatesAreDead() {
+        System.out.println("areAllCrewmatesDead: " + userList.size());
+
+        for(User user : userList) {
+            if(!user.getImpostor()) {
+                return false;
             }
         }
+        return true;
+    }
+
+    public boolean allTasksAreSolved() {
+        System.out.println("allTasksAreSolved: " + taskCounter);
+        if (taskCounter == 0) {
+            return true;
+        }
+//        if(taskListCopy.isEmpty()) {
+//            return true;
+//        }
+        return false;
+    }
+
+    public void removeTask(String task) {
+        System.out.println("RemoveTask: " + taskCounter);
+        taskCounter--;
+//        taskListCopy.remove(task);
+    }
+
+    public void removePlayerFromList(User user) {
+        userList.remove(user);
     }
 }

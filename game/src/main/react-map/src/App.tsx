@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
-import HomePage from "./HomePage";
-import LogIn from "./Log-in";
-import CreateAccount from "./CreateAccount";
-import CurrentPlayers from "./MapGrid/CurrentPlayers";
+import HomePage from "./MainPage/HomePage";
+import LogIn from "./MainPage/Log-in";
+import CreateAccount from "./MainPage/CreateAccount";
+import CurrentPlayers from "./CurrentPlayers";
 import {User} from "./User";
 
-let loggedInUser = new User();
+let loggedInUser: User;
+// const userColor: string = "pink";
+// loggedInUser.setColor("pink");
 
 const App: React.FC = () => {
 
-    const [showMapGrid, setShowMapGrid] = useState<boolean>(true);
+    const [userName, setUserName] = useState('');
+    const [userColor, setUserColor] = useState("pink");
+    const [showLogIn, setShowLogIn] = useState<boolean>(true);
+    const [showMapGrid, setShowMapGrid] = useState<boolean>(false);
     const [showHomePage, setShowHomePage] = useState<boolean>(false);
-    const [showLogIn, setShowLogIn] = useState<boolean>(false);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
 
     const handleLogin = (name:string, password: string) => {
@@ -31,15 +35,15 @@ const App: React.FC = () => {
         })
             .then(data => {
                 if(data.status === 200){
-                    alert("Log In Successful");
-                    console.log(data);
+                    // alert("Log In Successful");
                     setShowHomePage(true);
                     setShowLogIn(false);
+                    setUserName(name);
                     loggedInUser.setUsername(name);
                     loggedInUser.setPassword(password);
+                    loggedInUser.setColor("red");
                 } else {
-                    alert("Name or Password is wrong");
-                    console.log(data.status);
+                    // alert("Name or Password is wrong");
                 }
             })
             .catch(error => {
@@ -57,7 +61,7 @@ const App: React.FC = () => {
         }
 
         if(!(password === passwordConfirm)){
-            alert("password and confirm-password do not match")
+            // alert("password and confirm-password do not match")
         }else {
 
             fetch('http://localhost:8080/signUp',{
@@ -69,10 +73,10 @@ const App: React.FC = () => {
             })
                 .then((data) => {
                     if (data.status === 200){
-                        alert("Account Created Successfully");
+                        // alert("Account Created Successfully");
                         setShowCreateAccount(false);
                         setShowLogIn(true);
-                    }else{
+                    } else {
                         alert("Failed to create account, please make sure to enter all fields correctly");
                     }
                 })
@@ -102,11 +106,14 @@ const App: React.FC = () => {
         setShowHomePage(true);
     };
 
+    useEffect(() => {
+    }, [userName]);
+
     return (
         <div>
-            {showHomePage && <HomePage loggedInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
+            {showHomePage && <HomePage setUserColor={setUserColor} loggesInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
             {showLogIn && <LogIn onLogIn={handleLogin} onCreateAccountNav={handleCreateNav}/>}
-            {showMapGrid && <CurrentPlayers onQuit={handleQuit} />}
+            {showMapGrid && <CurrentPlayers userName={userName} userColor={userColor} onQuit={handleQuit} />}
             {showCreateAccount && <CreateAccount onCreateClick={handleCreate} onLoginNavClick={handleLogInNav}/>}
         </div>
     );};

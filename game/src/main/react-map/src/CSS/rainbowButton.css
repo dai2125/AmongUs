@@ -193,8 +193,8 @@
     background-color: rgb(255, 255, 255);
     color: black;
     border: none;
-    border-top-right-radius: 5px;
-    border-bottom-right-radius: 5px;
+    /*border-top-right-radius: 5px;*/
+    /*border-bottom-right-radius: 5px;*/
     cursor: pointer;
     transition: background-color 0.3s ease;
 }

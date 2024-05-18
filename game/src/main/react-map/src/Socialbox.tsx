@@ -1,5 +1,5 @@
-import './main.css';
-import './output.css';
+import './CSS/main.css';
+import './CSS/output.css';
 
 import socialBoxBackground from '../../resources/images/socialbox_background.png';
 import addFriend from '../src/Add_Friend.png';

@@ -3,6 +3,7 @@ package com.team2.game.RestController;
 import com.team2.game.DataTransferObject.PersonLoginDTO;
 import com.team2.game.HttpHandling.ResponseStatusExceptionCustom;
 import com.team2.game.PersonManagement.IPersonService;
+import com.team2.game.PersonManagement.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,12 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RestControllerLogin {
 
-    private final IPersonService personService;
+//    private final IPersonService personService;
 
     @Autowired
-    public RestControllerLogin(IPersonService personService) {
-        this.personService = personService;
-    }
+    private PersonService personService;
+
+//    @Autowired
+//    public RestControllerLogin(IPersonService personService) {
+//        this.personService = personService;
+//    }
 
     // TODO Exception with wrong Postman parameters not catched
     // TODO missed one layer
@@ -29,7 +33,5 @@ public class RestControllerLogin {
 
         }
         return ResponseEntity.badRequest().build();
-
-//        return ResponseEntity.badRequest().body(ResponseStatusExceptionMessage.USER_NOT_FOUND.getMessage());
     }
 }

@@ -27,9 +27,6 @@ public class RestControllerSignUp {
             return ResponseEntity.ok().build();
         }
       
-        // No records only DTO´s
-        // TODO must this return stay here?
         return ResponseEntity.badRequest().build();
-//        return ResponseEntity.badRequest().body(ResponseStatusExceptionMessage.USER_ALREADY_EXISTS.getMessage());
     }
 }

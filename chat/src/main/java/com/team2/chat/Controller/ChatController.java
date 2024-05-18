@@ -9,6 +9,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.client.RestTemplate;
 
 @Controller
 public class ChatController {
@@ -23,26 +24,17 @@ public class ChatController {
     @Autowired
     private ChatService chatService;
 
-    RestChatController restChatController = new RestChatController();
-
     @MessageMapping("/ingoing/")
     @SendTo("topic/ingoing/")
     public void ingoing(@Payload Message message) {
         chatService.processMessage(message);
         messagingTemplate.convertAndSend("/topic/ingoing/", message);
-
-//            message.setMessage(restChatController.sendToWebService(message.getMessage()));
-//            System.out.println("ChatController: " + message.getMessage());
     }
 
     @MessageMapping("/ingoing/{userId}")
     public void ingoingUserId(@Payload Message message, @DestinationVariable String userId) {
-        chatService.processMessage(message);
-//        messagingTemplate.convertAndSend(String.format("/topic/ingoing/%s", userId), message);
-//        messagingTemplate.convertAndSend("/topic/ingoing/", message);
+        message.setMessage(chatService.getSomething(message.getMessage()));
 
-        message.setMessage(restChatController.sendToWebService(message.getMessage()));
-//        System.out.println("ChatController: " + message.getMessage() + " " + message.getColor());
         messagingTemplate.convertAndSend(String.format("/topic/ingoing/%s", userId), message);
         messagingTemplate.convertAndSend("/topic/ingoing/", message);
     }
