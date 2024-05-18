@@ -4,6 +4,7 @@ import com.team2.game.DataModel.User;
 //import com.example.messagingstompwebsocket.chat.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team2.game.DataTransferObject.UserMovementDTO;
 import com.team2.game.WebConfiguration.RabbitMQConfig;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +48,12 @@ public class MovementController {
     public void sessionDisconnectEvent(SessionDisconnectEvent event) throws JsonProcessingException {
 //        messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(registerService.disconnectUser(event.getSessionId())));
 
+//        registerService.playerDisconnected(event.getSessionId());
 
-        for(User u : registerService.userList) {
-            registerService.userList.remove(u);
-            messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(event.getSessionId()));
-        }
+//        for(User u : registerService.userList) {
+//            registerService.userList.remove(u);
+//            messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(event.getSessionId()));
+//        }
     }
 
     @MessageMapping("/register/")
@@ -65,6 +67,7 @@ public class MovementController {
             }
             if(registerService.startGame && !registerService.sendAlready) {
                 messagingTemplate.convertAndSend("/topic/startGame/", "test");
+
                 registerService.sendAlready = true;
             }
     }
@@ -75,13 +78,39 @@ public class MovementController {
 //        registerService.updatePlayerPosition(user);
 //        messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
 
-        if(movementService.wallCollision2(user)) {
+        if (movementService.wallCollision2(user)) {
             registerService.updatePlayerPosition(user);
             System.out.println("USER: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
             messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(user));
         }
-
     }
+
+//    @MessageMapping("movement/{userName}")
+//    public void processMovement2(@Payload User user) throws JsonProcessingException {
+//        System.out.println("USER: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
+//
+//        if (movementService.wallCollision2(user)) {
+//            messagingTemplate.convertAndSend("/topic/movement/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
+////            messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(user));
+//
+//        }
+//    }
+
+    @MessageMapping("movement/east/{userName}")
+    public void processMovementEast(@Payload User user) throws JsonProcessingException {
+        System.out.println("USER: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
+
+        messagingTemplate.convertAndSend("/topic/movement/north/" + user.getUserName(), new ObjectMapper().writeValueAsString(movementService.wallCollisionEast(user)));
+
+//        if(movementService.wallEast(user)) {
+//            registerService.updatePlayerPosition(user);
+//            UserMovementDTO userMovementDTO = new UserMovementDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX() + 1, user.getY());
+//            messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(userMovementDTO));
+//        messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementService.wallEast(user)));
+//        }
+    }
+
+
 
     @MessageMapping("/task/{userId}")
     @SendTo("/topic/task/{userId}")
@@ -91,6 +120,13 @@ public class MovementController {
         // TODO
         for (User u : registerService.userList) {
             messagingTemplate.convertAndSend("/topic/task/" + u.getUserName(), new ObjectMapper().writeValueAsString("task"));
+        }
+
+        registerService.removeTask("task");
+
+        if(registerService.allTasksAreSolved()) {
+            System.out.println("CREWMATES WIN");
+            messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
         }
     }
 
@@ -103,21 +139,28 @@ public class MovementController {
                     messagingTemplate.convertAndSend("/topic/kill/" + user.getUserName(), new ObjectMapper().writeValueAsString("kill"));
                     messagingTemplate.convertAndSend("/topic/dead/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
 
-//                    for(User u2 : registerService.userList) {
-//                        if(!u2.getUserName().equals(u.getUserName()) && !u2.getUserName().equals(user.getUserName())) {
-//                            System.out.println("SUBSCRIBER: " + u2.getUserName() + " " + u2.getSessionId() + " x: " + u2.getX() + " y: " + u2.getY());
-                            messagingTemplate.convertAndSend("/topic/someoneGotKilled/", new ObjectMapper().writeValueAsString(u.getSessionId()));
-//                        }
-//                    }
+                    messagingTemplate.convertAndSend("/topic/someoneGotKilled/", new ObjectMapper().writeValueAsString(u.getSessionId()));
                 }
             }
-//            messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(user.getSessionId()));
+            registerService.crewmateDied(u);
         }
 
+
+        if(registerService.areAllCrewmatesDead()) {
+            System.out.println("IMPOSTOR WINS");
+            messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
+        }
     }
 
-    @MessageMapping("/movement/CLOSED/{userId}")
-    public void movementUserId(@Payload User user) throws JsonProcessingException {
-        messagingTemplate.convertAndSend("/topic/movement/{userId}", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
+    @MessageMapping("/gimmework/{userName}")
+    public void processGimmeWork(@Payload User user) throws JsonProcessingException {
+        TaskDTO task = registerService.getTask();
+        messagingTemplate.convertAndSend("/topic/gimmework/" + user.getUserName(), new ObjectMapper().writeValueAsString(task));
+
     }
+
+//    @MessageMapping("/movement/CLOSED/{userId}")
+//    public void movementUserId(@Payload User user) throws JsonProcessingException {
+//        messagingTemplate.convertAndSend("/topic/movement/{userId}", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
+//    }
 }

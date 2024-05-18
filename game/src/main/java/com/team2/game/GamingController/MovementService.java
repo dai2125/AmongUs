@@ -44,4 +44,68 @@ public class MovementService {
         }
         return false;
     }
+
+    public boolean wallNorth(User user) {
+        if(!DefaultMap.isWall(user.getY() - 1, user.getX())) {
+//            user.setY(user.getY() - 1);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean wallSouth(User user) {
+        if(!DefaultMap.isWall(user.getY() + 1, user.getX())) {
+//            user.setY(user.getY() + 1);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean wallWest(User user) {
+        if(!DefaultMap.isWall(user.getY(), user.getX() - 1)) {
+//            user.setX(user.getX() - 1);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean wallEast(User user) {
+        if(!DefaultMap.isWall(user.getY(), user.getX() + 1)) {
+//            user.setX(user.getX() + 1);
+            return true;
+        }
+        return false;
+    }
+
+    public UserMovementDTO wallCollisionNorth(User user) throws JsonProcessingException {
+        if (!DefaultMap.isWall(user.getY() - 1, user.getX())) {
+            user.setY(user.getY() - 1);
+            return new UserMovementDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
+        }
+        return new UserMovementDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
+    }
+
+    public UserMovementDTO wallCollisionSouth(User user) throws JsonProcessingException {
+        if (!DefaultMap.isWall(user.getY() + 1, user.getX())) {
+            user.setY(user.getY() + 1);
+            return new UserMovementDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
+        }
+        return new UserMovementDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
+    }
+
+    public UserMovementDTO wallCollisionWest(User user) throws JsonProcessingException {
+        if (!DefaultMap.isWall(user.getY(), user.getX() - 1)) {
+            user.setX(user.getX() - 1);
+            return new UserMovementDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
+        }
+        return new UserMovementDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
+    }
+
+    public UserMovementDTO wallCollisionEast(User user) {
+        if(!DefaultMap.isWall(user.getY(), user.getX() + 1)) {
+            user.setX(user.getX() + 1);
+            return new UserMovementDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
+        }
+        return new UserMovementDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
+    }
 }

@@ -32,7 +32,7 @@ public class RegisterService {
 
         initializeUser(user, simpMessageHeaderAccessor);
         userList.add(user);
-        UserRegisterDTO userRegisterDTO = new UserRegisterDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
+        UserRegisterDTO userRegisterDTO = new UserRegisterDTO(user.getUserName(), user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
         resetCounter(counter);
         groupManager.addToTheGroup(user);
 
@@ -45,28 +45,6 @@ public class RegisterService {
         return userRegisterDTO;
     }
 
-    public UserRegisterDTO updateAllUserWithTheNewUser() throws JsonProcessingException {
-        for(int i = 0; i < userList.size(); i++) {
-
-            UserRegisterDTO userRegisterDTO = new UserRegisterDTO(userList.get(i).getAction(), userList.get(i).getSessionId(), userList.get(i).getColor(), userList.get(i).getX(), userList.get(i).getY());
-            return userRegisterDTO;
-//            messagingTemplate.convertAndSend("/topic/connected/", objectMapper.writeValueAsString(userRegister));
-        }
-        return null;
-    }
-
-    public UserRegisterDTO  disconnectUser(String sessiondId) {
-        for(User u : userList) {
-            if(u.getSessionId().equals(sessiondId)) {
-//                u.setAction("offline");
-                UserRegisterDTO userRegisterDTO = new UserRegisterDTO(u.getAction(), u.getSessionId(), u.getColor(), u.getX(), u.getY());
-
-                userList.remove(u);
-                return userRegisterDTO;
-            }
-        }
-        return null;
-    }
 
     private void resetCounter(int currentCounter) {
         if(currentCounter == colors.length - 1) {
@@ -108,4 +86,40 @@ public class RegisterService {
         }
         return false;
     }
+
+    public void playerDisconnected(String sessionId) {
+        for (User u : userList) {
+            if(u.getSessionId().equals(sessionId)) {
+                userList.remove(u);
+            }
+        }
+        System.out.println("User disconnected: " + sessionId);
+        System.out.println("User list size: " + userList.size());
+    }
+
+    public boolean areAllCrewmatesDead() {
+        if(groupManager.allCrewmatesAreDead()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean allTasksAreSolved() {
+        if(groupManager.allTasksAreSolved()) {
+            return true;
+        }
+        return false;
+    }
+
+    public void removeTask(String task) {
+        groupManager.removeTask(task);
+    }
+
+    public void crewmateDied(User user) {
+        groupManager.removePlayerFromList(user);
+        if (groupManager.getUserList().size() == 1) {
+            System.out.println("IMPOSTOR WINS");
+        }
+    }
+
 }

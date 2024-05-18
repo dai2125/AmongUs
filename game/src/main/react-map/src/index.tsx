@@ -1,7 +1,7 @@
 import "../init.js";
 import ReactDOM from 'react-dom/client';
 import App from './App';
-import './index.css';
+import './CSS/index.css';
 import MapGrid from "./MapGrid/MapGridRECOVERY2";
 import React from "react";
 

@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 
-import HomePage from "./HomePage";
-import LogIn from "./Log-in";
-import CreateAccount from "./CreateAccount";
-import CurrentPlayers from "./MapGrid/CurrentPlayers";
+import HomePage from "./MainPage/HomePage";
+import LogIn from "./MainPage/Log-in";
+import CreateAccount from "./MainPage/CreateAccount";
+import CurrentPlayers from "./CurrentPlayers";
 import {User} from "./User";
 
 let loggedInUser: User;

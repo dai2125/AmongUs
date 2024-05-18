@@ -12,6 +12,7 @@ import lombok.Setter;
 @Setter
 public class UserRegisterDTO {
 
+    private String userName;
     private String action;
     private String sessionId;
     private String color;

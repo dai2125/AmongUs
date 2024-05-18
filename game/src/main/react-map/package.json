@@ -9,6 +9,7 @@
     "start": "vite preview"
   },
   "dependencies": {
+    "@excaliburjs/plugin-spritefusion": "^0.29.0",
     "@excaliburjs/plugin-tiled": "0.29.2",
     "@stomp/stompjs": "^7.0.0",
     "phaser": "^3.80.1",

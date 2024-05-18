@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import style from './MapGridStyle.module.css';
-import { Player } from './Player';
-import redImage from '../images/Character_Movement/Red_Standing_South.png';
-import TestImage from "./TestImage";
-import purple from "../images/Character_Movement/Purple.png";
-import red from "../images/Character_Movement/red.jpg";
-import blue from "../images/Character_Movement/Blue.jpg";
-import green from "../images/Character_Movement/Green.jpg";
-import orange from "../images/Character_Movement/Orange.jpg";
-import yellow from "../images/Character_Movement/Yellow.png";
-import black from "../images/Character_Movement/Black.jpg";
-import white from "../images/Character_Movement/White.jpg";
-import brown from "../images/Character_Movement/Brown.jpg";
-import cyan from "../images/Character_Movement/Cyan.jpg";
-import lime from "../images/Character_Movement/Lime.jpg";
-import pink from "../images/Character_Movement/Pink.jpg";
-import dead from "../images/Character_Movement/dead.png";
-import killButton from "../images/Buttons/Kill_Button.jpg";
+import style from '../CSS/MapGridStyle.module.css';
+import { Player } from '../Player';
+import purple from "../Images/Character_Movement/Purple.png";
+import red from "../Images/Character_Movement/red.jpg";
+import blue from "../Images/Character_Movement/Blue.jpg";
+import green from "../Images/Character_Movement/Green.jpg";
+import orange from "../Images/Character_Movement/Orange.jpg";
+import yellow from "../Images/Character_Movement/Yellow.png";
+import black from "../Images/Character_Movement/Black.jpg";
+import white from "../Images/Character_Movement/White.jpg";
+import brown from "../Images/Character_Movement/Brown.jpg";
+import cyan from "../Images/Character_Movement/Cyan.jpg";
+import lime from "../Images/Character_Movement/Lime.jpg";
+import pink from "../Images/Character_Movement/Pink.jpg";
+import dead from "../Images/Character_Movement/dead.png";
+import killButton from "../Images/Buttons/Kill_Button.jpg";
+
+import mapImage from '../Images/Maps/Lobby.png';
+
 
 interface MapGridProps {
     currentPlayer: Player;
@@ -51,10 +52,10 @@ const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
 
     const grid: any[][] = [
         ['#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'],
-        ['#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#', '#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'],
+        ['#', '.', '.', '.', '.', '.', '.', '?', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#', '#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'],
         ['#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#', '#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'],
         ['#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#', '#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'],
-        ['#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#', '#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'],
+        ['#', '?    ', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#', '#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'],
         ['#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#', '#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#'],
         ['#', '.', '.', '.', '.', '.', '.', '#', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '#', '#', '#', '#', '?', '.', '.', '.', '.', '.', '.', '.', '#'],
         ['#', '.', '.', '.', '.', '.', '.', '#', '#', '?', '.', '.', '.', '.', '.', '.', '.', '.', '#', '#', '#', '#', '#', '.', '.', '.', '.', '.', '.', '.', '#'],
@@ -78,6 +79,7 @@ const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
 
     const playerImages = {
         red: "../images/Character_Movement/red.jpg",
+        dead: "../images/Character_Movement/dead.png",
         cyan: "../images/Character_Movement/Cyan.jpg",
         lime: "../images/Character_Movement/Lime.jpg",
         pink: "../images/Character_Movement/Pink.jpg",
@@ -90,7 +92,6 @@ const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
         orange: "../images/Character_Movement/Orange.jpg",
         yellow: "../images/Character_Movement/Yellow.jpg",
         purple: "../images/Character_Movement/Purple.png",
-        dead: "../images/Character_Movement/dead.png",
     };
 
     useEffect(() => {
@@ -134,46 +135,47 @@ const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
     // );
 
     return (
-        <div key={gridKey} className={style.root} style={{paddingTop, paddingLeft}}>
-            {grid.slice(startRow, endRow + 1).map((row, rowIndex) => (
-                <div key={rowIndex} className={style.row}>
-                    {row.slice(startCol, endCol + 1).map((cell, colIndex) => {
-                        // Check if any other player is at this position
-                        const otherPlayer = otherPlayers.find(player => player.getX() === startCol + colIndex && player.getY() === startRow + rowIndex);
-                        let cellContent = cell;
-                        if (otherPlayer) {
-                            // If there's another player, use "@" symbol with player's color
-                            const playerImage = otherPlayerImages[otherPlayer.getSessionId()];
-                            return (
-                                <span style={{
-                                    backgroundImage: `url(${playerImage})`,
-                                    backgroundSize: 'cover',
-                                    width: '30px',
-                                    height: '30px'
-                                }}>
+
+            <div key={gridKey} className={style.root} style={{paddingTop, paddingLeft}}>
+                {grid.slice(startRow, endRow + 1).map((row, rowIndex) => (
+                    <div key={rowIndex} className={style.row}>
+                        {row.slice(startCol, endCol + 1).map((cell, colIndex) => {
+                            // Check if any other player is at this position
+                            const otherPlayer = otherPlayers.find(player => player.getX() === startCol + colIndex && player.getY() === startRow + rowIndex);
+                            let cellContent = cell;
+                            if (otherPlayer) {
+                                // If there's another player, use "@" symbol with player's color
+                                const playerImage = otherPlayerImages[otherPlayer.getSessionId()];
+                                return (
+                                    <span style={{
+                                        backgroundImage: `url(${playerImage})`,
+                                        backgroundSize: 'cover',
+                                        width: '30px',
+                                        height: '30px'
+                                    }}>
                                                 </span>
-                            );
-                        } else if (rowIndex === currentPlayer.getY() && colIndex === currentPlayer.getX()) {
-                            const playerColor = currentPlayer.getColor();
-                            cellContent = (
-                                <span style={{
-                                    backgroundImage: `url(${playerImage})`,
-                                    backgroundSize: 'cover',
-                                    width: '30px',
-                                    height: '30px'
-                                }}>
+                                );
+                            } else if (rowIndex === currentPlayer.getY() && colIndex === currentPlayer.getX()) {
+                                cellContent = (
+                                    <span style={{
+                                        backgroundImage: `url(${playerImage})`,
+                                        backgroundSize: 'cover',
+                                        width: '30px',
+                                        height: '30px'
+                                    }}>
                                                  </span>
-                            );
-                        }
-                        return (
-                            <span key={colIndex} className={style.cell}>
+                                );
+                            }
+                            return (
+                                <span key={colIndex} className={style.cell}>
                                 {cellContent}
                             </span>
-                        );
-                    })}
-                </div>
-            ))}
-        </div>
+                            );
+                        })}
+                    </div>
+                ))}
+            </div>
+
     );
 };
 
