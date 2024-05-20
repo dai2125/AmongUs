@@ -5,6 +5,7 @@ import LogIn from "./MainPage/Log-in";
 import CreateAccount from "./MainPage/CreateAccount";
 import CurrentPlayers from "./CurrentPlayers";
 import {User} from "./User";
+import MiniGame2 from "./MiniGame/Download/MiniGame2";
 
 let loggedInUser: User;
 // const userColor: string = "pink";
@@ -15,7 +16,7 @@ const App: React.FC = () => {
     const [userName, setUserName] = useState('');
     const [userColor, setUserColor] = useState("pink");
     const [showLogIn, setShowLogIn] = useState<boolean>(false);
-    const [showMapGrid, setShowMapGrid] = useState<boolean>(true);
+    const [showMapGrid, setShowMapGrid] = useState<boolean>(false);
     const [showHomePage, setShowHomePage] = useState<boolean>(false);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
 
@@ -115,6 +116,7 @@ const App: React.FC = () => {
             {showLogIn && <LogIn onLogIn={handleLogin} onCreateAccountNav={handleCreateNav}/>}
             {showMapGrid && <CurrentPlayers userName={userName} userColor={userColor} onQuit={handleQuit} />}
             {showCreateAccount && <CreateAccount onCreateClick={handleCreate} onLoginNavClick={handleLogInNav}/>}
+            <MiniGame2/>
         </div>
     );};
 

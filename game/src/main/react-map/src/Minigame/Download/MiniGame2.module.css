@@ -1,0 +1,40 @@
+.container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.progress-bar-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.progress-bar {
+    height: 30px;
+    background-color: #76c7c0;
+    border-radius: 10px;
+    transition: width 0.5s;
+}
+
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #76c7c0;
+    color: white;
+    transition: background-color 0.3s;
+}
+
+button:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
+}
+
+.complete-message {
+    font-size: 18px;
+    font-weight: bold;
+    color: #4caf50;
+}

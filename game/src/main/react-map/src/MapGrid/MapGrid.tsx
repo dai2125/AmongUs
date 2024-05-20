@@ -166,6 +166,7 @@ const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
                                                  </span>
                                 );
                             }
+
                             return (
                                 <span key={colIndex} className={style.cell}>
                                 {cellContent}
