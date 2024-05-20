@@ -3,6 +3,8 @@ package com.team2.game.GamingController;
 import com.team2.game.DataModel.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,8 @@ public class RegisterService {
     private ObjectMapper objectMapper = new ObjectMapper();
     public boolean startGame = false;
     public boolean sendAlready = false;
+
+    private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
 
     @Autowired
     private GroupManager groupManager;
@@ -86,11 +90,23 @@ public class RegisterService {
         }
         return false;
     }
+    public UserRegisterDTO disconnectUser(String sessionId) throws UserNotFoundException {
+        for (User u : userList) {
+            if (u.getSessionId().equals(sessionId)) {
+                UserRegisterDTO userRegisterDTO = new UserRegisterDTO(u.getUserName(), u.getAction(), u.getSessionId(), u.getColor(), u.getX(), u.getY());
+                userList.remove(u);
+                groupManager.removeFromTheGroup(u);
+                return userRegisterDTO;
+            }
+        }
+        throw new UserNotFoundException("User with sessionId " + sessionId + " not found");
+    }
 
     public void playerDisconnected(String sessionId) {
         for (User u : userList) {
             if(u.getSessionId().equals(sessionId)) {
                 userList.remove(u);
+                groupManager.removePlayerFromList(u);
             }
         }
         System.out.println("User disconnected: " + sessionId);
@@ -122,4 +138,9 @@ public class RegisterService {
         }
     }
 
+    public class UserNotFoundException extends Exception {
+        public UserNotFoundException(String message) {
+            super(message);
+        }
+    }
 }

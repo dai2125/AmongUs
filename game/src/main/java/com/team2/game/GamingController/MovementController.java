@@ -45,15 +45,16 @@ public class MovementController {
      }
 
     @EventListener
-    public void sessionDisconnectEvent(SessionDisconnectEvent event) throws JsonProcessingException {
-//        messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(registerService.disconnectUser(event.getSessionId())));
-
-//        registerService.playerDisconnected(event.getSessionId());
-
-//        for(User u : registerService.userList) {
-//            registerService.userList.remove(u);
-//            messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(event.getSessionId()));
-//        }
+    public void sessionDisconnectEvent(SessionDisconnectEvent event) {
+        try {
+            messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(registerService.
+                    disconnectUser(event.getSessionId())));
+            logger.info("User disconnected: {}", event.getUser());
+        } catch (JsonProcessingException e) {
+            logger.error("Error processing UserDisconnect JSON: {}", e.getMessage());
+        } catch (Exception e) {
+            logger.error("An unexpected error at UserDisconnect occurred: {}", e.getMessage());
+        }
     }
 
     @MessageMapping("/register/")

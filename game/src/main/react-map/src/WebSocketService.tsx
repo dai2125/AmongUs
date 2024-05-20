@@ -113,14 +113,13 @@ class WebSocketService {
             this.sendRegistrationData();
 
             this.client.subscribe('/topic/disconnected/', (message) => {
-                const disconnectedPlayer: Player = JSON.parse(message.body);
-
-
+                const disconnectedPlayer = JSON.parse(message.body);
+                console.log('Player disconnected:', disconnectedPlayer);
+                const disconnectedPlayerID = disconnectedPlayer.sessionId;
                 setOtherPlayers((prevOtherPlayers) => {
-                    return prevOtherPlayers.filter((p) => p.getSessionId() !== disconnectedPlayer.getSessionId());
+                    return prevOtherPlayers.filter((p) => p.getSessionId() !== disconnectedPlayerID);
                 });
             })
-
             this.client.subscribe(`/topic/movement/${playerRef.current.getUserName()}`, (message) => {
                 const movementData = JSON.parse(message.body);
 
@@ -142,7 +141,6 @@ class WebSocketService {
                 setOtherPlayers((prevOtherPlayers) => {
                     const updatedPlayers = prevOtherPlayers.map((p) => {
                         if (p.getSessionId() === movementData.sessionId) {
-                            // Update existing player's positions
                             p.setX(movementData.x);
                             p.setY(movementData.y);
 
