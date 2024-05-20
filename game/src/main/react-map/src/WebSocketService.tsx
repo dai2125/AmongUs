@@ -31,6 +31,7 @@ class WebSocketService {
     private impostorWins: () => void;
     private crewmateWins: () => void;
     private playerInstance: () => void;
+    private kill: () => void;
 
     constructor(playerRef: React.MutableRefObject<Player>,
                 setOtherPlayers: React.Dispatch<React.SetStateAction<Player[]>>,
@@ -41,7 +42,8 @@ class WebSocketService {
                 dead: () => void,
                 impostorWins: () => void,
                 crewmateWins: () => void,
-                playerInstance: () => void) {
+                playerInstance: () => void,
+                kill: () => void) {
         this.playerRef = playerRef;
         this.setOtherPlayers = setOtherPlayers;
         this.startTimer = startTimer;
@@ -52,6 +54,7 @@ class WebSocketService {
         this.impostorWins = impostorWins;
         this.crewmateWins = crewmateWins;
         this.playerInstance = playerInstance;
+        this.kill = kill;
     }
 
     connect() {
@@ -169,6 +172,7 @@ class WebSocketService {
             });
 
             this.client.subscribe(`/topic/kill/${playerRef.current.getUserName()}`, () => {
+                this.kill();
             });
 
             // this.client.subscribe(`/topic/someoneGotKilled/${playerRef.current.getUserName()}`, (message) => {

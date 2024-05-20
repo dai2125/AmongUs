@@ -1,0 +1,116 @@
+.votingbox {
+    position: absolute;
+    top: 20%;
+    left: 25%;
+    width: 50%;
+    height: 70%;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    max-width: 50%;
+    max-height: 70%;
+    min-width: 50%;
+    min-height: 70%;
+    z-index: 1000;
+}
+
+.votingbox-header {
+    grid-template-columns: 1fr 2fr 1fr;
+    display: grid;
+    color: white;
+    text-align: right;
+    margin-top: 30px;
+    margin-right: 75px;
+    margin-bottom: 30px;
+    font: bold 30px/14px 'VCR OSD Mono', monospace;
+}
+
+.votingbox-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+
+    /*color: black;*/
+    /*float: left;*/
+    /*clear: both;*/
+}
+
+.votingboxChatButton {
+    background-color: transparent;
+    border: none;
+    color: white;
+    text-align: right;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    /*margin: 4px 2px;*/
+    margin-right: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    /*padding: 1px;*/
+    width: 35px;
+    height: 35px;
+
+}
+
+.voting-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+    margin: 5px;
+    height: 70%;
+    width: 80%;
+    /*min-width: 70%;*/
+    /*max-width: 70%;*/
+}
+
+.voting-list-item {
+    background-color: #ffffff;
+    float: left;
+    clear: both;
+    height: 100%;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
+    border-radius: 5px;
+    word-wrap: break-word;
+    white-space: normal;
+    margin-top: 2px;
+    margin-right: 5px;
+    margin-left: 35px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.voting-list-item:hover {
+    background-color: #f0f0f0;
+}
+
+.voting-id {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.skip-vote-button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    text-align: right;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    /*margin: 4px 2px;*/
+    margin-right: 5px;
+    margin-left: 35px;
+    margin-top: 50px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    /*padding: 1px;*/
+    width: 100px;
+    height: 100px;
+}

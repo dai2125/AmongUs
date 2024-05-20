@@ -19,6 +19,8 @@ import VictoryCrewmate from "./Screens/VictoryCrewmate";
 import VictoryImpostor from "./Screens/VictoryImpostor";
 import DefeatImpostor from "./Screens/DefeatImpostor";
 import DefeatCrewmate from "./Screens/DefeatCrewmate";
+import Votingbox from "./GameComponents/Votingbox";
+import YouKilledACrewmate from "./YouKilledACrewmate";
 
 interface Props {
     userColor : string;
@@ -29,6 +31,7 @@ interface Props {
 const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
 
     // const [mapVisible, setMapVisible] = useState(false);
+    const [showVotingbox, setShowVotingbox] = useState(false);
     const [tasks, setTasks] = useState({ task1: '', task2: '', task3: '' });
     const [showKillCrewMate, setShowKillCrewMate] = useState(false);
     const [showKillImpostor, setShowKillImpostor] = useState(false);
@@ -49,6 +52,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [victoryCrewmate, setVictoryCrewmate] = useState(false);
     const [defeatCrewmate, setDefeatCrewmate] = useState(false);
     const [showTaskList, setShowTaskList] = useState(false);
+    const [youGotKilled, setYouGotKilled] = useState(false);
+    const [showYouKilledACrewmate, setShowYouKilledACrewmate] = useState(false);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
     const playerRef = useRef<Player>(new Player(userName, '', '', '', 2, 2, '', '', '', ''));
@@ -111,7 +116,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                                                             dead,
                                                             impostorWinsTheGame,
                                                             crewmateWinsTheGame,
-                                                            playerInstance);
+                                                            playerInstance,
+                                                            kill)
         webSocketServiceRef.current.connect();
         return () => {
         };
@@ -213,6 +219,10 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         // setShowTaskList(true);
     }
 
+    const kill = () => {
+        setShowYouKilledACrewmate(true);
+    }
+
     return (
         <div>
             <div className="background">
@@ -238,6 +248,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                             {/*    <Chatbox/>*/}
                             {/*</div>*/}
                             <Chatbox playerColor={ playerRef.current.getColor() } playerName={ playerRef.current.getUserName()} ></Chatbox>
+                            <Votingbox playerColor={ playerRef.current.getColor() } playerName={ playerRef.current.getUserName()} deadPlayer={ "deadPlayer" } reportPlayer={ "reportPlayer" } ></Votingbox>
                         </div>
                     </div>
                     {/*<div >{purple}</div>*/}
@@ -250,12 +261,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                         </div>
 
                         <div>
-                            { showTaskList ?
+                            {showTaskList ?
                                 <TaskList tasks={tasks}/> : <div></div>
                             }
                         </div>
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
-                            { showLobby ? <Lobby currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> : <div></div> }
+                            {showLobby ? <Lobby currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
+                                <div></div>}
                         </div>
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
@@ -332,17 +344,23 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                             {/*{ showKillImpostor ? <KillImpostor onStart={handleRole}/> : <div></div> }*/}
                         </div>
                         <div>
-                            { victoryImpostor ? <VictoryImpostor onStart={handleRole}/> : <div></div> }
+                            {victoryImpostor ? <VictoryImpostor onStart={handleRole}/> : <div></div>}
                         </div>
                         <div>
-                            { victoryCrewmate ? <VictoryCrewmate onStart={handleRole}/> : <div></div> }
+                            {victoryCrewmate ? <VictoryCrewmate onStart={handleRole}/> : <div></div>}
                         </div>
                         <div>
-                            { defeatImpostor ? <DefeatImpostor onStart={handleRole}/> : <div></div> }
+                            {defeatImpostor ? <DefeatImpostor onStart={handleRole}/> : <div></div>}
                         </div>
                         <div>
-                            { defeatCrewmate ? <DefeatCrewmate onStart={handleRole}/> : <div></div> }
+                            {defeatCrewmate ? <DefeatCrewmate onStart={handleRole}/> : <div></div>}
                         </div>
+                        <div>
+                            {showYouKilledACrewmate ? <YouKilledACrewmate onStart={handleRole}/> : <div></div>}
+                        </div>
+                        {/*<div>*/}
+                        {/*    {youGotKilled ? <YouGotKilled onStart={handleRole}/> : <div></div>}*/}
+                        {/*</div>*/}
                     </div>
                     <KeyInput onKeyPress={handleKeyPress}/>
                 </div>
