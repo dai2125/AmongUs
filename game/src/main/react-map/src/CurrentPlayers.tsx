@@ -220,8 +220,20 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     }
 
     const kill = () => {
-        setShowYouKilledACrewmate(true);
+        // setShowMap(false);
+        // TODO killCrewmate Screen stucks and doesnt end
+        // setShowYouKilledACrewmate(true);
+
+        // setTimeout(() => {
+        //     setShowKillCrewMate(false);
+        //
+        // }, 3000);
     }
+
+    const handleButtonPress = () => {
+        webSocketServiceRef.current.yourAGhostNow();
+    }
+
 
     return (
         <div>
@@ -248,7 +260,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                             {/*    <Chatbox/>*/}
                             {/*</div>*/}
                             <Chatbox playerColor={ playerRef.current.getColor() } playerName={ playerRef.current.getUserName()} ></Chatbox>
-                            <Votingbox playerColor={ playerRef.current.getColor() } playerName={ playerRef.current.getUserName()} deadPlayer={ "deadPlayer" } reportPlayer={ "reportPlayer" } ></Votingbox>
+                            <Votingbox onButtonPress={handleButtonPress} playerColor={ playerRef.current.getColor() } playerName={ playerRef.current.getUserName()} deadPlayer={ "deadPlayer" } reportPlayer={ "reportPlayer" } ></Votingbox>
                         </div>
                     </div>
                     {/*<div >{purple}</div>*/}

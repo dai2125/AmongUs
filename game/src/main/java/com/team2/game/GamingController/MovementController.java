@@ -147,16 +147,22 @@ public class MovementController {
         }
 
 
-        if(registerService.areAllCrewmatesDead()) {
-            System.out.println("IMPOSTOR WINS");
-            messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
-        }
+//        if(registerService.areAllCrewmatesDead()) {
+//            System.out.println("IMPOSTOR WINS");
+//            messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
+//        }
     }
 
     @MessageMapping("/gimmework/{userName}")
     public void processGimmeWork(@Payload User user) throws JsonProcessingException {
         TaskDTO task = registerService.getTask();
         messagingTemplate.convertAndSend("/topic/gimmework/" + user.getUserName(), new ObjectMapper().writeValueAsString(task));
+
+    }
+
+    @MessageMapping("/yourAGhostNow/")
+    public void processGhost(@Payload User user) throws JsonProcessingException {
+        messagingTemplate.convertAndSend("/topic/yourAGhostNow/", new ObjectMapper().writeValueAsString("ghost"));
 
     }
 

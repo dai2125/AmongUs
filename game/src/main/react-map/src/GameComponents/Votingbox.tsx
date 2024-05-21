@@ -13,7 +13,7 @@ import VotingChatbox from "./VotingChatbox";
 // TODO Backend muss die Votes übernehmen
 // TODO fertig designen
 
-function Votingbox ({ playerColor, playerName, deadPlayer, reportPlayer })  {
+function Votingbox ({ playerColor, playerName, deadPlayer, reportPlayer, onButtonPress = () => {} }) {
 
     const [votingVisible, setVotingVisible] = useState(false);
     const [players, setPlayers] = useState([]);
@@ -121,7 +121,7 @@ function Votingbox ({ playerColor, playerName, deadPlayer, reportPlayer })  {
                         </div>
                     </div>
                     <div className="skip-vote-button">
-                        <button><img src={ skipVote }></img></button>
+                        <button><img onClick={onButtonPress} src={ skipVote }></img></button>
                     </div>
                 </div>
             </div>

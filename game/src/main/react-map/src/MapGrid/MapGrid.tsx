@@ -15,6 +15,7 @@ import lime from "../Images/Character_Movement/Lime.jpg";
 import pink from "../Images/Character_Movement/Pink.jpg";
 import dead from "../Images/Character_Movement/dead.png";
 import killButton from "../Images/Buttons/Kill_Button.jpg";
+import ghost from "../Images/Character_Movement/Ghost.jpg";
 
 import mapImage from '../Images/Maps/Lobby.png';
 
@@ -38,6 +39,7 @@ const colorToImageUrl = {
     lime: lime,
     pink: pink,
     dead: dead,
+    ghost: ghost
 };
 
 const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
@@ -92,6 +94,7 @@ const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
         orange: "../images/Character_Movement/Orange.jpg",
         yellow: "../images/Character_Movement/Yellow.jpg",
         purple: "../images/Character_Movement/Purple.png",
+        ghost: "../Images/Character_Movement/Ghost.jpg"
     };
 
     useEffect(() => {
