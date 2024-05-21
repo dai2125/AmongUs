@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 
-const NumberButtonGame: React.FC = () => {
+interface NumberButtonGameProps {
+    onCompletion: () => void;
+}
+
+const MiniGame3: React.FC<NumberButtonGameProps> = ({ onCompletion }) => {
     const [buttonOrder, setButtonOrder] = useState<number[]>([]);
     const [currentNumber, setCurrentNumber] = useState<number | null>(null);
     const [gameStarted, setGameStarted] = useState(false);
 
-    // Function to shuffle array
     const shuffleArray = (array: number[]) => {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -14,7 +17,6 @@ const NumberButtonGame: React.FC = () => {
         return array;
     };
 
-    // Function to start the game
     const startGame = () => {
         const shuffledOrder = shuffleArray([...Array(10).keys()].map(i => i + 1));
         setButtonOrder(shuffledOrder);
@@ -22,18 +24,21 @@ const NumberButtonGame: React.FC = () => {
         setGameStarted(true);
     };
 
-    // Function to handle button click
     const handleButtonClick = (number: number) => {
         if (number === currentNumber) {
-            setCurrentNumber(currentNumber! + 1);
+            if (currentNumber === 10) {
+                setGameStarted(false);
+                setCurrentNumber(null);
+                onCompletion();
+            } else {
+                setCurrentNumber(currentNumber! + 1);
+            }
         } else {
-            // Reset the game if the wrong button is clicked
             setGameStarted(false);
             setCurrentNumber(null);
         }
     };
 
-    // useEffect to start the game when component mounts
     useEffect(() => {
         startGame();
     }, []);
@@ -54,7 +59,7 @@ const NumberButtonGame: React.FC = () => {
                                 fontSize: '16px',
                                 cursor: 'pointer',
                                 backgroundColor: currentNumber === number ? 'lightgreen' : 'inherit',
-                                pointerEvents: gameStarted ? 'auto' : 'none', // Enable/disable button clicks based on game state
+                                pointerEvents: gameStarted ? 'auto' : 'none',
                             }}
                             disabled={currentNumber !== null && currentNumber !== number}
                         >
@@ -73,7 +78,7 @@ const NumberButtonGame: React.FC = () => {
                                 fontSize: '16px',
                                 cursor: 'pointer',
                                 backgroundColor: currentNumber === number ? 'lightgreen' : 'inherit',
-                                pointerEvents: gameStarted ? 'auto' : 'none', // Enable/disable button clicks based on game state
+                                pointerEvents: gameStarted ? 'auto' : 'none',
                             }}
                             disabled={currentNumber !== null && currentNumber !== number}
                         >
@@ -86,4 +91,4 @@ const NumberButtonGame: React.FC = () => {
     );
 };
 
-export default NumberButtonGame;
+export default MiniGame3;

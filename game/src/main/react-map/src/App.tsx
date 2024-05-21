@@ -5,7 +5,13 @@ import LogIn from "./MainPage/Log-in";
 import CreateAccount from "./MainPage/CreateAccount";
 import CurrentPlayers from "./CurrentPlayers";
 import {User} from "./User";
-import MiniGame3 from "./MiniGame/ClickInOrder/MiniGame3";
+
+//Test Games
+import MiniGame1 from './MiniGame/GuessTheNumber/MiniGame1';
+import MiniGame2 from './MiniGame/Download/MiniGame2';
+import MiniGame3 from './MiniGame/ClickInOrder/MiniGame3';
+import Modal from './MiniGame/Modal/Modal';
+
 
 let loggedInUser: User;
 // const userColor: string = "pink";
@@ -16,9 +22,15 @@ const App: React.FC = () => {
     const [userName, setUserName] = useState('');
     const [userColor, setUserColor] = useState("pink");
     const [showLogIn, setShowLogIn] = useState<boolean>(false);
-    const [showMapGrid, setShowMapGrid] = useState<boolean>(false);
+    const [showMapGrid, setShowMapGrid] = useState<boolean>(true);
     const [showHomePage, setShowHomePage] = useState<boolean>(false);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
+
+    //Test Games
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [currentMinigame, setCurrentMinigame] = useState<React.ReactNode>(null);
+
+
 
     const handleLogin = (name:string, password: string) => {
 
@@ -110,14 +122,48 @@ const App: React.FC = () => {
     useEffect(() => {
     }, [userName]);
 
+
+    //Test Games
+    const openMinigame = (minigame: React.ReactNode) => {
+        setCurrentMinigame(minigame);
+        setIsModalVisible(true);
+    };
+
+    const closeMinigame = () => {
+        setIsModalVisible(false);
+        setCurrentMinigame(null);
+    };
+
+    const handleMinigameCompletion = () => {
+        closeMinigame();
+        // TODO Send completion message to server
+    };
+
+
+//Test Games
     return (
         <div>
-            {showHomePage && <HomePage setUserColor={setUserColor} loggesInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
+            <h1>Main Game</h1>
+            <button onClick={() => openMinigame(<MiniGame1 onCompletion={handleMinigameCompletion}/>)}>Play MiniGame 1
+            </button>
+            <button onClick={() => openMinigame(<MiniGame2 onCompletion={handleMinigameCompletion}/>)}>Play MiniGame 2
+            </button>
+            <button onClick={() => openMinigame(<MiniGame3 onCompletion={handleMinigameCompletion}/>)}>Play MiniGame 3
+            </button>
+            <Modal isVisible={isModalVisible} onClose={closeMinigame}>
+                {currentMinigame}
+            </Modal>
+
+
+            {showHomePage &&
+                <HomePage setUserColor={setUserColor} loggesInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
             {showLogIn && <LogIn onLogIn={handleLogin} onCreateAccountNav={handleCreateNav}/>}
-            {showMapGrid && <CurrentPlayers userName={userName} userColor={userColor} onQuit={handleQuit} />}
+            {showMapGrid && <CurrentPlayers userName={userName} userColor={userColor} onQuit={handleQuit}/>}
             {showCreateAccount && <CreateAccount onCreateClick={handleCreate} onLoginNavClick={handleLogInNav}/>}
-            <MiniGame3/>
+
+
         </div>
-    );};
+    );
+};
 
 export default App;
