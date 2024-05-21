@@ -1,4 +1,4 @@
-import {FormEvent} from "react";
+import React, {FormEvent, useState} from "react";
 
 type Props = {
     onCreateClick(name:string, email: string, password: string, passwordConfirm: string ): void;
@@ -6,9 +6,9 @@ type Props = {
 }
 
 export default function CreateAccount({onCreateClick, onLoginNavClick}: Props){
+    const [errorMessage, setErrorMessage] = useState<string>('');
 
     function onFormSubmit(event: FormEvent<HTMLFormElement>){
-
         event.preventDefault();
 
         const form = event.currentTarget;
@@ -36,26 +36,43 @@ export default function CreateAccount({onCreateClick, onLoginNavClick}: Props){
     return(
         <div className="background">
             <div className="flex items-center justify-center h-screen">
-                <div className="grid grid-rows-10 bg-transparent border-double rounded-lg border-2 border-fuchsia-800 w-1/2 h-auto">
-                    <div className="row-span-2 flex items-center justify-center text-white"><b>Create Account</b></div>
+                <div className="grid grid-rows-10 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-1/2 h-auto">
+                    <div className="grid grid-rows-2 row-span-2 justify-center text-white">
+                        <div className="error-notification row-span-1 justify-self-center">
+                            {errorMessage}
+                        </div>
+                        <div className="row-span-1 justify-self-center">
+                          <b>Create Account</b>
+                        </div>
+                    </div>
                     <div className="row-span-7 justify-self-center">
                         <form onSubmit={onFormSubmit} className="p-3">
                             <div>
                                 <label className="text-white">Username:</label><br/>
-                                <input name="name" className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white" required/><br/>
+                                <input name="name"
+                                       className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                       required/><br/>
                                 <label className="text-white">E-mail:</label><br/>
-                                <input name="email" className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white" required/><br/>
+                                <input name="email"
+                                       className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                       required/><br/>
                                 <label className="text-white">Password:</label><br/>
-                                <input type="password" name="password"  className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white" required/><br/>
+                                <input type="password" name="password"
+                                       className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                       required/><br/>
                                 <label className="text-white">Confirm Password:</label><br/>
-                                <input type="password" name="passwordConfirm" className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white" required/><br/>
+                                <input type="password" name="passwordConfirm"
+                                       className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                       required/><br/>
                             </div>
 
                             <div className="flex justify-center">
                                 <button
                                     className="bg-blue-500 hover:bg-gray-400 text-slate-50 font-bold py-2 px-4 rounded mt-3 text-white"
-                                    type="submit">Sign-Up</button>
+                                    type="submit">Sign-Up
+                                </button>
                             </div>
+
                         </form>
                     </div>
                     <div className="row-span-1 flex justify-between px-4">
