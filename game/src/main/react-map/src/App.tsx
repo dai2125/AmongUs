@@ -7,11 +7,11 @@ import CurrentPlayers from "./CurrentPlayers";
 import {User} from "./User";
 
 //Test Games
-import MiniGame1 from './MiniGame/GuessTheNumber/MiniGame1';
-import MiniGame2 from './MiniGame/Download/MiniGame2';
-import MiniGame3 from './MiniGame/ClickInOrder/MiniGame3';
-import MiniGame4 from './MiniGame/NumpadInputCode/MiniGame4'
-import Modal from './MiniGame/Modal/Modal';
+import MiniGame1 from './Minigame/GuessTheNumber/MiniGame1';
+import MiniGame2 from './Minigame/Download/MiniGame2';
+import MiniGame3 from './Minigame/ClickInOrder/MiniGame3';
+import MiniGame4 from './Minigame/NumpadInputCode/MiniGame4'
+import Modal from './Minigame/Modal/Modal';
 
 
 let loggedInUser: User;
