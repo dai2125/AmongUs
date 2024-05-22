@@ -135,47 +135,51 @@ const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
     // );
 
     return (
+        <div key={gridKey} className={style.root} style={{ paddingTop, paddingLeft }}>
+            {grid.slice(startRow, endRow + 1).map((row, rowIndex) => (
+                <div key={rowIndex} className={style.row}>
+                    {row.slice(startCol, endCol + 1).map((cell, colIndex) => {
+                        // Calculate the actual row and column index in the grid
+                        const actualRow = startRow + rowIndex;
+                        const actualCol = startCol + colIndex;
 
-            <div key={gridKey} className={style.root} style={{paddingTop, paddingLeft}}>
-                {grid.slice(startRow, endRow + 1).map((row, rowIndex) => (
-                    <div key={rowIndex} className={style.row}>
-                        {row.slice(startCol, endCol + 1).map((cell, colIndex) => {
-                            // Check if any other player is at this position
-                            const otherPlayer = otherPlayers.find(player => player.getX() === startCol + colIndex && player.getY() === startRow + rowIndex);
-                            let cellContent = cell;
-                            if (otherPlayer) {
-                                // If there's another player, use "@" symbol with player's color
-                                const playerImage = otherPlayerImages[otherPlayer.getSessionId()];
-                                return (
-                                    <span style={{
-                                        backgroundImage: `url(${playerImage})`,
-                                        backgroundSize: 'cover',
-                                        width: '30px',
-                                        height: '30px'
-                                    }}>
-                                                </span>
-                                );
-                            } else if (rowIndex === currentPlayer.getY() && colIndex === currentPlayer.getX()) {
-                                cellContent = (
-                                    <span style={{
-                                        backgroundImage: `url(${playerImage})`,
-                                        backgroundSize: 'cover',
-                                        width: '30px',
-                                        height: '30px'
-                                    }}>
-                                                 </span>
-                                );
-                            }
+                        // Check if any other player is at this position
+                        const otherPlayer = otherPlayers.find(player => player.getX() === actualCol && player.getY() === actualRow);
+
+                        let cellContent = cell;
+                        if (otherPlayer) {
+                            // If there's another player, use player's image
+                            const playerImage = otherPlayerImages[otherPlayer.getSessionId()];
                             return (
-                                <span key={colIndex} className={style.cell}>
-                                {cellContent}
+                                <span key={colIndex} style={{
+                                    backgroundImage: `url(${playerImage})`,
+                                    backgroundSize: 'cover',
+                                    width: '30px',
+                                    height: '30px'
+                                }}>
                             </span>
                             );
-                        })}
-                    </div>
-                ))}
-            </div>
+                        } else if (actualRow === currentPlayer.getY() && actualCol === currentPlayer.getX()) {
+                            cellContent = (
+                                <span key={colIndex} style={{
+                                    backgroundImage: `url(${playerImage})`,
+                                    backgroundSize: 'cover',
+                                    width: '30px',
+                                    height: '30px'
+                                }}>
+                            </span>
+                            );
+                        }
 
+                        return (
+                            <span key={colIndex} className={style.cell}>
+                            {cellContent}
+                        </span>
+                        );
+                    })}
+                </div>
+            ))}
+        </div>
     );
 };
 
