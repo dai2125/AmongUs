@@ -190,7 +190,9 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers}) => {
                 <div key={rowIndex} style={{ display: 'flex' }}>
                     {row.map((cell, colIndex) => {
                         const cellStyle = cell === 1
-                            ? { backgroundColor: 'rgba(255, 255, 255, 0.5)', width: '30px', height: '30px' }
+                            ? {
+                            //backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                                width: '30px', height: '30px' }
                             : { width: '30px', height: '30px' };
                         return <div key={colIndex} style={cellStyle}></div>;
                     })}

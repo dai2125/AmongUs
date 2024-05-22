@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
-const DownloadMinigame: React.FC = () => {
+interface MiniGame2Props {
+    onCompletion: () => void;
+}
+
+const MiniGame2: React.FC<MiniGame2Props> = ({ onCompletion }) => {
     const [progress, setProgress] = useState(0);
     const [isDownloading, setIsDownloading] = useState(false);
     const [isComplete, setIsComplete] = useState(false);
@@ -12,22 +16,24 @@ const DownloadMinigame: React.FC = () => {
     };
 
     useEffect(() => {
+        let timer: NodeJS.Timeout;
         if (isDownloading && progress < 100) {
-            const timer = setInterval(() => {
+            timer = setInterval(() => {
                 setProgress(prev => {
                     const nextProgress = prev + 10;
                     if (nextProgress >= 100) {
                         clearInterval(timer);
                         setIsComplete(true);
                         setIsDownloading(false);
+                        onCompletion(); // Call the onCompletion prop when download is complete
                         return 100;
                     }
                     return nextProgress;
                 });
             }, 500); // Adjust the interval speed as needed
-            return () => clearInterval(timer);
         }
-    }, [isDownloading, progress]);
+        return () => clearInterval(timer);
+    }, [isDownloading, progress, onCompletion]);
 
     return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
@@ -60,4 +66,4 @@ const DownloadMinigame: React.FC = () => {
     );
 };
 
-export default DownloadMinigame;
+export default MiniGame2;

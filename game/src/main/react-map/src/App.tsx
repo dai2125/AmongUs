@@ -10,6 +10,7 @@ import {User} from "./User";
 import MiniGame1 from './MiniGame/GuessTheNumber/MiniGame1';
 import MiniGame2 from './MiniGame/Download/MiniGame2';
 import MiniGame3 from './MiniGame/ClickInOrder/MiniGame3';
+import MiniGame4 from './MiniGame/NumpadInputCode/MiniGame4'
 import Modal from './MiniGame/Modal/Modal';
 
 
@@ -149,6 +150,8 @@ const App: React.FC = () => {
             <button onClick={() => openMinigame(<MiniGame2 onCompletion={handleMinigameCompletion}/>)}>Play MiniGame 2
             </button>
             <button onClick={() => openMinigame(<MiniGame3 onCompletion={handleMinigameCompletion}/>)}>Play MiniGame 3
+            </button>
+            <button onClick={() => openMinigame(<MiniGame4 onCompletion={handleMinigameCompletion}/>)}>Play MiniGame 4
             </button>
             <Modal isVisible={isModalVisible} onClose={closeMinigame}>
                 {currentMinigame}

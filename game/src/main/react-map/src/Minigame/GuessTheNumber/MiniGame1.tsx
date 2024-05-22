@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import './MiniGame1.module.css';
 
-const MiniGame1: React.FC = () => {
+interface MiniGame1Props {
+    onCompletion: () => void;
+}
+
+const MiniGame1: React.FC<MiniGame1Props> = ({ onCompletion }) => {
     const [term, setTerm] = useState('');
     const [resultMessage, setResultMessage] = useState('');
     const [secret] = useState(Math.floor(Math.random() * 100) + 1);
@@ -26,12 +29,13 @@ const MiniGame1: React.FC = () => {
             setResultMessage('Lower!');
         } else {
             setResultMessage('Congratulations! You guessed it!');
+            onCompletion();
         }
     };
 
     return (
-        <div className='container'>
-            <div className='head'>
+        <div style={{ padding: '20px', textAlign: 'center' }}>
+            <div style={{ marginBottom: '10px' }}>
                 <label htmlFor='term'>Guess Number between 1 to 100</label>
             </div>
             <input
@@ -41,9 +45,12 @@ const MiniGame1: React.FC = () => {
                 value={term}
                 onChange={handleChange}
                 onKeyPress={handleKeyPress}
+                style={{ padding: '5px', fontSize: '16px' }}
             />
-            <button onClick={handleSubmit}>Submit</button>
-            <div className='result'>
+            <button onClick={handleSubmit} style={{ marginLeft: '10px', padding: '5px 10px', fontSize: '16px' }}>
+                Submit
+            </button>
+            <div style={{ marginTop: '10px', fontSize: '16px' }}>
                 {resultMessage}
             </div>
         </div>
