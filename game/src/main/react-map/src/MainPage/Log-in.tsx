@@ -1,8 +1,10 @@
 import React, {FormEvent, useState} from 'react';
 import '../CSS/Log-in.css';
+import {User} from "../User";
 
+let loggedInUser = new User();
 type Props ={
-    onLogIn(name: string, password: string): void;
+    onLogIn(loggedInUser: User): void;
     onCreateAccountNav():void;
 }
 
@@ -20,16 +22,46 @@ export default function LogIn({onLogIn, onCreateAccountNav,}: Props){
         const name = data.get('name') as string;
         const password = data.get('password') as string;
 
+
         if (name === '' || password === '') {
             setErrorMessage('Please fill out all fields');
             return;
-        }
+        }else { handleLogin(name, password);}
 
-        onLogIn(name, password);
         setName('');
         setPassword('');
-        // setErrorMessage('Wrong credentials');
+
     }
+
+    const handleLogin = (name:string, password: string) => {
+
+        const user ={
+            name : name,
+            password: password
+        }
+
+        fetch('http://localhost:8080/login',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(user),
+        })
+            .then(data => {
+                if(data.status === 200){
+                    // alert("Log In Successful");
+                    loggedInUser.setUsername(name);
+                    loggedInUser.setPassword(password);
+                    loggedInUser.setColor("red");
+                    onLogIn(loggedInUser);
+                } else {
+                    setErrorMessage('Wrong credentials');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    };
 
     return(
         <div className="background">

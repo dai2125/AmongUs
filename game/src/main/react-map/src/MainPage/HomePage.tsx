@@ -150,7 +150,7 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
                 className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2 ">
                 <div id="user-div" className="col-span-1"></div>
                 <div className="col-span-01 text-3xl text-cyan-500 text-center">
-                    {/*{loggesInUser.getUsername()}*/}
+                    {loggesInUser.getUsername()}
                 </div>
                 <button onClick={onFriendsButtonClick}
                         className="col-span-10 w-1/6 h-10 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
