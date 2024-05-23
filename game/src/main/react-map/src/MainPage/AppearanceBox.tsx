@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-// import {User} from "./User";
 import '../CSS/rainbowButton.css';
 import red from '../Images/Characters/red.jpg';
 import blue from '../Images/Characters/Blue.jpg';
@@ -16,16 +15,7 @@ import yellow from '../Images/Characters/Yellow.png';
 import purple from '../Images/Characters/Purple.jpg';
 import {User} from "../User";
 
-// const user;
-// user.setColor('red');
-// let color = user.getColor();
-
-// interface Props {
-//     userColor: string;
-//     user: User;
-// }
-
-const AppearanceBox = ({setUserColor}) => {
+const AppearanceBox = ({ setUserColor }) => {
 
     const [color, setColor] = useState('red')
 
