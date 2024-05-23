@@ -1,10 +1,24 @@
-import React, {FormEvent, useState} from 'react';
+import React, {FormEvent, useEffect, useState} from 'react';
 import '../CSS/main.css'
 import '../CSS/output.css';
 import amongUsIcon from '../Images/Homepage/Among_Us_logo.png';
 import AppearanceBox from "./AppearanceBox";
 import {User} from "../User";
 import '../CSS/HomePage.css';
+import purple from "../Images/Character_Movement/Purple.png";
+import red from "../Images/Character_Movement/red.jpg";
+import blue from "../Images/Character_Movement/Blue.jpg";
+import green from "../Images/Character_Movement/Green.jpg";
+import orange from "../Images/Character_Movement/Orange.jpg";
+import yellow from "../Images/Character_Movement/Yellow.png";
+import black from "../Images/Character_Movement/Black.jpg";
+import gray from '../Images/Characters/Gray.jpg';
+import white from "../Images/Character_Movement/White.jpg";
+import brown from "../Images/Character_Movement/Brown.jpg";
+import cyan from "../Images/Character_Movement/Cyan.jpg";
+import lime from "../Images/Character_Movement/Lime.jpg";
+import pink from "../Images/Character_Movement/Pink.jpg";
+import dead from "../Images/Character_Movement/dead.png";
 
 type Props ={
     loggesInUser: User;
@@ -12,9 +26,27 @@ type Props ={
     setUserColor(color: string): void;
 }
 
+const colorToImageUrl = {
+    purple: purple,
+    red: red,
+    gray: gray,
+    blue: blue,
+    green: green,
+    orange: orange,
+    yellow: yellow,
+    black: black,
+    white: white,
+    brown: brown,
+    cyan: cyan,
+    lime: lime,
+    pink: pink,
+    dead: dead,
+};
+
 export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor }: Props) {
 
     const [color, setColor] = useState("pink");
+    const [playerImage, setPlayerImage] = useState(colorToImageUrl[color]);
 
     const [errorName, setErrorName] = useState("");
     const [errorEmail, setErrorEmail] = useState("");
@@ -142,13 +174,19 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
     const handleColorChange = (newColor) => {
         setColor(newColor);
         setUserColor(newColor);
+        setPlayerImage(colorToImageUrl[newColor]);
     }
+
 
     return (
         <div className="background grid grid-rows-12 min-h-screen w-screen p-10">
             <div
                 className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2 ">
-                <div id="user-div" className="col-span-1"></div>
+                <div id="user-div"
+                     className="col-span-1" style={{
+                         backgroundImage: `url(${playerImage})`
+                }
+                }/>
                 <div className="col-span-01 text-3xl text-cyan-500 text-center">
                     {loggesInUser.getUsername()}
                 </div>
