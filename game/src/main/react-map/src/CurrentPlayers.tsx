@@ -21,6 +21,20 @@ import DefeatImpostor from "./Screens/DefeatImpostor";
 import DefeatCrewmate from "./Screens/DefeatCrewmate";
 import Votingbox from "./GameComponents/Votingbox";
 import YouKilledACrewmate from "./YouKilledACrewmate";
+import purple from "./Images/Character_Movement/Purple.png";
+import red from "./Images/Character_Movement/red.jpg";
+import gray from "./Images/Characters/Gray.jpg";
+import blue from "./Images/Character_Movement/Blue.jpg";
+import green from "./Images/Character_Movement/Green.jpg";
+import orange from "./Images/Character_Movement/Orange.jpg";
+import yellow from "./Images/Character_Movement/Yellow.png";
+import black from "./Images/Character_Movement/Black.jpg";
+import white from "./Images/Character_Movement/White.jpg";
+import brown from "./Images/Character_Movement/Brown.jpg";
+import cyan from "./Images/Character_Movement/Cyan.jpg";
+import lime from "./Images/Character_Movement/Lime.jpg";
+import pink from "./Images/Character_Movement/Pink.jpg";
+import dead from "./Images/Character_Movement/dead.png";
 
 interface Props {
     userColor : string;
@@ -28,8 +42,27 @@ interface Props {
     onQuit: () => void;
 }
 
+const colorToImageUrl = {
+    purple: purple,
+    red: red,
+    gray: gray,
+    blue: blue,
+    green: green,
+    orange: orange,
+    yellow: yellow,
+    black: black,
+    white: white,
+    brown: brown,
+    cyan: cyan,
+    lime: lime,
+    pink: pink,
+    dead: dead,
+};
+
+
 const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
 
+    const [playerImage, setPlayerImage] = useState(colorToImageUrl[userColor]);
     // const [mapVisible, setMapVisible] = useState(false);
     const [showVotingbox, setShowVotingbox] = useState(false);
     const [tasks, setTasks] = useState({ task1: '', task2: '', task3: '' });
@@ -230,7 +263,11 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                     <div className="row-span-1 ">
                         <div
                             className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2">
-                            <div id="user-div" className="col-span-1"></div>
+                            <div id="user-div"
+                                 className="col-span-1" style={{
+                                backgroundImage: `url(${playerImage})`
+                            }
+                            }/>
                             {/*<button onClick={toggleChat} className="text-white bg-gray-700 hover:bg-gray-800 font-bold py-2 px-4 rounded m-10">*/}
                             {/*    Press me*/}
                             {/*</button>*/}
