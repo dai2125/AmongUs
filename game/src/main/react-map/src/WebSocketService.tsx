@@ -322,7 +322,7 @@ class WebSocketService {
         }
     }
 
-    sendTaskDone(task: string) {
+    sendTaskDone(task: string, xPosTask: number, yPosTask: number) {
         if (this.client) {
             const player = this.playerRef.current;
             player.setAction(task);
@@ -332,8 +332,8 @@ class WebSocketService {
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
                 color: player.getColor(),
-                x: player.getX(),
-                y: player.getY()
+                x: xPosTask,
+                y: yPosTask
             });
 
             this.client.send(`/app/task/${player.getUserName()}`, {}, payload);

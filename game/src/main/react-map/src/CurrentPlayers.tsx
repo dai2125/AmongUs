@@ -22,6 +22,14 @@ import DefeatCrewmate from "./Screens/DefeatCrewmate";
 import Votingbox from "./GameComponents/Votingbox";
 import YouKilledACrewmate from "./YouKilledACrewmate";
 
+//Test Games
+import MiniGame1 from './Minigame/GuessTheNumber/MiniGame1';
+import MiniGame2 from './Minigame/Download/MiniGame2';
+import MiniGame3 from './Minigame/ClickInOrder/MiniGame3';
+import MiniGame4 from './Minigame/NumpadInputCode/MiniGame4';
+import MiniGame5 from './Minigame/Memory/MiniGame5';
+import Modal from './Minigame/Modal/Modal';
+
 interface Props {
     userColor : string;
     userName : string;
@@ -58,6 +66,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
     const playerRef = useRef<Player>(new Player(userName, '', '', '', 2, 2, '', '', '', ''));
 
+    //Test Games
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [currentMiniGame, setCurrentMiniGame] = useState<React.ReactNode>(null);
 
     useEffect(() => {
         playerRef.current.setColor(userColor);
@@ -125,7 +136,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
 
 
     const handleKeyPress = (key: string) => {
-        if (key === 'w' && playerRef.current.getRole() === 'crewmate') {
+        if (key === 'w') {
             taskAction();
         }
         else if (key === 'e' && playerRef.current.getRole() === 'impostor') {
@@ -153,11 +164,51 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         setShowPopup(!showPopup);
     };
 
+    //Test Games
+    const openMiniGame = (minigame: React.ReactNode) => {
+        setCurrentMiniGame(minigame);
+        setIsModalVisible(true);
+    };
+
+    const closeMiniGame = () => {
+        setIsModalVisible(false);
+        setCurrentMiniGame(null);
+    };
+
+    const handleMiniGameCompletion = () => {
+        closeMiniGame();
+        const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
+        const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
+        if(xPosTask === 1 && yPosTask === 4) {
+            webSocketServiceRef.current.sendTaskDone("task1", 1, 4);
+        } else if(xPosTask === 7 && yPosTask === 1) {
+            webSocketServiceRef.current.sendTaskDone("task2", 7, 1);
+        } else if(xPosTask === 9 && yPosTask === 7) {
+            webSocketServiceRef.current.sendTaskDone("task3", 9, 7);
+        } else if(xPosTask === 23 && yPosTask === 21) {
+            webSocketServiceRef.current.sendTaskDone("task4", 23, 21);
+        } else if(xPosTask === 22 && yPosTask === 6) {
+            webSocketServiceRef.current.sendTaskDone("task5", 22, 6);
+        }
+    };
+
     const taskAction = () => {
         if(GridService.isTask(playerRef.current.getY(), playerRef.current.getX())) {
-            // TODO open task box
-            // TODO if task is completed send message to MovementController
-            webSocketServiceRef.current.sendTaskDone("task1");
+            const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
+            const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
+            if(xPosTask != null && yPosTask != null) {
+                if(xPosTask === 1 && yPosTask === 4) {
+                    openMiniGame(<MiniGame1 onCompletion={handleMiniGameCompletion} />);
+                } else if(xPosTask === 7 && yPosTask === 1) {
+                    openMiniGame(<MiniGame2 onCompletion={handleMiniGameCompletion} />);
+                } else if(xPosTask === 9 && yPosTask === 7) {
+                    openMiniGame(<MiniGame3 onCompletion={handleMiniGameCompletion} />);
+                } else if(xPosTask === 23 && yPosTask === 21) {
+                    openMiniGame(<MiniGame4 onCompletion={handleMiniGameCompletion} />);
+                } else if(xPosTask === 22 && yPosTask === 6) {
+                    openMiniGame(<MiniGame5 onCompletion={handleMiniGameCompletion} />);
+                }
+            }
         }
     }
 
@@ -268,6 +319,11 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {showLobby ? <Lobby currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
                                 <div></div>}
+                        </div>
+                        <div>
+                            <Modal isVisible={isModalVisible} onClose={closeMiniGame}>
+                            {currentMiniGame}
+                            </Modal>
                         </div>
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
