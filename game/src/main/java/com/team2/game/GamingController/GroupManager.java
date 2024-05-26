@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -26,6 +27,7 @@ public class GroupManager {
     private List<User> userList = new ArrayList<>();
     private List<String> taskList = Arrays.asList(TASK1, TASK2, TASK3, TASK4, TASK5, TASK6, TASK7, TASK8, TASK9);
     private List<String> taskListCopy = new ArrayList<>(taskList);
+    public HashMap<String, Integer> votingList = new HashMap<>();
 
     private boolean impostor = false;
     int impostorIndex = (int) (Math.random() * GROUP_FULL);

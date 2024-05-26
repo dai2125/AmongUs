@@ -32,6 +32,9 @@ class WebSocketService {
     private crewmateWins: () => void;
     private playerInstance: () => void;
     private kill: () => void;
+    private votingActive: () => void;
+    private votingNotActive: () => void;
+    private ejectMe: () => void;
 
     constructor(playerRef: React.MutableRefObject<Player>,
                 setOtherPlayers: React.Dispatch<React.SetStateAction<Player[]>>,
@@ -43,7 +46,10 @@ class WebSocketService {
                 impostorWins: () => void,
                 crewmateWins: () => void,
                 playerInstance: () => void,
-                kill: () => void) {
+                kill: () => void,
+                votingActive: () => void,
+                votingNotActive: () => void,
+                ejectMe: () => void) {
         this.playerRef = playerRef;
         this.setOtherPlayers = setOtherPlayers;
         this.startTimer = startTimer;
@@ -55,7 +61,11 @@ class WebSocketService {
         this.crewmateWins = crewmateWins;
         this.playerInstance = playerInstance;
         this.kill = kill;
+        this.votingActive = votingActive;
+        this.votingNotActive = votingNotActive;
+        this.ejectMe = ejectMe;
     }
+
 
     connect() {
         const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
@@ -214,7 +224,7 @@ class WebSocketService {
             });
 
             // this.client.subscribe(`/topic/yourAGhostNow/${playerRef.current.getUserName()}`, (message) => {
-            this.client.subscribe('/topic/yourAGhostNow/', (message) => {
+            this.client.subscribe('/topic/yourAGhostNow/', () => {
 
                 // TODO  dead image
                 // TODO notify all other Players that you are a ghost now
@@ -225,6 +235,23 @@ class WebSocketService {
                     playerRef.current.setColor('ghost');
 
                 }
+            });
+
+            this.client.subscribe('/topic/votingActive/', () => {
+                // TODO player who called the report and the dead player must be in the parameters
+                playerRef.current.setMovable(false);
+                this.votingActive();
+                // this.reportButtonPressed = true;
+            });
+
+            this.client.subscribe('/topic/votingNotActive/', () => {
+                playerRef.current.setMovable(true);
+                this.votingNotActive();
+                // this.reportButtonPressed = true;
+            });
+
+            this.client.subscribe(`/topic/ejected/${playerRef.current.getUserName()}`, () => {
+                this.ejectMe();
             });
 
 
@@ -371,6 +398,42 @@ class WebSocketService {
             this.client.send('/app/yourAGhostNow/', {}, payload);
 
             // this.client.send(`/app/yourAGhostNow/${player.getUserName()}`, {}, payload);
+        }
+    }
+
+    sendReportButtonPressed() {
+        if (this.client) {
+            const player = this.playerRef.current;
+
+            const payload = JSON.stringify({
+                userName: player.getUserName(),
+                action: player.getAction(),
+                sessionId: player.getSessionId(),
+                color: player.getColor(),
+                x: player.getX(),
+                y: player.getY()
+            });
+
+            this.client.send(`/app/reportButtonPressed/${player.getUserName()}`, {}, payload);
+        }
+    }
+
+    sendVotingButtonPressed(votedFor: string) {
+        if (this.client) {
+            const player = this.playerRef.current;
+
+            player.setAction(votedFor);
+
+            const payload = JSON.stringify({
+                userName: player.getUserName(),
+                action: player.getAction(),
+                sessionId: player.getSessionId(),
+                color: player.getColor(),
+                x: player.getX(),
+                y: player.getY(),
+            });
+
+            this.client.send(`/app/votingButtonPressed/${player.getUserName()}`, {}, payload);
         }
     }
 }

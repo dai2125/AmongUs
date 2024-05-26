@@ -8,34 +8,44 @@ import cancelVote from '../Images/Votingbox/cancel_vote.png';
 
 import '../CSS/Votingbox.css';
 import VotingChatbox from "./VotingChatbox";
+import {Player} from "../Player";
 
 // TODO Backend erstellen
 // TODO Backend muss die Votes übernehmen
 // TODO fertig designen
 
-function Votingbox ({ playerColor, playerName, deadPlayer, reportPlayer, onButtonPress = () => {} }) {
+interface Props {
+    onButtonPress: (userId: string) => void;
+    currentPlayer: Player;
+    otherPlayers: Player[];
+}
+
+function Votingbox ({ onButtonPress, currentPlayer, otherPlayers})  {
 
     const [votingVisible, setVotingVisible] = useState(false);
     const [players, setPlayers] = useState([]);
-    const [showVotingChatbox, setShowVotingChatbox] = useState(false);
+    // const [showVotingChatbox, setShowVotingChatbox] = useState(false);
     const [activeIndex, setActiveIndex] = useState(null);
     const [votes, setVotes] = useState([]);
     const [hasVoted, setHasVoted] = useState(false);
 
     useEffect(() => {
-        setPlayers([{userId: "Player1", color: "red"},
-            {userId: "Player9", color: "cyan"},
-            {userId: "Player2", color: "blue"},
-            {userId: "Player3", color: "green"},
-            {userId: "Player6", color: "black"},
-            {userId: "Player7", color: "white"},
-            {userId: "Player8", color: "brown"},
-            {userId: "Player11", color: "pink"},
-            {userId: "Player10", color: "lime"},
-            {userId: "Player4", color: "orange"},
-            {userId: "Player5", color: "yellow"},
-            {userId: "Player12", color: "purple"}]);
-        setVotes(new Array(players.length).fill(0));  // Aktualisiere votes, wenn players sich ändert
+        setPlayers([...otherPlayers.map(player => ({userId: player.userName, color: player.color}))]);
+
+
+        // setPlayers([{userId: "Player1", color: "red"},
+        //     {userId: "Player9", color: "cyan"},
+        //     {userId: "Player2", color: "blue"},
+        //     {userId: "Player3", color: "green"},
+        //     {userId: "Player6", color: "black"},
+        //     {userId: "Player7", color: "white"},
+        //     {userId: "Player8", color: "brown"},
+        //     {userId: "Player11", color: "pink"},
+        //     {userId: "Player10", color: "lime"},
+        //     {userId: "Player4", color: "orange"},
+        //     {userId: "Player5", color: "yellow"},
+        //     {userId: "Player12", color: "purple"}]);
+        setVotes(new Array(players.length).fill(0));
     }, [players.length]);
 
     const toggleVoting = () => {
@@ -71,11 +81,11 @@ function Votingbox ({ playerColor, playerName, deadPlayer, reportPlayer, onButto
             newVotes[index] = (newVotes[index] || 0) + 1;
             setVotes(newVotes);
             setHasVoted(true);
+            onButtonPress(players[index].userId);
         } else if (hasVoted) {
             resetVoting();
         }
     }
-
 
     const handleCancelClick = (index) => {
         resetVoting();
@@ -86,46 +96,57 @@ function Votingbox ({ playerColor, playerName, deadPlayer, reportPlayer, onButto
         setHasVoted(false);
     }
 
+    const handleButtonPress = () => {
+        // onButtonPress();
+    }
 
+    const handleSubmitButtonPress = () => {
+
+    }
 
     return (
-        <div>
-            <button className="w-10 h-10" onClick={toggleVoting}><img alt="reportButton"
-                                                                      className="w-10 h-10 hover:bg-black"
-                                                                      src={votingboxButton}></img></button>
-            <div className={votingVisible ? "" : "hidden"}>
-                <div className="votingbox" style={{backgroundImage: `url(${votingboxBackground}`}}>
-                    <div className="votingbox-header">
-                        <div></div>
-                        <h1>Who Is The Impostor?</h1>
-                        <VotingChatbox playerColor={ playerColor } playerName={ playerName }></VotingChatbox>
-                        {/*<button><img className="votingboxChatButton" alt="votingboxChatButton" src={votingboxChat}></img></button>*/}
-                    </div>
-                    <div className="votingbox-container">
-                        <div className="voting-list">
-                            {players.map((message, index) => (
-                                    <div className="voting-list-item" key={index} onClick={() => handleItemClick(index)}>
-                                        <div className="voting-id" style={{color: message.color}}>
-                                            <img src={`../src/images/Chat/chat_left_${message.color}.png`} alt="user"/><br/>
-                                            {message.userId}
-                                            <div>Votes: {votes[index]}</div>
-                                            {activeIndex === index && (
-                                                <div>
-                                                    <button className="submitVote" onClick={() => handleSubmitClick(index) }><img src={submitVote}></img></button>
-                                                    <button className="cancelVote" onClick={() => handleCancelClick(index) }><img src={cancelVote}></img></button>
-                                                </div>
-                                            )}
-                                        </div>
+        // <div>
+        //     <button className="w-10 h-10" onClick={toggleVoting}><img alt="reportButton"
+        //                                                               className="w-10 h-10 hover:bg-black"
+        //                                                               src={votingboxButton}></img></button>
+        //     <div className={votingVisible ? "" : "hidden"}>
+        <div className="votingbox" style={{backgroundImage: `url(${votingboxBackground}`}}>
+            <div className="votingbox-header">
+                <div></div>
+                <h1>Who Is The Impostor?</h1>
+                <VotingChatbox playerColor={currentPlayer.color} playerName={currentPlayer.userName}></VotingChatbox>
+                {/*<button><img className="votingboxChatButton" alt="votingboxChatButton" src={votingboxChat}></img></button>*/}
+            </div>
+            <div className="votingbox-container">
+                <div className="voting-list">
+                    {players.map((message, index) => (
+                        <div className="voting-list-item" key={index} onClick={() => handleItemClick(index)}>
+                            <div className="voting-id" style={{color: message.color}}>
+                                <img src={`../src/images/Chat/chat_left_${message.color}.png`} alt="user"/><br/>
+                                {message.userId}
+                                <div>Votes: {votes[index]}</div>
+                                {activeIndex === index && (
+                                    <div>
+                                        <button className="submitVote" onClick={() => handleSubmitClick(index)}><img
+                                            src={submitVote}></img></button>
+                                        <button className="cancelVote" onClick={() => handleCancelClick(index)}><img
+                                            src={cancelVote}></img></button>
                                     </div>
-                            ))}
+                                )}
+                            </div>
                         </div>
-                    </div>
-                    <div className="skip-vote-button">
-                        <button><img onClick={onButtonPress} src={ skipVote }></img></button>
-                    </div>
+                    ))}
                 </div>
             </div>
+            <div className="skip-vote-button">
+                <button onClick={handleButtonPress}><img src={skipVote}></img></button>
+            </div>
+            <div className="submit-vote-button">
+                <button onClick={handleSubmitButtonPress}>Submit Button</button>
+            </div>
         </div>
+        // </div>
+        // </div>
     )
 }
 
