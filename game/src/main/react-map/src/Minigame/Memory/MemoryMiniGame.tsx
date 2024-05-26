@@ -9,7 +9,7 @@ const shuffleArray = (array: any[]) => {
     return array.sort(() => Math.random() - 0.5);
 };
 
-const MiniGame5: React.FC<{ onCompletion: () => void }> = ({ onCompletion }) => {
+const MemoryMiniGame: React.FC<{ onCompletion: () => void }> = ({ onCompletion }) => {
     const [cards, setCards] = useState<string[]>([]);
     const [flippedCards, setFlippedCards] = useState<number[]>([]);
     const [matchedCards, setMatchedCards] = useState<boolean[]>([]);
@@ -105,4 +105,4 @@ const styles = {
     } as React.CSSProperties,
 };
 
-export default MiniGame5;
+export default MemoryMiniGame;

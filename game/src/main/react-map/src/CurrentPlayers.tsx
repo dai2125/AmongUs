@@ -23,11 +23,11 @@ import Votingbox from "./GameComponents/Votingbox";
 import YouKilledACrewmate from "./YouKilledACrewmate";
 
 //Test Games
-import MiniGame1 from './Minigame/GuessTheNumber/MiniGame1';
-import MiniGame2 from './Minigame/Download/MiniGame2';
-import MiniGame3 from './Minigame/ClickInOrder/MiniGame3';
-import MiniGame4 from './Minigame/NumpadInputCode/MiniGame4';
-import MiniGame5 from './Minigame/Memory/MiniGame5';
+import GuessTheNumberMiniGame from './Minigame/GuessTheNumber/GuessTheNumberMiniGame';
+import DownloadMiniGame from './Minigame/DownloadMiniGame/DownloadMiniGame';
+import ClickInOrderMiniGame from './Minigame/ClickInOrder/ClickInOrderMiniGame';
+import NumpadInputCodeMiniGame from './Minigame/NumpadInputCode/NumpadInputCodeMiniGame';
+import MemoryMiniGame from './Minigame/Memory/MemoryMiniGame';
 import Modal from './Minigame/Modal/Modal';
 
 interface Props {
@@ -198,15 +198,15 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
             const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
             if(xPosTask != null && yPosTask != null) {
                 if(xPosTask === 1 && yPosTask === 4) {
-                    openMiniGame(<MiniGame1 onCompletion={handleMiniGameCompletion} />);
+                    openMiniGame(<GuessTheNumberMiniGame onCompletion={handleMiniGameCompletion} />);
                 } else if(xPosTask === 7 && yPosTask === 1) {
-                    openMiniGame(<MiniGame2 onCompletion={handleMiniGameCompletion} />);
+                    openMiniGame(<DownloadMiniGame onCompletion={handleMiniGameCompletion} />);
                 } else if(xPosTask === 9 && yPosTask === 7) {
-                    openMiniGame(<MiniGame3 onCompletion={handleMiniGameCompletion} />);
+                    openMiniGame(<ClickInOrderMiniGame onCompletion={handleMiniGameCompletion} />);
                 } else if(xPosTask === 23 && yPosTask === 21) {
-                    openMiniGame(<MiniGame4 onCompletion={handleMiniGameCompletion} />);
+                    openMiniGame(<NumpadInputCodeMiniGame onCompletion={handleMiniGameCompletion} />);
                 } else if(xPosTask === 22 && yPosTask === 6) {
-                    openMiniGame(<MiniGame5 onCompletion={handleMiniGameCompletion} />);
+                    openMiniGame(<MemoryMiniGame onCompletion={handleMiniGameCompletion} />);
                 }
             }
         }

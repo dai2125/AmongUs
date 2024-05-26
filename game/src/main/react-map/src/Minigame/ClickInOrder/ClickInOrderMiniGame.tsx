@@ -4,7 +4,7 @@ interface NumberButtonGameProps {
     onCompletion: () => void;
 }
 
-const MiniGame3: React.FC<NumberButtonGameProps> = ({ onCompletion }) => {
+const ClickInOrderMiniGame: React.FC<NumberButtonGameProps> = ({ onCompletion }) => {
     const [buttonOrder, setButtonOrder] = useState<number[]>([]);
     const [currentNumber, setCurrentNumber] = useState<number | null>(null);
     const [gameStarted, setGameStarted] = useState(false);
@@ -91,4 +91,4 @@ const MiniGame3: React.FC<NumberButtonGameProps> = ({ onCompletion }) => {
     );
 };
 
-export default MiniGame3;
+export default ClickInOrderMiniGame;

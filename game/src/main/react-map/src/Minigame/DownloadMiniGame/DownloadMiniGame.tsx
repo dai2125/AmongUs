@@ -4,7 +4,7 @@ interface MiniGame2Props {
     onCompletion: () => void;
 }
 
-const MiniGame2: React.FC<MiniGame2Props> = ({ onCompletion }) => {
+const DownloadMiniGame: React.FC<MiniGame2Props> = ({ onCompletion }) => {
     const [progress, setProgress] = useState(0);
     const [isDownloading, setIsDownloading] = useState(false);
     const [isComplete, setIsComplete] = useState(false);
@@ -66,4 +66,4 @@ const MiniGame2: React.FC<MiniGame2Props> = ({ onCompletion }) => {
     );
 };
 
-export default MiniGame2;
+export default DownloadMiniGame;

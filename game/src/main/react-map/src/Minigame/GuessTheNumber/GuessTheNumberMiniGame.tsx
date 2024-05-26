@@ -4,7 +4,7 @@ interface MiniGame1Props {
     onCompletion: () => void;
 }
 
-const MiniGame1: React.FC<MiniGame1Props> = ({ onCompletion }) => {
+const GuessTheNumberMiniGame: React.FC<MiniGame1Props> = ({ onCompletion }) => {
     const [term, setTerm] = useState('');
     const [resultMessage, setResultMessage] = useState('');
     const [secret] = useState(Math.floor(Math.random() * 100) + 1);
@@ -73,4 +73,4 @@ const MiniGame1: React.FC<MiniGame1Props> = ({ onCompletion }) => {
     );
 };
 
-export default MiniGame1;
+export default GuessTheNumberMiniGame;

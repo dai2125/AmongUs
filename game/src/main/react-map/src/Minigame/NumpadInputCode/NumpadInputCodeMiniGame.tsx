@@ -4,7 +4,7 @@ const generateRandomNumber = (): string => {
     return Math.floor(10000000 + Math.random() * 90000000).toString();
 };
 
-const MiniGame4: React.FC<{ onCompletion: () => void }> = ({ onCompletion }) => {
+const NumpadInputCodeMiniGame: React.FC<{ onCompletion: () => void }> = ({ onCompletion }) => {
     const [randomNumber, setRandomNumber] = useState<string>(generateRandomNumber());
     const [userInput, setUserInput] = useState<string>('');
     const [correctIndex, setCorrectIndex] = useState<number | null>(null);
@@ -107,4 +107,4 @@ const styles = {
     } as React.CSSProperties
 };
 
-export default MiniGame4;
+export default NumpadInputCodeMiniGame;
