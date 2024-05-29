@@ -144,7 +144,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     }
 
     return (
-        <div key={gridKey} className={style.root} style={{paddingTop, paddingLeft}}>
+        <div key={gridKey} className={style.root} style={{ paddingTop, paddingLeft }}>
             {grid.slice(startRow, endRow + 1).map((row, rowIndex) => (
                 <div key={rowIndex} className={style.row}>
                     {row.slice(startCol, endCol + 1).map((cell, colIndex) => {
@@ -157,6 +157,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
                         let cellContent = cell;
                         if (otherPlayer) {
+
                             const playerImage = otherPlayerImages[otherPlayer.getSessionId()];
                             return (
                                 <span key={colIndex} style={{
@@ -178,6 +179,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                             </span>
                             );
                         }
+
                         return (
                             <span key={colIndex} className={style.cell}>
                             {cellContent}
@@ -185,7 +187,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                         );
                     })}
                 </div>
-
             ))}
             <div>
                 <div>
@@ -195,7 +196,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 </div>
                 </div>
         </div>
-
     );
 };
 
