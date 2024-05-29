@@ -192,9 +192,10 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 <div>
                     <button className="w-10 h-10" onClick={handleButtonPress}><img alt="reportButton"
                                className="w-10 h-10 hover:bg-black"
-                               src={votingboxButton}></img></button>
+                               src={votingboxButton}></img>
+                    </button>
                 </div>
-                </div>
+            </div>
         </div>
     );
 };
