@@ -97,12 +97,10 @@ const styles = {
     } as React.CSSProperties,
     correctButton: {
         backgroundColor: '#4caf50',
-        borderColor: '#4caf50',
         color: 'white'
     } as React.CSSProperties,
     wrongButton: {
         backgroundColor: '#f44336',
-        borderColor: '#f44336',
         color: 'white'
     } as React.CSSProperties
 };
