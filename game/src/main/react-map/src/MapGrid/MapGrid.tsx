@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import style from '../CSS/MapGridStyle.module.css';
-import { Player } from '../Player';
+import {Player} from '../Player';
 import purple from "../Images/Character_Movement/Purple.png";
 import red from "../Images/Character_Movement/red.jpg";
 import blue from "../Images/Character_Movement/Blue.jpg";
@@ -15,13 +15,18 @@ import lime from "../Images/Character_Movement/Lime.jpg";
 import pink from "../Images/Character_Movement/Pink.jpg";
 import dead from "../Images/Character_Movement/dead.png";
 import killButton from "../Images/Buttons/Kill_Button.jpg";
+import ghost from "../Images/Character_Movement/Ghost.jpg";
+
 
 import mapImage from '../Images/Maps/Lobby.png';
+import Votingbox from "../GameComponents/Votingbox";
 
+import votingboxButton from '../Images/Votingbox/report_player.png';
 
 interface MapGridProps {
     currentPlayer: Player;
     otherPlayers: Player[];
+    reportButtonClicked: () => void;
 }
 
 const colorToImageUrl = {
@@ -38,12 +43,14 @@ const colorToImageUrl = {
     lime: lime,
     pink: pink,
     dead: dead,
+    ghost: ghost
 };
 
-const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
+const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportButtonClicked }) => {
     const [gridKey, setGridKey] = useState(0);
     const [playerImage, setPlayerImage] = useState(colorToImageUrl[currentPlayer.getColor()]);
     const [otherPlayerImages, setOtherPlayerImages] = useState({});
+
 
     useEffect(() => {
         // Update the key whenever currentPlayer or otherPlayers change
@@ -92,6 +99,7 @@ const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
         orange: "../images/Character_Movement/Orange.jpg",
         yellow: "../images/Character_Movement/Yellow.jpg",
         purple: "../images/Character_Movement/Purple.png",
+        ghost: "../Images/Character_Movement/Ghost.jpg"
     };
 
     useEffect(() => {
@@ -130,9 +138,10 @@ const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
     const paddingTop = Math.max(0, radius - (currentPlayer.getY() - startRow)) * 30;
     const paddingLeft = Math.max(0, radius - (currentPlayer.getX() - startCol)) * 30;
 
-    // const TestImage = () => (
-    //     <img src={redImage} alt="Red Standing South" />
-    // );
+    const handleButtonPress = () => {
+        console.log('MapGrid.tsx: Button Pressed');
+        reportButtonClicked();
+    }
 
     return (
         <div key={gridKey} className={style.root} style={{ paddingTop, paddingLeft }}>
@@ -148,7 +157,7 @@ const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
 
                         let cellContent = cell;
                         if (otherPlayer) {
-                            // If there's another player, use player's image
+
                             const playerImage = otherPlayerImages[otherPlayer.getSessionId()];
                             return (
                                 <span key={colIndex} style={{
@@ -179,6 +188,13 @@ const MapGrid: React.FC<MapGridProps> = ({ currentPlayer, otherPlayers }) => {
                     })}
                 </div>
             ))}
+            <div>
+                <div>
+                    <button className="w-10 h-10" onClick={handleButtonPress}><img alt="reportButton"
+                               className="w-10 h-10 hover:bg-black"
+                               src={votingboxButton}></img></button>
+                </div>
+                </div>
         </div>
     );
 };
