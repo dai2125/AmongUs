@@ -35,6 +35,7 @@ class WebSocketService {
     private votingActive: () => void;
     private votingNotActive: () => void;
     private ejectMe: () => void;
+    private someoneGotEjected: (ejectedPlayer) => void;
 
     constructor(playerRef: React.MutableRefObject<Player>,
                 setOtherPlayers: React.Dispatch<React.SetStateAction<Player[]>>,
@@ -49,7 +50,8 @@ class WebSocketService {
                 kill: () => void,
                 votingActive: () => void,
                 votingNotActive: () => void,
-                ejectMe: () => void) {
+                ejectMe: () => void,
+                someoneGotEjected: (ejectedPlayer) => void) {
         this.playerRef = playerRef;
         this.setOtherPlayers = setOtherPlayers;
         this.startTimer = startTimer;
@@ -64,6 +66,7 @@ class WebSocketService {
         this.votingActive = votingActive;
         this.votingNotActive = votingNotActive;
         this.ejectMe = ejectMe;
+        this.someoneGotEjected = someoneGotEjected;
     }
 
 
@@ -251,6 +254,13 @@ class WebSocketService {
             });
 
             this.client.subscribe(`/topic/ejected/${playerRef.current.getUserName()}`, () => {
+                this.ejectMe();
+            });
+
+            this.client.subscribe('/topic/someoneGotEjected/', (message) => {
+                const ejectedPlayer = JSON.parse(message.body);
+                this.someoneGotEjected(ejectedPlayer);
+
                 this.ejectMe();
             });
 

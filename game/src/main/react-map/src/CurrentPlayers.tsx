@@ -60,6 +60,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [reportButtonPressed, setReportButtonPressed] = useState(false);
     const [showEjected, setShowEjected] = useState(false);
     const [showOtherPlayerEjected, setShowOtherPlayerEjected] = useState(false);
+    const [ejectedPlayer, setEjectedPlayer] = useState('');
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
     const playerRef = useRef<Player>(new Player(userName, '', '', '', 2, 2, '', '', '', ''));
@@ -129,7 +130,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
             kill,
             votingActive,
             votingNotActive,
-            ejectMe)
+            ejectMe,
+            someoneGotEjected)
         webSocketServiceRef.current.connect();
         return () => {
         };
@@ -277,6 +279,11 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         setShowEjected(true);
     }
 
+    const someoneGotEjected = (ejectedPlayer) => {
+        setEjectedPlayer(ejectedPlayer);
+        setShowOtherPlayerEjected(true);
+    }
+
     return (
         <div>
             <div className="background">
@@ -420,7 +427,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                             {showEjected ? <Ejected onStart={handleRole}/> : <div></div>}
                         </div>
                         <div>
-                            {showOtherPlayerEjected ? <OtherPlayerEjected onStart={handleRole}/> : <div></div>}
+                            {showOtherPlayerEjected ? <OtherPlayerEjected ejectedPlayer={ejectedPlayer} onStart={handleRole}/> : <div></div>}
                         </div>
 
                         {/*<div>*/}

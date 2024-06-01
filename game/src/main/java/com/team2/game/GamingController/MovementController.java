@@ -206,6 +206,8 @@ public class MovementController {
             System.out.println("MAX: " + max + " MAXKEY: " + maxKey);
 
             messagingTemplate.convertAndSend("/topic/ejected/" + maxKey, new ObjectMapper().writeValueAsString("dead"));
+            messagingTemplate.convertAndSend("/topic/someoneGotEjected/", new ObjectMapper().writeValueAsString(maxKey));
+
 //            messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive")) ;
 
 //            registerService.userList.remove(maxKey);
