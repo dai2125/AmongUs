@@ -3,7 +3,7 @@ import defeatImpostor from "../Images/Game_Over/Defeat_Impostor.jpg";
 
 const DefeatImpostor = ({onStart}) => {
 
-    const [count, setCount] = useState(1);
+    const [count, setCount] = useState(3);
 
     useEffect(() => {
         if (!count) {

@@ -24,6 +24,7 @@ import YouKilledACrewmate from "./YouKilledACrewmate";
 import webSocketService from "./WebSocketService";
 import Ejected from "./Screens/Ejected";
 import OtherPlayerEjected from "./Screens/OtherPlayerEjected";
+import NoOneGotEjected from "./Screens/NoOneGotEjected";
 
 interface Props {
     userColor: string;
@@ -61,6 +62,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [showEjected, setShowEjected] = useState(false);
     const [showOtherPlayerEjected, setShowOtherPlayerEjected] = useState(false);
     const [ejectedPlayer, setEjectedPlayer] = useState('');
+    const [showNoOneGotEjected, setNoOneGotEjected] = useState(false);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
     const playerRef = useRef<Player>(new Player(userName, '', '', '', 2, 2, '', '', '', ''));
@@ -131,7 +133,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
             votingActive,
             votingNotActive,
             ejectMe,
-            someoneGotEjected)
+            someoneGotEjected,
+            noOneGotEjected)
         webSocketServiceRef.current.connect();
         return () => {
         };
@@ -208,6 +211,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
 
     const crewmateWinsTheGame = () => {
         setShowMap(false);
+        setShowVotingbox(false);
         if (playerRef.current.getRole() === "crewmate") {
             setVictoryCrewmate(true);
         } else {
@@ -257,7 +261,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         // TODO button wurde in der VotingBox gedrückt
         console.log('CurrentPlayers.tsx: Votingbox submit button pressed ' + votedFor);
         webSocketServiceRef.current.sendVotingButtonPressed(votedFor);
-        setShowVotingbox(false);
+        // setShowVotingbox(false);
     }
 
     function getRandom(min: number, max: number) {
@@ -276,12 +280,34 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
 
     const ejectMe = () => {
         // TODO show eject screen
+
+        setShowMap(false);
         setShowEjected(true);
+
+        setTimeout(() => {
+            onQuit();
+        }, 3000);
     }
 
     const someoneGotEjected = (ejectedPlayer) => {
         setEjectedPlayer(ejectedPlayer);
+        setShowMap(false);
         setShowOtherPlayerEjected(true);
+
+        setTimeout(() => {
+            setShowOtherPlayerEjected(false);
+            setShowMap(true);
+        }, 3000);
+    }
+
+    const noOneGotEjected = () => {
+        setShowMap(false);
+        setNoOneGotEjected(true);
+
+        setTimeout(() => {
+            setNoOneGotEjected(false);
+            setShowMap(true);
+        }, 3000);
     }
 
     return (
@@ -427,9 +453,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                             {showEjected ? <Ejected onStart={handleRole}/> : <div></div>}
                         </div>
                         <div>
-                            {showOtherPlayerEjected ? <OtherPlayerEjected ejectedPlayer={ejectedPlayer} onStart={handleRole}/> : <div></div>}
+                            {showOtherPlayerEjected ?
+                                <OtherPlayerEjected ejectedPlayer={ejectedPlayer} onStart={handleRole}/> : <div></div>}
                         </div>
-
+                        <div>
+                            {showNoOneGotEjected ?
+                                <NoOneGotEjected onStart={handleRole}/> : <div></div>}
+                        </div>
                         {/*<div>*/}
                         {/*    {youGotKilled ? <YouGotKilled onStart={handleRole}/> : <div></div>}*/}
                         {/*</div>*/}

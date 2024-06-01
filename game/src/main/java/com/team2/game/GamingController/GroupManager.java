@@ -106,12 +106,28 @@ public class GroupManager {
     public boolean allCrewmatesAreDead() {
         System.out.println("areAllCrewmatesDead: " + userList.size());
 
+        int crewmateCounter = 0;
+
         for(User user : userList) {
-            if(!user.getImpostor()) {
-                return false;
+            if (!user.getImpostor()) {
+                crewmateCounter++;
             }
         }
-        return true;
+
+        if(crewmateCounter >= 2) {
+            return false;
+        } else if(crewmateCounter < 2) {
+            return true;
+        }
+
+        return false;
+
+//        for(User user : userList) {
+//            if(!user.getImpostor()) {
+//                return false;
+//            }
+//        }
+//        return true;
     }
 
     public boolean allTasksAreSolved() {

@@ -3,7 +3,7 @@ import otherPlayerEjected from "../Images/Ejected/Other_Player_Ejected.jpg";
 
 const OtherPlayerEjected = ({onStart, ejectedPlayer}) => {
 
-    const [count, setCount] = useState(5);
+    const [count, setCount] = useState(3);
     console.log('EJECTED PLAYER IS: ', ejectedPlayer);
     useEffect(() => {
         if (!count) {

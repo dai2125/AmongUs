@@ -102,6 +102,18 @@ public class RegisterService {
         throw new UserNotFoundException("User with sessionId " + sessionId + " not found");
     }
 
+    public UserRegisterDTO ejectUser(String userName) {
+        for (User u : userList) {
+            if (u.getUserName().equals(userName)) {
+                UserRegisterDTO userRegisterDTO = new UserRegisterDTO(u.getUserName(), u.getAction(), u.getSessionId(), u.getColor(), u.getX(), u.getY());
+                userList.remove(u);
+                groupManager.removeFromTheGroup(u);
+                return userRegisterDTO;
+            }
+        }
+        return null;
+    }
+
     public void playerDisconnected(String sessionId) {
         for (User u : userList) {
             if(u.getSessionId().equals(sessionId)) {

@@ -153,6 +153,10 @@ public class MovementController {
         if(registerService.areAllCrewmatesDead()) {
             System.out.println("IMPOSTOR WINS");
             messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
+
+            for(User u : registerService.userList) {
+                messagingTemplate.convertAndSend("/topic/disconnected/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
+            }
         }
     }
 
@@ -177,9 +181,16 @@ public class MovementController {
     public HashMap<String, Integer> votingList = new HashMap<>();
     int counter = 0;
     boolean votingActive = false;
+    int votingCounter = 0;
+
     @MessageMapping("/votingButtonPressed/{userName}")
     public void votingButtonPressed(@Payload User user) throws JsonProcessingException {
+
+        // TODO if the player have the same votes and the votes are the maximum then no one gets ejected
+        // TODO there must be a counter in the votingbox if someone doesnt vote it muss be called an empty vote
         System.out.println("VOTING BUTTON PRESSED: " + user.getAction());
+        System.out.println("UserList: " + registerService.userList.size() + " " + registerService.userList);
+
 
         if(votingList.containsKey(user.getAction())) {
             votingList.compute(user.getAction(), (k, counter) -> counter + 1);
@@ -201,32 +212,33 @@ public class MovementController {
                 if(votingList.get(key) > max) {
                     max = votingList.get(key);
                     maxKey = key;
+
                 }
             }
             System.out.println("MAX: " + max + " MAXKEY: " + maxKey);
 
-            messagingTemplate.convertAndSend("/topic/ejected/" + maxKey, new ObjectMapper().writeValueAsString("dead"));
-            messagingTemplate.convertAndSend("/topic/someoneGotEjected/", new ObjectMapper().writeValueAsString(maxKey));
-
-//            messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive")) ;
-
-//            registerService.userList.remove(maxKey);
             for(int i = 0; i < registerService.userList.size(); i++) {
                 if(registerService.userList.get(i).getUserName().equals(maxKey)) {
                     registerService.userList.remove(i);
                 }
             }
 
-
             System.out.println("USERLIST SIZE: " + registerService.userList.size() +  " " + registerService.userList);
 
             votingList.clear();
             votingActive = false;
             counter = registerService.userList.size();
+
+            if(registerService.userList.size() == 2) {
+                messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
+                messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
+            } else {
+                messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
+                messagingTemplate.convertAndSend("/topic/someoneGotEjected/", new ObjectMapper().writeValueAsString(maxKey));
+            }
         }
-        if(registerService.userList.size() == 2) {
-            messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
-        }
+
+
 
     }
 }

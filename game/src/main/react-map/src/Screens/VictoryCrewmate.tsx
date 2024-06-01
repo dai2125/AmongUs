@@ -3,7 +3,7 @@ import victoryCrewmate from "../Images/Game_Over/Victory_Crewmate.jpg";
 
 const VictoryCrewmate = ({onStart}) => {
 
-    const [count, setCount] = useState(1);
+    const [count, setCount] = useState(3);
 
     useEffect(() => {
         if (!count) {

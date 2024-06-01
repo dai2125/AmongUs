@@ -36,6 +36,7 @@ class WebSocketService {
     private votingNotActive: () => void;
     private ejectMe: () => void;
     private someoneGotEjected: (ejectedPlayer) => void;
+    private noOneGotEjected: () => void;
 
     constructor(playerRef: React.MutableRefObject<Player>,
                 setOtherPlayers: React.Dispatch<React.SetStateAction<Player[]>>,
@@ -51,7 +52,8 @@ class WebSocketService {
                 votingActive: () => void,
                 votingNotActive: () => void,
                 ejectMe: () => void,
-                someoneGotEjected: (ejectedPlayer) => void) {
+                someoneGotEjected: (ejectedPlayer) => void,
+                noOneGotEjected: () => void) {
         this.playerRef = playerRef;
         this.setOtherPlayers = setOtherPlayers;
         this.startTimer = startTimer;
@@ -67,6 +69,7 @@ class WebSocketService {
         this.votingNotActive = votingNotActive;
         this.ejectMe = ejectMe;
         this.someoneGotEjected = someoneGotEjected;
+        this.noOneGotEjected = noOneGotEjected;
     }
 
 
@@ -133,6 +136,15 @@ class WebSocketService {
                     return prevOtherPlayers.filter((p) => p.getSessionId() !== disconnectedPlayerID);
                 });
             })
+
+            // this.client.subscribe(`/topic/disconnected/${playerRef.current.getUserName()}`, () => {
+            //     setOtherPlayers([]);
+            // });
+            //
+            // this.client.disconnect(() => {
+            //     setOtherPlayers([]);
+            // });
+
             this.client.subscribe(`/topic/movement/${playerRef.current.getUserName()}`, (message) => {
                 const movementData = JSON.parse(message.body);
 
@@ -255,13 +267,25 @@ class WebSocketService {
 
             this.client.subscribe(`/topic/ejected/${playerRef.current.getUserName()}`, () => {
                 this.ejectMe();
+                // this.client.unsubscribe('/topic/someoneGotEjected/');
             });
 
             this.client.subscribe('/topic/someoneGotEjected/', (message) => {
                 const ejectedPlayer = JSON.parse(message.body);
-                this.someoneGotEjected(ejectedPlayer);
 
-                this.ejectMe();
+                if(ejectedPlayer === playerRef.current.getUserName()) {
+                    setOtherPlayers([]);
+                    this.ejectMe();
+                } else {
+                    this.someoneGotEjected(ejectedPlayer);
+                    setOtherPlayers((prevOtherPlayers) => {
+                        return prevOtherPlayers.filter((p) => p.getUserName() !== ejectedPlayer);
+                    });
+                }
+            });
+
+            this.client.subscribe('/topic/noOneGotEjected/', () => {
+                this.noOneGotEjected();
             });
 
 
