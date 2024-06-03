@@ -1,7 +1,6 @@
 package com.team2.game.GamingController;
 
 import com.team2.game.DataModel.User;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +22,10 @@ public class RegisterService {
     private ObjectMapper objectMapper = new ObjectMapper();
     public boolean startGame = false;
     public boolean sendAlready = false;
+    private int random;
 
     private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
+
 
     @Autowired
     private GroupManager groupManager;
@@ -32,21 +33,47 @@ public class RegisterService {
     public RegisterService() {
     }
 
-    public UserRegisterDTO registerUser(User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+    public UserRegisterDTO registerUser(User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
+        try {
+            if (userList.size() == 0) {
+                random = (int) (Math.random() * groupManager.getGroupSize())+1;
+                System.out.println("the imposter will be the " + random);
+            }
 
-        initializeUser(user, simpMessageHeaderAccessor);
-        userList.add(user);
-        UserRegisterDTO userRegisterDTO = new UserRegisterDTO(user.getUserName(), user.getAction(), user.getSessionId(), user.getColor(), user.getX(), user.getY());
-        resetCounter(counter);
-        groupManager.addToTheGroup(user);
 
-        if(groupManager.groupIsFull() && !sendAlready) {
-            groupManager.setTheImposter();
-//            groupManager.distributeTaskToUser();
-            startGame = true;
-//            sendAlready = true;
+            UserRegisterDTO userRegisterDTO  = new UserRegisterDTO();
+            if (!groupManager.groupIsFull()){
+                initializeUser(user, simpMessageHeaderAccessor);
+                userList.add(user);
+                userRegisterDTO.setAction(user.getAction());
+                userRegisterDTO.setSessionId(user.getSessionId());
+                userRegisterDTO.setColor(user.getColor());
+                userRegisterDTO.setX(user.getX());
+                userRegisterDTO.setY(user.getY());
+                resetCounter(counter);
+
+                if (userList.size() == random){
+                    user.setImpostor();
+                }
+                groupManager.addToTheGroup(user);
+                groupManager.distributeTask(user);
+            }
+
+            if(groupManager.groupIsFull() && !sendAlready) {
+                //groupManager.setTheImposter();
+                /*for (User u : userList){
+                    groupManager.distributeTask(u.getSessionId());
+                }*/
+                //groupManager.distributeTask(u.getSessionId());
+                startGame = true;
+            }
+
+            return userRegisterDTO;
+        } catch (Exception e) {
+
+            logger.error("An unexpected error occurred while registering User: {}", e.getMessage());
+            return null;
         }
-        return userRegisterDTO;
     }
 
 
@@ -72,7 +99,7 @@ public class RegisterService {
     }
 
     public TaskDTO getTask() {
-        return groupManager.distributeTask();
+        return groupManager.getTask();
     }
 
     public void updatePlayerPosition(User user) {

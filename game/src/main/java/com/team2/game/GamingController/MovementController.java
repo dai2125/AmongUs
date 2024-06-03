@@ -10,6 +10,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -21,6 +22,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+
+import java.util.HashMap;
 
 @Controller
 @PropertySource("classpath:application.properties")
@@ -39,6 +42,8 @@ public class MovementController {
     private ActionService actionService;
 
     private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
+    @Autowired
+    private GroupManager groupManager;
 
     @EventListener
     public void sessionConnectEvent(SessionConnectEvent event) throws InterruptedException, JsonProcessingException {
@@ -61,9 +66,14 @@ public class MovementController {
     @SendTo("/topic/register/")
     public void register(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
 
+        System.out.println("Hello from register");
             messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(registerService.registerUser(user, simpMessageHeaderAccessor)));
 
-            for(User u : registerService.userList) {
+        /*TaskDTO task = registerService.getTask();
+        System.out.println("GGGG" + task.getRole());
+        messagingTemplate.convertAndSend("/topic/gimmework/" + user.getUserName(), new ObjectMapper().writeValueAsString(task));*/
+
+        for(User u : registerService.userList) {
                 messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(u));
             }
             if(registerService.startGame && !registerService.sendAlready) {
@@ -71,6 +81,16 @@ public class MovementController {
 
                 registerService.sendAlready = true;
             }
+    }
+
+    @MessageMapping("/gimmework/")
+    public void processGimmeWork(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+        System.out.println("Hello from GIMMEWORK");
+        System.out.println("USERNAME " + user.getSessionId());
+        TaskDTO task = registerService.getTask();
+        System.out.println("GGGG " + task.getRole());
+        messagingTemplate.convertAndSend("/topic/gimmework/" + user.getSessionId(), new ObjectMapper().writeValueAsString(task));
+
     }
 
     @MessageMapping("/movement/{userId}")
@@ -146,22 +166,76 @@ public class MovementController {
             registerService.crewmateDied(u);
         }
 
-
         if(registerService.areAllCrewmatesDead()) {
             System.out.println("IMPOSTOR WINS");
             messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
         }
     }
 
-    @MessageMapping("/gimmework/{userName}")
-    public void processGimmeWork(@Payload User user) throws JsonProcessingException {
-        TaskDTO task = registerService.getTask();
-        messagingTemplate.convertAndSend("/topic/gimmework/" + user.getUserName(), new ObjectMapper().writeValueAsString(task));
+
+
+    @MessageMapping("/yourAGhostNow/")
+    public void processGhost(@Payload User user) throws JsonProcessingException {
+        messagingTemplate.convertAndSend("/topic/yourAGhostNow/", new ObjectMapper().writeValueAsString("ghost"));
 
     }
 
-//    @MessageMapping("/movement/CLOSED/{userId}")
-//    public void movementUserId(@Payload User user) throws JsonProcessingException {
-//        messagingTemplate.convertAndSend("/topic/movement/{userId}", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
-//    }
+    @MessageMapping("/reportButtonPressed/{userName}")
+    public void reportButtonPressed(@Payload User user) throws JsonProcessingException {
+        messagingTemplate.convertAndSend("/topic/votingActive/", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
+    }
+
+    public HashMap<String, Integer> votingList = new HashMap<>();
+    int counter = 0;
+    boolean votingActive = false;
+    @MessageMapping("/votingButtonPressed/{userName}")
+    public void votingButtonPressed(@Payload User user) throws JsonProcessingException {
+        System.out.println("VOTING BUTTON PRESSED: " + user.getAction());
+
+        if(votingList.containsKey(user.getAction())) {
+            votingList.compute(user.getAction(), (k, counter) -> counter + 1);
+        } else {
+            votingList.put(user.getAction(), 1);
+        }
+
+        if(!votingActive) {
+            counter = registerService.userList.size();
+            votingActive = true;
+        }
+
+        counter--;
+
+        if(counter == 0) {
+            int max = 0;
+            String maxKey = "";
+            for(String key : votingList.keySet()) {
+                if(votingList.get(key) > max) {
+                    max = votingList.get(key);
+                    maxKey = key;
+                }
+            }
+            System.out.println("MAX: " + max + " MAXKEY: " + maxKey);
+
+            messagingTemplate.convertAndSend("/topic/ejected/" + maxKey, new ObjectMapper().writeValueAsString("dead"));
+//            messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive")) ;
+
+//            registerService.userList.remove(maxKey);
+            for(int i = 0; i < registerService.userList.size(); i++) {
+                if(registerService.userList.get(i).getUserName().equals(maxKey)) {
+                    registerService.userList.remove(i);
+                }
+            }
+
+
+            System.out.println("USERLIST SIZE: " + registerService.userList.size() +  " " + registerService.userList);
+
+            votingList.clear();
+            votingActive = false;
+            counter = registerService.userList.size();
+        }
+        if(registerService.userList.size() == 2) {
+            messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
+        }
+
+    }
 }

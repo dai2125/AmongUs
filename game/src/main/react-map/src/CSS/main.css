@@ -43,7 +43,6 @@ body {
     height: 100%;
 }
 #user-div {
-    background-image: url("../Images/Characters/Purple.png");
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100% 100%;

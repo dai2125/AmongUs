@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -26,10 +27,16 @@ public class GroupManager {
     private List<User> userList = new ArrayList<>();
     private List<String> taskList = Arrays.asList(TASK1, TASK2, TASK3, TASK4, TASK5, TASK6, TASK7, TASK8, TASK9);
     private List<String> taskListCopy = new ArrayList<>(taskList);
+    public HashMap<String, Integer> votingList = new HashMap<>();
+
+    TaskDTO taskDTO = new TaskDTO();
 
     private boolean impostor = false;
     int impostorIndex = (int) (Math.random() * GROUP_FULL);
     int counter = 0;
+    public int getGroupSize(){
+        return GROUP_FULL;
+    }
 
     public void addToTheGroup(User user) {
         userList.add(user);
@@ -64,6 +71,9 @@ public class GroupManager {
     public void setTheImposter() {
         int random = (int) (Math.random() * userList.size());
         userList.get(random).setImpostor();
+        for (int i =0; i < userList.size(); i++){
+            System.out.println("PLAYER " + i + userList.get(i).getImpostor());
+        }
     }
 
     public boolean groupIsFull() {
@@ -73,31 +83,36 @@ public class GroupManager {
         return false;
     }
 
-    public TaskDTO distributeTask() {
-        TaskDTO taskDTO = new TaskDTO();
-        for(int i = 0; i < taskList.size(); i++) {
-            int random = (int) (Math.random() * taskList.size());
-            if(i == 0) {
-                taskDTO.setTask1(taskList.get(random));
-            } else if(i == 1) {
-                taskDTO.setTask2(taskList.get(random));
-            } else if(i == 2) {
-                taskDTO.setTask3(taskList.get(random));
-            }
-        }
-            taskCounter++;
-//        if(counter == impostorIndex && !impostor) {
-        if(counter == 1) {
-            taskDTO.setRole("impostor");
-            impostor = true;
-            taskDTO.setTask1("kill");
-            taskDTO.setTask2("sabotage");
-            taskDTO.setTask3("vent");
-        } else {
-            taskDTO.setRole("crewmate");
-        }
+    public void distributeTask(User u) {
 
-        counter++;
+
+                for(int i = 0; i < taskList.size(); i++) {
+                    int random = (int) (Math.random() * taskList.size());
+                    if(i == 0) {
+                        taskDTO.setTask1(taskList.get(random));
+                    } else if(i == 1) {
+                        taskDTO.setTask2(taskList.get(random));
+                    } else if(i == 2) {
+                        taskDTO.setTask3(taskList.get(random));
+                    }
+                }
+                taskCounter++;
+                if(u.getImpostor()) {
+                    taskDTO.setRole("impostor");
+                    impostor = true;
+                    taskDTO.setTask1("kill");
+                    taskDTO.setTask2("sabotage");
+                    taskDTO.setTask3("vent");
+                } else {
+                    taskDTO.setRole("crewmate");
+                }
+
+                counter++;
+
+        System.out.println(taskDTO.getRole());
+    }
+
+    public TaskDTO getTask() {
         return taskDTO;
     }
 

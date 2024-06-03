@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import WebSocketService from './WebSocketService';
 import MapGrid from './MapGrid/MapGrid';
 import KeyInput from './KeyInputs';
-import { Player } from './Player';
+import {Player} from './Player';
 import Chatbox from "./GameComponents/Chatbox";
 import Timer from "./Screens/Timer";
 import Role from "./Screens/Role";
@@ -11,7 +11,7 @@ import Shhhhh from "./Screens/Shhhhh";
 import RoleImpostor from "./Screens/RoleImpostor";
 import TaskBar from "./GameComponents/TaskBar";
 import TaskList from "./GameComponents/TaskList";
-import { GridService } from "./MapGrid/GridService";
+import {GridService} from "./MapGrid/GridService";
 import KillCrewMate from "./Screens/KillCrewMate";
 import Lobby from "./MapGrid/Lobby";
 import CrewmateWins from "./Screens/VictoryImpostor";
@@ -22,7 +22,7 @@ import DefeatCrewmate from "./Screens/DefeatCrewmate";
 import Votingbox from "./GameComponents/Votingbox";
 import YouKilledACrewmate from "./YouKilledACrewmate";
 
-//Test Games
+
 import GuessTheNumberMiniGame from './Minigame/GuessTheNumber/GuessTheNumberMiniGame';
 import DownloadMiniGame from './Minigame/DownloadMiniGame/DownloadMiniGame';
 import ClickInOrderMiniGame from './Minigame/ClickInOrder/ClickInOrderMiniGame';
@@ -30,17 +30,55 @@ import NumpadInputCodeMiniGame from './Minigame/NumpadInputCode/NumpadInputCodeM
 import MemoryMiniGame from './Minigame/Memory/MemoryMiniGame';
 import Modal from './Minigame/Modal/Modal';
 
+import purple from "./Images/Character_Movement/Purple.png";
+import red from "./Images/Character_Movement/red.jpg";
+import gray from "./Images/Characters/Gray.jpg";
+import blue from "./Images/Character_Movement/Blue.jpg";
+import green from "./Images/Character_Movement/Green.jpg";
+import orange from "./Images/Character_Movement/Orange.jpg";
+import yellow from "./Images/Character_Movement/Yellow.png";
+import black from "./Images/Character_Movement/Black.jpg";
+import white from "./Images/Character_Movement/White.jpg";
+import brown from "./Images/Character_Movement/Brown.jpg";
+import cyan from "./Images/Character_Movement/Cyan.jpg";
+import lime from "./Images/Character_Movement/Lime.jpg";
+import pink from "./Images/Character_Movement/Pink.jpg";
+import dead from "./Images/Character_Movement/dead.png";
+
+import webSocketService from "./WebSocketService";
+import Ejected from "./Screens/Ejected";
+import OtherPlayerEjected from "./Screens/OtherPlayerEjected";
+
 interface Props {
-    userColor : string;
-    userName : string;
+    userColor: string;
+    userName: string;
     onQuit: () => void;
 }
 
+const colorToImageUrl = {
+    purple: purple,
+    red: red,
+    gray: gray,
+    blue: blue,
+    green: green,
+    orange: orange,
+    yellow: yellow,
+    black: black,
+    white: white,
+    brown: brown,
+    cyan: cyan,
+    lime: lime,
+    pink: pink,
+    dead: dead,
+};
+
+
 const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
 
+    const [playerImage, setPlayerImage] = useState(colorToImageUrl[userColor]);
     // const [mapVisible, setMapVisible] = useState(false);
     const [showVotingbox, setShowVotingbox] = useState(false);
-    const [tasks, setTasks] = useState({ task1: '', task2: '', task3: '' });
+    const [tasks, setTasks] = useState({task1: '', task2: '', task3: ''});
     const [showKillCrewMate, setShowKillCrewMate] = useState(false);
     const [showKillImpostor, setShowKillImpostor] = useState(false);
     const [crewmateDead, setCrewmateDead] = useState(false);
@@ -62,18 +100,26 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [showTaskList, setShowTaskList] = useState(false);
     const [youGotKilled, setYouGotKilled] = useState(false);
     const [showYouKilledACrewmate, setShowYouKilledACrewmate] = useState(false);
+    const [reportButtonPressed, setReportButtonPressed] = useState(false);
+    const [showEjected, setShowEjected] = useState(false);
+    const [showOtherPlayerEjected, setShowOtherPlayerEjected] = useState(false);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
     const playerRef = useRef<Player>(new Player(userName, '', '', '', 2, 2, '', '', '', ''));
 
-    //Test Games
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentMiniGame, setCurrentMiniGame] = useState<React.ReactNode>(null);
 
     useEffect(() => {
+        playerRef.current.setX(getRandom(12, 7));
+        playerRef.current.setY(getRandom(15, 10));
+        console.log('XXXXX: ' + playerRef.current.getX() + ' ' + playerRef.current.getY());
+    }, []);
+
+
+    useEffect(() => {
         playerRef.current.setColor(userColor);
     }, [userColor]);
-
 
 
     // const toggleChat = () => {
@@ -83,9 +129,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     //         setChatVisible(false);
     //     }
     // };
-
     const handleStartTimer = () => {
-        if(!timerStarted) {
+        if (!timerStarted) {
             setTimerStarted(true);
         }
     }
@@ -103,7 +148,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
 
     const handleThereIsAImpostorAmongUs = () => {
         setShowThereIsAImpostorAmoungUs(false);
-        if(playerRef.current.getRole() === "impostor") {
+        if (playerRef.current.getRole() === "impostor") {
             setShowRoleImpostor(true);
         } else {
             setShowRole(true);
@@ -119,31 +164,31 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
 
     useEffect(() => {
         webSocketServiceRef.current = new WebSocketService(playerRef,
-                                                            setOtherPlayers,
-                                                            handleStartTimer,
-                                                            setTasks,
-                                                            setCrewmateDead,
-                                                            updateTasks,
-                                                            dead,
-                                                            impostorWinsTheGame,
-                                                            crewmateWinsTheGame,
-                                                            playerInstance,
-                                                            kill)
+            setOtherPlayers,
+            handleStartTimer,
+            setTasks,
+            setCrewmateDead,
+            updateTasks,
+            dead,
+            impostorWinsTheGame,
+            crewmateWinsTheGame,
+            playerInstance,
+            kill,
+            votingActive,
+            votingNotActive,
+            ejectMe)
         webSocketServiceRef.current.connect();
         return () => {
         };
     }, []);
 
-
     const handleKeyPress = (key: string) => {
         if (key === 'w') {
             taskAction();
-        }
-        else if (key === 'e' && playerRef.current.getRole() === 'impostor') {
+        } else if (key === 'e' && playerRef.current.getRole() === 'impostor') {
             taskKill(key);
-        }
-        else if (webSocketServiceRef.current) {
-            const { current: webSocketService } = webSocketServiceRef;
+        } else if (webSocketServiceRef.current) {
+            const {current: webSocketService} = webSocketServiceRef;
             webSocketService.sendMovement(key);
 
             // if (key === 'ArrowUp') {
@@ -157,6 +202,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
             // }
         }
     };
+
 
     const [showPopup, setShowPopup] = useState(false);
 
@@ -218,7 +264,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     }
 
     const updateTasks = () => {
-        if(completedTasksCount < 9) {
+        if (completedTasksCount < 9) {
             setCompletedTasksCount(prevCount => prevCount + 1);
         }
     }
@@ -258,11 +304,11 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     }
 
     const playerInstance = () => {
-        // playerRef.current.setTask1(task1);
-        // playerRef.current.setTask2(task2);
-        // playerRef.current.setTask3(task3);
-        // playerRef.current.setRole(role);
-        setTasks({task1: playerRef.current.getTask1(), task2: playerRef.current.getTask2(), task3: playerRef.current.getTask3()});
+        setTasks({
+            task1: playerRef.current.getTask1(),
+            task2: playerRef.current.getTask2(),
+            task3: playerRef.current.getTask3()
+        });
 
         setTimeout(() => {
             setShowTaskList(true);
@@ -271,7 +317,51 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     }
 
     const kill = () => {
-        setShowYouKilledACrewmate(true);
+        // setShowMap(false);
+        // TODO killCrewmate Screen stucks and doesnt end
+        // setShowYouKilledACrewmate(true);
+
+        // setTimeout(() => {
+        //     setShowKillCrewMate(false);
+        //
+        // }, 3000);
+    }
+
+    // const handleButtonPress = () => {
+    //     webSocketServiceRef.current.yourAGhostNow();
+    // }
+
+    const reportButtonClicked = () => {
+        // TODO button wurde in der Map gedrückt
+        console.log("CurrentPlayer.tsx: Report Button clicked");
+        webSocketServiceRef.current.sendReportButtonPressed();
+        // setShowVotingbox(true);
+    }
+
+    const handleButtonPress = (votedFor: string) => {
+        // TODO button wurde in der VotingBox gedrückt
+        console.log('CurrentPlayers.tsx: Votingbox submit button pressed ' + votedFor);
+        webSocketServiceRef.current.sendVotingButtonPressed(votedFor);
+        setShowVotingbox(false);
+    }
+
+    function getRandom(min: number, max: number) {
+        const minCeiled = Math.ceil(min);
+        const maxFloored = Math.floor(max);
+        return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
+    }
+
+    const votingActive = () => {
+        setShowVotingbox(true);
+    }
+
+    const votingNotActive = () => {
+        setShowVotingbox(false);
+    }
+
+    const ejectMe = () => {
+        // TODO show eject screen
+        setShowEjected(true);
     }
 
     return (
@@ -281,7 +371,11 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                     <div className="row-span-1 ">
                         <div
                             className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2">
-                            <div id="user-div" className="col-span-1"></div>
+                            <div id="user-div"
+                                 className="col-span-1" style={{
+                                backgroundImage: `url(${playerImage})`
+                            }
+                            }/>
                             {/*<button onClick={toggleChat} className="text-white bg-gray-700 hover:bg-gray-800 font-bold py-2 px-4 rounded m-10">*/}
                             {/*    Press me*/}
                             {/*</button>*/}
@@ -298,8 +392,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                             {/*<div className={chatVisible ? "" : "hidden"}>*/}
                             {/*    <Chatbox/>*/}
                             {/*</div>*/}
-                            <Chatbox playerColor={ playerRef.current.getColor() } playerName={ playerRef.current.getUserName()} ></Chatbox>
-                            <Votingbox playerColor={ playerRef.current.getColor() } playerName={ playerRef.current.getUserName()} deadPlayer={ "deadPlayer" } reportPlayer={ "reportPlayer" } ></Votingbox>
+                            <Chatbox playerColor={playerRef.current.getColor()}
+                                     playerName={playerRef.current.getUserName()}></Chatbox>
+
+                            {showVotingbox ?
+                            <Votingbox onButtonPress={handleButtonPress} currentPlayer={playerRef.current}
+                                       otherPlayers={otherPlayers} ></Votingbox> : <div></div>
+                            }
                         </div>
                     </div>
                     {/*<div >{purple}</div>*/}
@@ -318,6 +417,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                         </div>
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {showLobby ? <Lobby currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
+
                                 <div></div>}
                         </div>
                         <div>
@@ -329,9 +429,11 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                             {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
                                 <div></div>}
                         </div>
-
                         {/*<div>*/}
-                        {/*    { showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> : <div></div> }*/}
+                        {/*    <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">*/}
+                        {/*        { showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :*/}
+                        {/*            <div></div> }*/}
+                        {/*    </div>*/}
                         {/*</div>*/}
 
                         {showPopup && (
@@ -414,6 +516,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                         <div>
                             {showYouKilledACrewmate ? <YouKilledACrewmate onStart={handleRole}/> : <div></div>}
                         </div>
+                        <div>
+                            {showEjected ? <Ejected onStart={handleRole}/> : <div></div>}
+                        </div>
+                        <div>
+                            {showOtherPlayerEjected ? <OtherPlayerEjected onStart={handleRole}/> : <div></div>}
+                        </div>
+
                         {/*<div>*/}
                         {/*    {youGotKilled ? <YouGotKilled onStart={handleRole}/> : <div></div>}*/}
                         {/*</div>*/}
@@ -423,6 +532,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
             </div>
         </div>
     );
+
+
 };
+
 
 export default CurrentPlayers;

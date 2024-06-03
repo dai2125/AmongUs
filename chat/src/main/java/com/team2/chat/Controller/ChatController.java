@@ -27,15 +27,21 @@ public class ChatController {
     @MessageMapping("/ingoing/")
     @SendTo("topic/ingoing/")
     public void ingoing(@Payload Message message) {
+
+        System.out.println("ingoing: " + message.getMessage());
+
         chatService.processMessage(message);
         messagingTemplate.convertAndSend("/topic/ingoing/", message);
     }
 
     @MessageMapping("/ingoing/{userId}")
     public void ingoingUserId(@Payload Message message, @DestinationVariable String userId) {
+
+        System.out.println("ingoing: " + message.getMessage());
+
+
         message.setMessage(chatService.getSomething(message.getMessage()));
 
-        System.out.println("ChatController: " + message.getMessage() + " " + "userId: " + userId + " " + message.getUserName());
         messagingTemplate.convertAndSend(String.format("/topic/ingoing/%s", userId), message);
         messagingTemplate.convertAndSend("/topic/ingoing/", message);
     }

@@ -42,10 +42,11 @@ const colorToImageUrl = {
 };
 
 const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers}) => {
+
     const [gridKey, setGridKey] = useState(0);
-    const [playerImage, setPlayerImage] = useState(colorToImageUrl[currentPlayer.getColor()]);
     const [otherPlayerImages, setOtherPlayerImages] = useState({});
-    const [playerPosition, setPlayerPosition] = useState({ x: currentPlayer.getX(), y: currentPlayer.getY() });
+    const [playerImage, setPlayerImage] = useState(colorToImageUrl[currentPlayer.getColor()]);
+    const [playerPosition, setPlayerPosition] = useState({ y: currentPlayer.getY(), x: currentPlayer.getX() });
     const [otherPlayerPositions, setOtherPlayerPositions] = useState(
         otherPlayers.reduce((acc, player) => {
             acc[player.getSessionId()] = { x: player.getX(), y: player.getY() };
@@ -108,33 +109,33 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers}) => {
         [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-        [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
-        [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
-        [1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1],
-        [1, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+        [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1],
+        [1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1],
+        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1],
+        [1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1],
+        [1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+        [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+        [1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ];
 
     useEffect(() => {
-        setPlayerPosition({ x: currentPlayer.getX(), y: currentPlayer.getY() });
+        setPlayerPosition({ y: currentPlayer.getY(), x: currentPlayer.getX() });
         setOtherPlayerPositions(
             otherPlayers.reduce((acc, player) => {
-                acc[player.getSessionId()] = { x: player.getX(), y: player.getY() };
+                acc[player.getSessionId()] = { y: player.getY(), x: player.getX() };
                 return acc;
             }, {})
         );
     }, [currentPlayer, otherPlayers]);
 
 
-    const movePlayer = (x, y) => {
+    const movePlayer = (y, x) => {
         if (grid[y] && grid[y][x] === 0) { // Check if the target cell is walkable
-            setPlayerPosition({ x, y });
+            setPlayerPosition({ y, x });
         }
     };
 
@@ -146,27 +147,36 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers}) => {
     }, [playerPosition]);
 
     const handleKeyDown = (event) => {
-        const { x, y } = playerPosition;
+        const { y, x } = playerPosition;
         let newX = x;
         let newY = y;
         switch (event.key) {
             case 'ArrowUp':
-                newY = y - 1;
+                // if(grid[y-1][x] === 0) {
+                    newY = y - 1;
+
+                // }
                 break;
             case 'ArrowDown':
-                newY = y + 1;
+                // if (grid[y + 1][x] === 0) {
+                    newY = y + 1;
+                // }
                 break;
             case 'ArrowLeft':
-                newX = x - 1;
+                // if (grid[y][x - 1] === 0) {
+                    newX = x - 1;
+                // }
                 break;
             case 'ArrowRight':
-                newX = x + 1;
+                // if (grid[y][x + 1] === 0) {
+                    newX = x + 1;
+                // }
                 break;
             default:
                 return;
         }
-        if (newY >= 0 && newY < grid.length && newX >= 0 && newX < grid[newY].length && grid[newY][newX] === 0) {
-            setPlayerPosition({ x: newX, y: newY });
+        if (newX >= 0 && newX < grid[0].length && newY >= 0 && newY < grid.length && grid[newY][newX] === 0) {
+            setPlayerPosition({ y: newY, x: newX });
         }
     };
 
@@ -191,7 +201,9 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers}) => {
                     {row.map((cell, colIndex) => {
                         const cellStyle = cell === 1
                             ? {
-                            //backgroundColor: 'rgba(255, 255, 255, 0.5)',
+
+                            // backgroundColor: 'rgba(255, 255, 255, 0.5)',
+
                                 width: '30px', height: '30px' }
                             : { width: '30px', height: '30px' };
                         return <div key={colIndex} style={cellStyle}></div>;

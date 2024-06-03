@@ -2,6 +2,10 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { Player } from './Player';
 import React from 'react';
+import role from "./Screens/Role";
+import {User} from "./User";
+
+ let sessionId = ""
 
 interface RegistrationData {
     action?: string | null;
@@ -32,6 +36,9 @@ class WebSocketService {
     private crewmateWins: () => void;
     private playerInstance: () => void;
     private kill: () => void;
+    private votingActive: () => void;
+    private votingNotActive: () => void;
+    private ejectMe: () => void;
 
     constructor(playerRef: React.MutableRefObject<Player>,
                 setOtherPlayers: React.Dispatch<React.SetStateAction<Player[]>>,
@@ -43,7 +50,10 @@ class WebSocketService {
                 impostorWins: () => void,
                 crewmateWins: () => void,
                 playerInstance: () => void,
-                kill: () => void) {
+                kill: () => void,
+                votingActive: () => void,
+                votingNotActive: () => void,
+                ejectMe: () => void) {
         this.playerRef = playerRef;
         this.setOtherPlayers = setOtherPlayers;
         this.startTimer = startTimer;
@@ -55,7 +65,11 @@ class WebSocketService {
         this.crewmateWins = crewmateWins;
         this.playerInstance = playerInstance;
         this.kill = kill;
+        this.votingActive = votingActive;
+        this.votingNotActive = votingNotActive;
+        this.ejectMe = ejectMe;
     }
+
 
     connect() {
         const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
@@ -67,7 +81,7 @@ class WebSocketService {
 
             this.client.subscribe('/topic/register/', (message) => {
                 const registrationData: RegistrationData = JSON.parse(message.body);
-
+                sessionId = registrationData.sessionId
                 if(!this.signedIn){
                     playerRef.current = new Player(
                         playerRef.current.getUserName(),
@@ -110,7 +124,27 @@ class WebSocketService {
                     });
                 }
             });
+
             this.sendRegistrationData();
+
+            setTimeout(() => {
+                this.client.subscribe(`/topic/gimmework/${sessionId}`, (message) => {
+
+                    const data = JSON.parse(message.body);
+                    console.log('gimmeMywork: ' + data.task1 + ' ' + data.task2 + ' ' + data.task3 + ' ' + data.role);
+                    this.playerRef.current.setTask1(data.task1);
+                    this.playerRef.current.setTask2(data.task2);
+                    this.playerRef.current.setTask3(data.task3);
+                    this.playerRef.current.setRole(data.role);
+                    this.playerInstance();
+                });
+            }, 1000);
+
+
+            setTimeout(() => {
+                this.gimmeWork();
+            }, 1000);
+
 
             this.client.subscribe('/topic/disconnected/', (message) => {
                 const disconnectedPlayer = JSON.parse(message.body);
@@ -151,9 +185,11 @@ class WebSocketService {
                 })
             })
 
+
             this.client.subscribe('/topic/startGame/', () => {
                 this.startTimer();
-                this.gimmeWork();
+                //this.gimmeWork();
+                //this.gimmework();
             });
 
             this.client.subscribe(`/topic/task/${playerRef.current.getUserName()}`, () => {
@@ -163,6 +199,7 @@ class WebSocketService {
             this.client.subscribe(`/topic/dead/${playerRef.current.getUserName()}`, () => {
                 // TODO display Screen
                 // TODO Dead Body stays on the x y coordinate
+                console.log('You are dead now');
                 playerRef.current.setMovable(false);
                 playerRef.current.setColor("dead");
                 this.dead();
@@ -210,6 +247,37 @@ class WebSocketService {
                 playerRef.current.setTask3(data.task3);
                 playerRef.current.setRole(data.role);
                 this.playerInstance();
+            });
+
+            // this.client.subscribe(`/topic/yourAGhostNow/${playerRef.current.getUserName()}`, (message) => {
+            this.client.subscribe('/topic/yourAGhostNow/', () => {
+
+                // TODO  dead image
+                // TODO notify all other Players that you are a ghost now
+
+                if(playerRef.current.getColor() === 'dead') {
+                    console.log('Its a me! Im dead and now a ghost');
+                    playerRef.current.setMovable(true);
+                    playerRef.current.setColor('ghost');
+
+                }
+            });
+
+            this.client.subscribe('/topic/votingActive/', () => {
+                // TODO player who called the report and the dead player must be in the parameters
+                playerRef.current.setMovable(false);
+                this.votingActive();
+                // this.reportButtonPressed = true;
+            });
+
+            this.client.subscribe('/topic/votingNotActive/', () => {
+                playerRef.current.setMovable(true);
+                this.votingNotActive();
+                // this.reportButtonPressed = true;
+            });
+
+            this.client.subscribe(`/topic/ejected/${playerRef.current.getUserName()}`, () => {
+                this.ejectMe();
             });
 
 
@@ -278,9 +346,10 @@ class WebSocketService {
                 this.playerRef.current.setTask2(data.task2);
                 this.playerRef.current.setTask3(data.task3);
                 this.playerRef.current.setRole(data.role);
+                this.playerInstance();
 
                 this.setTasks({ task1: data.task1, task2: data.task2, task3: data.task3 });
-                console.log('GimmeWork: ' + data.task1 + ' ' + data.task2 + ' ' + data.task3);
+                console.log('GimmeMyWork: ' + data.task1 + ' ' + data.task2 + ' ' + data.task3 + ' ', data.role );
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -288,19 +357,19 @@ class WebSocketService {
     }
 
     gimmeWork() {
+        console.log("NNNNNNNN");
+        console.log(sessionId);
         if (this.client) {
             const player = this.playerRef.current;
+            this.client.send('/app/gimmework/', {}, JSON.stringify({
+                'userName': this.playerRef.current.getUserName(),
+                'action': player.getAction(),
+                'sessionId': sessionId,
+                'color': player.getColor(),
+                'x': player.getX(),
+                'y': player.getY()
+            }));
 
-            const payload = JSON.stringify({
-                userName: player.getUserName(),
-                action: player.getAction(),
-                sessionId: player.getSessionId(),
-                color: player.getColor(),
-                x: player.getX(),
-                y: player.getY()
-            });
-
-            this.client.send(`/app/gimmework/${player.getUserName()}`, {}, payload);
         }
     }
 
@@ -337,6 +406,61 @@ class WebSocketService {
             });
 
             this.client.send(`/app/task/${player.getUserName()}`, {}, payload);
+        }
+    }
+
+    yourAGhostNow() {
+        if (this.client) {
+            const player = this.playerRef.current;
+
+            const payload = JSON.stringify({
+                userName: player.getUserName(),
+                action: player.getAction(),
+                sessionId: player.getSessionId(),
+                color: player.getColor(),
+                x: player.getX(),
+                y: player.getY()
+            });
+
+            this.client.send('/app/yourAGhostNow/', {}, payload);
+
+            // this.client.send(`/app/yourAGhostNow/${player.getUserName()}`, {}, payload);
+        }
+    }
+
+    sendReportButtonPressed() {
+        if (this.client) {
+            const player = this.playerRef.current;
+
+            const payload = JSON.stringify({
+                userName: player.getUserName(),
+                action: player.getAction(),
+                sessionId: player.getSessionId(),
+                color: player.getColor(),
+                x: player.getX(),
+                y: player.getY()
+            });
+
+            this.client.send(`/app/reportButtonPressed/${player.getUserName()}`, {}, payload);
+        }
+    }
+
+    sendVotingButtonPressed(votedFor: string) {
+        if (this.client) {
+            const player = this.playerRef.current;
+
+            player.setAction(votedFor);
+
+            const payload = JSON.stringify({
+                userName: player.getUserName(),
+                action: player.getAction(),
+                sessionId: player.getSessionId(),
+                color: player.getColor(),
+                x: player.getX(),
+                y: player.getY(),
+            });
+
+            this.client.send(`/app/votingButtonPressed/${player.getUserName()}`, {}, payload);
         }
     }
 }
