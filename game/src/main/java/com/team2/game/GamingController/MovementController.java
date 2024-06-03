@@ -10,6 +10,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.event.EventListener;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -65,9 +66,14 @@ public class MovementController {
     @SendTo("/topic/register/")
     public void register(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
 
+        System.out.println("Hello from register");
             messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(registerService.registerUser(user, simpMessageHeaderAccessor)));
 
-            for(User u : registerService.userList) {
+        /*TaskDTO task = registerService.getTask();
+        System.out.println("GGGG" + task.getRole());
+        messagingTemplate.convertAndSend("/topic/gimmework/" + user.getUserName(), new ObjectMapper().writeValueAsString(task));*/
+
+        for(User u : registerService.userList) {
                 messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(u));
             }
             if(registerService.startGame && !registerService.sendAlready) {
@@ -75,6 +81,16 @@ public class MovementController {
 
                 registerService.sendAlready = true;
             }
+    }
+
+    @MessageMapping("/gimmework/")
+    public void processGimmeWork(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+        System.out.println("Hello from GIMMEWORK");
+        System.out.println("USERNAME " + user.getSessionId());
+        TaskDTO task = registerService.getTask();
+        System.out.println("GGGG " + task.getRole());
+        messagingTemplate.convertAndSend("/topic/gimmework/" + user.getSessionId(), new ObjectMapper().writeValueAsString(task));
+
     }
 
     @MessageMapping("/movement/{userId}")
@@ -156,12 +172,7 @@ public class MovementController {
         }
     }
 
-    @MessageMapping("/gimmework/{userName}")
-    public void processGimmeWork(@Payload User user) throws JsonProcessingException {
-        TaskDTO task = registerService.getTask();
-        messagingTemplate.convertAndSend("/topic/gimmework/" + user.getUserName(), new ObjectMapper().writeValueAsString(task));
 
-    }
 
     @MessageMapping("/yourAGhostNow/")
     public void processGhost(@Payload User user) throws JsonProcessingException {

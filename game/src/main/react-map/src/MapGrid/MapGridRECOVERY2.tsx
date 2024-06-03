@@ -1,4 +1,4 @@
-import {Player} from "./Player";
+//import {Player} from "./Player";
 import test from './Lobby.png';
 // import test3 from '../images/Maps/Lobby.tmx';
 import React, {useEffect, useRef, useState, useCallback, useMemo} from 'react';
