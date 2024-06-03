@@ -21,7 +21,6 @@ public class GroupManager {
     private static final String TASK8 = "task8";
     private static final String TASK9 = "task9";
 
-
     private static final int GROUP_FULL = 3;
     private int taskCounter = 0;
 

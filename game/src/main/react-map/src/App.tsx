@@ -6,7 +6,7 @@ import CreateAccount from "./MainPage/CreateAccount";
 import CurrentPlayers from "./CurrentPlayers";
 import {User} from "./User";
 
-let loggedInUser = new User();
+let loggedInUser: User;
 // const userColor: string = "pink";
 // loggedInUser.setColor("pink");
 
@@ -14,8 +14,8 @@ const App: React.FC = () => {
 
     const [userName, setUserName] = useState('');
     const [userColor, setUserColor] = useState("pink");
-    const [showLogIn, setShowLogIn] = useState<boolean>(true);
-    const [showMapGrid, setShowMapGrid] = useState<boolean>(false);
+    const [showLogIn, setShowLogIn] = useState<boolean>(false);
+    const [showMapGrid, setShowMapGrid] = useState<boolean>(true);
     const [showHomePage, setShowHomePage] = useState<boolean>(false);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
 
@@ -50,13 +50,16 @@ const App: React.FC = () => {
     useEffect(() => {
     }, [userName]);
 
+
     return (
         <div>
-            {showHomePage && <HomePage setUserColor={setUserColor} loggesInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
+            {showHomePage &&
+                <HomePage setUserColor={setUserColor} loggesInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
             {showLogIn && <LogIn onLogIn={handleLogin} onCreateAccountNav={handleCreateNav}/>}
             {showMapGrid && <CurrentPlayers userName={userName} userColor={userColor} onQuit={handleQuit} />}
             {showCreateAccount && <CreateAccount onLoginNavClick={handleLogInNav}/>}
         </div>
-    );};
+    );
+};
 
 export default App;

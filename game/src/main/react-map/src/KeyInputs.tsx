@@ -6,25 +6,25 @@ const KeyInput: React.FC<{ onKeyPress: (key: string) => void }> = ({ onKeyPress 
             const { key } = event;
             switch (key) {
                 case 'ArrowUp':
-                    onKeyPress('ArrowUp');
+                    onKeyPress(key);
                     break;
                 case 'ArrowDown':
-                    onKeyPress('ArrowDown');
+                    onKeyPress(key);
                     break;
                 case 'ArrowLeft':
-                    onKeyPress('ArrowLeft');
+                    onKeyPress(key);
                     break;
                 case 'ArrowRight':
-                    onKeyPress('ArrowRight');
+                    onKeyPress(key);
                     break;
                 case 'space':
-                    onKeyPress('Space');
+                    onKeyPress(key);
                     break;
                 case 'w':
-                    onKeyPress('w');
+                    onKeyPress(key);
                     break;
                 case 'e':
-                    onKeyPress('e');
+                    onKeyPress(key);
                     break;
                 default:
                     break;

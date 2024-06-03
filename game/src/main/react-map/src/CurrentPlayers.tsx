@@ -22,6 +22,14 @@ import DefeatCrewmate from "./Screens/DefeatCrewmate";
 import Votingbox from "./GameComponents/Votingbox";
 import YouKilledACrewmate from "./YouKilledACrewmate";
 
+
+import GuessTheNumberMiniGame from './Minigame/GuessTheNumber/GuessTheNumberMiniGame';
+import DownloadMiniGame from './Minigame/DownloadMiniGame/DownloadMiniGame';
+import ClickInOrderMiniGame from './Minigame/ClickInOrder/ClickInOrderMiniGame';
+import NumpadInputCodeMiniGame from './Minigame/NumpadInputCode/NumpadInputCodeMiniGame';
+import MemoryMiniGame from './Minigame/Memory/MemoryMiniGame';
+import Modal from './Minigame/Modal/Modal';
+
 import purple from "./Images/Character_Movement/Purple.png";
 import red from "./Images/Character_Movement/red.jpg";
 import gray from "./Images/Characters/Gray.jpg";
@@ -40,7 +48,6 @@ import dead from "./Images/Character_Movement/dead.png";
 import webSocketService from "./WebSocketService";
 import Ejected from "./Screens/Ejected";
 import OtherPlayerEjected from "./Screens/OtherPlayerEjected";
-
 
 interface Props {
     userColor: string;
@@ -100,11 +107,15 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
     const playerRef = useRef<Player>(new Player(userName, '', '', '', 2, 2, '', '', '', ''));
 
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [currentMiniGame, setCurrentMiniGame] = useState<React.ReactNode>(null);
+
     useEffect(() => {
         playerRef.current.setX(getRandom(12, 7));
         playerRef.current.setY(getRandom(15, 10));
         console.log('XXXXX: ' + playerRef.current.getX() + ' ' + playerRef.current.getY());
     }, []);
+
 
     useEffect(() => {
         playerRef.current.setColor(userColor);
@@ -172,7 +183,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     }, []);
 
     const handleKeyPress = (key: string) => {
-        if (key === 'w' && playerRef.current.getRole() === 'crewmate') {
+        if (key === 'w') {
             taskAction();
         } else if (key === 'e' && playerRef.current.getRole() === 'impostor') {
             taskKill(key);
@@ -199,11 +210,51 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         setShowPopup(!showPopup);
     };
 
+    //Test Games
+    const openMiniGame = (minigame: React.ReactNode) => {
+        setCurrentMiniGame(minigame);
+        setIsModalVisible(true);
+    };
+
+    const closeMiniGame = () => {
+        setIsModalVisible(false);
+        setCurrentMiniGame(null);
+    };
+
+    const handleMiniGameCompletion = () => {
+        closeMiniGame();
+        const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
+        const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
+        if(xPosTask === 1 && yPosTask === 4) {
+            webSocketServiceRef.current.sendTaskDone("task1", 1, 4);
+        } else if(xPosTask === 7 && yPosTask === 1) {
+            webSocketServiceRef.current.sendTaskDone("task2", 7, 1);
+        } else if(xPosTask === 9 && yPosTask === 7) {
+            webSocketServiceRef.current.sendTaskDone("task3", 9, 7);
+        } else if(xPosTask === 23 && yPosTask === 21) {
+            webSocketServiceRef.current.sendTaskDone("task4", 23, 21);
+        } else if(xPosTask === 22 && yPosTask === 6) {
+            webSocketServiceRef.current.sendTaskDone("task5", 22, 6);
+        }
+    };
+
     const taskAction = () => {
-        if (GridService.isTask(playerRef.current.getY(), playerRef.current.getX())) {
-            // TODO open task box
-            // TODO if task is completed send message to MovementController
-            webSocketServiceRef.current.sendTaskDone("task1");
+        if(GridService.isTask(playerRef.current.getY(), playerRef.current.getX())) {
+            const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
+            const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
+            if(xPosTask != null && yPosTask != null) {
+                if(xPosTask === 1 && yPosTask === 4) {
+                    openMiniGame(<GuessTheNumberMiniGame onCompletion={handleMiniGameCompletion} />);
+                } else if(xPosTask === 7 && yPosTask === 1) {
+                    openMiniGame(<DownloadMiniGame onCompletion={handleMiniGameCompletion} />);
+                } else if(xPosTask === 9 && yPosTask === 7) {
+                    openMiniGame(<ClickInOrderMiniGame onCompletion={handleMiniGameCompletion} />);
+                } else if(xPosTask === 23 && yPosTask === 21) {
+                    openMiniGame(<NumpadInputCodeMiniGame onCompletion={handleMiniGameCompletion} />);
+                } else if(xPosTask === 22 && yPosTask === 6) {
+                    openMiniGame(<MemoryMiniGame onCompletion={handleMiniGameCompletion} />);
+                }
+            }
         }
     }
 
@@ -366,8 +417,17 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                         </div>
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {showLobby ? <Lobby currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
-                                <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}
-                                         reportButtonClicked={reportButtonClicked}/>}
+
+                                <div></div>}
+                        </div>
+                        <div>
+                            <Modal isVisible={isModalVisible} onClose={closeMiniGame}>
+                            {currentMiniGame}
+                            </Modal>
+                        </div>
+                        <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
+                            {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
+                                <div></div>}
                         </div>
                         {/*<div>*/}
                         {/*    <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">*/}

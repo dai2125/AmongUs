@@ -12,7 +12,7 @@ const Timer = ({ onStart }) => {
 
         const id = setInterval(() => {
             setCount((count) => count - 1);
-        }, 1000);
+        }, 5000);
 
         return () => clearInterval(id);
     }, [count, onStart]);

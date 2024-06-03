@@ -76,11 +76,44 @@ export class GridService {
     }
 
     public static isTask(y: number, x: number) {
-        if(this.grid[y + 1][x] === '?' || this.grid[y - 1][x] === '?' || this.grid[y][x + 1] === '?' || this.grid[y][x - 1] === '?') {
+        console.log("Checking if " + y + " " + x + " is a task...")
+        if (this.grid[y] && this.grid[y][x] === '?') {
+            return true;
+        }
+        if (this.grid[y] && this.grid[y][x + 1] && this.grid[y][x + 1] === '?') {
+            return true;
+        }
+        if (this.grid[y] && this.grid[y][x - 1] && this.grid[y][x - 1] === '?') {
+            return true;
+        }
+        if (this.grid[y + 1] && this.grid[y + 1][x] === '?') {
+            return true;
+        }
+        if (this.grid[y - 1] && this.grid[y - 1][x] === '?') {
             return true;
         }
         return false;
     }
+
+
+    public static getXPosTask(x: number, y: number): number | null {
+        if (this.grid[y] && this.grid[y][x + 1] === '?') {
+            return x + 1;
+        } else if (this.grid[y] && this.grid[y][x - 1] === '?') {
+            return x - 1;
+        }
+        return x;
+    }
+
+    public static getYPosTask(x: number, y: number): number | null {
+        if (this.grid[y + 1] && this.grid[y + 1][x] === '?') {
+            return y + 1;
+        } else if (this.grid[y - 1] && this.grid[y - 1][x] === '?') {
+            return y - 1;
+        }
+        return y;
+    }
+
 
     public static gridPosition(y: number, x: number) {
         return this.grid[y][x];

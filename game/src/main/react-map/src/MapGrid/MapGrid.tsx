@@ -157,7 +157,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
                         let cellContent = cell;
                         if (otherPlayer) {
-
                             const playerImage = otherPlayerImages[otherPlayer.getSessionId()];
                             return (
                                 <span key={colIndex} style={{
