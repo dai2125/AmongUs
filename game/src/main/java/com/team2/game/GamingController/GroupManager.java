@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -20,12 +21,14 @@ public class GroupManager {
     private static final String TASK8 = "task8";
     private static final String TASK9 = "task9";
 
-    private static final int GROUP_FULL = 2;
+
+    private static final int GROUP_FULL = 3;
     private int taskCounter = 0;
 
     private List<User> userList = new ArrayList<>();
     private List<String> taskList = Arrays.asList(TASK1, TASK2, TASK3, TASK4, TASK5, TASK6, TASK7, TASK8, TASK9);
     private List<String> taskListCopy = new ArrayList<>(taskList);
+    public HashMap<String, Integer> votingList = new HashMap<>();
 
     TaskDTO taskDTO = new TaskDTO();
 
