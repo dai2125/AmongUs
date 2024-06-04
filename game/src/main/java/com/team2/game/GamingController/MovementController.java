@@ -83,6 +83,13 @@ public class MovementController {
             }
     }
 
+    @MessageMapping("/tryConnect/")
+    public void tryConnect() throws JsonProcessingException {
+        System.out.println("Hello from tryConnect");
+        messagingTemplate.convertAndSend("/topic/tryConnect/", groupManager.groupIsFull());
+
+    }
+
     @MessageMapping("/gimmework/")
     public void processGimmeWork(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
         System.out.println("Hello from GIMMEWORK");

@@ -76,6 +76,10 @@ public class RegisterService {
         }
     }
 
+    public boolean isGroupFull(){
+        return groupManager.groupIsFull();
+    }
+
 
     private void resetCounter(int currentCounter) {
         if(currentCounter == colors.length - 1) {
