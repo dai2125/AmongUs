@@ -49,8 +49,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [showRoleImpostor, setShowRoleImpostor] = useState(false);
     const [showThereIsAImpostorAmoungUs, setShowThereIsAImpostorAmoungUs] = useState(false);
     const [completedTasksCount, setCompletedTasksCount] = useState(0);
-    const [showLobby, setShowLobby] = useState(true);
-    const [showMap, setShowMap] = useState(false);
+    const [showLobby, setShowLobby] = useState(false);
+    const [showMap, setShowMap] = useState(true);
     const [victoryImpostor, setVictoryImpostor] = useState(false);
     const [defeatImpostor, setDefeatImpostor] = useState(false);
     const [victoryCrewmate, setVictoryCrewmate] = useState(false);
