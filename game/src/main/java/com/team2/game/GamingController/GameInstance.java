@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Service
-public class GroupManager {
+public class GameInstance {
 
     private static final String TASK1 = "task1";
     private static final String TASK2 = "task2";
@@ -21,7 +21,7 @@ public class GroupManager {
     private static final String TASK8 = "task8";
     private static final String TASK9 = "task9";
 
-    private static final int GROUP_FULL = 3;
+    private static final int GROUP_FULL = 2;
     private int taskCounter = 0;
 
     private List<User> userList = new ArrayList<>();

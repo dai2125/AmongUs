@@ -10,6 +10,7 @@ import {User} from "./User";
 interface RegistrationData {
     action?: string | null;
     sessionId?: string;
+    gameId?: string;
     color?: string | null;
     x: number;
     y: number;
@@ -87,6 +88,7 @@ class WebSocketService {
                         playerRef.current.getUserName(),
                         registrationData.action ?? '',
                         registrationData.sessionId ?? '',
+                        registrationData.gameId ?? '' ,
                         registrationData.color ?? '',
                         registrationData.x ?? 2,
                         registrationData.y ?? 2,
@@ -105,6 +107,7 @@ class WebSocketService {
                     registrationData.userName ?? '',
                     registrationData.action ?? '',
                     registrationData.sessionId ?? '',
+                    registrationData.gameId ?? '',
                     registrationData.color ?? '',
                     registrationData.x  ,
                     registrationData.y  ,
@@ -114,7 +117,7 @@ class WebSocketService {
                     ''
                 )
 
-                if (registrationData.sessionId !== playerRef.current.getSessionId()) {
+                if ((registrationData.sessionId !== playerRef.current.getSessionId()) && (registrationData.gameId === playerRef.current.getGameId())) {
                     setOtherPlayers((prevOtherPlayers) => {
                         const existingPlayer = prevOtherPlayers.find((p) => p.getSessionId() === registrationData.sessionId);
                         if (!existingPlayer) {
