@@ -85,26 +85,25 @@ public class GameInstance {
 
     public void distributeTask(User u) {
 
-
-                for(int i = 0; i < taskList.size(); i++) {
-                    int random = (int) (Math.random() * taskList.size());
-                    if(i == 0) {
-                        taskDTO.setTask1(taskList.get(random));
-                    } else if(i == 1) {
-                        taskDTO.setTask2(taskList.get(random));
-                    } else if(i == 2) {
-                        taskDTO.setTask3(taskList.get(random));
+                if (!u.getImpostor()){
+                    taskDTO.setRole("crewmate");
+                    for(int i = 0; i < 3; i++) {
+                        int random = (int) (Math.random() * taskList.size());
+                        if(i == 0) {
+                            taskDTO.setTask1(taskList.get(random));
+                        } else if(i == 1) {
+                            taskDTO.setTask2(taskList.get(random));
+                        } else if(i == 2) {
+                            taskDTO.setTask3(taskList.get(random));
+                        }
                     }
-                }
-                taskCounter++;
-                if(u.getImpostor()) {
+                    taskCounter++;
+                }else  {
                     taskDTO.setRole("impostor");
                     impostor = true;
                     taskDTO.setTask1("kill");
                     taskDTO.setTask2("sabotage");
                     taskDTO.setTask3("vent");
-                } else {
-                    taskDTO.setRole("crewmate");
                 }
 
                 counter++;
