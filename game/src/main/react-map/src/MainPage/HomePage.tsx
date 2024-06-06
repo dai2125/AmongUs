@@ -1,4 +1,4 @@
-import React, {FormEvent, useEffect, useState} from 'react';
+import React, {FormEvent, useEffect, useRef, useState} from 'react';
 import '../CSS/main.css'
 import '../CSS/output.css';
 import amongUsIcon from '../Images/Homepage/Among_Us_logo.png';
@@ -19,6 +19,8 @@ import cyan from "../Images/Character_Movement/Cyan.jpg";
 import lime from "../Images/Character_Movement/Lime.jpg";
 import pink from "../Images/Character_Movement/Pink.jpg";
 import dead from "../Images/Character_Movement/dead.png";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 type Props ={
     loggesInUser: User;
@@ -177,6 +179,32 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
         setPlayerImage(colorToImageUrl[newColor]);
     }
 
+const clientRef = useRef(null);
+
+    const handlePlay = () => {
+
+        const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
+        const client = Stomp.over(socket);
+
+        clientRef.current = client;
+
+        client.connect({},() =>{
+            client.subscribe('/topic/tryConnect/', (message)=>{
+                const response = JSON.parse(message.body);
+
+                if(response === false){
+                    onPlayButtonClick(color);
+                }else {
+                    alert("The lobby is full");
+                }
+            });
+            sendConnectRequest();
+        });
+    }
+    const sendConnectRequest = () => {
+        clientRef.current.send('/app/tryConnect/', {});
+    }
+
 
     return (
         <div className="background grid grid-rows-12 min-h-screen w-screen p-10">
@@ -213,7 +241,7 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
                 </div>
                     <div
                         className="p-4 grid grid-rows-3 row-span-7 border-double rounded-lg border-2 border-fuchsia-800 w-11/12 h-5/6 justify-self-center align-items-center">
-                        <button onClick={onPlayButtonClick}
+                        <button onClick={handlePlay}
                                 className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
                             <b className="text-3xl">PLAY</b>
                         </button>

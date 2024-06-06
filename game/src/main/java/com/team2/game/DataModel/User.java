@@ -7,6 +7,16 @@ public class User {
     private String userName;
     private String action;
     private String sessionId;
+
+    public String getGameId() {
+        return gameId;
+    }
+
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
+    }
+
+    private String gameId;
     private String color;
     private int x;
     private int y;

@@ -4,6 +4,7 @@ export class Player {
         private userName: string,
         private action: string,
         private sessionId: string,
+        private gameId: string,
         private color: string,
         private x: number,
         private y: number,
@@ -28,6 +29,7 @@ export class Player {
     getUserName() { return this.userName; }
     getAction() { return this.action; }
     getSessionId() { return this.sessionId; }
+    getGameId() { return this.gameId; }
     getColor() { return this.color; }
     getX() { return this.x; }
     getY() { return this.y; }
@@ -40,6 +42,7 @@ export class Player {
     setUserName(userName: string) { this.userName = userName; }
     setAction(action: string) { this.action = action; }
     setSessionId(SessionId: string) { this.sessionId = SessionId; }
+    setGameId(GameId: string) { this.gameId = GameId; }
     setColor(color: string) { this.color = color; }
     setX(x: number) { this.x = x; }
     setY(y: number) { this.y = y; }
