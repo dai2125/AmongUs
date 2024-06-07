@@ -48,6 +48,7 @@ import dead from "./Images/Character_Movement/dead.png";
 import webSocketService from "./WebSocketService";
 import Ejected from "./Screens/Ejected";
 import OtherPlayerEjected from "./Screens/OtherPlayerEjected";
+import NoOneGotEjected from "./Screens/NoOneGotEjected";
 
 interface Props {
     userColor: string;
@@ -91,8 +92,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [showRoleImpostor, setShowRoleImpostor] = useState(false);
     const [showThereIsAImpostorAmoungUs, setShowThereIsAImpostorAmoungUs] = useState(false);
     const [completedTasksCount, setCompletedTasksCount] = useState(0);
-    const [showLobby, setShowLobby] = useState(true);
-    const [showMap, setShowMap] = useState(false);
+    const [showLobby, setShowLobby] = useState(false);
+    const [showMap, setShowMap] = useState(true);
     const [victoryImpostor, setVictoryImpostor] = useState(false);
     const [defeatImpostor, setDefeatImpostor] = useState(false);
     const [victoryCrewmate, setVictoryCrewmate] = useState(false);
@@ -103,6 +104,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [reportButtonPressed, setReportButtonPressed] = useState(false);
     const [showEjected, setShowEjected] = useState(false);
     const [showOtherPlayerEjected, setShowOtherPlayerEjected] = useState(false);
+    const [ejectedPlayer, setEjectedPlayer] = useState('');
+    const [showNoOneGotEjected, setNoOneGotEjected] = useState(false);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
     const playerRef = useRef<Player>(new Player(userName, '', '', '', 2, 2, '', '', '', ''));
@@ -176,7 +179,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
             kill,
             votingActive,
             votingNotActive,
-            ejectMe)
+            ejectMe,
+            someoneGotEjected,
+            noOneGotEjected)
         webSocketServiceRef.current.connect();
         return () => {
         };
@@ -293,6 +298,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
 
     const crewmateWinsTheGame = () => {
         setShowMap(false);
+        setShowVotingbox(false);
         if (playerRef.current.getRole() === "crewmate") {
             setVictoryCrewmate(true);
         } else {
@@ -342,7 +348,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         // TODO button wurde in der VotingBox gedrückt
         console.log('CurrentPlayers.tsx: Votingbox submit button pressed ' + votedFor);
         webSocketServiceRef.current.sendVotingButtonPressed(votedFor);
-        setShowVotingbox(false);
+        // setShowVotingbox(false);
     }
 
     function getRandom(min: number, max: number) {
@@ -361,7 +367,34 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
 
     const ejectMe = () => {
         // TODO show eject screen
+
+        setShowMap(false);
         setShowEjected(true);
+
+        setTimeout(() => {
+            onQuit();
+        }, 3000);
+    }
+
+    const someoneGotEjected = (ejectedPlayer) => {
+        setEjectedPlayer(ejectedPlayer);
+        setShowMap(false);
+        setShowOtherPlayerEjected(true);
+
+        setTimeout(() => {
+            setShowOtherPlayerEjected(false);
+            setShowMap(true);
+        }, 3000);
+    }
+
+    const noOneGotEjected = () => {
+        setShowMap(false);
+        setNoOneGotEjected(true);
+
+        setTimeout(() => {
+            setNoOneGotEjected(false);
+            setShowMap(true);
+        }, 3000);
     }
 
     return (
@@ -520,9 +553,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                             {showEjected ? <Ejected onStart={handleRole}/> : <div></div>}
                         </div>
                         <div>
-                            {showOtherPlayerEjected ? <OtherPlayerEjected onStart={handleRole}/> : <div></div>}
+                            {showOtherPlayerEjected ?
+                                <OtherPlayerEjected ejectedPlayer={ejectedPlayer} onStart={handleRole}/> : <div></div>}
                         </div>
-
+                        <div>
+                            {showNoOneGotEjected ?
+                                <NoOneGotEjected onStart={handleRole}/> : <div></div>}
+                        </div>
                         {/*<div>*/}
                         {/*    {youGotKilled ? <YouGotKilled onStart={handleRole}/> : <div></div>}*/}
                         {/*</div>*/}

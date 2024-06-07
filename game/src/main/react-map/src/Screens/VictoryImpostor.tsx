@@ -3,7 +3,7 @@ import victoryImpostor from "../Images/Game_Over/Victory_Impostor.jpg";
 
 const VictoryImpostor = ({onStart}) => {
 
-    const [count, setCount] = useState(1);
+    const [count, setCount] = useState(3);
 
     useEffect(() => {
         if (!count) {

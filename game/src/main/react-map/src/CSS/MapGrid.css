@@ -12,6 +12,12 @@
     /*background-color: blue;*/
 }
 
+/*.cell {*/
+/*    width: 30px;*/
+/*    height: 30px;*/
+/*    background-size: cover;*/
+/*}*/
+
 .grid-cell {
     flex: 1;
     background-repeat: no-repeat;
@@ -27,9 +33,6 @@
 
 #game {
     position: relative;
-    /*left: -50px;*/
-    /*top: -50px;*/
-    /*left: -100px;  !* Verschiebt das Canvas um 100 Pixel nach links *!*/
     border: 1px solid black;
 }
 
