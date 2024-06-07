@@ -110,6 +110,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentMiniGame, setCurrentMiniGame] = useState<React.ReactNode>(null);
 
+    const [isQuit, setQuit]= useState(false);
+
+
     useEffect(() => {
         playerRef.current.setX(getRandom(12, 7));
         playerRef.current.setY(getRandom(15, 10));
@@ -129,6 +132,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     //         setChatVisible(false);
     //     }
     // };
+
+
     const handleStartTimer = () => {
         if (!timerStarted) {
             setTimerStarted(true);
@@ -402,33 +407,38 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                         </div>
                     </div>
                     {/*<div >{purple}</div>*/}
-                    <div className="grid grid-cols-12 row-span-9 gap-5 h-5/6">
-                        <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-">
+                    <div className="grid grid-cols-12 row-span-1">
+                        <div className="col-span-8 border-solid rounded-lg w-1/2 justify-self-">
                             {showTaskBar ?
                                 // <TaskBar  /> : <div></div>
                                 <TaskBar completedTasksCount={completedTasksCount}/> : <div></div>
                             }
                         </div>
-
+                        <div className="col-span-4 border-solid rounded-lg justify-self-end mr-2 mt-o">
+                            <button className="bg-gray-700 hover:bg-gray-800 rounded-lg py-3 px-8">Quit</button>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-12 row-span-8 gap-5 h-5/6">
+                        <div className="col-span-11 border-solid rounded-lg flex justify-center items-center">
+                            {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
+                                <div></div>}
+                        </div>
                         <div>
                             {showTaskList ?
                                 <TaskList tasks={tasks}/> : <div></div>
                             }
                         </div>
-                        <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
+                        <div className="col-span-8 border-solid rounded-lg flex justify-center items-center">
                             {showLobby ? <Lobby currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
 
                                 <div></div>}
                         </div>
                         <div>
                             <Modal isVisible={isModalVisible} onClose={closeMiniGame}>
-                            {currentMiniGame}
+                                {currentMiniGame}
                             </Modal>
                         </div>
-                        <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
-                            {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
-                                <div></div>}
-                        </div>
+
                         {/*<div>*/}
                         {/*    <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">*/}
                         {/*        { showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :*/}
