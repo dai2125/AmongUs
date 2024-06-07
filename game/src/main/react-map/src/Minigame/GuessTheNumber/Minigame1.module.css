@@ -1,0 +1,26 @@
+/* Minigame1.module.css */
+.container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.head {
+    margin-bottom: 20px;
+}
+
+input {
+    margin-right: 10px;
+    padding: 5px;
+    font-size: 16px;
+}
+
+button {
+    padding: 5px 10px;
+    font-size: 16px;
+}
+
+.result {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}

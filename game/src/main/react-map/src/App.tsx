@@ -19,71 +19,12 @@ const App: React.FC = () => {
     const [showHomePage, setShowHomePage] = useState<boolean>(false);
     const [showCreateAccount, setShowCreateAccount] = useState<boolean>(false);
 
-    const handleLogin = (name:string, password: string) => {
+    const handleLogin = (user: User) => {
 
-        const user ={
-            name : name,
-            password: password
-        }
-
-        fetch('http://localhost:8080/login',{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user),
-        })
-            .then(data => {
-                if(data.status === 200){
-                    // alert("Log In Successful");
-                    setShowHomePage(true);
-                    setShowLogIn(false);
-                    setUserName(name);
-                    loggedInUser.setUsername(name);
-                    loggedInUser.setPassword(password);
-                    loggedInUser.setColor("red");
-                } else {
-                    // alert("Name or Password is wrong");
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-    };
-
-    const handleCreate = (name:string, email: string, password: string, passwordConfirm: string) => {
-
-        const newUser = {
-            name: name,
-            email: email,
-            password: password,
-            passwordConfirm: passwordConfirm
-        }
-
-        if(!(password === passwordConfirm)){
-            // alert("password and confirm-password do not match")
-        }else {
-
-            fetch('http://localhost:8080/signUp',{
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(newUser),
-            })
-                .then((data) => {
-                    if (data.status === 200){
-                        // alert("Account Created Successfully");
-                        setShowCreateAccount(false);
-                        setShowLogIn(true);
-                    } else {
-                        alert("Failed to create account, please make sure to enter all fields correctly");
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-        }
+        loggedInUser = user;
+        setShowHomePage(true);
+        setShowLogIn(false)
+        // setUserName(name);
     };
     // navigation
     const handleCreateNav = () => {
@@ -109,13 +50,16 @@ const App: React.FC = () => {
     useEffect(() => {
     }, [userName]);
 
+
     return (
         <div>
-            {showHomePage && <HomePage setUserColor={setUserColor} loggesInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
+            {showHomePage &&
+                <HomePage setUserColor={setUserColor} loggesInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
             {showLogIn && <LogIn onLogIn={handleLogin} onCreateAccountNav={handleCreateNav}/>}
             {showMapGrid && <CurrentPlayers userName={userName} userColor={userColor} onQuit={handleQuit} />}
-            {showCreateAccount && <CreateAccount onCreateClick={handleCreate} onLoginNavClick={handleLogInNav}/>}
+            {showCreateAccount && <CreateAccount onLoginNavClick={handleLogInNav}/>}
         </div>
-    );};
+    );
+};
 
 export default App;

@@ -329,6 +329,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 );
                             }
 
+
                             return (
                                 <span key={colIndex} className={style.cell} style={cellStyle}>
                                 {cellContent}
@@ -365,9 +366,9 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 <p>Task E</p>
                 <p>Sabotage E</p>
 
+
             </div>
         </div>
-
     );
 
 }

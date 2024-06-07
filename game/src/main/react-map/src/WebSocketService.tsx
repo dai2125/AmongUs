@@ -2,10 +2,15 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { Player } from './Player';
 import React from 'react';
+import role from "./Screens/Role";
+import {User} from "./User";
+
+ let sessionId = ""
 
 interface RegistrationData {
     action?: string | null;
     sessionId?: string;
+    gameId?: string;
     color?: string | null;
     x: number;
     y: number;
@@ -83,12 +88,13 @@ class WebSocketService {
 
             this.client.subscribe('/topic/register/', (message) => {
                 const registrationData: RegistrationData = JSON.parse(message.body);
-
+                sessionId = registrationData.sessionId
                 if(!this.signedIn){
                     playerRef.current = new Player(
                         playerRef.current.getUserName(),
                         registrationData.action ?? '',
                         registrationData.sessionId ?? '',
+                        registrationData.gameId ?? '' ,
                         registrationData.color ?? '',
                         registrationData.x ?? 2,
                         registrationData.y ?? 2,
@@ -107,6 +113,7 @@ class WebSocketService {
                     registrationData.userName ?? '',
                     registrationData.action ?? '',
                     registrationData.sessionId ?? '',
+                    registrationData.gameId ?? '',
                     registrationData.color ?? '',
                     registrationData.x  ,
                     registrationData.y  ,
@@ -116,7 +123,7 @@ class WebSocketService {
                     ''
                 )
 
-                if (registrationData.sessionId !== playerRef.current.getSessionId()) {
+                if ((registrationData.sessionId !== playerRef.current.getSessionId()) && (registrationData.gameId === playerRef.current.getGameId())) {
                     setOtherPlayers((prevOtherPlayers) => {
                         const existingPlayer = prevOtherPlayers.find((p) => p.getSessionId() === registrationData.sessionId);
                         if (!existingPlayer) {
@@ -126,7 +133,27 @@ class WebSocketService {
                     });
                 }
             });
+
             this.sendRegistrationData();
+
+            setTimeout(() => {
+                this.client.subscribe(`/topic/gimmework/${sessionId}`, (message) => {
+
+                    const data = JSON.parse(message.body);
+                    console.log('gimmeMywork: ' + data.task1 + ' ' + data.task2 + ' ' + data.task3 + ' ' + data.role);
+                    this.playerRef.current.setTask1(data.task1);
+                    this.playerRef.current.setTask2(data.task2);
+                    this.playerRef.current.setTask3(data.task3);
+                    this.playerRef.current.setRole(data.role);
+                    this.playerInstance();
+                });
+            }, 1000);
+
+
+            setTimeout(() => {
+                this.gimmeWork();
+            }, 1000);
+
 
             this.client.subscribe('/topic/disconnected/', (message) => {
                 const disconnectedPlayer = JSON.parse(message.body);
@@ -176,9 +203,11 @@ class WebSocketService {
                 })
             })
 
+
             this.client.subscribe('/topic/startGame/', () => {
                 this.startTimer();
-                this.gimmeWork();
+                //this.gimmeWork();
+                //this.gimmework();
             });
 
             this.client.subscribe(`/topic/task/${playerRef.current.getUserName()}`, () => {
@@ -354,9 +383,10 @@ class WebSocketService {
                 this.playerRef.current.setTask2(data.task2);
                 this.playerRef.current.setTask3(data.task3);
                 this.playerRef.current.setRole(data.role);
+                this.playerInstance();
 
                 this.setTasks({ task1: data.task1, task2: data.task2, task3: data.task3 });
-                console.log('GimmeWork: ' + data.task1 + ' ' + data.task2 + ' ' + data.task3);
+                console.log('GimmeMyWork: ' + data.task1 + ' ' + data.task2 + ' ' + data.task3 + ' ', data.role );
             })
             .catch(error => {
                 console.error('Error:', error);
@@ -364,19 +394,19 @@ class WebSocketService {
     }
 
     gimmeWork() {
+        console.log("NNNNNNNN");
+        console.log(sessionId);
         if (this.client) {
             const player = this.playerRef.current;
+            this.client.send('/app/gimmework/', {}, JSON.stringify({
+                'userName': this.playerRef.current.getUserName(),
+                'action': player.getAction(),
+                'sessionId': sessionId,
+                'color': player.getColor(),
+                'x': player.getX(),
+                'y': player.getY()
+            }));
 
-            const payload = JSON.stringify({
-                userName: player.getUserName(),
-                action: player.getAction(),
-                sessionId: player.getSessionId(),
-                color: player.getColor(),
-                x: player.getX(),
-                y: player.getY()
-            });
-
-            this.client.send(`/app/gimmework/${player.getUserName()}`, {}, payload);
         }
     }
 
@@ -398,7 +428,7 @@ class WebSocketService {
         }
     }
 
-    sendTaskDone(task: string) {
+    sendTaskDone(task: string, xPosTask: number, yPosTask: number) {
         if (this.client) {
             const player = this.playerRef.current;
             player.setAction(task);
@@ -408,8 +438,8 @@ class WebSocketService {
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
                 color: player.getColor(),
-                x: player.getX(),
-                y: player.getY()
+                x: xPosTask,
+                y: yPosTask
             });
 
             this.client.send(`/app/task/${player.getUserName()}`, {}, payload);
