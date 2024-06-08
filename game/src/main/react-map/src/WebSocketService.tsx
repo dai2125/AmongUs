@@ -132,11 +132,21 @@ class WebSocketService {
                         return prevOtherPlayers;
                     });
                 }
+
             });
 
             this.sendRegistrationData();
 
+
+
             setTimeout(() => {
+
+                this.client.subscribe(`/topic/startGame/${playerRef.current.getGameId()}`, () => {
+                    this.startTimer();
+                    //this.gimmeWork();
+                    //this.gimmework();
+                });
+
                 this.client.subscribe(`/topic/gimmework/${sessionId}`, (message) => {
 
                     const data = JSON.parse(message.body);
@@ -147,12 +157,20 @@ class WebSocketService {
                     this.playerRef.current.setRole(data.role);
                     this.playerInstance();
                 });
-            }, 1000);
 
+                this.client.subscribe(`/topic/taskResolved/${playerRef.current.getGameId()}`, () => {
+                    this.updateTasks();
+                });
+
+                this.client.subscribe(`/topic/crewmateWins/${playerRef.current.getGameId()}`, () => {
+                    // TODO
+                    this.crewmateWins();
+                });
+            }, 500);
 
             setTimeout(() => {
                 this.gimmeWork();
-            }, 1000);
+            }, 500);
 
 
             this.client.subscribe('/topic/disconnected/', (message) => {
@@ -204,15 +222,6 @@ class WebSocketService {
             })
 
 
-            this.client.subscribe('/topic/startGame/', () => {
-                this.startTimer();
-                //this.gimmeWork();
-                //this.gimmework();
-            });
-
-            this.client.subscribe(`/topic/task/${playerRef.current.getUserName()}`, () => {
-                this.updateTasks();
-            });
 
             this.client.subscribe(`/topic/dead/${playerRef.current.getUserName()}`, () => {
                 // TODO display Screen
@@ -251,10 +260,6 @@ class WebSocketService {
                 this.impostorWins();
             });
 
-            this.client.subscribe(`/topic/crewmateWins/`, () => {
-                // TODO
-                this.crewmateWins();
-            });
 
             this.client.subscribe(`/topic/gimmework/${playerRef.current.getUserName()}`, (message) => {
 
@@ -316,6 +321,7 @@ class WebSocketService {
             this.client.subscribe('/topic/noOneGotEjected/', () => {
                 this.noOneGotEjected();
             });
+
 
 
         }, (error) => {
@@ -498,6 +504,26 @@ class WebSocketService {
             });
 
             this.client.send(`/app/votingButtonPressed/${player.getUserName()}`, {}, payload);
+        }
+    }
+
+    sendTaskResolved(task: string, xPosTask: number, yPosTask: number) {
+        if (this.client) {
+            const player = this.playerRef.current;
+            player.setAction(task);
+
+            const payload = JSON.stringify({
+                userName: player.getUserName(),
+                action: player.getAction(),
+                sessionId: player.getSessionId(),
+                gameId: player.getGameId(),
+                color: player.getColor(),
+                x: player.getX(),
+                y: player.getY(),
+            });
+
+            this.client.send(`/app/taskResolved/`, {}, payload);
+            //this.client.send(`/app/movement/${player.getSessionId()}`, {}, payload);
         }
     }
 }
