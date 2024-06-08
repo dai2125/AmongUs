@@ -222,7 +222,7 @@ const clientRef = useRef(null);
                     {loggesInUser.getUsername()}
                 </div>
                 <button onClick={onFriendsButtonClick}
-                        className="col-span-10 w-1/6 h-10 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
+                        className="col-span-10 w-1/6 h-10 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 mt-1.5">
                     <b className="text-3xl">FRIENDS</b>
                 </button>
                 {showSocialBox ?
@@ -262,11 +262,32 @@ const clientRef = useRef(null);
                     </div>
 
                 </div>
-                <div
-                    className="bg-transparent border-double rounded-lg border-2 border-teal-400 col-span-2 w-full justify-self-start p-4">
-                    {showAccountSettings ? (
-                        <div>
-                            <form onSubmit={handleMyAccount}>
+                    <div className="bg-transparent border-double rounded-lg border-2 border-teal-400 col-span-2 w-full justify-self-start p-4">
+                    <div className="grid grid-cols-2 h-full ">
+                        <div className=" col-span-1 flex justify-center items-center">
+                            <button
+                                className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
+                                <b className="text-3xl">Public</b>
+                            </button>
+                        </div>
+                        <div className="grid grid-rows-2 col-span-1 ">
+                            <div className="row-span-1 flex justify-center items-center">
+                                <button
+                                    className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
+                                    <b className="text-3xl">Private</b>
+                                </button>
+                            </div>
+                            <div className="row-span-1 flex justify-center items-center">
+                                <button
+                                    className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
+                                    <b className="text-3xl">Custom</b>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                        {showAccountSettings ? (
+                            <div>
+                                <form onSubmit={handleMyAccount}>
                                 <p className="text-2xl text-left font-light text-amber-600 ">Account Settings
                                     {/*for {loggesInUser.getUsername()}*/}
                                 </p>
