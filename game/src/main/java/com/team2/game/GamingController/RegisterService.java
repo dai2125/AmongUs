@@ -156,9 +156,9 @@ public class RegisterService {
     public UserRegisterDTO ejectUser(String userName) {
         for (User u : userList) {
             if (u.getUserName().equals(userName)) {
-                UserRegisterDTO userRegisterDTO = new UserRegisterDTO(u.getUserName(), u.getAction(), u.getSessionId(),u.getGameId(), u.getColor(), u.getX(), u.getY());
+                UserRegisterDTO userRegisterDTO = new UserRegisterDTO(u.getUserName(), u.getAction(), u.getSessionId(), u.getGameId(), u.getColor(), u.getX(), u.getY());
                 userList.remove(u);
-                groupManager.getGameInstance(u.getGameId()).removeFromTheGroup(u);
+                groupManager.getGameInstance(gameID).removeFromTheGroup(u);
                 return userRegisterDTO;
             }
         }
