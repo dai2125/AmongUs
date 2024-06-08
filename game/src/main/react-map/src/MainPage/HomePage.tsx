@@ -182,6 +182,8 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
 const clientRef = useRef(null);
 
     const handlePlay = () => {
+        onPlayButtonClick(color);
+        /*
 
         const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
         const client = Stomp.over(socket);
@@ -200,6 +202,7 @@ const clientRef = useRef(null);
             });
             sendConnectRequest();
         });
+        */
     }
     const sendConnectRequest = () => {
         clientRef.current.send('/app/tryConnect/', {});

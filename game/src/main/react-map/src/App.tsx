@@ -24,7 +24,7 @@ const App: React.FC = () => {
         loggedInUser = user;
         setShowHomePage(true);
         setShowLogIn(false)
-        // setUserName(name);
+        setUserName(loggedInUser.getUsername());
     };
     // navigation
     const handleCreateNav = () => {

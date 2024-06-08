@@ -7,15 +7,6 @@ public class User {
     private String userName;
     private String action;
     private String sessionId;
-
-    public String getGameId() {
-        return gameId;
-    }
-
-    public void setGameId(String gameId) {
-        this.gameId = gameId;
-    }
-
     private String gameId;
     private String color;
     private int x;
@@ -61,12 +52,16 @@ public class User {
     }
 
     public String getSessionId() {
-        return sessionId;
+        return this.sessionId;
     }
+
+    public String getGameId() {return this.gameId;}
 
     public void setUserId(String sessionId) {
         this.sessionId = sessionId;
     }
+
+    public void setGameId(String gameId) {this.gameId = gameId;}
 
     public String getColor() {
         return color;
