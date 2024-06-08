@@ -15,6 +15,7 @@ public class UserRegisterDTO {
     private String userName;
     private String action;
     private String sessionId;
+    private String gameId;
     private String color;
     private int x;
     private int y;

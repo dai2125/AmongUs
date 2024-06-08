@@ -2,14 +2,13 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { Player } from './Player';
 import React from 'react';
-import role from "./Screens/Role";
-import {User} from "./User";
 
- let sessionId = ""
+let sessionId = ""
 
 interface RegistrationData {
     action?: string | null;
     sessionId?: string;
+    gameId?: string;
     color?: string | null;
     x: number;
     y: number;
@@ -36,9 +35,11 @@ class WebSocketService {
     private crewmateWins: () => void;
     private playerInstance: () => void;
     private kill: () => void;
-    private votingActive: () => void;
+    private votingActive: (deadPlayer) => void;
     private votingNotActive: () => void;
     private ejectMe: () => void;
+    private someoneGotEjected: (ejectedPlayer) => void;
+    private noOneGotEjected: () => void;
 
     constructor(playerRef: React.MutableRefObject<Player>,
                 setOtherPlayers: React.Dispatch<React.SetStateAction<Player[]>>,
@@ -51,9 +52,11 @@ class WebSocketService {
                 crewmateWins: () => void,
                 playerInstance: () => void,
                 kill: () => void,
-                votingActive: () => void,
+                votingActive: (deadPlayer) => void,
                 votingNotActive: () => void,
-                ejectMe: () => void) {
+                ejectMe: () => void,
+                someoneGotEjected: (ejectedPlayer) => void,
+                noOneGotEjected: () => void) {
         this.playerRef = playerRef;
         this.setOtherPlayers = setOtherPlayers;
         this.startTimer = startTimer;
@@ -68,6 +71,8 @@ class WebSocketService {
         this.votingActive = votingActive;
         this.votingNotActive = votingNotActive;
         this.ejectMe = ejectMe;
+        this.someoneGotEjected = someoneGotEjected;
+        this.noOneGotEjected = noOneGotEjected;
     }
 
 
@@ -87,6 +92,7 @@ class WebSocketService {
                         playerRef.current.getUserName(),
                         registrationData.action ?? '',
                         registrationData.sessionId ?? '',
+                        registrationData.gameId ?? '' ,
                         registrationData.color ?? '',
                         registrationData.x ?? 2,
                         registrationData.y ?? 2,
@@ -105,6 +111,7 @@ class WebSocketService {
                     registrationData.userName ?? '',
                     registrationData.action ?? '',
                     registrationData.sessionId ?? '',
+                    registrationData.gameId ?? '',
                     registrationData.color ?? '',
                     registrationData.x  ,
                     registrationData.y  ,
@@ -114,7 +121,7 @@ class WebSocketService {
                     ''
                 )
 
-                if (registrationData.sessionId !== playerRef.current.getSessionId()) {
+                if ((registrationData.sessionId !== playerRef.current.getSessionId()) && (registrationData.gameId === playerRef.current.getGameId())) {
                     setOtherPlayers((prevOtherPlayers) => {
                         const existingPlayer = prevOtherPlayers.find((p) => p.getSessionId() === registrationData.sessionId);
                         if (!existingPlayer) {
@@ -123,11 +130,21 @@ class WebSocketService {
                         return prevOtherPlayers;
                     });
                 }
+
             });
 
             this.sendRegistrationData();
 
+
+
             setTimeout(() => {
+
+                this.client.subscribe(`/topic/startGame/${playerRef.current.getGameId()}`, () => {
+                    this.startTimer();
+                    //this.gimmeWork();
+                    //this.gimmework();
+                });
+
                 this.client.subscribe(`/topic/gimmework/${sessionId}`, (message) => {
 
                     const data = JSON.parse(message.body);
@@ -138,12 +155,56 @@ class WebSocketService {
                     this.playerRef.current.setRole(data.role);
                     this.playerInstance();
                 });
-            }, 1000);
 
+                this.client.subscribe(`/topic/kill/${playerRef.current.getUserName()}`, () => {
+                    this.kill();
+                });
+
+                this.client.subscribe(`/topic/dead/${playerRef.current.getUserName()}`, () => {
+                    // TODO display Screen
+                    // TODO Dead Body stays on the x y coordinate
+                    console.log('You are dead now');
+                    playerRef.current.setMovable(false);
+                    playerRef.current.setColor("dead");
+                    this.dead();
+                    // playerRef.current.setImage(deadPlayer.image);
+                });
+
+                this.client.subscribe(`/topic/someoneGotKilled/${playerRef.current.getGameId()}`, (message) => {
+
+                    const deadPlayer = JSON.parse(message.body);
+
+                    setOtherPlayers((prevOtherPlayers) => {
+                        const updatedPlayers = prevOtherPlayers.map((p) => {
+                            if (p.getSessionId() === deadPlayer) {
+                                // Update existing player's positions
+                                p.setColor('dead');
+                            }
+                            return p;
+                        });
+                        return updatedPlayers;
+                    });
+                    // playerRef.current.setImage(deadPlayer.image);
+                });
+
+                this.client.subscribe(`/topic/taskResolved/${playerRef.current.getGameId()}`, () => {
+                    this.updateTasks();
+                });
+
+                this.client.subscribe(`/topic/crewmateWins/${playerRef.current.getGameId()}`, () => {
+                    // TODO
+                    this.crewmateWins();
+                });
+
+                this.client.subscribe(`/topic/impostorWins/${playerRef.current.getGameId()}`, () => {
+                    // TODO
+                    this.impostorWins();
+                });
+            }, 500);
 
             setTimeout(() => {
                 this.gimmeWork();
-            }, 1000);
+            }, 500);
 
 
             this.client.subscribe('/topic/disconnected/', (message) => {
@@ -154,6 +215,15 @@ class WebSocketService {
                     return prevOtherPlayers.filter((p) => p.getSessionId() !== disconnectedPlayerID);
                 });
             })
+
+            // this.client.subscribe(`/topic/disconnected/${playerRef.current.getUserName()}`, () => {
+            //     setOtherPlayers([]);
+            // });
+            //
+            // this.client.disconnect(() => {
+            //     setOtherPlayers([]);
+            // });
+
             this.client.subscribe(`/topic/movement/${playerRef.current.getUserName()}`, (message) => {
                 const movementData = JSON.parse(message.body);
 
@@ -186,57 +256,10 @@ class WebSocketService {
             })
 
 
-            this.client.subscribe('/topic/startGame/', () => {
-                this.startTimer();
-                //this.gimmeWork();
-                //this.gimmework();
-            });
-
-            this.client.subscribe(`/topic/task/${playerRef.current.getUserName()}`, () => {
-                this.updateTasks();
-            });
-
-            this.client.subscribe(`/topic/dead/${playerRef.current.getUserName()}`, () => {
-                // TODO display Screen
-                // TODO Dead Body stays on the x y coordinate
-                console.log('You are dead now');
-                playerRef.current.setMovable(false);
-                playerRef.current.setColor("dead");
-                this.dead();
-                // playerRef.current.setImage(deadPlayer.image);
-            });
-
-            this.client.subscribe(`/topic/kill/${playerRef.current.getUserName()}`, () => {
-                this.kill();
-            });
-
             // this.client.subscribe(`/topic/someoneGotKilled/${playerRef.current.getUserName()}`, (message) => {
-            this.client.subscribe('/topic/someoneGotKilled/', (message) => {
 
-                const deadPlayer = JSON.parse(message.body);
 
-                setOtherPlayers((prevOtherPlayers) => {
-                    const updatedPlayers = prevOtherPlayers.map((p) => {
-                        if (p.getSessionId() === deadPlayer) {
-                            // Update existing player's positions
-                            p.setColor('dead');
-                        }
-                        return p;
-                    });
-                    return updatedPlayers;
-                });
-                // playerRef.current.setImage(deadPlayer.image);
-            });
 
-            this.client.subscribe(`/topic/impostorWins/`, () => {
-                // TODO
-                this.impostorWins();
-            });
-
-            this.client.subscribe(`/topic/crewmateWins/`, () => {
-                // TODO
-                this.crewmateWins();
-            });
 
             this.client.subscribe(`/topic/gimmework/${playerRef.current.getUserName()}`, (message) => {
 
@@ -263,10 +286,11 @@ class WebSocketService {
                 }
             });
 
-            this.client.subscribe('/topic/votingActive/', () => {
+            this.client.subscribe('/topic/votingActive/', (message) => {
                 // TODO player who called the report and the dead player must be in the parameters
+                const deadPlayer = JSON.parse(message.body);
                 playerRef.current.setMovable(false);
-                this.votingActive();
+                this.votingActive(deadPlayer);
                 // this.reportButtonPressed = true;
             });
 
@@ -278,7 +302,27 @@ class WebSocketService {
 
             this.client.subscribe(`/topic/ejected/${playerRef.current.getUserName()}`, () => {
                 this.ejectMe();
+                // this.client.unsubscribe('/topic/someoneGotEjected/');
             });
+
+            this.client.subscribe('/topic/someoneGotEjected/', (message) => {
+                const ejectedPlayer = JSON.parse(message.body);
+
+                if(ejectedPlayer === playerRef.current.getUserName()) {
+                    setOtherPlayers([]);
+                    this.ejectMe();
+                } else {
+                    this.someoneGotEjected(ejectedPlayer);
+                    setOtherPlayers((prevOtherPlayers) => {
+                        return prevOtherPlayers.filter((p) => p.getUserName() !== ejectedPlayer);
+                    });
+                }
+            });
+
+            this.client.subscribe('/topic/noOneGotEjected/', () => {
+                this.noOneGotEjected();
+            });
+
 
 
         }, (error) => {
@@ -293,6 +337,7 @@ class WebSocketService {
                 'userName': player.getUserName(),
                 'action': player.getAction(),
                 'sessionId': player.getSessionId(),
+                'gameId': player.getGameId(),
                 'color': player.getColor(),
                 'x': player.getX(),
                 'y': player.getY()
@@ -313,6 +358,7 @@ class WebSocketService {
                 userName: player.getUserName(),
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
+                gameId: player.getGameId(),
                 color: player.getColor(),
                 x: player.getX(),
                 y: player.getY()
@@ -382,6 +428,7 @@ class WebSocketService {
                 userName: player.getUserName(),
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
+                gameId: player.getGameId(),
                 color: player.getColor(),
                 x: player.getX(),
                 y: player.getY()
@@ -400,6 +447,7 @@ class WebSocketService {
                 userName: player.getUserName(),
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
+                gameId: player.getGameId(),
                 color: player.getColor(),
                 x: xPosTask,
                 y: yPosTask
@@ -417,6 +465,7 @@ class WebSocketService {
                 userName: player.getUserName(),
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
+                gameId: player.getGameId(),
                 color: player.getColor(),
                 x: player.getX(),
                 y: player.getY()
@@ -436,6 +485,7 @@ class WebSocketService {
                 userName: player.getUserName(),
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
+                gameId: player.getGameId(),
                 color: player.getColor(),
                 x: player.getX(),
                 y: player.getY()
@@ -455,12 +505,33 @@ class WebSocketService {
                 userName: player.getUserName(),
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
+                gameId: player.getGameId(),
                 color: player.getColor(),
                 x: player.getX(),
                 y: player.getY(),
             });
 
             this.client.send(`/app/votingButtonPressed/${player.getUserName()}`, {}, payload);
+        }
+    }
+
+    sendTaskResolved(task: string, xPosTask: number, yPosTask: number) {
+        if (this.client) {
+            const player = this.playerRef.current;
+            player.setAction(task);
+
+            const payload = JSON.stringify({
+                userName: player.getUserName(),
+                action: player.getAction(),
+                sessionId: player.getSessionId(),
+                gameId: player.getGameId(),
+                color: player.getColor(),
+                x: player.getX(),
+                y: player.getY(),
+            });
+
+            this.client.send(`/app/taskResolved/`, {}, payload);
+            //this.client.send(`/app/movement/${player.getSessionId()}`, {}, payload);
         }
     }
 }
