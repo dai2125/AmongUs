@@ -110,7 +110,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentMiniGame, setCurrentMiniGame] = useState<React.ReactNode>(null);
 
-    const [isQuit, setQuit]= useState(false);
 
 
     useEffect(() => {
