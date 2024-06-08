@@ -122,19 +122,6 @@ public class MovementController {
 //        }
 //    }
 
-    @MessageMapping("movement/east/{userName}")
-    public void processMovementEast(@Payload User user) throws JsonProcessingException {
-        System.out.println("USER: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-
-        messagingTemplate.convertAndSend("/topic/movement/north/" + user.getUserName(), new ObjectMapper().writeValueAsString(movementService.wallCollisionEast(user)));
-
-//        if(movementService.wallEast(user)) {
-//            registerService.updatePlayerPosition(user);
-//            UserMovementDTO userMovementDTO = new UserMovementDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX() + 1, user.getY());
-//            messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(userMovementDTO));
-//        messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementService.wallEast(user)));
-//        }
-    }
 
 
 
@@ -194,7 +181,7 @@ public class MovementController {
 
     @MessageMapping("/reportButtonPressed/{userName}")
     public void reportButtonPressed(@Payload User user) throws JsonProcessingException {
-        messagingTemplate.convertAndSend("/topic/votingActive/", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
+        messagingTemplate.convertAndSend("/topic/votingActive/", new ObjectMapper().writeValueAsString((user.getUserName())));
     }
 
     public HashMap<String, Integer> votingList = new HashMap<>();

@@ -2,10 +2,8 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import { Player } from './Player';
 import React from 'react';
-import role from "./Screens/Role";
-import {User} from "./User";
 
- let sessionId = ""
+let sessionId = ""
 
 interface RegistrationData {
     action?: string | null;
@@ -37,7 +35,7 @@ class WebSocketService {
     private crewmateWins: () => void;
     private playerInstance: () => void;
     private kill: () => void;
-    private votingActive: () => void;
+    private votingActive: (deadPlayer) => void;
     private votingNotActive: () => void;
     private ejectMe: () => void;
     private someoneGotEjected: (ejectedPlayer) => void;
@@ -54,7 +52,7 @@ class WebSocketService {
                 crewmateWins: () => void,
                 playerInstance: () => void,
                 kill: () => void,
-                votingActive: () => void,
+                votingActive: (deadPlayer) => void,
                 votingNotActive: () => void,
                 ejectMe: () => void,
                 someoneGotEjected: (ejectedPlayer) => void,
@@ -281,10 +279,11 @@ class WebSocketService {
                 }
             });
 
-            this.client.subscribe('/topic/votingActive/', () => {
+            this.client.subscribe('/topic/votingActive/', (message) => {
                 // TODO player who called the report and the dead player must be in the parameters
+                const deadPlayer = JSON.parse(message.body);
                 playerRef.current.setMovable(false);
-                this.votingActive();
+                this.votingActive(deadPlayer);
                 // this.reportButtonPressed = true;
             });
 

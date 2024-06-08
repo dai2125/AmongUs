@@ -26,11 +26,16 @@ import playerImageDown2 from '../Images/Character_Red_Movement/Red_South_Right.p
 import Votingbox from "../GameComponents/Votingbox";
 import votingboxButton from '../Images/Votingbox/report_player.png';
 
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+
 import skeldImage from '../Images/Maps/Skeld.png';
 import '../CSS/MapGrid.css';
+import {Player} from "../Player";
+import currentPlayers from "../CurrentPlayers";
 
 interface MapGridProps {
-    currentPlayer: any;
+    currentPlayer: Player;
     otherPlayers: any[];
     reportButtonClicked: () => void;
 }
@@ -60,8 +65,9 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [scrollPosition, setScrollPosition] = useState({x: 0, y: 0});
     const [gridKey, setGridKey] = useState(0);
     const containerRef = useRef(null);
-    const [playerDirection, setPlayerDirection] = useState('down');
+    const [playerDirection, setPlayerDirection] = useState('');
     const [showReportButton, setShowReportButton] = useState(false);
+    const [playerPosition, setPlayerPosition] = useState({ x: currentPlayer.getX(), y: currentPlayer.getY() });
 
     useEffect(() => {
         const updateScrollPosition = () => {
@@ -69,8 +75,8 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 const centerX = containerRef.current.offsetWidth / 2;
                 const centerY = containerRef.current.offsetHeight / 2;
 
-                const playerX = currentPlayer.getX() * 30; // Annahme: Jede Zelle ist 30px breit
-                const playerY = currentPlayer.getY() * 30; // Annahme: Jede Zelle ist 30px hoch
+                const playerX = currentPlayer.getX() * 30;
+                const playerY = currentPlayer.getY() * 30;
 
                 containerRef.current.scrollLeft = playerX - centerX;
                 containerRef.current.scrollTop = playerY - centerY;
@@ -82,25 +88,25 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
     const [loadedImage, setLoadedImage] = useState(null);
 
-    useEffect(() => {
-        if (currentPlayer.getAction() === 'ArrowRight' && currentPlayer.getX() % 2 === 0) {
-            setPlayerDirection('right');
-        } else if (currentPlayer.getAction() === 'ArrowRight' && currentPlayer.getX() % 2 !== 0) {
-            setPlayerDirection('right2');
-        } else if (currentPlayer.getAction() === 'ArrowLeft' && currentPlayer.getX() % 2 === 0) {
-            setPlayerDirection('left');
-        } else if (currentPlayer.getAction() === 'ArrowLeft' && currentPlayer.getX() % 2 !== 0) {
-            setPlayerDirection('left2');
-        } else if (currentPlayer.getAction() === 'ArrowDown' && currentPlayer.getY() % 2 === 0) {
-            setPlayerDirection('down');
-        } else if (currentPlayer.getAction() === 'ArrowDown' && currentPlayer.getY() % 2 !== 0) {
-            setPlayerDirection('down2');
-        } else if (currentPlayer.getAction() === 'ArrowUp' && currentPlayer.getY() % 2 === 0) {
-            setPlayerDirection('up');
-        } else if (currentPlayer.getAction() === 'ArrowUp' && currentPlayer.getY() % 2 !== 0) {
-            setPlayerDirection('up2');
-        }
-    }, [currentPlayer.getX(), currentPlayer.getY()]);
+    // useEffect(() => {
+    //     if (currentPlayer.getAction() === 'ArrowRight' && currentPlayer.getX() % 2 === 0) {
+    //         setPlayerDirection('right');
+    //     } else if (currentPlayer.getAction() === 'ArrowRight' && currentPlayer.getX() % 2 !== 0) {
+    //         setPlayerDirection('right2');
+    //     } else if (currentPlayer.getAction() === 'ArrowLeft' && currentPlayer.getX() % 2 === 0) {
+    //         setPlayerDirection('left');
+    //     } else if (currentPlayer.getAction() === 'ArrowLeft' && currentPlayer.getX() % 2 !== 0) {
+    //         setPlayerDirection('left2');
+    //     } else if (currentPlayer.getAction() === 'ArrowDown' && currentPlayer.getY() % 2 === 0) {
+    //         setPlayerDirection('down');
+    //     } else if (currentPlayer.getAction() === 'ArrowDown' && currentPlayer.getY() % 2 !== 0) {
+    //         setPlayerDirection('down2');
+    //     } else if (currentPlayer.getAction() === 'ArrowUp' && currentPlayer.getY() % 2 === 0) {
+    //         setPlayerDirection('up');
+    //     } else if (currentPlayer.getAction() === 'ArrowUp' && currentPlayer.getY() % 2 !== 0) {
+    //         setPlayerDirection('up2');
+    //     }
+    // }, [currentPlayer.getX(), currentPlayer.getY()]);
 
     useEffect(() => {
         let imageSrc;
@@ -277,6 +283,183 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const handleButtonPress = () => {
         reportButtonClicked();
     }
+
+    // const [currentPlayer2, setCurrentPlayer] = useState({
+    //     getX: () => 0,
+    //     getY: () => 0,
+    //     getMovable: () => true,
+    //     getSessionId: () => "sessionId",
+    //     getUserName: () => "username",
+    //     getColor: () => "red",
+    //     setX: (x) => { /* setze X-Koordinate */ },
+    //     setY: (y) => { /* setze Y-Koordinate */ }
+    // });
+
+    // function updatePlayerPosition(newX, newY) {
+    //     setCurrentPlayer(prevPlayer => ({
+    //         ...prevPlayer,
+    //         getX: () => newX,
+    //         getY: () => newY
+    //     }));
+    // }
+
+    useEffect(() => {
+        const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
+        const client = Stomp.over(socket);
+        client.connect({}, () => {
+            client.subscribe(`/topic/movement/north/${currentPlayer.getUserName()}`, (message) => {
+                const response = JSON.parse(message.body);
+                console.log('movement north: ')
+                currentPlayer.setX(response.x);
+                currentPlayer.setY(response.y);
+                setPlayerPosition({ x: response.x, y: response.y });
+                if (currentPlayer.getY() % 2 === 0) {
+                    setPlayerDirection('up');
+                } else if (currentPlayer.getY() % 2 !== 0) {
+                    setPlayerDirection('up2');
+                }
+
+
+            });
+
+            client.subscribe(`/topic/movement/south/${currentPlayer.getUserName()}`, (message) => {
+                const response = JSON.parse(message.body);
+                console.log('movement south: ')
+                console.log('response: ', response.x, response.y)
+                currentPlayer.setX(response.x);
+                currentPlayer.setY(response.y);
+                setPlayerPosition({ x: response.x, y: response.y });
+                if (currentPlayer.getY() % 2 === 0) {
+                    setPlayerDirection('down');
+                } else if (currentPlayer.getY() % 2 !== 0) {
+                    setPlayerDirection('down2');
+                }
+
+            });
+
+            client.subscribe(`/topic/movement/west/${currentPlayer.getUserName()}`, (message) => {
+                const response = JSON.parse(message.body);
+                console.log('movement west: ')
+                currentPlayer.setX(response.x);
+                currentPlayer.setY(response.y);
+                setPlayerPosition({ x: response.x, y: response.y });
+                // setPlayerDirection('left');
+                if (currentPlayer.getY() % 2 === 0) {
+                    setPlayerDirection('left');
+                } else if (currentPlayer.getY() % 2 !== 0) {
+                    setPlayerDirection('left2');
+                }
+
+            });
+
+            client.subscribe(`/topic/movement/east/${currentPlayer.getUserName()}`, (message) => {
+                const response = JSON.parse(message.body);
+                console.log('movement east: ')
+                currentPlayer.setX(response.x);
+                currentPlayer.setY(response.y);
+                setPlayerPosition({ x: response.x, y: response.y });
+                if (currentPlayer.getX() % 2 === 0) {
+                    setPlayerDirection('left');
+                } else if (currentPlayer.getX() % 2 !== 0) {
+                    setPlayerDirection('left2');
+                }
+
+            });
+        });
+
+        const handleMove = (event: string) => {
+            switch (event) {
+                case 'ArrowUp':
+                    sendMovementNorth();
+                    break;
+                case 'ArrowDown':
+                    sendMovementSouth();
+                    break;
+                case 'ArrowLeft':
+                    sendMovementWest();
+                    break;
+                case 'ArrowRight':
+                    sendMovementEast();
+                    break;
+                default:
+                    break;
+            }
+        };
+
+        function sendMovementNorth() {
+            if(!currentPlayer.getMovable()) {
+                return;
+            } else {
+                const payload = JSON.stringify({
+                    userName: currentPlayer.getUserName(),
+                    action: currentPlayer.getAction(),
+                    sessionId: currentPlayer.getSessionId(),
+                    color: currentPlayer.getColor(),
+                    x: currentPlayer.getX(),
+                    y: currentPlayer.getY()
+                });
+                client.send(`/app/movement/north/${currentPlayer.getUserName()}`, {}, payload);
+            }
+        }
+
+        function sendMovementSouth() {
+            if(!currentPlayer.getMovable()) {
+                return;
+            } else {
+                const payload = JSON.stringify({
+                    userName: currentPlayer.getUserName(),
+                    action: currentPlayer.getAction(),
+                    sessionId: currentPlayer.getSessionId(),
+                    color: currentPlayer.getColor(),
+                    x: currentPlayer.getX(),
+                    y: currentPlayer.getY()
+                });
+                client.send(`/app/movement/south/${currentPlayer.getUserName()}`, {}, payload);
+            }
+        }
+
+        function sendMovementWest() {
+            if(!currentPlayer.getMovable()) {
+                return;
+            } else {
+                const payload = JSON.stringify({
+                    userName: currentPlayer.getUserName(),
+                    action: currentPlayer.getAction(),
+                    sessionId: currentPlayer.getSessionId(),
+                    color: currentPlayer.getColor(),
+                    x: currentPlayer.getX(),
+                    y: currentPlayer.getY()
+                });
+                client.send(`/app/movement/west/${currentPlayer.getUserName()}`, {}, payload);
+            }
+        }
+
+        function sendMovementEast() {
+            if(!currentPlayer.getMovable()) {
+                return;
+            } else {
+                const payload = JSON.stringify({
+                    userName: currentPlayer.getUserName(),
+                    action: currentPlayer.getAction(),
+                    sessionId: currentPlayer.getSessionId(),
+                    color: currentPlayer.getColor(),
+                    x: currentPlayer.getX(),
+                    y: currentPlayer.getY()
+                });
+                client.send(`/app/movement/east/${currentPlayer.getUserName()}`, {}, payload);
+            }
+        }
+
+        window.addEventListener('keydown', (event) => {
+            handleMove(event.key);
+        });
+
+        return () => {
+            window.removeEventListener('keydown', (event) => {
+                handleMove(event.key);
+            });
+        };
+    }, [currentPlayer]);
 
     return (
         <div ref={containerRef} style={{

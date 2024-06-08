@@ -21,7 +21,7 @@ import DefeatImpostor from "./Screens/DefeatImpostor";
 import DefeatCrewmate from "./Screens/DefeatCrewmate";
 import Votingbox from "./GameComponents/Votingbox";
 import YouKilledACrewmate from "./YouKilledACrewmate";
-
+import VotingActive from "./GameComponents/VotingActive";
 
 import GuessTheNumberMiniGame from './Minigame/GuessTheNumber/GuessTheNumberMiniGame';
 import DownloadMiniGame from './Minigame/DownloadMiniGame/DownloadMiniGame';
@@ -106,6 +106,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [showOtherPlayerEjected, setShowOtherPlayerEjected] = useState(false);
     const [ejectedPlayer, setEjectedPlayer] = useState('');
     const [showNoOneGotEjected, setNoOneGotEjected] = useState(false);
+    const [deadPlayer, setDeadPlayer] = useState('');
+    const [showVotingActive, setShowVotingActive] = useState(false);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
     const playerRef = useRef<Player>(new Player(userName, '', '', '', '', 2, 2, '', '', '', ''));
@@ -194,17 +196,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
             taskKill(key);
         } else if (webSocketServiceRef.current) {
             const {current: webSocketService} = webSocketServiceRef;
-            webSocketService.sendMovement(key);
+            // TODO for testing
+            // webSocketService.sendMovement(key);
 
-            // if (key === 'ArrowUp') {
-            //     webSocketService.sendMovementNorth();
-            // } else if (key === 'ArrowDown') {
-            //     webSocketService.sendMovementSouth();
-            // } else if (key === 'ArrowLeft') {
-            //     webSocketService.sendMovementWest();
-            // } else if (key === 'ArrowRight') {
-            //     webSocketService.sendMovementEast();
-            // }
         }
     };
 
@@ -357,12 +351,21 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
     }
 
-    const votingActive = () => {
-        setShowVotingbox(true);
+    const votingActive = (deadPlayer) => {
+        if(playerRef.current.getColor() === 'dead') {
+            setShowVotingActive(true);
+        } else {
+            setDeadPlayer(deadPlayer);
+            setShowVotingbox(true);
+        }
     }
 
     const votingNotActive = () => {
-        setShowVotingbox(false);
+        if(playerRef.current.getColor() === 'dead') {
+            setShowVotingActive(false);
+        } else {
+            setShowVotingbox(false);
+        }
     }
 
     const ejectMe = () => {
@@ -430,8 +433,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
 
                             {showVotingbox ?
                             <Votingbox onButtonPress={handleButtonPress} currentPlayer={playerRef.current}
-                                       otherPlayers={otherPlayers} ></Votingbox> : <div></div>
+                                       otherPlayers={otherPlayers} deadPlayer={deadPlayer} ></Votingbox> : <div></div>
                             }
+                            { showVotingActive ? <VotingActive></VotingActive> : <div></div> }
                         </div>
                     </div>
                     {/*<div >{purple}</div>*/}
