@@ -61,6 +61,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [gridKey, setGridKey] = useState(0);
     const containerRef = useRef(null);
     const [playerDirection, setPlayerDirection] = useState('down');
+    const [showReportButton, setShowReportButton] = useState(false);
 
     useEffect(() => {
         const updateScrollPosition = () => {
@@ -78,17 +79,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
         updateScrollPosition();
     }, [currentPlayer.getX(), currentPlayer.getY()]);
-
-    // const playerRef = useRef<HTMLSpanElement>(null);
-    // useEffect(() => {
-    //     if (playerRef.current) {
-    //         playerRef.current.scrollIntoView({
-    //             behavior: 'smooth',
-    //             block: 'center',
-    //             inline: 'center'
-    //         });
-    //     }
-    // }, [currentPlayer.getX(), currentPlayer.getY()]);
 
     const [loadedImage, setLoadedImage] = useState(null);
 
@@ -192,6 +182,15 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         });
     }, [otherPlayers]);
 
+    useEffect(() => {
+        const deadVisiblePlayer = otherPlayers.find(player =>
+            player.getColor() === 'dead' &&
+            isCellVisible(currentPlayer.getX(), currentPlayer.getY(), player.getX(), player.getY())
+        );
+        setShowReportButton(deadVisiblePlayer);
+        // setDeadPlayer(deadVisiblePlayer || null);
+    }, [otherPlayers, currentPlayer]);
+
     const updatePlayerImage = (player) => {
         let newImage;
         if (!player.getMovable()) {
@@ -271,12 +270,11 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const visibilityRadius = 5;
 
     function isCellVisible(playerX, playerY, cellX, cellY) {
-        const distance = Math.sqrt((cellX - playerX) ** 2 + (cellY - playerY) ** 2);
+        const distance = Math.abs(cellX - playerX) + Math.abs(cellY - playerY);
         return distance <= visibilityRadius;
     }
 
-        const handleButtonPress = () => {
-        console.log('MapGrid.tsx: Button Pressed');
+    const handleButtonPress = () => {
         reportButtonClicked();
     }
 
@@ -350,21 +348,21 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 padding: '10px',
                 borderRadius: '5px',
             }}>
-                <button>Button 1</button>
-                <button>Button 2</button>
-                <div>
-                    <button className="w-10 h-10" onClick={handleButtonPress}><img alt="reportButton"
-                    className="w-10 h-10 hover:bg-black"
-                    src={votingboxButton}></img></button>
-                    </div>
-                <h2>Keyboard controlls</h2>
+                { showReportButton ?
+                    <div>
+                        <button className="w-10 h-10" onClick={handleButtonPress}><img alt="reportButton"
+                        className="w-10 h-10 hover:bg-black"
+                        src={votingboxButton}></img></button>
+                    </div> : <div></div>
+                }
+                <h2>Keyboard controls</h2>
                 <p>Up Arrow up</p>
                 <p>Down Arrow Down</p>
                 <p>Left Arrow Left</p>
                 <p>Right Arrow Right</p>
-                <p>Kill W</p>
-                <p>Task E</p>
-                <p>Sabotage E</p>
+                <p>Kill E</p>
+                <p>Task W</p>
+                <p>Sabotage S</p>
 
 
             </div>

@@ -159,7 +159,10 @@ public class MovementController {
     @MessageMapping("/kill/{userName}")
     public void processKill(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
 
-        for(User u : registerService.userList) {
+        System.out.println("KILL: " + user.getUserName() + " " + user.getX() + " " + user.getY() + " gameID: " + user.getGameId() + " " + user.getSessionId() + " " + user.getColor() + " " + user.getAction() + " " + user.getImpostor());
+
+//          User u : registerService.getGroupManager().getGameInstance(registeredUser.getGameId()).getUserList())
+        for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
             if(!u.getSessionId().equals(user.getSessionId())) {
                 if (u.getY() == user.getY() + 1 || u.getY() == user.getY() - 1 || u.getY() == user.getY() && u.getX() == user.getX() + 1 || u.getX() == user.getX() - 1 ||  u.getY() == user.getY()) {
                     messagingTemplate.convertAndSend("/topic/kill/" + user.getUserName(), new ObjectMapper().writeValueAsString("kill"));
@@ -245,6 +248,8 @@ public class MovementController {
             votingActive = false;
             counter = registerService.userList.size();
 
+
+            // TODO if maxKey is the impostor then convertAndSend crewmateWins
             if(registerService.userList.size() == 2) {
                 messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
                 messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));

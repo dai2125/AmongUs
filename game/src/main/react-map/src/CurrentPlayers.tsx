@@ -92,8 +92,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [showRoleImpostor, setShowRoleImpostor] = useState(false);
     const [showThereIsAImpostorAmoungUs, setShowThereIsAImpostorAmoungUs] = useState(false);
     const [completedTasksCount, setCompletedTasksCount] = useState(0);
-    const [showLobby, setShowLobby] = useState(false);
-    const [showMap, setShowMap] = useState(true);
+    const [showLobby, setShowLobby] = useState(true);
+    const [showMap, setShowMap] = useState(false);
     const [victoryImpostor, setVictoryImpostor] = useState(false);
     const [defeatImpostor, setDefeatImpostor] = useState(false);
     const [victoryCrewmate, setVictoryCrewmate] = useState(false);
@@ -101,14 +101,14 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [showTaskList, setShowTaskList] = useState(false);
     const [youGotKilled, setYouGotKilled] = useState(false);
     const [showYouKilledACrewmate, setShowYouKilledACrewmate] = useState(false);
-    const [reportButtonPressed, setReportButtonPressed] = useState(false);
+    // const [reportButtonPressed, setReportButtonPressed] = useState(false);
     const [showEjected, setShowEjected] = useState(false);
     const [showOtherPlayerEjected, setShowOtherPlayerEjected] = useState(false);
     const [ejectedPlayer, setEjectedPlayer] = useState('');
     const [showNoOneGotEjected, setNoOneGotEjected] = useState(false);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
-    const playerRef = useRef<Player>(new Player(userName, '', '', '', 2, 2, '', '', '', ''));
+    const playerRef = useRef<Player>(new Player(userName, '', '', '', '', 2, 2, '', '', '', ''));
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentMiniGame, setCurrentMiniGame] = useState<React.ReactNode>(null);
@@ -459,7 +459,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                             </Modal>
                         </div>
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
-                            {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
+                            {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []} reportButtonClicked={reportButtonClicked}/> :
                                 <div></div>}
                         </div>
                         {/*<div>*/}
