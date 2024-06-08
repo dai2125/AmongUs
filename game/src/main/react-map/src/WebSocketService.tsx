@@ -156,6 +156,37 @@ class WebSocketService {
                     this.playerInstance();
                 });
 
+                this.client.subscribe(`/topic/kill/${playerRef.current.getUserName()}`, () => {
+                    this.kill();
+                });
+
+                this.client.subscribe(`/topic/dead/${playerRef.current.getUserName()}`, () => {
+                    // TODO display Screen
+                    // TODO Dead Body stays on the x y coordinate
+                    console.log('You are dead now');
+                    playerRef.current.setMovable(false);
+                    playerRef.current.setColor("dead");
+                    this.dead();
+                    // playerRef.current.setImage(deadPlayer.image);
+                });
+
+                this.client.subscribe(`/topic/someoneGotKilled/${playerRef.current.getGameId()}`, (message) => {
+
+                    const deadPlayer = JSON.parse(message.body);
+
+                    setOtherPlayers((prevOtherPlayers) => {
+                        const updatedPlayers = prevOtherPlayers.map((p) => {
+                            if (p.getSessionId() === deadPlayer) {
+                                // Update existing player's positions
+                                p.setColor('dead');
+                            }
+                            return p;
+                        });
+                        return updatedPlayers;
+                    });
+                    // playerRef.current.setImage(deadPlayer.image);
+                });
+
                 this.client.subscribe(`/topic/taskResolved/${playerRef.current.getGameId()}`, () => {
                     this.updateTasks();
                 });
@@ -163,6 +194,11 @@ class WebSocketService {
                 this.client.subscribe(`/topic/crewmateWins/${playerRef.current.getGameId()}`, () => {
                     // TODO
                     this.crewmateWins();
+                });
+
+                this.client.subscribe(`/topic/impostorWins/${playerRef.current.getGameId()}`, () => {
+                    // TODO
+                    this.impostorWins();
                 });
             }, 500);
 
@@ -220,43 +256,9 @@ class WebSocketService {
             })
 
 
-
-            this.client.subscribe(`/topic/dead/${playerRef.current.getUserName()}`, () => {
-                // TODO display Screen
-                // TODO Dead Body stays on the x y coordinate
-                console.log('You are dead now');
-                playerRef.current.setMovable(false);
-                playerRef.current.setColor("dead");
-                this.dead();
-                // playerRef.current.setImage(deadPlayer.image);
-            });
-
-            this.client.subscribe(`/topic/kill/${playerRef.current.getUserName()}`, () => {
-                this.kill();
-            });
-
             // this.client.subscribe(`/topic/someoneGotKilled/${playerRef.current.getUserName()}`, (message) => {
-            this.client.subscribe('/topic/someoneGotKilled/', (message) => {
 
-                const deadPlayer = JSON.parse(message.body);
 
-                setOtherPlayers((prevOtherPlayers) => {
-                    const updatedPlayers = prevOtherPlayers.map((p) => {
-                        if (p.getSessionId() === deadPlayer) {
-                            // Update existing player's positions
-                            p.setColor('dead');
-                        }
-                        return p;
-                    });
-                    return updatedPlayers;
-                });
-                // playerRef.current.setImage(deadPlayer.image);
-            });
-
-            this.client.subscribe(`/topic/impostorWins/`, () => {
-                // TODO
-                this.impostorWins();
-            });
 
 
             this.client.subscribe(`/topic/gimmework/${playerRef.current.getUserName()}`, (message) => {
@@ -335,6 +337,7 @@ class WebSocketService {
                 'userName': player.getUserName(),
                 'action': player.getAction(),
                 'sessionId': player.getSessionId(),
+                'gameId': player.getGameId(),
                 'color': player.getColor(),
                 'x': player.getX(),
                 'y': player.getY()
@@ -355,6 +358,7 @@ class WebSocketService {
                 userName: player.getUserName(),
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
+                gameId: player.getGameId(),
                 color: player.getColor(),
                 x: player.getX(),
                 y: player.getY()
@@ -443,6 +447,7 @@ class WebSocketService {
                 userName: player.getUserName(),
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
+                gameId: player.getGameId(),
                 color: player.getColor(),
                 x: xPosTask,
                 y: yPosTask
@@ -460,6 +465,7 @@ class WebSocketService {
                 userName: player.getUserName(),
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
+                gameId: player.getGameId(),
                 color: player.getColor(),
                 x: player.getX(),
                 y: player.getY()
@@ -479,6 +485,7 @@ class WebSocketService {
                 userName: player.getUserName(),
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
+                gameId: player.getGameId(),
                 color: player.getColor(),
                 x: player.getX(),
                 y: player.getY()
@@ -498,6 +505,7 @@ class WebSocketService {
                 userName: player.getUserName(),
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
+                gameId: player.getGameId(),
                 color: player.getColor(),
                 x: player.getX(),
                 y: player.getY(),

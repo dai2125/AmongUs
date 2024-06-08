@@ -164,7 +164,7 @@ public class MovementController {
     @MessageMapping("/kill/{userName}")
     public void processKill(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
 
-        System.out.println("KILL: " + user.getUserName() + " " + user.getX() + " " + user.getY() + " gameID: " + user.getGameId() + " " + user.getSessionId() + " " + user.getColor() + " " + user.getAction() + " " + user.getImpostor());
+        System.out.println("KILL: Name" + user.getUserName() + " gameID: " + user.getGameId() + " SessionId" + user.getSessionId() + " " + user.getImpostor());
 
 //          User u : registerService.getGroupManager().getGameInstance(registeredUser.getGameId()).getUserList())
         for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
@@ -173,7 +173,8 @@ public class MovementController {
                     messagingTemplate.convertAndSend("/topic/kill/" + user.getUserName(), new ObjectMapper().writeValueAsString("kill"));
                     messagingTemplate.convertAndSend("/topic/dead/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
 
-                    messagingTemplate.convertAndSend("/topic/someoneGotKilled/", new ObjectMapper().writeValueAsString(u.getSessionId()));
+                    messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
+                    System.out.println("Hello After KILL ");
                 }
             }
             registerService.crewmateDied(u);
