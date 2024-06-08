@@ -181,6 +181,7 @@ public class MovementController {
 
     @MessageMapping("/reportButtonPressed/{userName}")
     public void reportButtonPressed(@Payload User user) throws JsonProcessingException {
+        // TODO wrong name is send, the victim must be send not the reporter
         messagingTemplate.convertAndSend("/topic/votingActive/", new ObjectMapper().writeValueAsString((user.getUserName())));
     }
 

@@ -32,7 +32,6 @@ import Stomp from "stompjs";
 import skeldImage from '../Images/Maps/Skeld.png';
 import '../CSS/MapGrid.css';
 import {Player} from "../Player";
-import currentPlayers from "../CurrentPlayers";
 
 interface MapGridProps {
     currentPlayer: Player;
@@ -68,6 +67,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [playerDirection, setPlayerDirection] = useState('');
     const [showReportButton, setShowReportButton] = useState(false);
     const [playerPosition, setPlayerPosition] = useState({ x: currentPlayer.getX(), y: currentPlayer.getY() });
+    const [otherPlayerPositions, setOtherPlayerPositions] = useState({});
 
     useEffect(() => {
         const updateScrollPosition = () => {
@@ -309,7 +309,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         client.connect({}, () => {
             client.subscribe(`/topic/movement/north/${currentPlayer.getUserName()}`, (message) => {
                 const response = JSON.parse(message.body);
-                console.log('movement north: ')
                 currentPlayer.setX(response.x);
                 currentPlayer.setY(response.y);
                 setPlayerPosition({ x: response.x, y: response.y });
@@ -324,8 +323,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
             client.subscribe(`/topic/movement/south/${currentPlayer.getUserName()}`, (message) => {
                 const response = JSON.parse(message.body);
-                console.log('movement south: ')
-                console.log('response: ', response.x, response.y)
                 currentPlayer.setX(response.x);
                 currentPlayer.setY(response.y);
                 setPlayerPosition({ x: response.x, y: response.y });
@@ -339,7 +336,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
             client.subscribe(`/topic/movement/west/${currentPlayer.getUserName()}`, (message) => {
                 const response = JSON.parse(message.body);
-                console.log('movement west: ')
                 currentPlayer.setX(response.x);
                 currentPlayer.setY(response.y);
                 setPlayerPosition({ x: response.x, y: response.y });
@@ -354,7 +350,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
             client.subscribe(`/topic/movement/east/${currentPlayer.getUserName()}`, (message) => {
                 const response = JSON.parse(message.body);
-                console.log('movement east: ')
                 currentPlayer.setX(response.x);
                 currentPlayer.setY(response.y);
                 setPlayerPosition({ x: response.x, y: response.y });
@@ -365,6 +360,94 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 }
 
             });
+
+            client.subscribe('/topic/movement/north/otherPlayer/', (message) => {
+                const response = JSON.parse(message.body);
+                console.log(response.userName + '  ' + response.sessionId)
+                const existingPlayer = otherPlayers.find(player => player.getUserName() === response.userName);
+                otherPlayers.forEach(player => {
+                    if (player.getUserName() === response.userName) {
+                        player.setX(response.x);
+                        player.setY(response.y);
+                        if (player.getY() % 2 === 0) {
+                            setOtherPlayerPositions('up');
+                        } else if (player.getY() % 2 !== 0) {
+                            setOtherPlayerPositions('up2');
+                        }
+                    }
+                });
+                // if (existingPlayer.getY() % 2 === 0) {
+                //     setPlayerDirection('up');
+                // } else if (existingPlayer.getY() % 2 !== 0) {
+                //     setPlayerDirection('up2');
+                // }
+            });
+
+            client.subscribe('/topic/movement/south/otherPlayer/', (message) => {
+                const response = JSON.parse(message.body);
+                const existingPlayer = otherPlayers.find(player => player.getUserName() === response.userName);
+                otherPlayers.forEach(player => {
+                    if (player.getUserName() === response.userName) {
+                        player.setX(response.x);
+                        player.setY(response.y);
+                        if (player.getY() % 2 === 0) {
+                            setOtherPlayerPositions('down');
+                        } else if (player.getY() % 2 !== 0) {
+                            setOtherPlayerPositions('down2');
+                        }
+                    }
+                });
+                // if (existingPlayer.getY() % 2 === 0) {
+                //     setPlayerDirection('down');
+                // } else if (existingPlayer.getY() % 2 !== 0) {
+                //     setPlayerDirection('down2');
+                // }
+            });
+
+            client.subscribe('/topic/movement/west/otherPlayer/', (message) => {
+                const response = JSON.parse(message.body);
+                const existingPlayer = otherPlayers.find(player => player.getUserName() === response.userName);
+                otherPlayers.forEach(player => {
+                    if (player.getUserName() === response.userName) {
+                        player.setX(response.x);
+                        player.setY(response.y);
+                        if (player.getY() % 2 === 0) {
+                            setOtherPlayerPositions('left');
+                        } else if (player.getY() % 2 !== 0) {
+                            setOtherPlayerPositions('left2');
+                        }
+                    }
+                });
+                // if (existingPlayer.getY() % 2 === 0) {
+                //     setPlayerDirection('left');
+                // } else if (existingPlayer.getY() % 2 !== 0) {
+                //     setPlayerDirection('left2');
+                // }
+
+            });
+
+            client.subscribe('/topic/movement/east/otherPlayer/', (message) => {
+                const response = JSON.parse(message.body);
+                const existingPlayer = otherPlayers.find(player => player.getUserName() === response.userName);
+                otherPlayers.forEach(player => {
+                    if (player.getUserName() === response.userName) {
+                        player.setX(response.x);
+                        player.setY(response.y);
+                        if (player.getX() % 2 === 0) {
+                            setOtherPlayerPositions('left');
+                        } else if (player.getX() % 2 !== 0) {
+                            setOtherPlayerPositions('left2');
+                        }
+                    }
+                });
+                // if (existingPlayer.getX() % 2 === 0) {
+                //     setPlayerDirection('left');
+                // } else if (existingPlayer.getX() % 2 !== 0) {
+                //     setPlayerDirection('left2');
+                // }
+            });
+
+
         });
 
         const handleMove = (event: string) => {
