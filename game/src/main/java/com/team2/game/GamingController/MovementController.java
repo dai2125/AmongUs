@@ -71,7 +71,7 @@ public class MovementController {
             if(registerService.startGame && !registerService.sendAlready) {
                 try {
                     // Sleep for a specified duration, e.g., 2 seconds (2000 milliseconds)
-                    Thread.sleep(500);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     // Handle the interruption
                     Thread.currentThread().interrupt();
