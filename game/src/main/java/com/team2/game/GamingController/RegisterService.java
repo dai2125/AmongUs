@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class RegisterService {
@@ -23,9 +24,13 @@ public class RegisterService {
     public boolean startGame = false;
     public boolean sendAlready = false;
     private int random;
+    private String gameID;
 
     private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
 
+
+    @Autowired
+    private GameInstance gameInstance;
 
     @Autowired
     private GroupManager groupManager;
@@ -36,36 +41,49 @@ public class RegisterService {
     public UserRegisterDTO registerUser(User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
         try {
             if (userList.size() == 0) {
-                random = (int) (Math.random() * groupManager.getGroupSize())+1;
+                sendAlready = false;
+                startGame = false;
+                //TODO create new game instance ang give gameId.
+                gameID = groupManager.createNewGame();
+
+                random = (int) (Math.random() * groupManager.getGameInstance(gameID).getGroupSize())+1;
                 System.out.println("the imposter will be the " + random);
             }
 
+            //TODO retrieve the game instance from the group manager
+            gameInstance = groupManager.getGameInstance(gameID);
 
             UserRegisterDTO userRegisterDTO  = new UserRegisterDTO();
-            if (!groupManager.groupIsFull()){
+            if (!gameInstance.groupIsFull()){
                 initializeUser(user, simpMessageHeaderAccessor);
                 userList.add(user);
+                userRegisterDTO.setUserName(user.getUserName());
                 userRegisterDTO.setAction(user.getAction());
                 userRegisterDTO.setSessionId(user.getSessionId());
                 userRegisterDTO.setColor(user.getColor());
                 userRegisterDTO.setX(user.getX());
                 userRegisterDTO.setY(user.getY());
+                //TODO set the game id for this user
+                userRegisterDTO.setGameId(user.getGameId());
                 resetCounter(counter);
 
                 if (userList.size() == random){
                     user.setImpostor();
                 }
-                groupManager.addToTheGroup(user);
-                groupManager.distributeTask(user);
+                gameInstance.addToTheGroup(user);
+                gameInstance.distributeTask(user);
             }
+            System.out.println("this users id is : " + userRegisterDTO.getSessionId() + "and he belongs to game with id: " + gameID);
 
-            if(groupManager.groupIsFull() && !sendAlready) {
+            if(gameInstance.groupIsFull() && !sendAlready) {
                 //groupManager.setTheImposter();
                 /*for (User u : userList){
                     groupManager.distributeTask(u.getSessionId());
                 }*/
                 //groupManager.distributeTask(u.getSessionId());
                 startGame = true;
+                userList.clear();
+
             }
 
             return userRegisterDTO;
@@ -74,6 +92,13 @@ public class RegisterService {
             logger.error("An unexpected error occurred while registering User: {}", e.getMessage());
             return null;
         }
+    }
+    public GroupManager getGroupManager() {
+        return groupManager;
+    }
+
+    public boolean isGroupFull(){
+        return gameInstance.groupIsFull();
     }
 
 
@@ -88,18 +113,17 @@ public class RegisterService {
             user.setUserName(user.getUserName());
             user.setAction("null");
             user.setUserId(simpMessageHeaderAccessor.getSessionId());
+            user.setGameId(gameID);
 //            user.setColor(colors[counter++]);
-            user.setY(r.nextInt(5) + 2);
-            user.setX(r.nextInt(5) + 2);
-//            user.setY(r.nextInt(14) + 2);
-//            user.setX(r.nextInt(11) + 35);
-//            user.setY(10);
-//            user.setX(31);
+//            user.setY(r.nextInt(5) + 2);
+//            user.setX(r.nextInt(5) + 2);
+            user.setY(10);
+            user.setX(31);
         }
     }
 
     public TaskDTO getTask() {
-        return groupManager.getTask();
+        return gameInstance.getTask();
     }
 
     public void updatePlayerPosition(User user) {
@@ -112,7 +136,7 @@ public class RegisterService {
     }
 
     public boolean groupIsFull() {
-        if(groupManager.groupIsFull()) {
+        if(gameInstance.groupIsFull()) {
             return true;
         }
         return false;
@@ -120,20 +144,32 @@ public class RegisterService {
     public UserRegisterDTO disconnectUser(String sessionId) throws UserNotFoundException {
         for (User u : userList) {
             if (u.getSessionId().equals(sessionId)) {
-                UserRegisterDTO userRegisterDTO = new UserRegisterDTO(u.getUserName(), u.getAction(), u.getSessionId(), u.getColor(), u.getX(), u.getY());
+                UserRegisterDTO userRegisterDTO = new UserRegisterDTO(u.getUserName(), u.getAction(), u.getSessionId(),u.getGameId(), u.getColor(), u.getX(), u.getY());
                 userList.remove(u);
-                groupManager.removeFromTheGroup(u);
+                gameInstance.removeFromTheGroup(u);
                 return userRegisterDTO;
             }
         }
         throw new UserNotFoundException("User with sessionId " + sessionId + " not found");
     }
 
+    public UserRegisterDTO ejectUser(String userName) {
+        for (User u : userList) {
+            if (u.getUserName().equals(userName)) {
+                UserRegisterDTO userRegisterDTO = new UserRegisterDTO(u.getUserName(), u.getAction(), u.getSessionId(), u.getGameId(), u.getColor(), u.getX(), u.getY());
+                userList.remove(u);
+                groupManager.getGameInstance(gameID).removeFromTheGroup(u);
+                return userRegisterDTO;
+            }
+        }
+        return null;
+    }
+
     public void playerDisconnected(String sessionId) {
         for (User u : userList) {
             if(u.getSessionId().equals(sessionId)) {
                 userList.remove(u);
-                groupManager.removePlayerFromList(u);
+                gameInstance.removePlayerFromList(u);
             }
         }
         System.out.println("User disconnected: " + sessionId);
@@ -141,26 +177,26 @@ public class RegisterService {
     }
 
     public boolean areAllCrewmatesDead() {
-        if(groupManager.allCrewmatesAreDead()) {
+        if(gameInstance.allCrewmatesAreDead()) {
             return true;
         }
         return false;
     }
 
     public boolean allTasksAreSolved() {
-        if(groupManager.allTasksAreSolved()) {
+        if(gameInstance.allTasksAreSolved()) {
             return true;
         }
         return false;
     }
 
     public void removeTask(String task) {
-        groupManager.removeTask(task);
+        gameInstance.removeTask(task);
     }
 
     public void crewmateDied(User user) {
-        groupManager.removePlayerFromList(user);
-        if (groupManager.getUserList().size() == 1) {
+        gameInstance.removePlayerFromList(user);
+        if (gameInstance.getUserList().size() == 1) {
             System.out.println("IMPOSTOR WINS");
         }
     }
@@ -170,4 +206,9 @@ public class RegisterService {
             super(message);
         }
     }
+
+    public boolean taskResolved(String gameID){
+        return groupManager.getGameInstance(gameID).taskResolved();
+    }
+
 }

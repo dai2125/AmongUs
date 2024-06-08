@@ -4,13 +4,9 @@ import com.team2.game.DataModel.User;
 //import com.example.messagingstompwebsocket.chat.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.team2.game.DataTransferObject.UserMovementDTO;
-import com.team2.game.WebConfiguration.RabbitMQConfig;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.event.EventListener;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -43,7 +39,7 @@ public class MovementController {
 
     private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
     @Autowired
-    private GroupManager groupManager;
+    private GameInstance gameInstance;
 
     @EventListener
     public void sessionConnectEvent(SessionConnectEvent event) throws InterruptedException, JsonProcessingException {
@@ -66,21 +62,48 @@ public class MovementController {
     @SendTo("/topic/register/")
     public void register(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
 
-        System.out.println("Hello from register");
-            messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(registerService.registerUser(user, simpMessageHeaderAccessor)));
+        UserRegisterDTO registeredUser = registerService.registerUser(user, simpMessageHeaderAccessor);
+        messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(registeredUser));
 
-        /*TaskDTO task = registerService.getTask();
-        System.out.println("GGGG" + task.getRole());
-        messagingTemplate.convertAndSend("/topic/gimmework/" + user.getUserName(), new ObjectMapper().writeValueAsString(task));*/
-
-        for(User u : registerService.userList) {
+        for(User u : registerService.getGroupManager().getGameInstance(registeredUser.getGameId()).getUserList()) {
                 messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(u));
             }
             if(registerService.startGame && !registerService.sendAlready) {
-                messagingTemplate.convertAndSend("/topic/startGame/", "test");
+                try {
+                    // Sleep for a specified duration, e.g., 2 seconds (2000 milliseconds)
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    // Handle the interruption
+                    Thread.currentThread().interrupt();
+                    // Log or handle the exception as necessary
+                    System.out.println("Thread was interrupted: " + e.getMessage());
+                }
+                messagingTemplate.convertAndSend("/topic/startGame/" + user.getGameId(), "test");
 
                 registerService.sendAlready = true;
             }
+    }
+
+    @MessageMapping("/taskResolved/")
+    public void taskResolved(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+        System.out.println("Hello from taskResolved " + user.getGameId());
+        boolean crewmatesWon = registerService.taskResolved(user.getGameId());
+        if (crewmatesWon){
+            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
+            messagingTemplate.convertAndSend("/topic/crewmateWins/" + user.getGameId(), crewmatesWon);
+        }else {
+            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
+            System.out.println("Hello after sending task resolved");
+        }
+
+    }
+
+
+    @MessageMapping("/tryConnect/")
+    public void tryConnect() throws JsonProcessingException {
+        System.out.println("Hello from tryConnect");
+        messagingTemplate.convertAndSend("/topic/tryConnect/", gameInstance.groupIsFull());
+
     }
 
     @MessageMapping("/gimmework/")
@@ -117,19 +140,6 @@ public class MovementController {
 //        }
 //    }
 
-    @MessageMapping("movement/east/{userName}")
-    public void processMovementEast(@Payload User user) throws JsonProcessingException {
-        System.out.println("USER: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-
-        messagingTemplate.convertAndSend("/topic/movement/north/" + user.getUserName(), new ObjectMapper().writeValueAsString(movementService.wallCollisionEast(user)));
-
-//        if(movementService.wallEast(user)) {
-//            registerService.updatePlayerPosition(user);
-//            UserMovementDTO userMovementDTO = new UserMovementDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX() + 1, user.getY());
-//            messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(userMovementDTO));
-//        messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementService.wallEast(user)));
-//        }
-    }
 
 
 
@@ -154,13 +164,17 @@ public class MovementController {
     @MessageMapping("/kill/{userName}")
     public void processKill(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
 
-        for(User u : registerService.userList) {
+        System.out.println("KILL: Name" + user.getUserName() + " gameID: " + user.getGameId() + " SessionId" + user.getSessionId() + " " + user.getImpostor());
+
+//          User u : registerService.getGroupManager().getGameInstance(registeredUser.getGameId()).getUserList())
+        for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
             if(!u.getSessionId().equals(user.getSessionId())) {
                 if (u.getY() == user.getY() + 1 || u.getY() == user.getY() - 1 || u.getY() == user.getY() && u.getX() == user.getX() + 1 || u.getX() == user.getX() - 1 ||  u.getY() == user.getY()) {
                     messagingTemplate.convertAndSend("/topic/kill/" + user.getUserName(), new ObjectMapper().writeValueAsString("kill"));
                     messagingTemplate.convertAndSend("/topic/dead/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
 
-                    messagingTemplate.convertAndSend("/topic/someoneGotKilled/", new ObjectMapper().writeValueAsString(u.getSessionId()));
+                    messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
+                    System.out.println("Hello After KILL ");
                 }
             }
             registerService.crewmateDied(u);
@@ -169,6 +183,10 @@ public class MovementController {
         if(registerService.areAllCrewmatesDead()) {
             System.out.println("IMPOSTOR WINS");
             messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
+
+            for(User u : registerService.userList) {
+                messagingTemplate.convertAndSend("/topic/disconnected/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
+            }
         }
     }
 
@@ -182,15 +200,22 @@ public class MovementController {
 
     @MessageMapping("/reportButtonPressed/{userName}")
     public void reportButtonPressed(@Payload User user) throws JsonProcessingException {
-        messagingTemplate.convertAndSend("/topic/votingActive/", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
+        messagingTemplate.convertAndSend("/topic/votingActive/", new ObjectMapper().writeValueAsString((user.getUserName())));
     }
 
     public HashMap<String, Integer> votingList = new HashMap<>();
     int counter = 0;
     boolean votingActive = false;
+    int votingCounter = 0;
+
     @MessageMapping("/votingButtonPressed/{userName}")
     public void votingButtonPressed(@Payload User user) throws JsonProcessingException {
+
+        // TODO if the player have the same votes and the votes are the maximum then no one gets ejected
+        // TODO there must be a counter in the votingbox if someone doesnt vote it muss be called an empty vote
         System.out.println("VOTING BUTTON PRESSED: " + user.getAction());
+        System.out.println("UserList: " + registerService.userList.size() + " " + registerService.userList);
+
 
         if(votingList.containsKey(user.getAction())) {
             votingList.compute(user.getAction(), (k, counter) -> counter + 1);
@@ -212,30 +237,35 @@ public class MovementController {
                 if(votingList.get(key) > max) {
                     max = votingList.get(key);
                     maxKey = key;
+
                 }
             }
             System.out.println("MAX: " + max + " MAXKEY: " + maxKey);
 
-            messagingTemplate.convertAndSend("/topic/ejected/" + maxKey, new ObjectMapper().writeValueAsString("dead"));
-//            messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive")) ;
-
-//            registerService.userList.remove(maxKey);
             for(int i = 0; i < registerService.userList.size(); i++) {
                 if(registerService.userList.get(i).getUserName().equals(maxKey)) {
                     registerService.userList.remove(i);
                 }
             }
 
-
             System.out.println("USERLIST SIZE: " + registerService.userList.size() +  " " + registerService.userList);
 
             votingList.clear();
             votingActive = false;
             counter = registerService.userList.size();
+
+
+            // TODO if maxKey is the impostor then convertAndSend crewmateWins
+            if(registerService.userList.size() == 2) {
+                messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
+                messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
+            } else {
+                messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
+                messagingTemplate.convertAndSend("/topic/someoneGotEjected/", new ObjectMapper().writeValueAsString(maxKey));
+            }
         }
-        if(registerService.userList.size() == 2) {
-            messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
-        }
+
+
 
     }
 }

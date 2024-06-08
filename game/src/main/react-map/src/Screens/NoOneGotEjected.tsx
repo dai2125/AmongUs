@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import ejected from "../Images/Ejected/Ejected.jpg";
+import noOneGotEjected from "../Images/Ejected/No_one_got_ejected.jpg";
 
-const Ejected = ({onStart}) => {
+const NoOneGotEjected = ({onStart}) => {
 
     const [count, setCount] = useState(3);
 
@@ -20,9 +20,9 @@ const Ejected = ({onStart}) => {
 
     return (
         <div>
-            <img src={ ejected } style={{position: 'fixed', top: '0', left: '0', minWidth: '100%', minHeight: '100%', width: 'auto', height: 'auto'}} ></img>
+            <img src={ noOneGotEjected } style={{position: 'fixed', top: '0', left: '0', minWidth: '100%', minHeight: '100%', width: 'auto', height: 'auto'}} ></img>
         </div>
     );
 }
 
-export default Ejected;
+export default NoOneGotEjected;
