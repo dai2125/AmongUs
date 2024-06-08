@@ -140,19 +140,6 @@ public class MovementController {
 //        }
 //    }
 
-    @MessageMapping("movement/east/{userName}")
-    public void processMovementEast(@Payload User user) throws JsonProcessingException {
-        System.out.println("USER: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-
-        messagingTemplate.convertAndSend("/topic/movement/north/" + user.getUserName(), new ObjectMapper().writeValueAsString(movementService.wallCollisionEast(user)));
-
-//        if(movementService.wallEast(user)) {
-//            registerService.updatePlayerPosition(user);
-//            UserMovementDTO userMovementDTO = new UserMovementDTO(user.getAction(), user.getSessionId(), user.getColor(), user.getX() + 1, user.getY());
-//            messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(userMovementDTO));
-//        messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementService.wallEast(user)));
-//        }
-    }
 
 
 
@@ -177,7 +164,10 @@ public class MovementController {
     @MessageMapping("/kill/{userName}")
     public void processKill(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
 
-        for(User u : registerService.userList) {
+        System.out.println("KILL: " + user.getUserName() + " " + user.getX() + " " + user.getY() + " gameID: " + user.getGameId() + " " + user.getSessionId() + " " + user.getColor() + " " + user.getAction() + " " + user.getImpostor());
+
+//          User u : registerService.getGroupManager().getGameInstance(registeredUser.getGameId()).getUserList())
+        for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
             if(!u.getSessionId().equals(user.getSessionId())) {
                 if (u.getY() == user.getY() + 1 || u.getY() == user.getY() - 1 || u.getY() == user.getY() && u.getX() == user.getX() + 1 || u.getX() == user.getX() - 1 ||  u.getY() == user.getY()) {
                     messagingTemplate.convertAndSend("/topic/kill/" + user.getUserName(), new ObjectMapper().writeValueAsString("kill"));
@@ -209,7 +199,7 @@ public class MovementController {
 
     @MessageMapping("/reportButtonPressed/{userName}")
     public void reportButtonPressed(@Payload User user) throws JsonProcessingException {
-        messagingTemplate.convertAndSend("/topic/votingActive/", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
+        messagingTemplate.convertAndSend("/topic/votingActive/", new ObjectMapper().writeValueAsString((user.getUserName())));
     }
 
     public HashMap<String, Integer> votingList = new HashMap<>();
@@ -263,6 +253,8 @@ public class MovementController {
             votingActive = false;
             counter = registerService.userList.size();
 
+
+            // TODO if maxKey is the impostor then convertAndSend crewmateWins
             if(registerService.userList.size() == 2) {
                 messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
                 messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
