@@ -40,19 +40,27 @@ public class RegisterService {
 
     public UserRegisterDTO registerUser(User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) {
         try {
-            if (userList.size() == 0) {
-                sendAlready = false;
-                startGame = false;
-                //create new game instance ang give gameId.
-                gameID = groupManager.createNewGame();
-                random = (int) (Math.random() * groupManager.getGameInstance(gameID).getGroupSize())+1;
-            }
             //TODO create game for Private Game
             if (!user.getGameId().isEmpty()){
+
                 System.out.println("Hello from Private Game " + user.getGameId());
                 gameID = user.getGameId();
                 if (!groupManager.gameExists(gameID)){
+                    sendAlready = false;
+                    startGame = false;
                     groupManager.createNewPrivateGame(gameID);
+                    random = (int) (Math.random() * groupManager.getGameInstance(gameID).getGroupSize())+1;
+                }else {
+                    gameInstance = groupManager.getGameInstance(gameID);
+                }
+            } else {
+                if (userList.size() == 0) {
+                    sendAlready = false;
+                    startGame = false;
+                    //create new game instance and give gameId.
+                    gameID = groupManager.createNewGame();
+                    random = (int) (Math.random() * groupManager.getGameInstance(gameID).getGroupSize())+1;
+                    System.out.println("Hello from Public game: " + gameID);
                 }
             }
 

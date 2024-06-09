@@ -53,6 +53,7 @@ import NoOneGotEjected from "./Screens/NoOneGotEjected";
 interface Props {
     userColor: string;
     userName: string;
+    gameId: string;
     onQuit: () => void;
 }
 
@@ -74,7 +75,7 @@ const colorToImageUrl = {
 };
 
 
-const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
+const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) => {
 
     const [playerImage, setPlayerImage] = useState(colorToImageUrl[userColor]);
     // const [mapVisible, setMapVisible] = useState(false);
@@ -110,7 +111,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [showVotingActive, setShowVotingActive] = useState(false);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
-    const playerRef = useRef<Player>(new Player(userName, '', '', '', '', 2, 2, '', '', '', ''));
+    const playerRef = useRef<Player>(new Player(userName, '', '', gameId, '', 2, 2, '', '', '', ''));
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentMiniGame, setCurrentMiniGame] = useState<React.ReactNode>(null);
@@ -118,6 +119,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
 
 
     useEffect(() => {
+
         playerRef.current.setX(getRandom(12, 7));
         playerRef.current.setY(getRandom(15, 10));
         console.log('XXXXX: ' + playerRef.current.getX() + ' ' + playerRef.current.getY());

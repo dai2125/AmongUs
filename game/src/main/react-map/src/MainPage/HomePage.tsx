@@ -24,7 +24,7 @@ import Stomp from "stompjs";
 
 type Props ={
     loggesInUser: User;
-    onPlayButtonClick(userColor): void;
+    onPlayButtonClick(userColor, gameId): void;
     setUserColor(color: string): void;
 }
 
@@ -45,7 +45,7 @@ const colorToImageUrl = {
     dead: dead,
 };
 
-export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor }: Props) {
+export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor}: Props) {
 
     const [color, setColor] = useState("pink");
     const [playerImage, setPlayerImage] = useState(colorToImageUrl[color]);
@@ -61,6 +61,8 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
     const [showAccountSettings, setShowAccountSettings] = useState(false);
     const [showPlayOptions, setPlayOptions] = useState(false);
     const [showPopUp, setPopUp] = useState(true);
+    const [gameId, setGameId] = useState('');
+
     const handleMyAccount = (event: FormEvent<HTMLFormElement>) => {
 
         event.preventDefault();
@@ -205,8 +207,17 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
 
 const clientRef = useRef(null);
 
-    const handlePlay = () => {
-        onPlayButtonClick(color);
+
+    // Handler for input change
+    const handleInputChange = (event) => {
+        setGameId(event.target.value);
+    };
+
+    const handlePlay = (event) => {
+
+        event.preventDefault();
+
+        onPlayButtonClick(color, gameId);
         /*
 
         const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
@@ -247,11 +258,16 @@ const clientRef = useRef(null);
                         <div className="row-span-2 justify-self-center">
                             <form onSubmit={handlePlay} className="p-3">
                                 <div>
-                                    <input className=" bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white" required/><br/>
+                                    <input className=" bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                           required
+                                           value={gameId}
+                                           onChange={handleInputChange}
+                                        /><br/>
                                 </div>
 
                                 <div className="flex justify-between">
-                                    <button onClick={handlePlay}
+                                    <button type="submit"
+                                            onClick={handlePlay}
                                             className="bg-gray-500 hover:bg-gray-400 text-slate-50 font-bold py-2 px-4 rounded mt-3">Save
                                     </button>
                                     <button onClick={handlePopUp}
@@ -319,7 +335,7 @@ const clientRef = useRef(null);
                 </div>
                     <div className="bg-transparent border-double rounded-lg border-2 border-teal-400 col-span-2 w-full justify-self-start p-4">
 
-                        {showPlayOptions ?
+                        {showPlayOptions && (
                             <div className="grid grid-cols-2 h-full ">
                                 <div className=" col-span-1 flex justify-center items-center">
                                     <button onClick={handlePlay}
@@ -341,9 +357,7 @@ const clientRef = useRef(null);
                                         </button>
                                     </div>
                                 </div>
-                            </div>
-
-                            : <div></div>}
+                            </div>)}
                         {showAccountSettings ? (
                             <div>
                                 <form onSubmit={handleMyAccount}>
