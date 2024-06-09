@@ -59,7 +59,8 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
     const [errorOldPassword, setErrorOldPassword] = useState("");
     const [showAppearanceBox, setShowAppearanceBox] = useState(false);
     const [showAccountSettings, setShowAccountSettings] = useState(false);
-
+    const [showPlayOptions, setPlayOptions] = useState(false);
+    const [showPopUp, setPopUp] = useState(true);
     const handleMyAccount = (event: FormEvent<HTMLFormElement>) => {
 
         event.preventDefault();
@@ -137,6 +138,7 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
             if(!showAccountSettings) {
                 setShowAccountSettings(true);
                 setShowAppearanceBox(false);
+                setPlayOptions(false);
             } else {
                 setShowAccountSettings(false);
                 setSuccessMessage("");
@@ -156,9 +158,23 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
         if(!showAppearanceBox) {
             setShowAppearanceBox(true);
             setShowAccountSettings(false);
+            setPlayOptions(false);
         } else {
             setShowSocialBox(false);
             setShowAccountSettings(false)
+            setPlayOptions(false);
+        }
+    }
+
+    const onPlayOptionsClick = () => {
+        if(!showPlayOptions) {
+            setPlayOptions(true);
+            setShowAppearanceBox(false);
+            setShowAccountSettings(false);
+        } else {
+            setShowSocialBox(false);
+            setShowAccountSettings(false);
+            setPlayOptions(false);
         }
     }
 
@@ -177,6 +193,14 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
         setColor(newColor);
         setUserColor(newColor);
         setPlayerImage(colorToImageUrl[newColor]);
+    }
+
+    const handlePopUp = () => {
+        if(!showPopUp) {
+           setPopUp(true);
+        } else {
+            setPopUp(false);
+        }
     }
 
 const clientRef = useRef(null);
@@ -211,41 +235,72 @@ const clientRef = useRef(null);
 
     return (
         <div className="background grid grid-rows-12 min-h-screen w-screen p-10">
-            <div
-                className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2 ">
-                <div id="user-div"
-                     className="col-span-1" style={{
-                         backgroundImage: `url(${playerImage})`
-                }
-                }/>
-                <div className="col-span-01 text-3xl text-cyan-500 text-center">
-                    {loggesInUser.getUsername()}
-                </div>
-                <button onClick={onFriendsButtonClick}
-                        className="col-span-10 w-1/6 h-10 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 mt-1.5">
-                    <b className="text-3xl">FRIENDS</b>
-                </button>
-                {showSocialBox ?
-                    <div>
-                        {/*<Socialbox></Socialbox>*/}
-                    </div> :
-                    <div>
+            ///////////////////////////////////
+
+            {showPopUp && (
+                <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
+
+                    <div className="grid grid-rows-3 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-2/6 h-70">
+                        <div className="row-span-1 flex items-center justify-center text-white">
+                            <b>Enter Game ID</b>
+                        </div>
+                        <div className="row-span-2 justify-self-center">
+                            <form onSubmit={handlePlay} className="p-3">
+                                <div>
+                                    <input className=" bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white" required/><br/>
+                                </div>
+
+                                <div className="flex justify-between">
+                                    <button onClick={handlePlay}
+                                            className="bg-gray-500 hover:bg-gray-400 text-slate-50 font-bold py-2 px-4 rounded mt-3">Save
+                                    </button>
+                                    <button onClick={handlePopUp}
+                                            className="bg-gray-500 hover:bg-gray-400 text-slate-50 font-bold py-2 px-4 rounded mt-3">Close
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
 
                     </div>
-                    }
-            </div>
-
-            <div className="grid row-span-10 grid-cols-3 mb-5 gap-2">
-                <div
-                    className="grid rows-8 bg-transparent border-double rounded-lg border-2 border-fuchsia-800 col-span-1 w-full h-full justify-self-end">
-                    <div className="row-span-1">
-                        <img alt="amongUsIcon" src={amongUsIcon}></img>
-                    {/*<p className="text-5xl text-center font-light text-amber-600 underline">AMONG US</p>*/}
                 </div>
-                    <div
-                        className="p-4 grid grid-rows-3 row-span-7 border-double rounded-lg border-2 border-fuchsia-800 w-11/12 h-5/6 justify-self-center align-items-center">
-                        <button onClick={handlePlay}
-                                className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
+            )}
+
+            ///////////////////////////////////
+            <div
+                className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2 ">
+        <div id="user-div"
+             className="col-span-1" style={{
+            backgroundImage: `url(${playerImage})`
+        }
+        }/>
+        <div className="col-span-01 text-3xl text-cyan-500 text-center">
+            {loggesInUser.getUsername()}
+        </div>
+        <button onClick={onFriendsButtonClick}
+                className="col-span-10 w-1/6 h-10 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 mt-1.5">
+            <b className="text-3xl">FRIENDS</b>
+        </button>
+        {showSocialBox ?
+            <div>
+                {/*<Socialbox></Socialbox>*/}
+            </div> :
+            <div>
+
+            </div>
+        }
+    </div>
+
+    <div className="grid row-span-10 grid-cols-3 mb-5 gap-2">
+        <div
+            className="grid rows-8 bg-transparent border-double rounded-lg border-2 border-fuchsia-800 col-span-1 w-full h-full justify-self-end">
+            <div className="row-span-1">
+                <img alt="amongUsIcon" src={amongUsIcon}></img>
+                {/*<p className="text-5xl text-center font-light text-amber-600 underline">AMONG US</p>*/}
+            </div>
+            <div
+                className="p-4 grid grid-rows-3 row-span-7 border-double rounded-lg border-2 border-fuchsia-800 w-11/12 h-5/6 justify-self-center align-items-center">
+                <button onClick={onPlayOptionsClick}
+                        className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
                             <b className="text-3xl">PLAY</b>
                         </button>
 
@@ -263,49 +318,53 @@ const clientRef = useRef(null);
 
                 </div>
                     <div className="bg-transparent border-double rounded-lg border-2 border-teal-400 col-span-2 w-full justify-self-start p-4">
-                    <div className="grid grid-cols-2 h-full ">
-                        <div className=" col-span-1 flex justify-center items-center">
-                            <button
-                                className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
-                                <b className="text-3xl">Public</b>
-                            </button>
-                        </div>
-                        <div className="grid grid-rows-2 col-span-1 ">
-                            <div className="row-span-1 flex justify-center items-center">
-                                <button
-                                    className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
-                                    <b className="text-3xl">Private</b>
-                                </button>
+
+                        {showPlayOptions ?
+                            <div className="grid grid-cols-2 h-full ">
+                                <div className=" col-span-1 flex justify-center items-center">
+                                    <button onClick={handlePlay}
+                                        className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
+                                        <b className="text-3xl">Public</b>
+                                    </button>
+                                </div>
+                                <div className="grid grid-rows-2 col-span-1 ">
+                                    <div className="row-span-1 flex justify-center items-center">
+                                        <button onClick={handlePopUp}
+                                            className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
+                                            <b className="text-3xl">Private</b>
+                                        </button>
+                                    </div>
+                                    <div className="row-span-1 flex justify-center items-center">
+                                        <button
+                                            className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
+                                            <b className="text-3xl">Custom</b>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="row-span-1 flex justify-center items-center">
-                                <button
-                                    className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
-                                    <b className="text-3xl">Custom</b>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+
+                            : <div></div>}
                         {showAccountSettings ? (
                             <div>
                                 <form onSubmit={handleMyAccount}>
-                                <p className="text-2xl text-left font-light text-amber-600 ">Account Settings
-                                    {/*for {loggesInUser.getUsername()}*/}
-                                </p>
-                                <label className="form-label">New Username</label>
-                                <div className="form-row">
+                                    <p className="text-2xl text-left font-light text-amber-600 ">Account Settings
+                                        {/*for {loggesInUser.getUsername()}*/}
+                                    </p>
+                                    <label className="form-label">New Username</label>
+                                    <div className="form-row">
                                         <input name="newUsername"
                                                className="input-field"
                                                type="text" placeholder="Old or New Username"/>
                                         <div className="error-notification">{errorName}</div>
-                                </div>
-                                <label className="form-label">New Email</label>
-                                <div className="form-row">
+                                    </div>
+                                    <label className="form-label">New Email</label>
+                                    <div className="form-row">
                                         <input name="newEmail"
                                                className="input-field"
                                                type="text" placeholder="New Email"/>
                                         <div className="error-notification">{errorEmail}</div>
-                                </div>
-                                <label className="text-1xl text-left font-light text-amber-600 ">Password</label>
+                                    </div>
+                                    <label className="text-1xl text-left font-light text-amber-600 ">Password</label>
                                 <div className="form-row">
                                         <input name="oldPassword" type="text"
                                                className="input-field"

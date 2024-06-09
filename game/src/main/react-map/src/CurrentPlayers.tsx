@@ -404,6 +404,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         }, 3000);
     }
 
+
     return (
         <div>
             <div className="background">
@@ -451,7 +452,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                             }
                         </div>
                         <div className="col-span-4 border-solid rounded-lg justify-self-end mr-2 mt-o">
-                            <button className="bg-gray-700 hover:bg-gray-800 rounded-lg py-3 px-8">Quit</button>
+                            <button onClick={onQuit}
+                                className="bg-gray-700 hover:bg-gray-800 rounded-lg py-3 px-8">Quit</button>
                         </div>
                     </div>
                     <div className="grid grid-cols-12 row-span-8 gap-5 h-5/6">

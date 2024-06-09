@@ -43,14 +43,20 @@ public class RegisterService {
             if (userList.size() == 0) {
                 sendAlready = false;
                 startGame = false;
-                //TODO create new game instance ang give gameId.
+                //create new game instance ang give gameId.
                 gameID = groupManager.createNewGame();
-
                 random = (int) (Math.random() * groupManager.getGameInstance(gameID).getGroupSize())+1;
-                System.out.println("the imposter will be the " + random);
+            }
+            //TODO create game for Private Game
+            if (!user.getGameId().isEmpty()){
+                System.out.println("Hello from Private Game " + user.getGameId());
+                gameID = user.getGameId();
+                if (!groupManager.gameExists(gameID)){
+                    groupManager.createNewPrivateGame(gameID);
+                }
             }
 
-            //TODO retrieve the game instance from the group manager
+            // retrieve the game instance from the group manager
             gameInstance = groupManager.getGameInstance(gameID);
 
             UserRegisterDTO userRegisterDTO  = new UserRegisterDTO();
