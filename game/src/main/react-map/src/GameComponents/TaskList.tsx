@@ -11,6 +11,7 @@ interface Props {
 }
 
 const taskDisplayTexts: { [key: string]: string } = {
+    task0: "Task Done",
     task1: "Task One Description",
     task2: "Task Two Description",
     task3: "Task Three Description",

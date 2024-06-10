@@ -509,12 +509,12 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                     </span>
                                 );
                             }
-
+                            const blinkClass = cellContent === 2 ? style.blink : '';
 
                             return (
-                                <span key={colIndex} className={style.cell} style={cellStyle}>
-                                {cellContent}
-                            </span>
+                                <span key={colIndex} className={`${style.cell} ${blinkClass}`} style={cellStyle}>
+                                    {cellContent}
+                                </span>
                             );
                         })}
 

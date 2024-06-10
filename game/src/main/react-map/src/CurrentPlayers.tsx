@@ -190,7 +190,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     }, []);
 
     const handleKeyPress = (key: string) => {
-        if (key === 'w') {
+        if (key === 'w' && playerRef.current.getRole() === 'crewmate') {
             taskAction();
         } else if (key === 'e' && playerRef.current.getRole() === 'impostor') {
             taskKill(key);
@@ -226,6 +226,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
         if(xPosTask === 1 && yPosTask === 4) {
             webSocketServiceRef.current.sendTaskResolved("task1", 1, 4);
+
         } else if(xPosTask === 7 && yPosTask === 1) {
             webSocketServiceRef.current.sendTaskResolved("task2", 7, 1);
         } else if(xPosTask === 9 && yPosTask === 7) {

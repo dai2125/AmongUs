@@ -16,3 +16,13 @@
     align-items: center;
     border: 1px solid white;
 }
+
+@keyframes blink {
+    0% { background-color: white; }
+    50% { background-color: transparent; }
+    100% { background-color: white; }
+}
+
+.blink {
+    animation: blink 1s infinite;
+}
