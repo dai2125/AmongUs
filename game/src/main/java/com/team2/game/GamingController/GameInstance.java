@@ -29,6 +29,8 @@ public class GameInstance {
     private List<String> taskListCopy = new ArrayList<>(taskList);
     public HashMap<String, Integer> votingList = new HashMap<>();
 
+    private int taskResolvedCounter = 9;
+
     TaskDTO taskDTO = new TaskDTO();
 
     private boolean impostor = false;
@@ -145,5 +147,14 @@ public class GameInstance {
 
     public void removePlayerFromList(User user) {
         userList.remove(user);
+    }
+
+    public boolean taskResolved() {
+        taskResolvedCounter--;
+        if(taskResolvedCounter > 0) {
+            return false;
+        }else {
+            return true;
+        }
     }
 }

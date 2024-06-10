@@ -225,15 +225,15 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
         const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
         if(xPosTask === 1 && yPosTask === 4) {
-            webSocketServiceRef.current.sendTaskDone("task1", 1, 4);
+            webSocketServiceRef.current.sendTaskResolved("task1", 1, 4);
         } else if(xPosTask === 7 && yPosTask === 1) {
-            webSocketServiceRef.current.sendTaskDone("task2", 7, 1);
+            webSocketServiceRef.current.sendTaskResolved("task2", 7, 1);
         } else if(xPosTask === 9 && yPosTask === 7) {
-            webSocketServiceRef.current.sendTaskDone("task3", 9, 7);
+            webSocketServiceRef.current.sendTaskResolved("task3", 9, 7);
         } else if(xPosTask === 23 && yPosTask === 21) {
-            webSocketServiceRef.current.sendTaskDone("task4", 23, 21);
+            webSocketServiceRef.current.sendTaskResolved("task4", 23, 21);
         } else if(xPosTask === 22 && yPosTask === 6) {
-            webSocketServiceRef.current.sendTaskDone("task5", 22, 6);
+            webSocketServiceRef.current.sendTaskResolved("task5", 22, 6);
         }
     };
 

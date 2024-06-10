@@ -62,24 +62,42 @@ public class MovementController {
     @SendTo("/topic/register/")
     public void register(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
 
-
         UserRegisterDTO registeredUser = registerService.registerUser(user, simpMessageHeaderAccessor);
         messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(registeredUser));
-        System.out.println("Hello from register : " + registeredUser.getGameId());
-
-        /*TaskDTO task = registerService.getTask();
-        System.out.println("GGGG" + task.getRole());
-        messagingTemplate.convertAndSend("/topic/gimmework/" + user.getUserName(), new ObjectMapper().writeValueAsString(task));*/
 
         for(User u : registerService.getGroupManager().getGameInstance(registeredUser.getGameId()).getUserList()) {
                 messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(u));
             }
             if(registerService.startGame && !registerService.sendAlready) {
-                messagingTemplate.convertAndSend("/topic/startGame/", "test");
+                try {
+                    // Sleep for a specified duration, e.g., 2 seconds (2000 milliseconds)
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    // Handle the interruption
+                    Thread.currentThread().interrupt();
+                    // Log or handle the exception as necessary
+                    System.out.println("Thread was interrupted: " + e.getMessage());
+                }
+                messagingTemplate.convertAndSend("/topic/startGame/" + user.getGameId(), "test");
 
                 registerService.sendAlready = true;
             }
     }
+
+    @MessageMapping("/taskResolved/")
+    public void taskResolved(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+        System.out.println("Hello from taskResolved " + user.getGameId());
+        boolean crewmatesWon = registerService.taskResolved(user.getGameId());
+        if (crewmatesWon){
+            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
+            messagingTemplate.convertAndSend("/topic/crewmateWins/" + user.getGameId(), crewmatesWon);
+        }else {
+            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
+            System.out.println("Hello after sending task resolved");
+        }
+
+    }
+
 
     @MessageMapping("/tryConnect/")
     public void tryConnect() throws JsonProcessingException {
@@ -119,7 +137,7 @@ public class MovementController {
     @MessageMapping("/kill/{userName}")
     public void processKill(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
 
-        System.out.println("KILL: " + user.getUserName() + " " + user.getX() + " " + user.getY() + " gameID: " + user.getGameId() + " " + user.getSessionId() + " " + user.getColor() + " " + user.getAction() + " " + user.getImpostor());
+        System.out.println("KILL: Name" + user.getUserName() + " gameID: " + user.getGameId() + " SessionId" + user.getSessionId() + " " + user.getImpostor());
 
         for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
             if(!u.getSessionId().equals(user.getSessionId())) {
@@ -127,7 +145,8 @@ public class MovementController {
                     messagingTemplate.convertAndSend("/topic/kill/" + user.getUserName(), new ObjectMapper().writeValueAsString("kill"));
                     messagingTemplate.convertAndSend("/topic/dead/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
 
-                    messagingTemplate.convertAndSend("/topic/someoneGotKilled/", new ObjectMapper().writeValueAsString(u.getSessionId()));
+                    messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
+                    System.out.println("Hello After KILL ");
                 }
             }
             registerService.crewmateDied(u);

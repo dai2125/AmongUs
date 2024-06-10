@@ -57,6 +57,7 @@ public class RegisterService {
             if (!gameInstance.groupIsFull()){
                 initializeUser(user, simpMessageHeaderAccessor);
                 userList.add(user);
+                userRegisterDTO.setUserName(user.getUserName());
                 userRegisterDTO.setAction(user.getAction());
                 userRegisterDTO.setSessionId(user.getSessionId());
                 userRegisterDTO.setColor(user.getColor());
@@ -205,4 +206,9 @@ public class RegisterService {
             super(message);
         }
     }
+
+    public boolean taskResolved(String gameID){
+        return groupManager.getGameInstance(gameID).taskResolved();
+    }
+
 }
