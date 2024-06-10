@@ -224,17 +224,16 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         closeMiniGame();
         const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
         const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
-        if(xPosTask === 1 && yPosTask === 4) {
-            webSocketServiceRef.current.sendTaskResolved("task1", 1, 4);
-
-        } else if(xPosTask === 7 && yPosTask === 1) {
-            webSocketServiceRef.current.sendTaskResolved("task2", 7, 1);
-        } else if(xPosTask === 9 && yPosTask === 7) {
-            webSocketServiceRef.current.sendTaskResolved("task3", 9, 7);
-        } else if(xPosTask === 23 && yPosTask === 21) {
-            webSocketServiceRef.current.sendTaskResolved("task4", 23, 21);
-        } else if(xPosTask === 22 && yPosTask === 6) {
-            webSocketServiceRef.current.sendTaskResolved("task5", 22, 6);
+        if(xPosTask === 11 && yPosTask === 5) {
+            webSocketServiceRef.current.sendTaskResolved("task1", 11, 5);
+        } else if(xPosTask === 36 && (yPosTask === 4 || yPosTask === 5)) {
+            webSocketServiceRef.current.sendTaskResolved("task2", 36, 4);
+        } else if(xPosTask === 72 && (yPosTask === 17 || yPosTask === 18 || yPosTask === 19)) {
+            webSocketServiceRef.current.sendTaskResolved("task3", 72, 17);
+        } else if(xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) {
+            webSocketServiceRef.current.sendTaskResolved("task4", 51, 37);
+        } else if(yPosTask === 40 && (xPosTask === 40 || xPosTask === 41)) {
+            webSocketServiceRef.current.sendTaskResolved("task5", 40, 40);
         }
     };
 
@@ -242,16 +241,17 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         if(GridService.isTask(playerRef.current.getY(), playerRef.current.getX())) {
             const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
             const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
+            console.log("Checking task: " + xPosTask + ", " + yPosTask);
             if(xPosTask != null && yPosTask != null) {
-                if(xPosTask === 1 && yPosTask === 4) {
+                if(xPosTask === 11 && yPosTask === 5) {
                     openMiniGame(<GuessTheNumberMiniGame onCompletion={handleMiniGameCompletion} />);
-                } else if(xPosTask === 7 && yPosTask === 1) {
+                } else if(xPosTask === 36 && (yPosTask === 4 || yPosTask === 5)) {
                     openMiniGame(<DownloadMiniGame onCompletion={handleMiniGameCompletion} />);
-                } else if(xPosTask === 9 && yPosTask === 7) {
+                } else if(xPosTask === 72 && (yPosTask === 17 || yPosTask === 18 || yPosTask === 19)) {
                     openMiniGame(<ClickInOrderMiniGame onCompletion={handleMiniGameCompletion} />);
-                } else if(xPosTask === 23 && yPosTask === 21) {
+                } else if(xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) {
                     openMiniGame(<NumpadInputCodeMiniGame onCompletion={handleMiniGameCompletion} />);
-                } else if(xPosTask === 22 && yPosTask === 6) {
+                } else if(yPosTask === 40 && (xPosTask === 40 || xPosTask === 41)) {
                     openMiniGame(<MemoryMiniGame onCompletion={handleMiniGameCompletion} />);
                 }
             }
