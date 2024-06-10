@@ -40,6 +40,8 @@ public class MovementController2 {
             System.out.println("movement/north/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
 
             messagingTemplate.convertAndSend("/topic/movement/north/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
+            messagingTemplate.convertAndSend("/topic/movement/north/otherPlayer/", new ObjectMapper().writeValueAsString(user));
+
         }
     }
 
@@ -50,6 +52,7 @@ public class MovementController2 {
             System.out.println("movement/south/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
 
             messagingTemplate.convertAndSend("/topic/movement/south/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
+            messagingTemplate.convertAndSend("/topic/movement/south/otherPlayer/", new ObjectMapper().writeValueAsString(user));
         }
     }
 
@@ -59,6 +62,7 @@ public class MovementController2 {
             user.setX(user.getX() - 1);
             System.out.println("movement/west/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
             messagingTemplate.convertAndSend("/topic/movement/west/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
+            messagingTemplate.convertAndSend("/topic/movement/west/otherPlayer/", new ObjectMapper().writeValueAsString(user));
         }
     }
 
@@ -69,6 +73,7 @@ public class MovementController2 {
             System.out.println("movement/east/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
 
             messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
+            messagingTemplate.convertAndSend("/topic/movement/east/otherPlayer/", new ObjectMapper().writeValueAsString(user));
         }
     }
 
