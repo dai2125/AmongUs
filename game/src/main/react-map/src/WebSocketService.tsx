@@ -217,7 +217,7 @@ class WebSocketService {
                 // TODO Dead Body stays on the x y coordinate
                 console.log('You are dead now');
                 playerRef.current.setMovable(false);
-                playerRef.current.setColor("dead");
+                playerRef.current.setColor('dead');
                 this.dead();
                 // playerRef.current.setImage(deadPlayer.image);
             });

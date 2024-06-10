@@ -67,7 +67,8 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [playerDirection, setPlayerDirection] = useState('');
     const [showReportButton, setShowReportButton] = useState(false);
     const [playerPosition, setPlayerPosition] = useState({ x: currentPlayer.getX(), y: currentPlayer.getY() });
-    const [otherPlayerPositions, setOtherPlayerPositions] = useState({});
+    const [otherPlayerDirection, setOtherPlayerDirection] = useState({});
+    const [otherPlayerPosition, setOtherPlayerPosition] = useState({});
 
     useEffect(() => {
         const updateScrollPosition = () => {
@@ -82,31 +83,10 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 containerRef.current.scrollTop = playerY - centerY;
             }
         };
-
         updateScrollPosition();
     }, [currentPlayer.getX(), currentPlayer.getY()]);
 
     const [loadedImage, setLoadedImage] = useState(null);
-
-    // useEffect(() => {
-    //     if (currentPlayer.getAction() === 'ArrowRight' && currentPlayer.getX() % 2 === 0) {
-    //         setPlayerDirection('right');
-    //     } else if (currentPlayer.getAction() === 'ArrowRight' && currentPlayer.getX() % 2 !== 0) {
-    //         setPlayerDirection('right2');
-    //     } else if (currentPlayer.getAction() === 'ArrowLeft' && currentPlayer.getX() % 2 === 0) {
-    //         setPlayerDirection('left');
-    //     } else if (currentPlayer.getAction() === 'ArrowLeft' && currentPlayer.getX() % 2 !== 0) {
-    //         setPlayerDirection('left2');
-    //     } else if (currentPlayer.getAction() === 'ArrowDown' && currentPlayer.getY() % 2 === 0) {
-    //         setPlayerDirection('down');
-    //     } else if (currentPlayer.getAction() === 'ArrowDown' && currentPlayer.getY() % 2 !== 0) {
-    //         setPlayerDirection('down2');
-    //     } else if (currentPlayer.getAction() === 'ArrowUp' && currentPlayer.getY() % 2 === 0) {
-    //         setPlayerDirection('up');
-    //     } else if (currentPlayer.getAction() === 'ArrowUp' && currentPlayer.getY() % 2 !== 0) {
-    //         setPlayerDirection('up2');
-    //     }
-    // }, [currentPlayer.getX(), currentPlayer.getY()]);
 
     useEffect(() => {
         let imageSrc;
@@ -284,25 +264,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         reportButtonClicked();
     }
 
-    // const [currentPlayer2, setCurrentPlayer] = useState({
-    //     getX: () => 0,
-    //     getY: () => 0,
-    //     getMovable: () => true,
-    //     getSessionId: () => "sessionId",
-    //     getUserName: () => "username",
-    //     getColor: () => "red",
-    //     setX: (x) => { /* setze X-Koordinate */ },
-    //     setY: (y) => { /* setze Y-Koordinate */ }
-    // });
-
-    // function updatePlayerPosition(newX, newY) {
-    //     setCurrentPlayer(prevPlayer => ({
-    //         ...prevPlayer,
-    //         getX: () => newX,
-    //         getY: () => newY
-    //     }));
-    // }
-
     useEffect(() => {
         const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
         const client = Stomp.over(socket);
@@ -317,8 +278,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getY() % 2 !== 0) {
                     setPlayerDirection('up2');
                 }
-
-
             });
 
             client.subscribe(`/topic/movement/south/${currentPlayer.getUserName()}`, (message) => {
@@ -331,7 +290,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getY() % 2 !== 0) {
                     setPlayerDirection('down2');
                 }
-
             });
 
             client.subscribe(`/topic/movement/west/${currentPlayer.getUserName()}`, (message) => {
@@ -345,7 +303,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getY() % 2 !== 0) {
                     setPlayerDirection('left2');
                 }
-
             });
 
             client.subscribe(`/topic/movement/east/${currentPlayer.getUserName()}`, (message) => {
@@ -358,96 +315,64 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getX() % 2 !== 0) {
                     setPlayerDirection('left2');
                 }
-
             });
 
             client.subscribe('/topic/movement/north/otherPlayer/', (message) => {
                 const response = JSON.parse(message.body);
                 console.log(response.userName + '  ' + response.sessionId)
-                const existingPlayer = otherPlayers.find(player => player.getUserName() === response.userName);
-                otherPlayers.forEach(player => {
-                    if (player.getUserName() === response.userName) {
-                        player.setX(response.x);
-                        player.setY(response.y);
-                        if (player.getY() % 2 === 0) {
-                            setOtherPlayerPositions('up');
-                        } else if (player.getY() % 2 !== 0) {
-                            setOtherPlayerPositions('up2');
+                setOtherPlayer((prevOtherPlayers) => {
+                    const updatedPlayers = prevOtherPlayers.map((p) => {
+                        if (p.getSessionId() === response.sessionId) {
+                            p.setX(response.x);
+                            p.setY(response.y);
                         }
-                    }
-                });
-                // if (existingPlayer.getY() % 2 === 0) {
-                //     setPlayerDirection('up');
-                // } else if (existingPlayer.getY() % 2 !== 0) {
-                //     setPlayerDirection('up2');
-                // }
+                        return p;
+                    });
+                    return updatedPlayers;
+                })
             });
 
             client.subscribe('/topic/movement/south/otherPlayer/', (message) => {
                 const response = JSON.parse(message.body);
-                const existingPlayer = otherPlayers.find(player => player.getUserName() === response.userName);
-                otherPlayers.forEach(player => {
-                    if (player.getUserName() === response.userName) {
-                        player.setX(response.x);
-                        player.setY(response.y);
-                        if (player.getY() % 2 === 0) {
-                            setOtherPlayerPositions('down');
-                        } else if (player.getY() % 2 !== 0) {
-                            setOtherPlayerPositions('down2');
+                setOtherPlayer((prevOtherPlayers) => {
+                    const updatedPlayers = prevOtherPlayers.map((p) => {
+                        if (p.getSessionId() === response.sessionId) {
+                            p.setX(response.x);
+                            p.setY(response.y);
                         }
-                    }
-                });
-                // if (existingPlayer.getY() % 2 === 0) {
-                //     setPlayerDirection('down');
-                // } else if (existingPlayer.getY() % 2 !== 0) {
-                //     setPlayerDirection('down2');
-                // }
+                        return p;
+                    });
+                    return updatedPlayers;
+                })
             });
 
             client.subscribe('/topic/movement/west/otherPlayer/', (message) => {
                 const response = JSON.parse(message.body);
-                const existingPlayer = otherPlayers.find(player => player.getUserName() === response.userName);
-                otherPlayers.forEach(player => {
-                    if (player.getUserName() === response.userName) {
-                        player.setX(response.x);
-                        player.setY(response.y);
-                        if (player.getY() % 2 === 0) {
-                            setOtherPlayerPositions('left');
-                        } else if (player.getY() % 2 !== 0) {
-                            setOtherPlayerPositions('left2');
+                setOtherPlayer((prevOtherPlayers) => {
+                    const updatedPlayers = prevOtherPlayers.map((p) => {
+                        if (p.getSessionId() === response.sessionId) {
+                            p.setX(response.x);
+                            p.setY(response.y);
                         }
-                    }
-                });
-                // if (existingPlayer.getY() % 2 === 0) {
-                //     setPlayerDirection('left');
-                // } else if (existingPlayer.getY() % 2 !== 0) {
-                //     setPlayerDirection('left2');
-                // }
-
+                        return p;
+                    });
+                    return updatedPlayers;
+                })
             });
 
             client.subscribe('/topic/movement/east/otherPlayer/', (message) => {
                 const response = JSON.parse(message.body);
-                const existingPlayer = otherPlayers.find(player => player.getUserName() === response.userName);
-                otherPlayers.forEach(player => {
-                    if (player.getUserName() === response.userName) {
-                        player.setX(response.x);
-                        player.setY(response.y);
-                        if (player.getX() % 2 === 0) {
-                            setOtherPlayerPositions('left');
-                        } else if (player.getX() % 2 !== 0) {
-                            setOtherPlayerPositions('left2');
+                setOtherPlayer((prevOtherPlayers) => {
+                    const updatedPlayers = prevOtherPlayers.map((p) => {
+                        if (p.getSessionId() === response.sessionId) {
+                            p.setX(response.x);
+                            p.setY(response.y);
                         }
-                    }
-                });
-                // if (existingPlayer.getX() % 2 === 0) {
-                //     setPlayerDirection('left');
-                // } else if (existingPlayer.getX() % 2 !== 0) {
-                //     setPlayerDirection('left2');
-                // }
+                        return p;
+                    });
+                    return updatedPlayers;
+                })
             });
-
-
         });
 
         const handleMove = (event: string) => {
@@ -549,7 +474,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             position: 'absolute', width: '120%', height: '100%', top: 200, left: -200, overflow: 'auto',
             overflowX: 'hidden', overflowY: 'hidden'
         }}>
-
             <canvas ref={canvasRef} id="game" width="2500" height="1800"
                     style={{border: '1px solid black', display: 'block'}}></canvas>
             <div key={gridKey} className={style.root} style={{position: 'absolute', top: 30, left: 175}}>
@@ -592,19 +516,14 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                     </span>
                                 );
                             }
-
-
                             return (
                                 <span key={colIndex} className={style.cell} style={cellStyle}>
                                 {cellContent}
                             </span>
                             );
                         })}
-
                     </div>
-
                 ))}
-
             </div>
             <div style={{
                 position: 'fixed',
@@ -629,11 +548,9 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 <p>Kill E</p>
                 <p>Task W</p>
                 <p>Sabotage S</p>
-
-
             </div>
         </div>
     );
-
 }
+
 export default React.memo(MapGrid);
