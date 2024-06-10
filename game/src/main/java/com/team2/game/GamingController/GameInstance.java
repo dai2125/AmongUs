@@ -1,6 +1,8 @@
 package com.team2.game.GamingController;
 
 import com.team2.game.DataModel.User;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,16 +18,21 @@ public class GameInstance {
     private static final String TASK3 = "task3";
     private static final String TASK4 = "task4";
     private static final String TASK5 = "task5";
-    private static final String TASK6 = "task6";
-    private static final String TASK7 = "task7";
-    private static final String TASK8 = "task8";
-    private static final String TASK9 = "task9";
 
-    private static final int GROUP_FULL = 2;
+
+    private static final int GROUP_FULL = 3;
+    @Setter
+    @Getter
+    private int IMPOSTER_COUNT = 1;
+    @Setter
+    @Getter
+    private int CREWMATE_COUNT = 1;
+
+
     private int taskCounter = 0;
 
     private List<User> userList = new ArrayList<>();
-    private List<String> taskList = Arrays.asList(TASK1, TASK2, TASK3, TASK4, TASK5, TASK6, TASK7, TASK8, TASK9);
+    private List<String> taskList = Arrays.asList(TASK1, TASK2, TASK3, TASK4, TASK5);
     private List<String> taskListCopy = new ArrayList<>(taskList);
     public HashMap<String, Integer> votingList = new HashMap<>();
 
@@ -157,4 +164,5 @@ public class GameInstance {
             return true;
         }
     }
+
 }

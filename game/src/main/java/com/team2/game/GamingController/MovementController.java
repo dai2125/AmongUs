@@ -168,6 +168,7 @@ public class MovementController {
 
 //          User u : registerService.getGroupManager().getGameInstance(registeredUser.getGameId()).getUserList())
         for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
+            System.out.println("AAAA Check the loop: Username: " + u.getUserName( )+ " sessionId " + u.getSessionId());
             if(!u.getSessionId().equals(user.getSessionId())) {
                 if (u.getY() == user.getY() + 1 || u.getY() == user.getY() - 1 || u.getY() == user.getY() && u.getX() == user.getX() + 1 || u.getX() == user.getX() - 1 ||  u.getY() == user.getY()) {
                     messagingTemplate.convertAndSend("/topic/kill/" + user.getUserName(), new ObjectMapper().writeValueAsString("kill"));
@@ -175,16 +176,18 @@ public class MovementController {
 
                     messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
                     System.out.println("Hello After KILL ");
+                    registerService.crewmateDied(u);
                 }
+
             }
-            registerService.crewmateDied(u);
+
         }
 
         if(registerService.areAllCrewmatesDead()) {
             System.out.println("IMPOSTOR WINS");
-            messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
+            messagingTemplate.convertAndSend("/topic/impostorWins/" + user.getGameId(), new ObjectMapper().writeValueAsString("impostorWins"));
 
-            for(User u : registerService.userList) {
+            for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
                 messagingTemplate.convertAndSend("/topic/disconnected/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
             }
         }
