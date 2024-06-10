@@ -308,8 +308,24 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         setTasks({
             task1: playerRef.current.getTask1(),
             task2: playerRef.current.getTask2(),
-            task3: playerRef.current.getTask3()
+            task3: playerRef.current.getTask3(),
         });
+        if((tasks.task1 || tasks.task2 || tasks.task3) === "task1") {
+            GridService.setTaskActive(5,11);
+        } else if((tasks.task1 || tasks.task2 || tasks.task3) === "task2") {
+            GridService.setTaskActive(4,36);
+            GridService.setTaskActive(5,36);
+        } else if((tasks.task1 || tasks.task2 || tasks.task3) === "task3") {
+            GridService.setTaskActive(17,72);
+            GridService.setTaskActive(18,72);
+            GridService.setTaskActive(19,72);
+        } else if((tasks.task1 || tasks.task2 || tasks.task3) === "task4") {
+            GridService.setTaskActive(37,51);
+            GridService.setTaskActive(38,51);
+        } else if((tasks.task1 || tasks.task2 || tasks.task3) === "task5") {
+            GridService.setTaskActive(40,40);
+            GridService.setTaskActive(40,41);
+        }
 
         setTimeout(() => {
             setShowTaskList(true);
