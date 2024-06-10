@@ -6,6 +6,7 @@ import React from 'react';
 let sessionId = ""
 
 interface RegistrationData {
+    userName?: string;
     action?: string | null;
     sessionId?: string;
     gameId?: string;

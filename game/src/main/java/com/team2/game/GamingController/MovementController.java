@@ -69,13 +69,8 @@ public class MovementController {
                 messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(u));
             }
             if(registerService.startGame && !registerService.sendAlready) {
-                try {
-                    // Sleep for a specified duration, e.g., 2 seconds (2000 milliseconds)
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    // Handle the interruption
+                try {Thread.sleep(2000);} catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    // Log or handle the exception as necessary
                     System.out.println("Thread was interrupted: " + e.getMessage());
                 }
                 messagingTemplate.convertAndSend("/topic/startGame/" + user.getGameId(), "test");
@@ -108,10 +103,8 @@ public class MovementController {
 
     @MessageMapping("/gimmework/")
     public void processGimmeWork(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        System.out.println("Hello from GIMMEWORK");
         System.out.println("USERNAME " + user.getSessionId());
         TaskDTO task = registerService.getTask();
-        System.out.println("GGGG " + task.getRole());
         messagingTemplate.convertAndSend("/topic/gimmework/" + user.getSessionId(), new ObjectMapper().writeValueAsString(task));
 
     }
@@ -137,26 +130,32 @@ public class MovementController {
     @MessageMapping("/kill/{userName}")
     public void processKill(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
 
-        System.out.println("KILL: Name" + user.getUserName() + " gameID: " + user.getGameId() + " SessionId" + user.getSessionId() + " " + user.getImpostor());
+        System.out.println("KILL: Name" + user.getUserName() + " gameID: " + user.getGameId() + " SessionId : " + user.getSessionId() + " " + user.getImpostor());
 
         for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
+            System.out.println("AAAA Check the loop: Username : " + u.getUserName( )+ " sessionId :" + u.getSessionId());
             if(!u.getSessionId().equals(user.getSessionId())) {
                 if (u.getY() == user.getY() + 1 || u.getY() == user.getY() - 1 || u.getY() == user.getY() && u.getX() == user.getX() + 1 || u.getX() == user.getX() - 1 ||  u.getY() == user.getY()) {
+                    String deadPlayerName = u.getUserName();
                     messagingTemplate.convertAndSend("/topic/kill/" + user.getUserName(), new ObjectMapper().writeValueAsString("kill"));
-                    messagingTemplate.convertAndSend("/topic/dead/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
-
+                    messagingTemplate.convertAndSend("/topic/dead/" + deadPlayerName, new ObjectMapper().writeValueAsString("dead"));
                     messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
+                    registerService.crewmateDied(u);
                     System.out.println("Hello After KILL ");
+                    break;
                 }
             }
-            registerService.crewmateDied(u);
         }
-
         if(registerService.areAllCrewmatesDead()) {
-            System.out.println("IMPOSTOR WINS");
-            messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
 
-            for(User u : registerService.userList) {
+            try {Thread.sleep(1000);} catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Thread was interrupted: " + e.getMessage());
+            }
+            System.out.println("IMPOSTOR WINS");
+            messagingTemplate.convertAndSend("/topic/impostorWins/" + user.getGameId(), new ObjectMapper().writeValueAsString("impostorWins"));
+
+            for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
                 messagingTemplate.convertAndSend("/topic/disconnected/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
             }
         }

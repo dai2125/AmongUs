@@ -19,6 +19,12 @@ public class GroupManager {
         return gameId;
     }
 
+    public String createNewPrivateGame(String gameId) {
+        GameInstance gameInstance = new GameInstance();
+        gameInstances.put(gameId, gameInstance);
+        return gameId;
+    }
+
     public GameInstance getGameInstance(String gameId) {
         return gameInstances.get(gameId);
     }

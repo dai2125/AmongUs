@@ -14,6 +14,7 @@ const App: React.FC = () => {
 
     const [userName, setUserName] = useState('');
     const [userColor, setUserColor] = useState("pink");
+    const [gameId, setGameId] = useState('');
     const [showLogIn, setShowLogIn] = useState<boolean>(true);
     const [showMapGrid, setShowMapGrid] = useState<boolean>(false);
     const [showHomePage, setShowHomePage] = useState<boolean>(false);
@@ -37,7 +38,8 @@ const App: React.FC = () => {
         setShowCreateAccount(false);
     };
     // navigation
-    const handlePlay = () => {
+    const handlePlay = (color: string, gameID: string) => {
+        setGameId(gameID);
         setShowMapGrid(true);
         setShowHomePage(false);
     };
@@ -56,7 +58,7 @@ const App: React.FC = () => {
             {showHomePage &&
                 <HomePage setUserColor={setUserColor} loggesInUser={loggedInUser} onPlayButtonClick={handlePlay}/>}
             {showLogIn && <LogIn onLogIn={handleLogin} onCreateAccountNav={handleCreateNav}/>}
-            {showMapGrid && <CurrentPlayers userName={userName} userColor={userColor} onQuit={handleQuit} />}
+            {showMapGrid && <CurrentPlayers userName={userName} userColor={userColor} gameId={gameId} onQuit={handleQuit} />}
             {showCreateAccount && <CreateAccount onLoginNavClick={handleLogInNav}/>}
         </div>
     );

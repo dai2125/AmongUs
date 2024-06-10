@@ -53,6 +53,7 @@ import NoOneGotEjected from "./Screens/NoOneGotEjected";
 interface Props {
     userColor: string;
     userName: string;
+    gameId: string;
     onQuit: () => void;
 }
 
@@ -74,7 +75,7 @@ const colorToImageUrl = {
 };
 
 
-const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
+const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) => {
 
     const [playerImage, setPlayerImage] = useState(colorToImageUrl[userColor]);
     // const [mapVisible, setMapVisible] = useState(false);
@@ -110,12 +111,15 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const [showVotingActive, setShowVotingActive] = useState(false);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
-    const playerRef = useRef<Player>(new Player(userName, '', '', '', '', 2, 2, '', '', '', ''));
+    const playerRef = useRef<Player>(new Player(userName, '', '', gameId, '', 2, 2, '', '', '', ''));
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentMiniGame, setCurrentMiniGame] = useState<React.ReactNode>(null);
 
+
+
     useEffect(() => {
+
         playerRef.current.setX(getRandom(12, 7));
         playerRef.current.setY(getRandom(15, 10));
         console.log('XXXXX: ' + playerRef.current.getX() + ' ' + playerRef.current.getY());
@@ -134,6 +138,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     //         setChatVisible(false);
     //     }
     // };
+
+
     const handleStartTimer = () => {
         if (!timerStarted) {
             setTimerStarted(true);
@@ -319,12 +325,12 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     const kill = () => {
         // setShowMap(false);
         // TODO killCrewmate Screen stucks and doesnt end
-        // setShowYouKilledACrewmate(true);
+         setShowYouKilledACrewmate(true);
 
-        // setTimeout(() => {
-        //     setShowKillCrewMate(false);
-        //
-        // }, 3000);
+         setTimeout(() => {
+             //setShowKillCrewMate(false);
+             setShowYouKilledACrewmate(false);
+         }, 1500);
     }
 
     // const handleButtonPress = () => {
@@ -400,6 +406,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         }, 3000);
     }
 
+
     return (
         <div>
             <div className="background">
@@ -439,33 +446,48 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
                         </div>
                     </div>
                     {/*<div >{purple}</div>*/}
-                    <div className="grid grid-cols-12 row-span-9 gap-5 h-5/6">
-                        <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-">
+                    <div className="grid grid-cols-12 row-span-1">
+                        <div className="col-span-8 border-solid rounded-lg w-1/2 justify-self-">
                             {showTaskBar ?
                                 // <TaskBar  /> : <div></div>
                                 <TaskBar completedTasksCount={completedTasksCount}/> : <div></div>
                             }
                         </div>
-
+                        <div className="col-span-4 border-solid rounded-lg justify-self-end mr-2 mt-o">
+                            <button onClick={onQuit}
+                                className="bg-gray-700 hover:bg-gray-800 rounded-lg py-3 px-8">Quit</button>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-12 row-span-8 gap-5 h-5/6">
+                        <div className="col-span-11 border-solid rounded-lg flex justify-center items-center">
+                            {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
+                                <div></div>}
+                        </div>
                         <div>
                             {showTaskList ?
                                 <TaskList tasks={tasks}/> : <div></div>
                             }
                         </div>
-                        <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
+                        <div className="col-span-8 border-solid rounded-lg flex justify-center items-center">
                             {showLobby ? <Lobby currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
 
                                 <div></div>}
                         </div>
                         <div>
                             <Modal isVisible={isModalVisible} onClose={closeMiniGame}>
-                            {currentMiniGame}
+                                {currentMiniGame}
                             </Modal>
                         </div>
+                     
+           /////appearence-work
+
+                      
+        //////////////////
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []} reportButtonClicked={reportButtonClicked}/> :
                                 <div></div>}
                         </div>
+        ////////////////////
                         {/*<div>*/}
                         {/*    <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">*/}
                         {/*        { showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :*/}
