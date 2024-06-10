@@ -60,7 +60,7 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
     const [showAppearanceBox, setShowAppearanceBox] = useState(false);
     const [showAccountSettings, setShowAccountSettings] = useState(false);
     const [showPlayOptions, setPlayOptions] = useState(false);
-    const [showPopUp, setPopUp] = useState(true);
+    const [showPopUp, setPopUp] = useState(false);
     const [gameId, setGameId] = useState('');
 
     const handleMyAccount = (event: FormEvent<HTMLFormElement>) => {
@@ -218,6 +218,7 @@ const clientRef = useRef(null);
         event.preventDefault();
 
         onPlayButtonClick(color, gameId);
+        handlePopUp();
         /*
 
         const socket = new SockJS('http://localhost:8080/gs-guide-websocket');

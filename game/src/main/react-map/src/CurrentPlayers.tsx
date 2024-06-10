@@ -325,12 +325,12 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const kill = () => {
         // setShowMap(false);
         // TODO killCrewmate Screen stucks and doesnt end
-        // setShowYouKilledACrewmate(true);
+         setShowYouKilledACrewmate(true);
 
-        // setTimeout(() => {
-        //     setShowKillCrewMate(false);
-        //
-        // }, 3000);
+         setTimeout(() => {
+             //setShowKillCrewMate(false);
+             setShowYouKilledACrewmate(false);
+         }, 1500);
     }
 
     // const handleButtonPress = () => {

@@ -190,12 +190,6 @@ public class RegisterService {
         System.out.println("User list size: " + userList.size());
     }
 
-    public boolean areAllCrewmatesDead() {
-        if(gameInstance.allCrewmatesAreDead()) {
-            return true;
-        }
-        return false;
-    }
 
     public boolean allTasksAreSolved() {
         if(gameInstance.allTasksAreSolved()) {
@@ -209,10 +203,16 @@ public class RegisterService {
     }
 
     public void crewmateDied(User user) {
+        System.out.println("crewmate died gameID: " + gameID);
         gameInstance.removePlayerFromList(user);
-        if (gameInstance.getUserList().size() == 1) {
-            System.out.println("IMPOSTOR WINS");
+
+    }
+
+    public boolean areAllCrewmatesDead() {
+        if(gameInstance.allCrewmatesAreDead()) {
+            return true;
         }
+        return false;
     }
 
     public class UserNotFoundException extends Exception {

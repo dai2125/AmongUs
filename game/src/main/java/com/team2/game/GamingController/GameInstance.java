@@ -125,13 +125,13 @@ public class GameInstance {
     }
 
     public boolean allCrewmatesAreDead() {
-        System.out.println("areAllCrewmatesDead: " + userList.size());
 
         for(User user : userList) {
             if(!user.getImpostor()) {
                 return false;
             }
         }
+        System.out.println("All crewmates are dead");
         return true;
     }
 
