@@ -10,6 +10,19 @@ interface Props {
     };
 }
 
+const taskDisplayTexts: { [key: string]: string } = {
+    task1: "Task One Description",
+    task2: "Task Two Description",
+    task3: "Task Three Description",
+    task4: "Task Four Description",
+    task5: "Task Five Description",
+    task6: "Task Six Description",
+    task7: "Task Seven Description",
+    task8: "Task Eight Description",
+    task9: "Task Nine Description",
+    task10: "Task Ten Description",
+};
+
 const TaskList = ({tasks}) => {
 
     const [myTasks, setMyTasks] = useState([]);
@@ -44,18 +57,18 @@ const TaskList = ({tasks}) => {
     // }, []);
 
     return (
-        <div className="absolute top-32 left-1 w-100 h-100 bg-white bg-opacity-80 border  px-4 py-1"
-             style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', display: 'flex', alignItems: 'center'}}>
-             <div style={{ flex: 1, minHeight: '100%', borderRight: '1px solid #ccc' }}>
-                 {myTasks.map((task, index) => (
-                     <p key={index}>{task}</p>
-                 ))}
-             </div>
-             <div style={{ marginLeft: 20, whiteSpace: 'nowrap', writingMode: 'vertical-lr', transform: 'rotate(180deg)' }}>
-                 <h1>Tasks</h1>
-             </div>
-         </div>
-     );
+        <div className="absolute top-32 left-1 w-100 h-100 bg-white bg-opacity-80 border px-4 py-1"
+             style={{ backgroundColor: 'rgba(255, 255, 255, 0.8)', display: 'flex', alignItems: 'center' }}>
+            <div style={{ flex: 1, minHeight: '100%', borderRight: '1px solid #ccc' }}>
+                {myTasks.map((task, index) => (
+                    <p key={index}>{taskDisplayTexts[task] || task}</p>
+                ))}
+            </div>
+            <div style={{ marginLeft: 20, whiteSpace: 'nowrap', writingMode: 'vertical-lr', transform: 'rotate(180deg)' }}>
+                <h1>Tasks</h1>
+            </div>
+        </div>
+    );
 }
 
 export default TaskList;
