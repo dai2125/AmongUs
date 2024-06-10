@@ -10,9 +10,7 @@ import '../CSS/Votingbox.css';
 import VotingChatbox from "./VotingChatbox";
 import {Player} from "../Player";
 
-// TODO Backend erstellen
-// TODO Backend muss die Votes übernehmen
-// TODO fertig designen
+// TODO Wrong name is displayed
 
 interface Props {
     onButtonPress: (userId: string) => void;

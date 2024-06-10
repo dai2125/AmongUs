@@ -116,33 +116,6 @@ public class MovementController {
 
     }
 
-    @MessageMapping("/movement/{userId}")
-    @SendTo("/topic/movement/")
-    public void processMovement(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-//        registerService.updatePlayerPosition(user);
-//        messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(movementService.wallCollision(user)));
-
-        if (movementService.wallCollision2(user)) {
-            registerService.updatePlayerPosition(user);
-            System.out.println("USER: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-            messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(user));
-        }
-    }
-
-//    @MessageMapping("movement/{userName}")
-//    public void processMovement2(@Payload User user) throws JsonProcessingException {
-//        System.out.println("USER: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-//
-//        if (movementService.wallCollision2(user)) {
-//            messagingTemplate.convertAndSend("/topic/movement/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
-////            messagingTemplate.convertAndSend("/topic/movement/", new ObjectMapper().writeValueAsString(user));
-//
-//        }
-//    }
-
-
-
-
     @MessageMapping("/task/{userId}")
     @SendTo("/topic/task/{userId}")
     public void processAction(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
@@ -166,7 +139,6 @@ public class MovementController {
 
         System.out.println("KILL: Name" + user.getUserName() + " gameID: " + user.getGameId() + " SessionId" + user.getSessionId() + " " + user.getImpostor());
 
-//          User u : registerService.getGroupManager().getGameInstance(registeredUser.getGameId()).getUserList())
         for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
             System.out.println("AAAA Check the loop: Username: " + u.getUserName( )+ " sessionId " + u.getSessionId());
             if(!u.getSessionId().equals(user.getSessionId())) {
@@ -203,6 +175,7 @@ public class MovementController {
 
     @MessageMapping("/reportButtonPressed/{userName}")
     public void reportButtonPressed(@Payload User user) throws JsonProcessingException {
+        // TODO wrong name is send, the victim must be send not the reporter
         messagingTemplate.convertAndSend("/topic/votingActive/", new ObjectMapper().writeValueAsString((user.getUserName())));
     }
 
