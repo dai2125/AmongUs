@@ -435,7 +435,7 @@ class WebSocketService {
                 y: player.getY()
             });
 
-            this.client.send(`/app/kill/${player.getUserName()}`, {}, payload);
+            //this.client.send(`/app/kill/${player.getUserName()}`, {}, payload);
         }
     }
 

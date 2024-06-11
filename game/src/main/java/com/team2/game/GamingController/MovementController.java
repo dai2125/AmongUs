@@ -1,5 +1,6 @@
 package com.team2.game.GamingController;
 
+import com.team2.game.DataModel.ObjectInteraction;
 import com.team2.game.DataModel.User;
 //import com.example.messagingstompwebsocket.chat.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -128,20 +129,58 @@ public class MovementController {
     }
 
     @MessageMapping("/kill/{userName}")
+    public void processKill(@Payload ObjectInteraction objectInteraction, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+
+        System.out.println("KILLER: Name " + objectInteraction.getObjectOne() + " gameID: " + objectInteraction.getGameId() + " Killed : " + objectInteraction.getObjectTwo());
+
+        for(User u : registerService.getGroupManager().getGameInstance(objectInteraction.getGameId()).getUserList()) {
+            if (u.getUserName().equals(objectInteraction.getObjectTwo())){
+
+                System.out.println("Killed name: " + u.getUserName());
+
+                messagingTemplate.convertAndSend("/topic/kill/" + objectInteraction.getObjectOne(), new ObjectMapper().writeValueAsString("kill"));
+                messagingTemplate.convertAndSend("/topic/dead/" + objectInteraction.getObjectTwo(), new ObjectMapper().writeValueAsString("dead"));
+                messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
+                registerService.crewmateDied(u);
+                System.out.println("Hello After KILL OF " + objectInteraction.getObjectTwo());
+
+                break;
+            }
+
+        }
+
+        if(registerService.areAllCrewmatesDead()) {
+
+            try {Thread.sleep(1000);} catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Thread was interrupted: " + e.getMessage());
+            }
+            System.out.println("IMPOSTOR WINS");
+            messagingTemplate.convertAndSend("/topic/impostorWins/" + objectInteraction.getGameId(), new ObjectMapper().writeValueAsString("impostorWins"));
+
+            for(User u : registerService.getGroupManager().getGameInstance(objectInteraction.getGameId()).getUserList()) {
+                messagingTemplate.convertAndSend("/topic/disconnected/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
+            }
+        }
+    }
+
+    /*
+    @MessageMapping("/kill/{userName}")
     public void processKill(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
 
         System.out.println("KILL: Name" + user.getUserName() + " gameID: " + user.getGameId() + " SessionId : " + user.getSessionId() + " " + user.getImpostor());
 
         for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
             System.out.println("AAAA Check the loop: Username : " + u.getUserName( )+ " sessionId :" + u.getSessionId());
-            if(!u.getSessionId().equals(user.getSessionId())) {
+            if(/*!u.getSessionId().equals(user.getSessionId()) !u.getImpostor()) {
                 if (u.getY() == user.getY() + 1 || u.getY() == user.getY() - 1 || u.getY() == user.getY() && u.getX() == user.getX() + 1 || u.getX() == user.getX() - 1 ||  u.getY() == user.getY()) {
+                    System.out.println("Killed name: " + u.getUserName());
                     String deadPlayerName = u.getUserName();
                     messagingTemplate.convertAndSend("/topic/kill/" + user.getUserName(), new ObjectMapper().writeValueAsString("kill"));
                     messagingTemplate.convertAndSend("/topic/dead/" + deadPlayerName, new ObjectMapper().writeValueAsString("dead"));
                     messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
                     registerService.crewmateDied(u);
-                    System.out.println("Hello After KILL ");
+                    System.out.println("Hello After KILL OF " + deadPlayerName);
                     break;
                 }
             }
@@ -159,7 +198,7 @@ public class MovementController {
                 messagingTemplate.convertAndSend("/topic/disconnected/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
             }
         }
-    }
+    }  */
 
 
 

@@ -264,7 +264,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }
 
     const taskKill = (key: string) => {
-        webSocketServiceRef.current.sendKill(key);
+        //webSocketServiceRef.current.sendKill(key);
 
     }
 
