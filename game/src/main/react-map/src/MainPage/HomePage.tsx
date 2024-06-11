@@ -277,16 +277,29 @@ const clientRef = useRef(null);
 
                     <div className="grid grid-rows-3 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-2/6 h-70">
                         <div className="row-span-1 flex items-center justify-center text-white">
-                            <b>Enter Game ID</b>
+                            <b>Game Settings</b>
                         </div>
                         <div className="row-span-2 justify-self-center">
                             <form onSubmit={handleCustomGame} className="p-3">
                                 <div>
-                                    <input className=" bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                           value={gameId}
-                                           onChange={handleInputChange}
+                                    <label className="text-white">Enter Game ID</label><br/>
+                                    <input
+                                        className="mt-1.5 bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                        value={gameId}
+                                        onChange={handleInputChange}
                                     /><br/>
                                 </div>
+
+                                <label className="text-white">Number of players:</label><br/>
+                                <input type="number" max="8" min="1"
+                                       className=" mt-1.5 w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                        required/>
+
+                                <label className="text-white">Number of imposters:</label><br/>
+                                <input type="number" max="3" min="1"
+                                       className=" mt-1.5 w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                        required/>
+
 
                                 <div className="flex justify-between">
                                     <button type="submit"
@@ -303,16 +316,19 @@ const clientRef = useRef(null);
                 </div>
             )}
             {showPopUp && (
-                <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
+                <div id="popup"
+                     className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
 
-                    <div className="grid grid-rows-3 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-2/6 h-70">
+                    <div
+                        className="grid grid-rows-3 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-2/6 h-70">
                         <div className="row-span-1 flex items-center justify-center text-white">
                             <b>Enter Game ID</b>
                         </div>
                         <div className="row-span-2 justify-self-center">
                             <form onSubmit={handlePlay} className="p-3 gameIdForm">
                                 <div>
-                                    <input className=" bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                    <input
+                                        className=" bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                            required
                                            value={gameId}
                                            onChange={handleInputChange}
