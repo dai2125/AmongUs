@@ -237,8 +237,9 @@ const clientRef = useRef(null);
         const data = new FormData(form);
 
         const gameId = data.get('gameId') as string;
-        const imposters = data.get('impsters');
-        const crewmates = data.get('crewmates');
+        const imposters = data.get('imposters');
+        const crewmates = data.get('crewmates')
+
 
         const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
         const client = Stomp.over(socket);
@@ -246,14 +247,14 @@ const clientRef = useRef(null);
         clientRef.current = client;
 
         client.connect({},() =>{
-            client.subscribe('/topic/createCustomGame/', (message)=>{
+            client.subscribe('/topic/createGame/', (message)=>{
                 const response = JSON.parse(message.body);
 
-                if(response === false){
-                    //onPlayButtonClick(color);
+                if(response === true){
                     handleCustomPopUp();
                 }else {
-                    alert("The lobby is full");
+
+                    alert("error creating the game");
                 }
             });
             sendCreateRequest(imposters, crewmates, gameId);
@@ -266,7 +267,7 @@ const clientRef = useRef(null);
             imposters: numberImposters
 
         };
-        clientRef.current.send('/app/createGame/', {}, JSON.stringify(payload));
+        clientRef.current.send(`/app/createGame/`, {}, JSON.stringify(payload));
     }
 
 
@@ -283,20 +284,20 @@ const clientRef = useRef(null);
                             <form onSubmit={handleCustomGame} className="p-3">
                                 <div>
                                     <label className="text-white">Enter Game ID</label><br/>
-                                    <input
+                                    <input name="gameId"
                                         className="mt-1.5 bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                        value={gameId}
-                                        onChange={handleInputChange}
                                     /><br/>
                                 </div>
 
-                                <label className="text-white">Number of players:</label><br/>
-                                <input type="number" max="8" min="1"
+                                <label className="text-white">Number of Crewmates:</label><br/>
+                                <input name="crewmates"
+                                    type="number" max="8" min="1"
                                        className=" mt-1.5 w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                         required/>
 
                                 <label className="text-white">Number of imposters:</label><br/>
-                                <input type="number" max="3" min="1"
+                                <input name="imposters"
+                                    type="number" max="3" min="1"
                                        className=" mt-1.5 w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                         required/>
 

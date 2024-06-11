@@ -1,5 +1,6 @@
 package com.team2.game.GamingController;
 
+import com.team2.game.DataModel.CustomGame;
 import com.team2.game.DataModel.Game;
 import com.team2.game.DataModel.ObjectInteraction;
 import com.team2.game.DataModel.User;
@@ -112,12 +113,12 @@ public class MovementController {
     }
 
     @MessageMapping("/createGame/")
-    public void processCreateGame(@Payload Game game, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        System.out.println("gmaeId " + game.getGameId());
-        System.out.println("Crewmates");
+    public void processCreateGame(@Payload CustomGame game, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+        System.out.println("gameId " + game.getGameId());
+        System.out.println("Crewmates" + game.getCrewmates());
         registerService.getGroupManager().createNewCustomGame(game.getGameId(), game.getCrewmates(), game.getImposters());
-        boolean isSuccessful  =true;
-        messagingTemplate.convertAndSend("/topic/createGame/" + game.getGameId(), isSuccessful);
+        boolean isSuccessful  = true;
+        messagingTemplate.convertAndSend("/topic/createGame/", isSuccessful);
 
     }
 
