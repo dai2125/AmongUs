@@ -389,6 +389,9 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 case 'ArrowRight':
                     sendMovementEast();
                     break;
+                case 'e':
+                    sendKill();
+                    break;
                 default:
                     break;
             }
@@ -458,8 +461,28 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             }
         }
 
+
+
+        function sendKill() {
+            console.log("Hello from new kill");
+            let payload;
+            for (let player of otherPlayers) {
+                if ((player.getY() == currentPlayer.getY() && (player.getX() == currentPlayer.getX() + 1 || player.getX() == currentPlayer.getX() - 1)) ||
+                    (player.getX() == currentPlayer.getX() && (player.getY() == currentPlayer.getY() + 1 || player.getY() == currentPlayer.getY() - 1))) {
+                    console.log("Hello from new kill inside ", currentPlayer.getGameId());
+                     payload = JSON.stringify({
+                        objectOne: currentPlayer.getUserName(),
+                        objectTwo: player.getUserName(),
+                        gameId: currentPlayer.getGameId(),
+                    });
+                     break;
+                }
+            }
+            client.send(`/app/kill/${currentPlayer.getUserName()}`, {}, payload);
+        }
+
         window.addEventListener('keydown', (event) => {
-            handleMove(event.key);
+           handleMove(event.key);
         });
 
         return () => {

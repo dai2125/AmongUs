@@ -20,7 +20,7 @@ public class GameInstance {
     private static final String TASK5 = "task5";
 
 
-    private static final int GROUP_FULL = 3;
+    private static final int GROUP_FULL = 4;
     @Setter
     @Getter
     private int IMPOSTER_COUNT = 1;
