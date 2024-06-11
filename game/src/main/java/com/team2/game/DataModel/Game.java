@@ -1,30 +1,19 @@
 package com.team2.game.DataModel;
-
-
-import jakarta.persistence.*;
 import lombok.*;
 
-@Entity
-@Table(name = "game")
-@AllArgsConstructor
-@NoArgsConstructor
-@Getter
-@Setter
-@Builder
-@ToString
+
 public class Game {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
 
-    @Column(nullable = false, name = "players")
-    private int players;
 
-    @Column(nullable = false, name = "imposters")
+    @Getter
+    @Setter
+    private String gameId;
+    @Getter
+    @Setter
+    private int crewmates;
+    @Getter
+    @Setter
     private int imposters;
-
-    @Column(nullable = false, name = "crew-mates")
-    private int crewMates;
 
 
 

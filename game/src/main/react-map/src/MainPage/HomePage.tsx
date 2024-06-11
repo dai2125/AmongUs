@@ -61,6 +61,7 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
     const [showAccountSettings, setShowAccountSettings] = useState(false);
     const [showPlayOptions, setPlayOptions] = useState(false);
     const [showPopUp, setPopUp] = useState(false);
+    const [showCustomPopUp, setCustomPopUp] = useState(false);
     const [gameId, setGameId] = useState('');
 
     const handleMyAccount = (event: FormEvent<HTMLFormElement>) => {
@@ -204,6 +205,13 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
             setPopUp(false);
         }
     }
+    const handleCustomPopUp = () => {
+        if(!showCustomPopUp) {
+            setCustomPopUp(true);
+        } else {
+            setCustomPopUp(false);
+        }
+    }
 
 const clientRef = useRef(null);
 
@@ -219,7 +227,18 @@ const clientRef = useRef(null);
 
         onPlayButtonClick(color, gameId);
         handlePopUp();
-        /*
+
+    }
+    const handleCustomGame = (event: FormEvent<HTMLFormElement>) => {
+
+        event.preventDefault();
+
+        const form = event.currentTarget;
+        const data = new FormData(form);
+
+        const gameId = data.get('gameId') as string;
+        const imposters = data.get('impsters');
+        const crewmates = data.get('crewmates');
 
         const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
         const client = Stomp.over(socket);
@@ -227,28 +246,64 @@ const clientRef = useRef(null);
         clientRef.current = client;
 
         client.connect({},() =>{
-            client.subscribe('/topic/tryConnect/', (message)=>{
+            client.subscribe('/topic/createCustomGame/', (message)=>{
                 const response = JSON.parse(message.body);
 
                 if(response === false){
-                    onPlayButtonClick(color);
+                    //onPlayButtonClick(color);
+                    handleCustomPopUp();
                 }else {
                     alert("The lobby is full");
                 }
             });
-            sendConnectRequest();
+            sendCreateRequest(imposters, crewmates, gameId);
         });
-        */
     }
-    const sendConnectRequest = () => {
+    const sendCreateRequest = (numberImposters, numberCrewmates, gameId) => {
+        const payload = {
+            gameId: gameId,
+            crewmates: numberCrewmates,
+            imposters: numberImposters
+
+        };
+        clientRef.current.send('/app/tryConnect/', {}, JSON.stringify(payload));
+
         clientRef.current.send('/app/tryConnect/', {});
     }
 
 
     return (
         <div className="background grid grid-rows-12 min-h-screen w-screen p-10">
-            ///////////////////////////////////
+            {showCustomPopUp && (
+                <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
 
+                    <div className="grid grid-rows-3 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-2/6 h-70">
+                        <div className="row-span-1 flex items-center justify-center text-white">
+                            <b>Enter Game ID</b>
+                        </div>
+                        <div className="row-span-2 justify-self-center">
+                            <form onSubmit={handleCustomGame} className="p-3">
+                                <div>
+                                    <input className=" bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                           value={gameId}
+                                           onChange={handleInputChange}
+                                    /><br/>
+                                </div>
+
+                                <div className="flex justify-between">
+                                    <button type="submit"
+                                            className="bg-gray-500 hover:bg-gray-400 text-slate-50 font-bold py-2 px-4 rounded mt-3">Save
+                                    </button>
+                                    <button onClick={handleCustomPopUp}
+                                            className="bg-gray-500 hover:bg-gray-400 text-slate-50 font-bold py-2 px-4 rounded mt-3">Close
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            )}
             {showPopUp && (
                 <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
 
@@ -257,7 +312,7 @@ const clientRef = useRef(null);
                             <b>Enter Game ID</b>
                         </div>
                         <div className="row-span-2 justify-self-center">
-                            <form onSubmit={handlePlay} className="p-3">
+                            <form onSubmit={handlePlay} className="p-3 gameIdForm">
                                 <div>
                                     <input className=" bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                            required
@@ -352,7 +407,7 @@ const clientRef = useRef(null);
                                         </button>
                                     </div>
                                     <div className="row-span-1 flex justify-center items-center">
-                                        <button
+                                        <button onClick={handleCustomPopUp}
                                             className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
                                             <b className="text-3xl">Custom</b>
                                         </button>

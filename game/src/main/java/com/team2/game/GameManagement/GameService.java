@@ -32,7 +32,7 @@ public class GameService implements IGameService{
     public boolean gameSettings(GameDTO gameDTO) throws ResponseStatusExceptionCustom {
         if (!gameRepository.existsById(gameDTO.getId())){
             //TODO create game in a different method
-            gameRepository.save(Game.builder().id(gameDTO.getId()).players(gameDTO.getPlayers()).imposters(gameDTO.getImposters()).crewMates(gameDTO.getCrewMates()).build());
+           // gameRepository.save(Game.builder().id(gameDTO.getId()).players(gameDTO.getPlayers()).imposters(gameDTO.getImposters()).crewMates(gameDTO.getCrewMates()).build());
             return true;
         }else {
             gameRepository.updateGameSettings(gameDTO.getId(), gameDTO.getPlayers(), gameDTO.getImposters(), gameDTO.getCrewMates());
