@@ -24,6 +24,13 @@ public class GroupManager {
         gameInstances.put(gameId, gameInstance);
         return gameId;
     }
+    public String createNewCustomGame(String gameId, int crewmates, int imposters) {
+        GameInstance gameInstance = new GameInstance();
+        gameInstance.setCREWMATE_COUNT(crewmates);
+        gameInstance.setIMPOSTER_COUNT(imposters);
+        gameInstances.put(gameId, gameInstance);
+        return gameId;
+    }
 
     public GameInstance getGameInstance(String gameId) {
         return gameInstances.get(gameId);

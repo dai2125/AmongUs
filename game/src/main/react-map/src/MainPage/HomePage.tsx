@@ -266,9 +266,7 @@ const clientRef = useRef(null);
             imposters: numberImposters
 
         };
-        clientRef.current.send('/app/tryConnect/', {}, JSON.stringify(payload));
-
-        clientRef.current.send('/app/tryConnect/', {});
+        clientRef.current.send('/app/createGame/', {}, JSON.stringify(payload));
     }
 
 

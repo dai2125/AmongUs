@@ -1,5 +1,6 @@
 package com.team2.game.GamingController;
 
+import com.team2.game.DataModel.Game;
 import com.team2.game.DataModel.ObjectInteraction;
 import com.team2.game.DataModel.User;
 //import com.example.messagingstompwebsocket.chat.Message;
@@ -107,6 +108,16 @@ public class MovementController {
         System.out.println("USERNAME " + user.getSessionId());
         TaskDTO task = registerService.getTask();
         messagingTemplate.convertAndSend("/topic/gimmework/" + user.getSessionId(), new ObjectMapper().writeValueAsString(task));
+
+    }
+
+    @MessageMapping("/createGame/")
+    public void processCreateGame(@Payload Game game, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+        System.out.println("gmaeId " + game.getGameId());
+        System.out.println("Crewmates");
+        registerService.getGroupManager().createNewCustomGame(game.getGameId(), game.getCrewmates(), game.getImposters());
+        boolean isSuccessful  =true;
+        messagingTemplate.convertAndSend("/topic/createGame/" + game.getGameId(), isSuccessful);
 
     }
 
