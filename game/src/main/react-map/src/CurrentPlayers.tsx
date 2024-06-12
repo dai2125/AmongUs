@@ -126,7 +126,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
         playerRef.current.setColor(userColor);
     }, [userColor]);
 
-
     // const toggleChat = () => {
     //     if(!chatVisible) {
     //         setChatVisible(true);
@@ -190,7 +189,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     }, []);
 
     const handleKeyPress = (key: string) => {
-        if (key === 'w' && playerRef.current.getRole() === 'crewmate') {
+        if (key === 'w') {
             taskAction();
         } else if (key === 'e' && playerRef.current.getRole() === 'impostor') {
             taskKill(key);
@@ -198,10 +197,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
             const {current: webSocketService} = webSocketServiceRef;
             // TODO for testing
             // webSocketService.sendMovement(key);
-
         }
     };
-
 
     const [showPopup, setShowPopup] = useState(false);
 
@@ -238,6 +235,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
     };
 
     const taskAction = () => {
+        console.log("pressed w")
         if(GridService.isTask(playerRef.current.getY(), playerRef.current.getX())) {
             const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
             const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
@@ -310,21 +308,29 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName}) => {
             task2: playerRef.current.getTask2(),
             task3: playerRef.current.getTask3(),
         });
-        if((tasks.task1 || tasks.task2 || tasks.task3) === "task1") {
-            GridService.setTaskActive(5,11);
-        } else if((tasks.task1 || tasks.task2 || tasks.task3) === "task2") {
-            GridService.setTaskActive(4,36);
-            GridService.setTaskActive(5,36);
-        } else if((tasks.task1 || tasks.task2 || tasks.task3) === "task3") {
-            GridService.setTaskActive(17,72);
-            GridService.setTaskActive(18,72);
-            GridService.setTaskActive(19,72);
-        } else if((tasks.task1 || tasks.task2 || tasks.task3) === "task4") {
-            GridService.setTaskActive(37,51);
-            GridService.setTaskActive(38,51);
-        } else if((tasks.task1 || tasks.task2 || tasks.task3) === "task5") {
-            GridService.setTaskActive(40,40);
-            GridService.setTaskActive(40,41);
+        const task1 = playerRef.current.getTask1();
+        const task2 = playerRef.current.getTask2();
+        const task3 = playerRef.current.getTask3();
+
+        if (task1 === "task1" || task2 === "task1" || task3 === "task1") {
+            GridService.setTaskActive(5, 11);
+        }
+        if (task1 === "task2" || task2 === "task2" || task3 === "task2") {
+            GridService.setTaskActive(4, 36);
+            GridService.setTaskActive(5, 36);
+        }
+        if (task1 === "task3" || task2 === "task3" || task3 === "task3") {
+            GridService.setTaskActive(17, 72);
+            GridService.setTaskActive(18, 72);
+            GridService.setTaskActive(19, 72);
+        }
+        if (task1 === "task4" || task2 === "task4" || task3 === "task4") {
+            GridService.setTaskActive(37, 51);
+            GridService.setTaskActive(38, 51);
+        }
+        if (task1 === "task5" || task2 === "task5" || task3 === "task5") {
+            GridService.setTaskActive(40, 40);
+            GridService.setTaskActive(40, 41);
         }
 
         setTimeout(() => {

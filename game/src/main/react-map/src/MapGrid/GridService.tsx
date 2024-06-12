@@ -1,6 +1,6 @@
 export class GridService {
 
-    private static readonly grid: any[][] = [
+    private static grid: any[][] = [
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -79,8 +79,13 @@ export class GridService {
         return this.grid[y][x];
     }
 
-    public static setTaskActive(y: number, x: number) {
-        this.grid[y][x] = 2;
+    public static setTaskActive(rowIndex: number, colIndex: number): void {
+        console.log(`Setting task active at [${rowIndex}, ${colIndex}]`);
+        if (this.grid[rowIndex] && this.grid[rowIndex][colIndex] !== undefined) {
+            this.grid[rowIndex][colIndex] = 2;
+            console.log(`Grid updated: ${this.grid[rowIndex][colIndex]}`);
+        } else {
+            console.error(`Invalid grid position: [${rowIndex}, ${colIndex}]`);
+        }
     }
-
 }
