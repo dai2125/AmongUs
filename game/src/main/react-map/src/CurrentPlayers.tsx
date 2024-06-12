@@ -155,6 +155,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const handleShhhhh = () => {
         setShowShhhhh(false);
         setShowThereIsAImpostorAmoungUs(true);
+        setShowTaskList(true);
     }
 
     const handleThereIsAImpostorAmongUs = () => {
@@ -316,10 +317,10 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
             task3: playerRef.current.getTask3()
         });
 
-        setTimeout(() => {
-            setShowTaskList(true);
-        }, 3000);
-        // setShowTaskList(true);
+       // setTimeout(() => {
+       //     setShowTaskList(true);
+       // }, 3000);/
+        // / setShowTaskList(true);
     }
 
     const kill = () => {
@@ -465,7 +466,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                         </div>
                         <div>
                             {showTaskList ?
-                                <TaskList tasks={tasks}/> : <div></div>
+                                <TaskList role={playerRef.current.getRole()} tasks={tasks}/> : <div></div>
                             }
                         </div>
                         <div className="col-span-8 border-solid rounded-lg flex justify-center items-center">
