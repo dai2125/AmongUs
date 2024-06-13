@@ -116,18 +116,20 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
 
     const handleSkipButtonPress = () => {
         setVotingActive(false);
+        setHasVoted(true);
         setVoteMessage("You skipped the vote, please wait.");
         onButtonPress(null);
     };
 
     const handleSubmitButtonPress = () => {
         setVotingActive(false);
+        setHasVoted(true);
         setVoteMessage("You submitted your vote, please wait.");
         onButtonPress(votedFor);
     };
 
     useEffect(() => {
-        if(countDown === 0) {
+        if(countDown === 0 && !hasVoted) {
             setVotingActive(false);
             setVoteMessage("Time is up, please wait.");
             onButtonPress(null);
