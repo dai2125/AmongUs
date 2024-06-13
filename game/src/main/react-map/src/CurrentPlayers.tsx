@@ -275,7 +275,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }
 
     const dead = () => {
-        playerRef.current.setColor("dead");
+        playerRef.current.setColor('dead');
         setShowKillCrewMate(true);
 
         // TODO should close automatically, counter is set in the KillCrewMate.tsx but doesnt work
@@ -340,6 +340,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const reportButtonClicked = () => {
         // TODO button wurde in der Map gedrückt
         console.log("CurrentPlayer.tsx: Report Button clicked");
+        webSocketServiceRef.current.sendReportButtonPressed();
         webSocketServiceRef.current.sendReportButtonPressed();
         // setShowVotingbox(true);
     }
@@ -478,16 +479,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                                 {currentMiniGame}
                             </Modal>
                         </div>
-                     
-           /////appearence-work
 
-                      
-        //////////////////
+
+
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []} reportButtonClicked={reportButtonClicked}/> :
                                 <div></div>}
                         </div>
-        ////////////////////
                         {/*<div>*/}
                         {/*    <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">*/}
                         {/*        { showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :*/}
@@ -595,9 +593,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
             </div>
         </div>
     );
-
-
 };
-
 
 export default CurrentPlayers;

@@ -150,7 +150,6 @@
     font: bold 16px/14px 'VCR OSD Mono', monospace;
     /*align-items: flex-start;*/
     position: relative;
-
     /*border-radius: 5px;*/
     /*border-style: solid;*/
     /*border-width: 1px;*/
@@ -164,6 +163,7 @@
     flex-grow: 1;
     margin-right: 10px;
     /*padding-right: 50px;*/
+    color: black;
 
 }
 

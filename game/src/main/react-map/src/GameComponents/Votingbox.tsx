@@ -9,6 +9,8 @@ import cancelVote from '../Images/Votingbox/cancel_vote.png';
 import '../CSS/Votingbox.css';
 import VotingChatbox from "./VotingChatbox";
 import {Player} from "../Player";
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
 
 // TODO Wrong name is displayed
 
@@ -29,6 +31,8 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
     const [votedFor, setVotedFor] = useState(null);
     const [votingActive, setVotingActive] = useState(true);
     const [voteMessage, setVoteMessage] = useState("");
+    const [deadPlayer1, setDeadPlayer] = useState([]);
+    const [countDown, setCountDown] = useState(30);
 
     // useEffect(() => {
     //     setPlayers([...otherPlayers.map(player => ({userId: player.userName, color: player.color}))]);
@@ -36,12 +40,28 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
     // }, [players.length]);
 
     useEffect(() => {
-        setPlayers([...otherPlayers.filter(player => player.getUserName() !== deadPlayer).map(player => ({
+        setPlayers([...otherPlayers.filter(player => player.getColor() !== 'dead').map(player => ({
             userId: player.userName,
             color: player.color
         }))]);
         setVotes(new Array(players.length).fill(0));
     }, [players.length, deadPlayer]);
+
+    useEffect(() => {
+        setDeadPlayer([...otherPlayers.filter(player => player.getColor() === 'dead').map(player => ({
+            userId: player.userName
+        }))]);
+    }, []);
+
+    useEffect(() => {
+        const playerDetails = otherPlayers.map(player => ({
+            userId: player.userName,
+            color: player.getColor(),
+            isDead: player.getColor() === 'dead'
+        }));
+        setPlayers(playerDetails);
+        setVotes(new Array(playerDetails.length).fill(0));
+    }, [otherPlayers]);
 
     const toggleVoting = () => {
         if (!votingVisible) {
@@ -76,6 +96,8 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
             newVotes[index] = (newVotes[index] || 0) + 1;
             setVotes(newVotes);
             setHasVoted(true);
+            setVotedFor(players[index].userId);
+            console.log('VOTED FOR: ' + players[index].userId);
             // onButtonPress(players[index].userId);
         } else if (hasVoted) {
             resetVoting();
@@ -104,6 +126,26 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
         onButtonPress(votedFor);
     };
 
+    useEffect(() => {
+        if(countDown === 0) {
+            setVotingActive(false);
+            setVoteMessage("Time is up, please wait.");
+            onButtonPress(null);
+        }
+    }, [countDown]);
+
+    useEffect(() => {
+        const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
+        const client = Stomp.over(socket);
+        client.connect({}, () => {
+            client.subscribe('/topic/countdownVoting/', (message) => {
+                const response = JSON.parse(message.body);
+
+                console.log('COUNTDOWN: ' + response);
+                setCountDown(response);
+            });
+        });
+    }, []);
 
     return (
         <div className="votingbox" style={{backgroundImage: `url(${votingboxBackground}`}}>
@@ -115,7 +157,11 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
                         <VotingChatbox playerColor={currentPlayer.color}
                                        playerName={currentPlayer.userName}></VotingChatbox>
                         {/*<button><img className="votingboxChatButton" alt="votingboxChatButton" src={votingboxChat}></img></button>*/}
-                        <h2>{deadPlayer} is dead</h2>
+                        {/*<h2>{deadPlayer} is dead</h2>*/}
+                        {/*<h2>{deadPlayer1}</h2>*/}
+                        {deadPlayer1.length > 0 && (
+                            <h2>{deadPlayer1.map(player => `${player.userId} is dead`).join(', ')}</h2>
+                        )}
                     </div>
 
                     <div className="votingbox-container">
@@ -146,6 +192,9 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
                     </div>
                     <div className="submit-vote-button">
                         <button onClick={handleSubmitButtonPress}>Submit Button</button>
+                    </div>
+                    <div className="voting-countdown">
+                        <h1>Time left: {countDown}</h1>
                     </div>
                 </div>
             ) : (

@@ -28,7 +28,6 @@ public class RegisterService {
 
     private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
 
-
     @Autowired
     private GameInstance gameInstance;
 

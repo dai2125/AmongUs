@@ -13,21 +13,80 @@ import cyan from "../Images/Character_Movement/Cyan.jpg";
 import lime from "../Images/Character_Movement/Lime.jpg";
 import pink from "../Images/Character_Movement/Pink.jpg";
 import dead from "../Images/Character_Movement/dead.png";
+import ghost from "../Images/Character_Movement/Ghost.jpg";
 
-import playerImageRight from '../Images/Character_Red_Movement/Red_East_Rigth.png';
-import playerImageRight2 from '../Images/Character_Red_Movement/Red_East_Left.png';
-import playerImageLeft from '../Images/Character_Red_Movement/Red_West_Left.png';
-import playerImageLeft2 from '../Images/Character_Red_Movement/Red_West_Right.png';
-import playerImageUp from '../Images/Character_Red_Movement/Red_North_Stand.png';
-import playerImageUp2 from '../Images/Character_Red_Movement/Red_North_Right.png';
-import playerImageDown from '../Images/Character_Red_Movement/Red_South_Left.png';
-import playerImageDown2 from '../Images/Character_Red_Movement/Red_South_Right.png';
+import redImageRight from '../Images/Character_Red_Movement/Red_East_Rigth.png';
+import redImageRight2 from '../Images/Character_Red_Movement/Red_East_Left.png';
+import redImageLeft from '../Images/Character_Red_Movement/Red_West_Left.png';
+import redImageLeft2 from '../Images/Character_Red_Movement/Red_West_Right.png';
+import redImageUp from '../Images/Character_Red_Movement/Red_North_Stand.png';
+import redImageUp2 from '../Images/Character_Red_Movement/Red_North_Right.png';
+import redImageDown from '../Images/Character_Red_Movement/Red_South_Left.png';
+import redImageDown2 from '../Images/Character_Red_Movement/Red_South_Right.png';
+
+import blueImageRight from '../Images/Character_Blue_Movement/Blue_East_Right.png';
+import blueImageRight2 from '../Images/Character_Blue_Movement/Blue_East_Left.png';
+import blueImageLeft from '../Images/Character_Blue_Movement/Blue_West_Left.png';
+import blueImageLeft2 from '../Images/Character_Blue_Movement/Blue_West_Right.png';
+
+import cyanImageRight from '../Images/Character_Cyan_Movement/Cyan_East_Right.png';
+import cyanImageRight2 from '../Images/Character_Cyan_Movement/Cyan_East_Left.png';
+import cyanImageLeft from '../Images/Character_Cyan_Movement/Cyan_West_Left.png';
+import cyanImageLeft2 from '../Images/Character_Cyan_Movement/Cyan_West_Right.png';
+
+import yellowImageRight from '../Images/Character_Yellow_Movement/Yellow_East_Right.png';
+import yellowImageRight2 from '../Images/Character_Yellow_Movement/Yellow_East_Left.png';
+import yellowImageLeft from '../Images/Character_Yellow_Movement/Yellow_West_Left.png';
+import yellowImageLeft2 from '../Images/Character_Yellow_Movement/Yellow_West_Right.png';
+
+import purpleImageRight from '../Images/Character_Purple_Movement/Purple_East_Right.png';
+import purpleImageRight2 from '../Images/Character_Purple_Movement/Purple_East_Left.png';
+import purpleImageLeft from '../Images/Character_Purple_Movement/Purple_West_Left.png';
+import purpleImageLeft2 from '../Images/Character_Purple_Movement/Purple_West_Right.png';
+
+import limeImageRight from '../Images/Character_Lime_Movement/Lime_East_Right.png';
+import limeImageRight2 from '../Images/Character_Lime_Movement/Lime_East_Left.png';
+import limeImageLeft from '../Images/Character_Lime_Movement/Lime_West_Left.png';
+import limeImageLeft2 from '../Images/Character_Lime_Movement/Lime_West_Right.png';
+
+import greenImageRight from '../Images/Character_Green_Movement/Green_East_Right.png';
+import greenImageRight2 from '../Images/Character_Green_Movement/Green_East_Left.png';
+import greenImageLeft from '../Images/Character_Green_Movement/Green_West_Left.png';
+import greenImageLeft2 from '../Images/Character_Green_Movement/Green_West_Right.png';
+
+import pinkImageRight from '../Images/Character_Pink_Movement/Pink_East_Right.png';
+import pinkImageRight2 from '../Images/Character_Pink_Movement/Pink_East_Left.png';
+import pinkImageLeft from '../Images/Character_Pink_Movement/Pink_West_Left.png';
+import pinkImageLeft2 from '../Images/Character_Pink_Movement/Pink_West_Right.png';
+
+import orangeImageRight from '../Images/Character_Orange_Movement/Orange_East_Right.png';
+import orangeImageRight2 from '../Images/Character_Orange_Movement/Orange_East_Left.png';
+import orangeImageLeft from '../Images/Character_Orange_Movement/Orange_West_Left.png';
+import orangeImageLeft2 from '../Images/Character_Orange_Movement/Orange_West_Right.png';
+
+import whiteImageRight from '../Images/Character_White_Movement/White_East_Right.png';
+import whiteImageRight2 from '../Images/Character_White_Movement/White_East_Left.png';
+import whiteImageLeft from '../Images/Character_White_Movement/White_West_Left.png';
+import whiteImageLeft2 from '../Images/Character_White_Movement/White_West_Right.png';
+
+import blackImageRight from '../Images/Character_Black_Movement/Black_East_Right.png';
+import blackImageRight2 from '../Images/Character_Black_Movement/Black_East_Left.png';
+import blackImageLeft from '../Images/Character_Black_Movement/Black_West_Left.png';
+import blackImageLeft2 from '../Images/Character_Black_Movement/Black_West_Right.png';
+
+import brownImageRight from '../Images/Character_Brown_Movement/Brown_East_Right.png';
+import brownImageRight2 from '../Images/Character_Brown_Movement/Brown_East_Left.png';
+import brownImageLeft from '../Images/Character_Brown_Movement/Brown_West_Left.png';
+import brownImageLeft2 from '../Images/Character_Brown_Movement/Brown_West_Right.png';
+
+import ghostImageRight from '../Images/Character_Ghost_Movement/Ghost_East.png';
+import ghostImageLeft from '../Images/Character_Ghost_Movement/Ghost_West.png';
 
 import Votingbox from "../GameComponents/Votingbox";
 import votingboxButton from '../Images/Votingbox/report_player.png';
 
 import SockJS from "sockjs-client";
-import Stomp from "stompjs";
+import Stomp, {client} from "stompjs";
 
 import skeldImage from '../Images/Maps/Skeld.png';
 import '../CSS/MapGrid.css';
@@ -53,6 +112,7 @@ const colorToImageUrl = {
     lime: lime,
     pink: pink,
     dead: dead,
+    ghost: ghost
 };
 
 const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportButtonClicked}) => {
@@ -69,6 +129,9 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [playerPosition, setPlayerPosition] = useState({ x: currentPlayer.getX(), y: currentPlayer.getY() });
     const [otherPlayerDirection, setOtherPlayerDirection] = useState({});
     const [otherPlayerPosition, setOtherPlayerPosition] = useState({});
+    const [deadPlayer, setDeadPlayer] = useState('');
+    const [yourDead, setYourDead] = useState(false);
+    const [yourTheImpostor, setYourTheImpostor] = useState(false);
 
     useEffect(() => {
         const updateScrollPosition = () => {
@@ -92,31 +155,151 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         let imageSrc;
         switch (playerDirection) {
             case 'right':
-                imageSrc = playerImageRight;
+                if(currentPlayer.getColor() === 'red') {
+                    imageSrc = redImageRight;
+                } else if(currentPlayer.getColor() === 'blue') {
+                    imageSrc = blueImageRight;
+                } else if(currentPlayer.getColor() === 'cyan') {
+                    imageSrc = cyanImageRight;
+                } else if(currentPlayer.getColor() === 'yellow') {
+                    imageSrc = yellowImageRight;
+                } else if(currentPlayer.getColor() === 'purple') {
+                    imageSrc = purpleImageRight;
+                } else if(currentPlayer.getColor() === 'lime') {
+                    imageSrc = limeImageRight;
+                } else if(currentPlayer.getColor() === 'green') {
+                    imageSrc = greenImageRight;
+                } else if(currentPlayer.getColor() === 'pink') {
+                    imageSrc = pinkImageRight;
+                } else if(currentPlayer.getColor() === 'orange') {
+                    imageSrc = orangeImageRight;
+                } else if(currentPlayer.getColor() === 'white') {
+                    imageSrc = whiteImageRight;
+                } else if(currentPlayer.getColor() === 'black') {
+                    imageSrc = blackImageRight;
+                } else if(currentPlayer.getColor() === 'brown') {
+                    imageSrc = brownImageRight;
+                } else if(currentPlayer.getColor() === 'dead') {
+                    imageSrc = dead;
+                } else if(currentPlayer.getColor() === 'ghost') {
+                    imageSrc = ghostImageRight;
+                } else {
+                    imageSrc = redImageRight;
+                }
                 break;
             case 'right2':
-                imageSrc = playerImageRight2;
+                if(currentPlayer.getColor() === 'red') {
+                    imageSrc = redImageRight2;
+                } else if(currentPlayer.getColor() === 'blue') {
+                    imageSrc = blueImageRight2;
+                } else if(currentPlayer.getColor() === 'cyan') {
+                    imageSrc = cyanImageRight2;
+                } else if(currentPlayer.getColor() === 'yellow') {
+                    imageSrc = yellowImageRight2;
+                } else if(currentPlayer.getColor() === 'purple') {
+                    imageSrc = purpleImageRight2;
+                } else if(currentPlayer.getColor() === 'lime') {
+                    imageSrc = limeImageRight2;
+                } else if(currentPlayer.getColor() === 'green') {
+                    imageSrc = greenImageRight2;
+                } else if(currentPlayer.getColor() === 'pink') {
+                    imageSrc = pinkImageRight2;
+                } else if(currentPlayer.getColor() === 'orange') {
+                    imageSrc = orangeImageRight2;
+                } else if(currentPlayer.getColor() === 'white') {
+                    imageSrc = whiteImageRight2;
+                } else if(currentPlayer.getColor() === 'black') {
+                    imageSrc = blackImageRight2;
+                } else if(currentPlayer.getColor() === 'brown') {
+                    imageSrc = brownImageRight2;
+                } else if(currentPlayer.getColor() === 'dead') {
+                    imageSrc = dead;
+                } else if(currentPlayer.getColor() === 'ghost') {
+                    imageSrc = ghostImageRight;
+                }  else {
+                    imageSrc = redImageRight2;
+                }
                 break;
             case 'left':
-                imageSrc = playerImageLeft;
+                if(currentPlayer.getColor() === 'red') {
+                    imageSrc = redImageLeft;
+                } else if(currentPlayer.getColor() === 'blue') {
+                    imageSrc = blueImageLeft;
+                } else if(currentPlayer.getColor() === 'cyan') {
+                    imageSrc = cyanImageLeft;
+                } else if(currentPlayer.getColor() === 'yellow') {
+                    imageSrc = yellowImageLeft;
+                } else if(currentPlayer.getColor() === 'purple') {
+                    imageSrc = purpleImageLeft;
+                } else if(currentPlayer.getColor() === 'lime') {
+                    imageSrc = limeImageLeft;
+                } else if(currentPlayer.getColor() === 'green') {
+                    imageSrc = greenImageLeft;
+                } else if(currentPlayer.getColor() === 'pink') {
+                    imageSrc = pinkImageLeft;
+                } else if(currentPlayer.getColor() === 'orange') {
+                    imageSrc = orangeImageLeft;
+                } else if(currentPlayer.getColor() === 'white') {
+                    imageSrc = whiteImageLeft;
+                } else if(currentPlayer.getColor() === 'black') {
+                    imageSrc = blackImageLeft;
+                } else if(currentPlayer.getColor() === 'brown') {
+                    imageSrc = brownImageLeft;
+                } else if(currentPlayer.getColor() === 'dead') {
+                    imageSrc = dead;
+                } else if(currentPlayer.getColor() === 'ghost') {
+                    imageSrc = ghostImageLeft;
+                }  else {
+                    imageSrc = redImageLeft;
+                }
                 break;
             case 'left2':
-                imageSrc = playerImageLeft2;
+                if(currentPlayer.getColor() === 'red') {
+                    imageSrc = redImageLeft2;
+                } else if(currentPlayer.getColor() === 'blue') {
+                    imageSrc = blueImageLeft2;
+                } else if(currentPlayer.getColor() === 'cyan') {
+                    imageSrc = cyanImageLeft2;
+                } else if(currentPlayer.getColor() === 'yellow') {
+                    imageSrc = yellowImageLeft2;
+                } else if(currentPlayer.getColor() === 'purple') {
+                    imageSrc = purpleImageLeft2;
+                } else if(currentPlayer.getColor() === 'lime') {
+                    imageSrc = limeImageLeft2;
+                } else if(currentPlayer.getColor() === 'green') {
+                    imageSrc = greenImageLeft2;
+                } else if(currentPlayer.getColor() === 'pink') {
+                    imageSrc = pinkImageLeft2;
+                } else if(currentPlayer.getColor() === 'orange') {
+                    imageSrc = orangeImageLeft2;
+                } else if(currentPlayer.getColor() === 'white') {
+                    imageSrc = whiteImageLeft2;
+                } else if(currentPlayer.getColor() === 'black') {
+                    imageSrc = blackImageLeft2;
+                } else if(currentPlayer.getColor() === 'brown') {
+                    imageSrc = brownImageLeft2;
+                } else if(currentPlayer.getColor() === 'dead') {
+                    imageSrc = dead;
+                } else if(currentPlayer.getColor() === 'ghost') {
+                    imageSrc = ghostImageLeft;
+                } else {
+                    imageSrc = redImageLeft2;
+                }
                 break;
-            case 'up':
-                imageSrc = playerImageUp;
-                break;
-            case 'up2':
-                imageSrc = playerImageUp2;
-                break;
-            case 'down':
-                imageSrc = playerImageDown;
-                break;
-            case 'down2':
-                imageSrc = playerImageDown2;
-                break;
+            // case 'up':
+            //     imageSrc = // redImageUp;
+            //     break;
+            // case 'up2':
+            //     imageSrc = // redImageUp2;
+            //     break;
+            // case 'down':
+            //     imageSrc = // redImageDown;
+            //     break;
+            // case 'down2':
+            //     imageSrc = // redImageDown2;
+            //     break;
             default:
-                imageSrc = playerImageRight;
+                imageSrc = redImageRight;
         }
 
         setPlayerImage(imageSrc);
@@ -148,9 +331,9 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         dead: "../images/Character_Movement/dead.png",
     };
 
-    // useEffect(() => {
-    //     setPlayerImage(colorToImageUrl[currentPlayer.getColor()]);
-    // }, [currentPlayer.getColor()]);
+    useEffect(() => {
+        setPlayerImage(colorToImageUrl[currentPlayer.getColor()]);
+    }, [currentPlayer.getColor()]);
 
     // const currentPlayerImage = useMemo(() => {
     //     return playerImages[currentPlayer.getColor()];
@@ -160,7 +343,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     useEffect(() => {
         setGridKey(prevKey => prevKey + 1);
     }, [currentPlayer, otherPlayers]);
-
 
     useEffect(() => {
         otherPlayers.forEach(player => {
@@ -173,7 +355,17 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             player.getColor() === 'dead' &&
             isCellVisible(currentPlayer.getX(), currentPlayer.getY(), player.getX(), player.getY())
         );
-        setShowReportButton(deadVisiblePlayer);
+        setShowReportButton(!!deadVisiblePlayer);
+
+        // if(deadVisiblePlayer) {
+        //     setShowReportButton(true);
+        // } else {
+        //     setShowReportButton(false);
+        // }
+
+        // setDeadPlayer(deadVisiblePlayer || null);
+        // console.log('DEADPLAYER: ' + deadVisiblePlayer);
+
         // setDeadPlayer(deadVisiblePlayer || null);
     }, [otherPlayers, currentPlayer]);
 
@@ -311,67 +503,81 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 currentPlayer.setY(response.y);
                 setPlayerPosition({ x: response.x, y: response.y });
                 if (currentPlayer.getX() % 2 === 0) {
-                    setPlayerDirection('left');
+                    setPlayerDirection('right');
                 } else if (currentPlayer.getX() % 2 !== 0) {
-                    setPlayerDirection('left2');
+                    setPlayerDirection('right2');
                 }
             });
 
             client.subscribe('/topic/movement/north/otherPlayer/', (message) => {
                 const response = JSON.parse(message.body);
-                console.log(response.userName + '  ' + response.sessionId)
-                setOtherPlayer((prevOtherPlayers) => {
-                    const updatedPlayers = prevOtherPlayers.map((p) => {
-                        if (p.getSessionId() === response.sessionId) {
-                            p.setX(response.x);
-                            p.setY(response.y);
-                        }
-                        return p;
-                    });
-                    return updatedPlayers;
-                })
+                if(response.userName !== currentPlayer.getUserName()) {
+                    setOtherPlayer((prevOtherPlayers) => {
+                        const updatedPlayers = prevOtherPlayers.map((p) => {
+                            if (p.getSessionId() === response.sessionId) {
+                                p.setX(response.x);
+                                p.setY(response.y);
+                            }
+                            return p;
+                        });
+                        return updatedPlayers;
+                    })
+                }
             });
 
             client.subscribe('/topic/movement/south/otherPlayer/', (message) => {
                 const response = JSON.parse(message.body);
-                setOtherPlayer((prevOtherPlayers) => {
-                    const updatedPlayers = prevOtherPlayers.map((p) => {
-                        if (p.getSessionId() === response.sessionId) {
-                            p.setX(response.x);
-                            p.setY(response.y);
-                        }
-                        return p;
-                    });
-                    return updatedPlayers;
-                })
+                if(response.userName !== currentPlayer.getUserName()) {
+                    setOtherPlayer((prevOtherPlayers) => {
+                        const updatedPlayers = prevOtherPlayers.map((p) => {
+                            if (p.getSessionId() === response.sessionId) {
+                                p.setX(response.x);
+                                p.setY(response.y);
+                            }
+                            return p;
+                        });
+                        return updatedPlayers;
+                    })
+                }
             });
 
             client.subscribe('/topic/movement/west/otherPlayer/', (message) => {
                 const response = JSON.parse(message.body);
-                setOtherPlayer((prevOtherPlayers) => {
-                    const updatedPlayers = prevOtherPlayers.map((p) => {
-                        if (p.getSessionId() === response.sessionId) {
-                            p.setX(response.x);
-                            p.setY(response.y);
-                        }
-                        return p;
-                    });
-                    return updatedPlayers;
-                })
+                if(response.userName !== currentPlayer.getUserName()) {
+                    setOtherPlayer((prevOtherPlayers) => {
+                        const updatedPlayers = prevOtherPlayers.map((p) => {
+                            if (p.getSessionId() === response.sessionId) {
+                                p.setX(response.x);
+                                p.setY(response.y);
+                            }
+                            return p;
+                        });
+                        return updatedPlayers;
+                    })
+                }
             });
 
             client.subscribe('/topic/movement/east/otherPlayer/', (message) => {
                 const response = JSON.parse(message.body);
-                setOtherPlayer((prevOtherPlayers) => {
-                    const updatedPlayers = prevOtherPlayers.map((p) => {
-                        if (p.getSessionId() === response.sessionId) {
-                            p.setX(response.x);
-                            p.setY(response.y);
-                        }
-                        return p;
-                    });
-                    return updatedPlayers;
-                })
+                if(response.userName !== currentPlayer.getUserName()) {
+                    setOtherPlayer((prevOtherPlayers) => {
+                        const updatedPlayers = prevOtherPlayers.map((p) => {
+                            if (p.getSessionId() === response.sessionId) {
+                                p.setX(response.x);
+                                p.setY(response.y);
+                            }
+                            return p;
+                        });
+                        return updatedPlayers;
+                    })
+                }
+            });
+
+            client.subscribe(`/topic/airsystem/${currentPlayer.getUserName()}`, (message) => {
+                console.log('airsystem message received')
+                const response = JSON.parse(message.body);
+                currentPlayer.setX(response.x);
+                currentPlayer.setY(response.y);
             });
         });
 
@@ -388,6 +594,9 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     break;
                 case 'ArrowRight':
                     sendMovementEast();
+                    break;
+                case 'q':
+                    sendAirSystem();
                     break;
                 case 'e':
                     sendKill();
@@ -461,8 +670,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             }
         }
 
-
-
         function sendKill() {
             console.log("Hello from new kill");
             let payload;
@@ -479,6 +686,31 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 }
             }
             client.send(`/app/kill/${currentPlayer.getUserName()}`, {}, payload);
+        }
+
+        function sendAirSystem() {
+            console.log('airSystem q pressed');
+            if(currentPlayer.getRole() === 'impostor') {
+                const payload = JSON.stringify({
+                    userName: currentPlayer.getUserName(),
+                    action: currentPlayer.getAction(),
+                    sessionId: currentPlayer.getSessionId(),
+                    color: currentPlayer.getColor(),
+                    x: currentPlayer.getX(),
+                    y: currentPlayer.getY()
+                });
+                client.send(`/app/airsystem/${currentPlayer.getUserName()}`, {}, payload);
+            }
+        }
+
+        const sendReport = (deadPlayer) => {
+            if(deadPlayer) {
+                const payload = JSON.stringify({
+                    reporter: currentPlayer.getUserName(),
+                    deadPlayer: deadPlayer,
+                });
+                client.send(`/app/reportButtonPressed/${currentPlayer.getUserName()}`, {}, payload);
+            }
         }
 
         window.addEventListener('keydown', (event) => {
@@ -540,7 +772,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 );
                             }
                             return (
-                                <span key={colIndex} className={style.cell} style={cellStyle}>
+                                <span key={colIndex} className={style.cell} style={{...cellStyle, color: 'transparent', borderColor: 'transparent'}}>
                                 {cellContent}
                             </span>
                             );
@@ -570,7 +802,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 <p>Right Arrow Right</p>
                 <p>Kill E</p>
                 <p>Task W</p>
-                <p>Sabotage S</p>
+                {/*<p>Sabotage S</p>*/}
             </div>
         </div>
     );

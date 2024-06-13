@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import style from '../CSS/MapGridStyle.module.css';
 import {Player} from '../Player';
 import purple from "../Images/Character_Movement/Purple.png";
@@ -13,16 +13,70 @@ import brown from "../Images/Character_Movement/Brown.jpg";
 import cyan from "../Images/Character_Movement/Cyan.jpg";
 import lime from "../Images/Character_Movement/Lime.jpg";
 import pink from "../Images/Character_Movement/Pink.jpg";
-import pink777 from "../Images/Character_Red_Movement/Red_East_Rigth.png";
-import dead from "../Images/Character_Movement/dead.png";
-import killButton from "../Images/Buttons/Kill_Button.jpg";
 
-import mapImage from '../Images/Maps/Lobby.png';
+import lobbyImage from '../Images/Maps/Lobby.png';
 
+import redImageUp from "../Images/Character_Red_Movement/Red_North_Stand.png";
+import redImageUp2 from "../Images/Character_Red_Movement/Red_North_Right.png";
+import redImageDown from "../Images/Character_Red_Movement/Red_South_Left.png";
+import redImageDown2 from "../Images/Character_Red_Movement/Red_South_Right.png";
+
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import votingboxButton from "../Images/Votingbox/report_player.png";
+import skeldImage from "../Images/Maps/Skeld.png";
+import redImageRight from "../Images/Character_Red_Movement/Red_East_Rigth.png";
+import blueImageRight from "../Images/Character_Blue_Movement/Blue_East_Right.png";
+import cyanImageRight from "../Images/Character_Cyan_Movement/Cyan_East_Right.png";
+import yellowImageRight from "../Images/Character_Yellow_Movement/Yellow_East_Right.png";
+import purpleImageRight from "../Images/Character_Purple_Movement/Purple_East_Right.png";
+import limeImageRight from "../Images/Character_Lime_Movement/Lime_East_Right.png";
+import greenImageRight from "../Images/Character_Green_Movement/Green_East_Right.png";
+import pinkImageRight from "../Images/Character_Pink_Movement/Pink_East_Right.png";
+import orangeImageRight from "../Images/Character_Orange_Movement/Orange_East_Right.png";
+import whiteImageRight from "../Images/Character_White_Movement/White_East_Right.png";
+import blackImageRight from "../Images/Character_Black_Movement/Black_East_Right.png";
+import brownImageRight from "../Images/Character_Brown_Movement/Brown_East_Right.png";
+import redImageRight2 from "../Images/Character_Red_Movement/Red_East_Left.png";
+import blueImageRight2 from "../Images/Character_Blue_Movement/Blue_East_Left.png";
+import cyanImageRight2 from "../Images/Character_Cyan_Movement/Cyan_East_Left.png";
+import yellowImageRight2 from "../Images/Character_Yellow_Movement/Yellow_East_Left.png";
+import purpleImageRight2 from "../Images/Character_Purple_Movement/Purple_East_Left.png";
+import limeImageRight2 from "../Images/Character_Lime_Movement/Lime_East_Left.png";
+import greenImageRight2 from "../Images/Character_Green_Movement/Green_East_Left.png";
+import pinkImageRight2 from "../Images/Character_Pink_Movement/Pink_East_Left.png";
+import orangeImageRight2 from "../Images/Character_Orange_Movement/Orange_East_Left.png";
+import whiteImageRight2 from "../Images/Character_White_Movement/White_East_Left.png";
+import blackImageRight2 from "../Images/Character_Black_Movement/Black_East_Left.png";
+import brownImageRight2 from "../Images/Character_Brown_Movement/Brown_East_Left.png";
+import redImageLeft from "../Images/Character_Red_Movement/Red_West_Left.png";
+import blueImageLeft from "../Images/Character_Blue_Movement/Blue_West_Left.png";
+import cyanImageLeft from "../Images/Character_Cyan_Movement/Cyan_West_Left.png";
+import yellowImageLeft from "../Images/Character_Yellow_Movement/Yellow_West_Left.png";
+import purpleImageLeft from "../Images/Character_Purple_Movement/Purple_West_Left.png";
+import limeImageLeft from "../Images/Character_Lime_Movement/Lime_West_Left.png";
+import greenImageLeft from "../Images/Character_Green_Movement/Green_West_Left.png";
+import pinkImageLeft from "../Images/Character_Pink_Movement/Pink_West_Left.png";
+import orangeImageLeft from "../Images/Character_Orange_Movement/Orange_West_Left.png";
+import whiteImageLeft from "../Images/Character_White_Movement/White_West_Left.png";
+import blackImageLeft from "../Images/Character_Black_Movement/Black_West_Left.png";
+import brownImageLeft from "../Images/Character_Brown_Movement/Brown_West_Left.png";
+import redImageLeft2 from "../Images/Character_Red_Movement/Red_West_Right.png";
+import blueImageLeft2 from "../Images/Character_Blue_Movement/Blue_West_Right.png";
+import cyanImageLeft2 from "../Images/Character_Cyan_Movement/Cyan_West_Right.png";
+import yellowImageLeft2 from "../Images/Character_Yellow_Movement/Yellow_West_Right.png";
+import purpleImageLeft2 from "../Images/Character_Purple_Movement/Purple_West_Right.png";
+import limeImageLeft2 from "../Images/Character_Lime_Movement/Lime_West_Right.png";
+import greenImageLeft2 from "../Images/Character_Green_Movement/Green_West_Right.png";
+import pinkImageLeft2 from "../Images/Character_Pink_Movement/Pink_West_Right.png";
+import orangeImageLeft2 from "../Images/Character_Orange_Movement/Orange_West_Right.png";
+import whiteImageLeft2 from "../Images/Character_White_Movement/White_West_Right.png";
+import blackImageLeft2 from "../Images/Character_Black_Movement/Black_West_Right.png";
+import brownImageLeft2 from "../Images/Character_Brown_Movement/Brown_West_Right.png";
 
 interface MapGridProps {
     currentPlayer: Player;
-    otherPlayers: Player[];
+    otherPlayers: any[];
 }
 
 const colorToImageUrl = {
@@ -38,27 +92,186 @@ const colorToImageUrl = {
     cyan: cyan,
     lime: lime,
     pink: pink,
-    dead: dead,
 };
 
-const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers}) => {
+const Lobby: React.FC<MapGridProps> = ({currentPlayer, otherPlayers}) => {
 
     const [gridKey, setGridKey] = useState(0);
     const [otherPlayerImages, setOtherPlayerImages] = useState({});
     const [playerImage, setPlayerImage] = useState(colorToImageUrl[currentPlayer.getColor()]);
     const [playerPosition, setPlayerPosition] = useState({ y: currentPlayer.getY(), x: currentPlayer.getX() });
-    const [otherPlayerPositions, setOtherPlayerPositions] = useState(
-        otherPlayers.reduce((acc, player) => {
-            acc[player.getSessionId()] = { x: player.getX(), y: player.getY() };
-            return acc;
-        }, {})
-    );
+    const containerRef = useRef(null);
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const [playerDirection, setPlayerDirection] = useState('');
+    const [otherPlayer, setOtherPlayer] = useState(otherPlayers);
 
     useEffect(() => {
-        // Update the key whenever currentPlayer or otherPlayers change
+        const updateScrollPosition = () => {
+            if (containerRef.current && canvasRef.current) {
+                const centerX = containerRef.current.offsetWidth / 2;
+                const centerY = containerRef.current.offsetHeight / 2;
+
+                const playerX = currentPlayer.getX() * 30;
+                const playerY = currentPlayer.getY() * 30;
+
+                containerRef.current.scrollLeft = playerX - centerX;
+                containerRef.current.scrollTop = playerY - centerY;
+            }
+        };
+        updateScrollPosition();
+    }, [currentPlayer.getX(), currentPlayer.getY()]);
+
+    useEffect(() => {
+        let imageSrc;
+        switch (playerDirection) {
+            case 'right':
+                if(currentPlayer.getColor() === 'red') {
+                    imageSrc = redImageRight;
+                } else if(currentPlayer.getColor() === 'blue') {
+                    imageSrc = blueImageRight;
+                } else if(currentPlayer.getColor() === 'cyan') {
+                    imageSrc = cyanImageRight;
+                } else if(currentPlayer.getColor() === 'yellow') {
+                    imageSrc = yellowImageRight;
+                } else if(currentPlayer.getColor() === 'purple') {
+                    imageSrc = purpleImageRight;
+                } else if(currentPlayer.getColor() === 'lime') {
+                    imageSrc = limeImageRight;
+                } else if(currentPlayer.getColor() === 'green') {
+                    imageSrc = greenImageRight;
+                } else if(currentPlayer.getColor() === 'pink') {
+                    imageSrc = pinkImageRight;
+                } else if(currentPlayer.getColor() === 'orange') {
+                    imageSrc = orangeImageRight;
+                } else if(currentPlayer.getColor() === 'white') {
+                    imageSrc = whiteImageRight;
+                } else if(currentPlayer.getColor() === 'black') {
+                    imageSrc = blackImageRight;
+                } else if(currentPlayer.getColor() === 'brown') {
+                    imageSrc = brownImageRight;
+                } else {
+                    imageSrc = redImageRight;
+                }
+                break;
+            case 'right2':
+                if(currentPlayer.getColor() === 'red') {
+                    imageSrc = redImageRight2;
+                } else if(currentPlayer.getColor() === 'blue') {
+                    imageSrc = blueImageRight2;
+                } else if(currentPlayer.getColor() === 'cyan') {
+                    imageSrc = cyanImageRight2;
+                } else if(currentPlayer.getColor() === 'yellow') {
+                    imageSrc = yellowImageRight2;
+                } else if(currentPlayer.getColor() === 'purple') {
+                    imageSrc = purpleImageRight2;
+                } else if(currentPlayer.getColor() === 'lime') {
+                    imageSrc = limeImageRight2;
+                } else if(currentPlayer.getColor() === 'green') {
+                    imageSrc = greenImageRight2;
+                } else if(currentPlayer.getColor() === 'pink') {
+                    imageSrc = pinkImageRight2;
+                } else if(currentPlayer.getColor() === 'orange') {
+                    imageSrc = orangeImageRight2;
+                } else if(currentPlayer.getColor() === 'white') {
+                    imageSrc = whiteImageRight2;
+                } else if(currentPlayer.getColor() === 'black') {
+                    imageSrc = blackImageRight2;
+                } else if(currentPlayer.getColor() === 'brown') {
+                    imageSrc = brownImageRight2;
+                } else {
+                    imageSrc = redImageRight2;
+                }
+                break;
+            case 'left':
+                if(currentPlayer.getColor() === 'red') {
+                    imageSrc = redImageLeft;
+                } else if(currentPlayer.getColor() === 'blue') {
+                    imageSrc = blueImageLeft;
+                } else if(currentPlayer.getColor() === 'cyan') {
+                    imageSrc = cyanImageLeft;
+                } else if(currentPlayer.getColor() === 'yellow') {
+                    imageSrc = yellowImageLeft;
+                } else if(currentPlayer.getColor() === 'purple') {
+                    imageSrc = purpleImageLeft;
+                } else if(currentPlayer.getColor() === 'lime') {
+                    imageSrc = limeImageLeft;
+                } else if(currentPlayer.getColor() === 'green') {
+                    imageSrc = greenImageLeft;
+                } else if(currentPlayer.getColor() === 'pink') {
+                    imageSrc = pinkImageLeft;
+                } else if(currentPlayer.getColor() === 'orange') {
+                    imageSrc = orangeImageLeft;
+                } else if(currentPlayer.getColor() === 'white') {
+                    imageSrc = whiteImageLeft;
+                } else if(currentPlayer.getColor() === 'black') {
+                    imageSrc = blackImageLeft;
+                } else if(currentPlayer.getColor() === 'brown') {
+                    imageSrc = brownImageLeft;
+                } else {
+                    imageSrc = redImageLeft;
+                }
+                break;
+            case 'left2':
+                if(currentPlayer.getColor() === 'red') {
+                    imageSrc = redImageLeft2;
+                } else if(currentPlayer.getColor() === 'blue') {
+                    imageSrc = blueImageLeft2;
+                } else if(currentPlayer.getColor() === 'cyan') {
+                    imageSrc = cyanImageLeft2;
+                } else if(currentPlayer.getColor() === 'yellow') {
+                    imageSrc = yellowImageLeft2;
+                } else if(currentPlayer.getColor() === 'purple') {
+                    imageSrc = purpleImageLeft2;
+                } else if(currentPlayer.getColor() === 'lime') {
+                    imageSrc = limeImageLeft2;
+                } else if(currentPlayer.getColor() === 'green') {
+                    imageSrc = greenImageLeft2;
+                } else if(currentPlayer.getColor() === 'pink') {
+                    imageSrc = pinkImageLeft2;
+                } else if(currentPlayer.getColor() === 'orange') {
+                    imageSrc = orangeImageLeft2;
+                } else if(currentPlayer.getColor() === 'white') {
+                    imageSrc = whiteImageLeft2;
+                } else if(currentPlayer.getColor() === 'black') {
+                    imageSrc = blackImageLeft2;
+                } else if(currentPlayer.getColor() === 'brown') {
+                    imageSrc = brownImageLeft2;
+                } else {
+                    imageSrc = redImageLeft2;
+                }
+                break;
+            case 'up':
+                imageSrc = redImageUp;
+                break;
+            case 'up2':
+                imageSrc = redImageUp2;
+                break;
+            case 'down':
+                imageSrc = redImageDown;
+                break;
+            case 'down2':
+                imageSrc = redImageDown2;
+                break;
+            default:
+                imageSrc = redImageRight;
+        }
+
+        setPlayerImage(imageSrc);
+    }, [playerDirection]);
+
+    const [loadedImage, setLoadedImage] = useState(null);
+
+    useEffect(() => {
+        const image = new Image();
+        image.src = lobbyImage;
+        image.onload = () => {
+            setLoadedImage(image);
+        };
+    }, [skeldImage]);
+
+    useEffect(() => {
         setGridKey(prevKey => prevKey + 1);
     }, [currentPlayer, otherPlayers]);
-
 
     const playerImages = {
         red: "../images/Character_Movement/red.jpg",
@@ -89,15 +302,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers}) => {
 
     const updatePlayerImage = (player) => {
         let newImage;
-        if (!player.getMovable()) {
-            newImage = colorToImageUrl['dead'];
-            newImage = lime;
-        } else if (player.getColor() === 'dead') {
-            newImage = colorToImageUrl['dead'];
-        } else {
-            // newImage = lime;
-            newImage = colorToImageUrl[player.getColor()];
-        }
+        newImage = colorToImageUrl[player.getColor()];
         setOtherPlayerImages(prevImages => ({...prevImages, [player.getSessionId()]: newImage}));
     };
 
@@ -108,132 +313,325 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers}) => {
         [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
-        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1],
-        [1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1],
-        [1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1],
-        [1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
-        [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+        [1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+        [1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
+        [1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1],
+        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1],
+        [1, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1],
+        [1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ];
 
+    const visibilityRadius = 5;
+
+    function isCellVisible(playerX, playerY, cellX, cellY) {
+        const distance = Math.abs(cellX - playerX) + Math.abs(cellY - playerY);
+        return distance <= visibilityRadius;
+    }
+
     useEffect(() => {
-        setPlayerPosition({ y: currentPlayer.getY(), x: currentPlayer.getX() });
-        setOtherPlayerPositions(
-            otherPlayers.reduce((acc, player) => {
-                acc[player.getSessionId()] = { y: player.getY(), x: player.getX() };
-                return acc;
-            }, {})
-        );
-    }, [currentPlayer, otherPlayers]);
+        const context = canvasRef.current?.getContext('2d');
+        if (context) {
+            const image = new Image();
+            image.src = lobbyImage;
 
+            image.onload = () => {
+                context.setTransform(1, 0, 0, 1, 0, 0);
+                context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
-    const movePlayer = (y, x) => {
-        if (grid[y] && grid[y][x] === 0) { // Check if the target cell is walkable
-            setPlayerPosition({ y, x });
+                const scaleFactor = 1;
+                context.scale(scaleFactor, scaleFactor);
+
+                context.drawImage(image, 0, 0, image.width, image.height, 0, 0, image.width, image.height);
+            };
         }
-    };
+    }, [currentPlayer, lobbyImage]);
 
     useEffect(() => {
-        window.addEventListener('keydown', handleKeyDown);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
+        const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
+        const client = Stomp.over(socket);
+        client.connect({}, () => {
+            client.subscribe(`/topic/movement/lobby/north/${currentPlayer.getUserName()}`, (message) => {
+                const response = JSON.parse(message.body);
+                currentPlayer.setX(response.x);
+                currentPlayer.setY(response.y);
+                setPlayerPosition({ x: response.x, y: response.y });
+                if (currentPlayer.getY() % 2 === 0) {
+                    setPlayerDirection('up');
+                } else if (currentPlayer.getY() % 2 !== 0) {
+                    setPlayerDirection('up2');
+                }
+            });
+
+            client.subscribe(`/topic/movement/lobby/south/${currentPlayer.getUserName()}`, (message) => {
+                const response = JSON.parse(message.body);
+                currentPlayer.setX(response.x);
+                currentPlayer.setY(response.y);
+                setPlayerPosition({ x: response.x, y: response.y });
+                if (currentPlayer.getY() % 2 === 0) {
+                    setPlayerDirection('down');
+                } else if (currentPlayer.getY() % 2 !== 0) {
+                    setPlayerDirection('down2');
+                }
+            });
+
+            client.subscribe(`/topic/movement/lobby/west/${currentPlayer.getUserName()}`, (message) => {
+                const response = JSON.parse(message.body);
+                currentPlayer.setX(response.x);
+                currentPlayer.setY(response.y);
+                setPlayerPosition({ x: response.x, y: response.y });
+                // setPlayerDirection('left');
+                if (currentPlayer.getY() % 2 === 0) {
+                    setPlayerDirection('left');
+                } else if (currentPlayer.getY() % 2 !== 0) {
+                    setPlayerDirection('left2');
+                }
+            });
+
+            client.subscribe(`/topic/movement/lobby/east/${currentPlayer.getUserName()}`, (message) => {
+                const response = JSON.parse(message.body);
+                currentPlayer.setX(response.x);
+                currentPlayer.setY(response.y);
+                setPlayerPosition({ x: response.x, y: response.y });
+                if (currentPlayer.getX() % 2 === 0) {
+                    setPlayerDirection('right');
+                } else if (currentPlayer.getX() % 2 !== 0) {
+                    setPlayerDirection('right2');
+                }
+            });
+
+            client.subscribe('/topic/movement/lobby/north/otherPlayer/', (message) => {
+                const response = JSON.parse(message.body);
+                console.log(response.userName + '  ' + response.sessionId)
+                setOtherPlayer((prevOtherPlayers) => {
+                    const updatedPlayers = prevOtherPlayers.map((p) => {
+                        if (p.getSessionId() === response.sessionId) {
+                            p.setX(response.x);
+                            p.setY(response.y);
+                        }
+                        return p;
+                    });
+                    return updatedPlayers;
+                })
+            });
+
+            client.subscribe('/topic/movement/lobby/south/otherPlayer/', (message) => {
+                const response = JSON.parse(message.body);
+                setOtherPlayer((prevOtherPlayers) => {
+                    const updatedPlayers = prevOtherPlayers.map((p) => {
+                        if (p.getSessionId() === response.sessionId) {
+                            p.setX(response.x);
+                            p.setY(response.y);
+                        }
+                        return p;
+                    });
+                    return updatedPlayers;
+                })
+            });
+
+            client.subscribe('/topic/movement/lobby/west/otherPlayer/', (message) => {
+                const response = JSON.parse(message.body);
+                setOtherPlayer((prevOtherPlayers) => {
+                    const updatedPlayers = prevOtherPlayers.map((p) => {
+                        if (p.getSessionId() === response.sessionId) {
+                            p.setX(response.x);
+                            p.setY(response.y);
+                        }
+                        return p;
+                    });
+                    return updatedPlayers;
+                })
+            });
+
+            client.subscribe('/topic/movement/lobby/east/otherPlayer/', (message) => {
+                const response = JSON.parse(message.body);
+                setOtherPlayer((prevOtherPlayers) => {
+                    const updatedPlayers = prevOtherPlayers.map((p) => {
+                        if (p.getSessionId() === response.sessionId) {
+                            p.setX(response.x);
+                            p.setY(response.y);
+                        }
+                        return p;
+                    });
+                    return updatedPlayers;
+                })
+            });
+
+            // client.subscribe(`/topic/lobby/disconnect/${currentPlayer.getUserName()}`, () => {
+            client.subscribe('/topic/startGame/', () => {
+
+                console.log('UNSUBCRIBE IN LOBBY.TSX')
+
+                client.unsubscribe(`/topic/movement/lobby/north/${currentPlayer.getUserName()}`);
+                client.unsubscribe(`/topic/movement/lobby/south/${currentPlayer.getUserName()}`);
+                client.unsubscribe(`/topic/movement/lobby/west/${currentPlayer.getUserName()}`);
+                client.unsubscribe(`/topic/movement/lobby/east/${currentPlayer.getUserName()}`);
+
+                client.unsubscribe('/topic/movement/lobby/otherPlayer/');
+                client.unsubscribe('/topic/movement/lobby/otherPlayer/');
+                client.unsubscribe('/topic/movement/lobby/otherPlayer/');
+                client.unsubscribe('/topic/movement/lobby/otherPlayer/');
+
+                client.disconnect(() => {
+                    console.log('DISCONNECTED IN LOBBY.TSX')
+                });
+            });
+        });
+
+        const handleMove = (event: string) => {
+            switch (event) {
+                case 'ArrowUp':
+                    sendMovementNorth();
+                    break;
+                case 'ArrowDown':
+                    sendMovementSouth();
+                    break;
+                case 'ArrowLeft':
+                    sendMovementWest();
+                    break;
+                case 'ArrowRight':
+                    sendMovementEast();
+                    break;
+                default:
+                    break;
+            }
         };
-    }, [playerPosition]);
 
-    const handleKeyDown = (event) => {
-        const { y, x } = playerPosition;
-        let newX = x;
-        let newY = y;
-        switch (event.key) {
-            case 'ArrowUp':
-                // if(grid[y-1][x] === 0) {
-                    newY = y - 1;
-
-                // }
-                break;
-            case 'ArrowDown':
-                // if (grid[y + 1][x] === 0) {
-                    newY = y + 1;
-                // }
-                break;
-            case 'ArrowLeft':
-                // if (grid[y][x - 1] === 0) {
-                    newX = x - 1;
-                // }
-                break;
-            case 'ArrowRight':
-                // if (grid[y][x + 1] === 0) {
-                    newX = x + 1;
-                // }
-                break;
-            default:
+        function sendMovementNorth() {
+            if(!currentPlayer.getMovable()) {
                 return;
+            } else {
+                const payload = JSON.stringify({
+                    userName: currentPlayer.getUserName(),
+                    action: currentPlayer.getAction(),
+                    sessionId: currentPlayer.getSessionId(),
+                    color: currentPlayer.getColor(),
+                    x: currentPlayer.getX(),
+                    y: currentPlayer.getY()
+                });
+                client.send(`/app/movement/lobby/north/${currentPlayer.getUserName()}`, {}, payload);
+            }
         }
-        if (newX >= 0 && newX < grid[0].length && newY >= 0 && newY < grid.length && grid[newY][newX] === 0) {
-            setPlayerPosition({ y: newY, x: newX });
+
+        function sendMovementSouth() {
+            if(!currentPlayer.getMovable()) {
+                return;
+            } else {
+                const payload = JSON.stringify({
+                    userName: currentPlayer.getUserName(),
+                    action: currentPlayer.getAction(),
+                    sessionId: currentPlayer.getSessionId(),
+                    color: currentPlayer.getColor(),
+                    x: currentPlayer.getX(),
+                    y: currentPlayer.getY()
+                });
+                client.send(`/app/movement/lobby/south/${currentPlayer.getUserName()}`, {}, payload);
+            }
         }
-    };
+
+        function sendMovementWest() {
+            if(!currentPlayer.getMovable()) {
+                return;
+            } else {
+                const payload = JSON.stringify({
+                    userName: currentPlayer.getUserName(),
+                    action: currentPlayer.getAction(),
+                    sessionId: currentPlayer.getSessionId(),
+                    color: currentPlayer.getColor(),
+                    x: currentPlayer.getX(),
+                    y: currentPlayer.getY()
+                });
+                client.send(`/app/movement/lobby/west/${currentPlayer.getUserName()}`, {}, payload);
+            }
+        }
+
+        function sendMovementEast() {
+            if(!currentPlayer.getMovable()) {
+                return;
+            } else {
+                const payload = JSON.stringify({
+                    userName: currentPlayer.getUserName(),
+                    action: currentPlayer.getAction(),
+                    sessionId: currentPlayer.getSessionId(),
+                    color: currentPlayer.getColor(),
+                    x: currentPlayer.getX(),
+                    y: currentPlayer.getY()
+                });
+                client.send(`/app/movement/lobby/east/${currentPlayer.getUserName()}`, {}, payload);
+            }
+        }
+
+        window.addEventListener('keydown', (event) => {
+            handleMove(event.key);
+        });
+
+        return () => {
+            window.removeEventListener('keydown', (event) => {
+                handleMove(event.key);
+            });
+        };
+    }, [currentPlayer]);
 
     return (
-        <div className={style.mapContainer} style={{
-            position: 'relative',
-            width: '130%',
-            height: '130%',
-            top: '180px',
-            left: '20px',
-            // transform: 'translate(-50%, -50%)',
-            overflow: 'auto',
-            overflowX: 'auto',
-            overflowY: 'auto',
-            backgroundImage: `url(${mapImage})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
+        <div ref={containerRef} style={{
+            position: 'absolute', width: '120%', height: '100%', top: 200, left: 400, overflow: 'auto',
+            overflowX: 'hidden', overflowY: 'hidden'
         }}>
+            <canvas ref={canvasRef} id="game" width="1600" height="1000"
+                    style={{border: '1px solid black', display: 'block'}}></canvas>
+            <div key={gridKey} className={style.root} style={{position: 'absolute', top: 50, left: 90}}>
+                {grid.map((row, rowIndex) => (
+                    <div key={rowIndex} className={style.row}>
+                        {row.map((cell, colIndex) => {
+                            const otherPlayer = otherPlayers.find(player => player.getX() === colIndex && player.getY() === rowIndex);
+                            const cellContent = cell;
+                            // const isVisible = isCellVisible(currentPlayer.getX(), currentPlayer.getY(), colIndex, rowIndex);
 
-            {grid.map((row, rowIndex) => (
-                <div key={rowIndex} style={{ display: 'flex' }}>
-                    {row.map((cell, colIndex) => {
-                        const cellStyle = cell === 1
-                            ? {
+                            const cellStyle = {
+                                backgroundSize: 'cover',
+                                width: '30px',
+                                height: '30px'
+                            };
 
-                            // backgroundColor: 'rgba(255, 255, 255, 0.5)',
-
-                                width: '30px', height: '30px' }
-                            : { width: '30px', height: '30px' };
-                        return <div key={colIndex} style={cellStyle}></div>;
-                    })}
-                </div>
-            ))}
-
-            <div className={style.playerIcon} style={{
-                left: `${playerPosition.x * 30}px`,
-                top: `${playerPosition.y * 30}px`,
-                backgroundImage: `url(${playerImage})`,
-                backgroundSize: 'cover',
-                width: '30px',
-                height: '30px',
-                position: 'absolute'
-            }}/>
-
-            {otherPlayers.map(player => (
-                <div key={player.getSessionId()} className={style.playerIcon} style={{
-                    left: `${player.getX() * 30}px`,  // Multiply by cell width
-                    top: `${player.getY() * 30}px`,  // Multiply by cell height
-                    backgroundImage: `url(${colorToImageUrl[player.getColor()]})`,
-                    backgroundSize: 'cover',
-                    width: '30px',
-                    height: '30px',
-                    position: 'absolute'
-                }}/>
-            ))}
+                            if (otherPlayer) {
+                                const playerImage = otherPlayerImages[otherPlayer.getSessionId()];
+                                return (
+                                    <span style={{
+                                        backgroundImage: `url(${playerImage})`,
+                                        backgroundSize: 'cover',
+                                        width: '30px',
+                                        height: '30px'
+                                    }}>
+                                    </span>
+                                );
+                            } else if (rowIndex === currentPlayer.getY() && colIndex === currentPlayer.getX()) {
+                                return (
+                                    <span style=
+                                              {{
+                                                  backgroundImage: `url(${playerImage})`,
+                                                  backgroundSize: 'cover',
+                                                  width: '30px',
+                                                  height: '30px'
+                                              }}>
+                                    </span>
+                                );
+                            }
+                            return (
+                                <span key={colIndex} className={style.cell} style={{...cellStyle, color: 'transparent', borderColor: 'transparent'}}>
+                                {cellContent}
+                            </span>
+                            );
+                        })}
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
 
-export default MapGrid;
+export default Lobby;

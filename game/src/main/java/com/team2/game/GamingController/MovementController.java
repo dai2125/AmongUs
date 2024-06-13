@@ -43,6 +43,8 @@ public class MovementController {
     private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
     @Autowired
     private GameInstance gameInstance;
+    @Autowired
+    private GroupManager groupManager;
 
     @EventListener
     public void sessionConnectEvent(SessionConnectEvent event) throws InterruptedException, JsonProcessingException {
@@ -77,6 +79,7 @@ public class MovementController {
                     System.out.println("Thread was interrupted: " + e.getMessage());
                 }
                 messagingTemplate.convertAndSend("/topic/startGame/" + user.getGameId(), "test");
+                messagingTemplate.convertAndSend("/topic/startGame/", "test");
 
                 registerService.sendAlready = true;
             }
@@ -106,8 +109,10 @@ public class MovementController {
 
     @MessageMapping("/gimmework/")
     public void processGimmeWork(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+        System.out.println("Hello from GIMMEWORK");
         System.out.println("USERNAME " + user.getSessionId());
         TaskDTO task = registerService.getTask();
+        System.out.println("GGGG " + task.getRole());
         messagingTemplate.convertAndSend("/topic/gimmework/" + user.getSessionId(), new ObjectMapper().writeValueAsString(task));
 
     }
@@ -214,9 +219,9 @@ public class MovementController {
 
 
 
-    @MessageMapping("/yourAGhostNow/")
+    @MessageMapping("/yourAGhostNow/{userName}")
     public void processGhost(@Payload User user) throws JsonProcessingException {
-        messagingTemplate.convertAndSend("/topic/yourAGhostNow/", new ObjectMapper().writeValueAsString("ghost"));
+        messagingTemplate.convertAndSend("/topic/yourAGhostNow/" + user.getUserName(), new ObjectMapper().writeValueAsString("ghost"));
 
     }
 
@@ -224,6 +229,7 @@ public class MovementController {
     public void reportButtonPressed(@Payload User user) throws JsonProcessingException {
         // TODO wrong name is send, the victim must be send not the reporter
         messagingTemplate.convertAndSend("/topic/votingActive/", new ObjectMapper().writeValueAsString((user.getUserName())));
+        countdownVoting();
     }
 
     public HashMap<String, Integer> votingList = new HashMap<>();
@@ -237,8 +243,7 @@ public class MovementController {
         // TODO if the player have the same votes and the votes are the maximum then no one gets ejected
         // TODO there must be a counter in the votingbox if someone doesnt vote it muss be called an empty vote
         System.out.println("VOTING BUTTON PRESSED: " + user.getAction());
-        System.out.println("UserList: " + registerService.userList.size() + " " + registerService.userList);
-
+        System.out.println("UserList: " + groupManager.getGameInstance(user.getGameId()).getUserList().size() + " " + groupManager.getGameInstance(user.getGameId()).getUserList());
 
         if(votingList.containsKey(user.getAction())) {
             votingList.compute(user.getAction(), (k, counter) -> counter + 1);
@@ -247,7 +252,7 @@ public class MovementController {
         }
 
         if(!votingActive) {
-            counter = registerService.userList.size();
+            counter = groupManager.getGameInstance(user.getGameId()).getUserList().size();
             votingActive = true;
         }
 
@@ -263,23 +268,37 @@ public class MovementController {
 
                 }
             }
+
             System.out.println("MAX: " + max + " MAXKEY: " + maxKey);
 
-            for(int i = 0; i < registerService.userList.size(); i++) {
-                if(registerService.userList.get(i).getUserName().equals(maxKey)) {
-                    registerService.userList.remove(i);
+            boolean votedForImpostor = false;
+
+            for (int i = 0; i < groupManager.getGameInstance(user.getGameId()).getUserList().size(); i++) {
+                if(groupManager.getGameInstance(user.getGameId()).getUserList().get(i).getUserName().equals(maxKey) && groupManager.getGameInstance(user.getGameId()).getUserList().get(i).getImpostor())  {
+                    votedForImpostor = true;
                 }
             }
 
-            System.out.println("USERLIST SIZE: " + registerService.userList.size() +  " " + registerService.userList);
+            for(int i = 0; i < groupManager.getGameInstance(user.getGameId()).getUserList().size(); i++) {
+                if(groupManager.getGameInstance(user.getGameId()).getUserList().get(i).getUserName().equals(maxKey)) {
+                    groupManager.getGameInstance(user.getGameId()).getUserList().remove(i);
+                }
+            }
+
+            System.out.println("USERLIST SIZE: " + groupManager.getGameInstance(user.getGameId()).getUserList().size() +  " " + groupManager.getGameInstance(user.getGameId()).getUserList());
 
             votingList.clear();
             votingActive = false;
-            counter = registerService.userList.size();
+            counter = groupManager.getGameInstance(user.getGameId()).getUserList().size();
 
 
-            // TODO if maxKey is the impostor then convertAndSend crewmateWins
-            if(registerService.userList.size() == 2) {
+            if(maxKey == null) {
+                messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
+                messagingTemplate.convertAndSend("/topic/noOneGotEjected/", new ObjectMapper().writeValueAsString("noOneGotEjected"));
+            } else if(votedForImpostor) {
+                messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
+                messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("impostorWins"));
+            } else if(registerService.userList.size() == 2) {
                 messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
                 messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
             } else {
@@ -288,7 +307,18 @@ public class MovementController {
             }
         }
 
+    }
 
+    public void countdownVoting() throws JsonProcessingException {
+        for(int i = 30; i >= 0; i--) {
+            try {
+                Thread.sleep(1000);
+                messagingTemplate.convertAndSend("/topic/countdownVoting/", new ObjectMapper().writeValueAsString(i));
 
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Thread was interrupted: " + e.getMessage());
+            }
+        }
     }
 }

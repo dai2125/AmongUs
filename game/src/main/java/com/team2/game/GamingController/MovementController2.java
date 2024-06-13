@@ -23,7 +23,7 @@ public class MovementController2 {
     private SimpMessagingTemplate messagingTemplate;
 
     @Autowired
-    private GameInstance gameInstance;
+    private AirSystemService airSystemService;
 
     @EventListener
     public void sessionConnectEvent(SessionConnectEvent event) throws InterruptedException, JsonProcessingException {
@@ -41,7 +41,6 @@ public class MovementController2 {
 
             messagingTemplate.convertAndSend("/topic/movement/north/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/north/otherPlayer/", new ObjectMapper().writeValueAsString(user));
-
         }
     }
 
@@ -74,6 +73,15 @@ public class MovementController2 {
 
             messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/east/otherPlayer/", new ObjectMapper().writeValueAsString(user));
+        }
+    }
+
+    @MessageMapping("/airsystem/${userName}")
+    public void processAirSystem(@Payload User user) throws JsonProcessingException {
+        System.out.println("Air System: y: " + user.getY() + " x: " + user.getX());
+
+        if(airSystemService.isAirSystem(user.getY(), user.getX())) {
+            messagingTemplate.convertAndSend("/topic/airsystem/" + user.getUserName(), new ObjectMapper().writeValueAsString("airSystem"));
         }
     }
 

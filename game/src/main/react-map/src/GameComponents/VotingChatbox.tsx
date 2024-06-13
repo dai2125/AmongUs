@@ -36,7 +36,6 @@ function VotingChatbox({ playerColor, playerName }) {
             stompClient.subscribe('/topic/ingoing/', message => {
                 const messageData = JSON.parse(message.body);
                 if (messageData.userName !== userId) {
-                    console.log('RECEIVED MESSAGE messageData.userName: ', messageData.userName + ' userId: ', userId);
                     setMessages(prev => [...prev, {
                         userId: messageData.userName,
                         text: messageData.message,
@@ -51,7 +50,6 @@ function VotingChatbox({ playerColor, playerName }) {
 
             stompClient.subscribe(`/topic/ingoing/${ playerName }`, message => {
                 const messageData = JSON.parse(message.body);
-                console.log('RECEIVED MESSAGE2 messageData.userName: ', messageData.userName + ' userId: ', userId);
 
                 setMessages(prev => [...prev, {
                     userId: messageData.userName,
@@ -79,7 +77,6 @@ function VotingChatbox({ playerColor, playerName }) {
 
     const sendMessage = () => {
         if (inputValue.trim() !== '') {
-            console.log('SENDING MESSAGE: ' + playerName);
             // client.send('/app/ingoing/', {}, JSON.stringify({
             client.send(`/app/ingoing/${userId}`, {}, JSON.stringify({
                 'userName': playerName,

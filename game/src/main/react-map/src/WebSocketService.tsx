@@ -166,7 +166,7 @@ class WebSocketService {
                     // TODO Dead Body stays on the x y coordinate
                     console.log('You are dead now');
                     playerRef.current.setMovable(false);
-                    playerRef.current.setColor("dead");
+                    playerRef.current.setColor('dead');
                     this.dead();
                     // playerRef.current.setImage(deadPlayer.image);
                 });
@@ -192,7 +192,9 @@ class WebSocketService {
                     this.updateTasks();
                 });
 
-                this.client.subscribe(`/topic/crewmateWins/${playerRef.current.getGameId()}`, () => {
+                // this.client.subscribe(`/topic/crewmateWins/${playerRef.current.getGameId()}`, () => {
+                this.client.subscribe('/topic/crewmateWins/', () => {
+
                     // TODO
                     this.crewmateWins();
                 });
@@ -225,42 +227,7 @@ class WebSocketService {
             //     setOtherPlayers([]);
             // });
 
-            this.client.subscribe(`/topic/movement/${playerRef.current.getUserName()}`, (message) => {
-                const movementData = JSON.parse(message.body);
-
-                if(movementData.sessionId === playerRef.current.getSessionId()) {
-                    this.playerRef.current.setX(movementData.x);
-                    this.playerRef.current.setY(movementData.y);
-                }
-            })
-            // })
-
-            this.client.subscribe('/topic/movement/', (message) => {
-                const movementData = JSON.parse(message.body);
-
-                if(movementData.sessionId === playerRef.current.getSessionId()) {
-                    this.playerRef.current.setX(movementData.x);
-                    this.playerRef.current.setY(movementData.y);
-                }
-
-                setOtherPlayers((prevOtherPlayers) => {
-                    const updatedPlayers = prevOtherPlayers.map((p) => {
-                        if (p.getSessionId() === movementData.sessionId) {
-                            p.setX(movementData.x);
-                            p.setY(movementData.y);
-
-                        }
-                        return p;
-                    });
-                    return updatedPlayers;
-                })
-            })
-
-
             // this.client.subscribe(`/topic/someoneGotKilled/${playerRef.current.getUserName()}`, (message) => {
-
-
-
 
             this.client.subscribe(`/topic/gimmework/${playerRef.current.getUserName()}`, (message) => {
 
@@ -273,11 +240,12 @@ class WebSocketService {
                 this.playerInstance();
             });
 
-            // this.client.subscribe(`/topic/yourAGhostNow/${playerRef.current.getUserName()}`, (message) => {
-            this.client.subscribe('/topic/yourAGhostNow/', () => {
-
+            this.client.subscribe(`/topic/yourAGhostNow/${playerRef.current.getUserName()}`, (message) => {
+            // this.client.subscribe('/topic/yourAGhostNow/', () => {
                 // TODO  dead image
                 // TODO notify all other Players that you are a ghost now
+
+                console.log('Your a ghost now');
 
                 if(playerRef.current.getColor() === 'dead') {
                     console.log('Its a me! Im dead and now a ghost');
@@ -298,6 +266,9 @@ class WebSocketService {
             this.client.subscribe('/topic/votingNotActive/', () => {
                 playerRef.current.setMovable(true);
                 this.votingNotActive();
+                if(playerRef.current.getColor() === 'dead') {
+                    playerRef.current.setColor('ghost');
+                }
                 // this.reportButtonPressed = true;
             });
 
