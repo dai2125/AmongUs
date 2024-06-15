@@ -25,6 +25,12 @@ public class MovementController2 {
     @Autowired
     private AirSystemService airSystemService;
 
+    @Autowired
+    private MapLoader mapLoader;
+
+    @Autowired
+    private BorderService borderService;
+
     @EventListener
     public void sessionConnectEvent(SessionConnectEvent event) throws InterruptedException, JsonProcessingException {
     }
@@ -33,15 +39,23 @@ public class MovementController2 {
     public void sessionDisconnectEvent(SessionDisconnectEvent event) throws JsonProcessingException {
     }
 
+    int moveSpeed = 5;
+
     @MessageMapping("/movement/north/{userName}")
     public void movementNorth(@Payload User user) throws JsonProcessingException {
         if (movementService.wallNorth(user)) {
             user.setY(user.getY() - 1);
             System.out.println("movement/north/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-
             messagingTemplate.convertAndSend("/topic/movement/north/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/north/otherPlayer/", new ObjectMapper().writeValueAsString(user));
         }
+
+//        System.out.println("North: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
+//        if (!borderService.isWithinBorder(user.getY(), user.getX())) {
+//            user.setY(user.getY() - moveSpeed);
+//            System.out.println("movement/north/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
+//            messagingTemplate.convertAndSend("/topic/movement/north/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
+//        }
     }
 
     @MessageMapping("/movement/south/{userName}")
@@ -49,10 +63,16 @@ public class MovementController2 {
         if (movementService.wallSouth(user)) {
             user.setY(user.getY() + 1);
             System.out.println("movement/south/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-
             messagingTemplate.convertAndSend("/topic/movement/south/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/south/otherPlayer/", new ObjectMapper().writeValueAsString(user));
         }
+
+//        System.out.println("South: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
+//        if (!borderService.isWithinBorder(user.getY(), user.getX())) {
+//            user.setY(user.getY() + moveSpeed);
+//            System.out.println("movement/south/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
+//            messagingTemplate.convertAndSend("/topic/movement/south/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
+//        }
     }
 
     @MessageMapping("/movement/west/{userName}")
@@ -63,6 +83,13 @@ public class MovementController2 {
             messagingTemplate.convertAndSend("/topic/movement/west/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/west/otherPlayer/", new ObjectMapper().writeValueAsString(user));
         }
+
+//        System.out.println("West: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
+//        if (!borderService.isWithinBorder(user.getY(), user.getX())) {
+//            user.setY(user.getX() - moveSpeed);
+//            System.out.println("movement/west/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
+//            messagingTemplate.convertAndSend("/topic/movement/west/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
+//        }
     }
 
     @MessageMapping("/movement/east/{userName}")
@@ -70,18 +97,24 @@ public class MovementController2 {
         if (movementService.wallEast(user)) {
             user.setX(user.getX() + 1);
             System.out.println("movement/east/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-
             messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/east/otherPlayer/", new ObjectMapper().writeValueAsString(user));
         }
+
+//        System.out.println("East: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
+//        if (!borderService.isWithinBorder(user.getY(), user.getX())) {
+//            user.setY(user.getY() + moveSpeed);
+//            System.out.println("movement/east/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
+//            messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
+//        }
     }
 
-    @MessageMapping("/airsystem/${userName}")
+    @MessageMapping("/airsystem/{userName}")
     public void processAirSystem(@Payload User user) throws JsonProcessingException {
         System.out.println("Air System: y: " + user.getY() + " x: " + user.getX());
 
-        if(airSystemService.isAirSystem(user.getY(), user.getX())) {
-            messagingTemplate.convertAndSend("/topic/airsystem/" + user.getUserName(), new ObjectMapper().writeValueAsString("airSystem"));
+        if(airSystemService.isAirSystem(user)) {
+            messagingTemplate.convertAndSend("/topic/airsystem/" + user.getUserName(), new ObjectMapper().writeValueAsString(airSystemService.newPositionAirSystem(user)));
         }
     }
 

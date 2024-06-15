@@ -358,6 +358,7 @@ const Lobby: React.FC<MapGridProps> = ({currentPlayer, otherPlayers}) => {
         client.connect({}, () => {
             client.subscribe(`/topic/movement/lobby/north/${currentPlayer.getUserName()}`, (message) => {
                 const response = JSON.parse(message.body);
+
                 currentPlayer.setX(response.x);
                 currentPlayer.setY(response.y);
                 setPlayerPosition({ x: response.x, y: response.y });

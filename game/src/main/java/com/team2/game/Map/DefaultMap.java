@@ -69,7 +69,7 @@ public final class DefaultMap {
 
     public static boolean isAirSystem(int y, int x) {
         if(map[y][x] == 3) {
-            System.out.println("Air System: y: " + y + " x: " + x);
+            System.out.println("DefaultMap.java Air System: y: " + y + " x: " + x);
             return true;
         }
         return false;

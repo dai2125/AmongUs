@@ -49,6 +49,7 @@ import webSocketService from "./WebSocketService";
 import Ejected from "./Screens/Ejected";
 import OtherPlayerEjected from "./Screens/OtherPlayerEjected";
 import NoOneGotEjected from "./Screens/NoOneGotEjected";
+import TestGrid from "./MapGrid/TestGrid";
 
 interface Props {
     userColor: string;
@@ -109,6 +110,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const [showNoOneGotEjected, setNoOneGotEjected] = useState(false);
     const [deadPlayer, setDeadPlayer] = useState('');
     const [showVotingActive, setShowVotingActive] = useState(false);
+    const [showTestGrid, setShowTestGrid] = useState(false);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
     const playerRef = useRef<Player>(new Player(userName, '', '', gameId, '', 2, 2, '', '', '', ''));
@@ -170,7 +172,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         setShowRole(false);
         setShowRoleImpostor(false);
         setShowTaskBar(true);
+        // TODO
         setShowMap(true);
+        // setShowTestGrid(true);
     }
 
     useEffect(() => {
@@ -464,6 +468,10 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
                                 <div></div>}
                         </div>
+                        <div className="col-span-11 border-solid rounded-lg flex justify-center items-center">
+                            {showTestGrid ? <TestGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
+                                <div></div>}
+                        </div>
                         <div>
                             {showTaskList ?
                                 <TaskList tasks={tasks}/> : <div></div>
@@ -481,9 +489,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                         </div>
 
 
-
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
-                            {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []} reportButtonClicked={reportButtonClicked}/> :
+                            {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}
+                                                reportButtonClicked={reportButtonClicked}/> :
                                 <div></div>}
                         </div>
                         {/*<div>*/}
