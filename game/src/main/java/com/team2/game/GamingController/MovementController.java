@@ -43,6 +43,8 @@ public class MovementController {
     private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
     @Autowired
     private GameInstance gameInstance;
+    @Autowired
+    private GroupManager groupManager;
 
     @EventListener
     public void sessionConnectEvent(SessionConnectEvent event) throws InterruptedException, JsonProcessingException {
@@ -98,9 +100,21 @@ public class MovementController {
 
 
     @MessageMapping("/tryConnect/")
-    public void tryConnect() throws JsonProcessingException {
-        System.out.println("Hello from tryConnect");
-        messagingTemplate.convertAndSend("/topic/tryConnect/", gameInstance.groupIsFull());
+    public void tryConnect(@Payload String gameId, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+        System.out.println("Hello from tryConnect " + gameId);
+        int message;
+        if (groupManager.gameExists(gameId)){
+            if ( groupManager.getGameInstance(gameId).groupIsFull()){
+                message = 1;
+            }else {
+                message = 2;
+            }
+        }else {
+            message = 0;
+        }
+
+
+        messagingTemplate.convertAndSend("/topic/tryConnect/",message);
 
     }
 
@@ -114,10 +128,7 @@ public class MovementController {
 
     @MessageMapping("/createGame/")
     public void processCreateGame(@Payload CustomGame game, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        System.out.println("gameId " + game.getGameId());
-        System.out.println("Crewmates" + game.getCrewmates());
-        registerService.getGroupManager().createNewCustomGame(game.getGameId(), game.getCrewmates(), game.getImposters());
-        boolean isSuccessful  = true;
+        boolean isSuccessful  = registerService.getGroupManager().createNewCustomGame(game.getGameId(), game.getCrewmates(), game.getImposters());
         messagingTemplate.convertAndSend("/topic/createGame/", isSuccessful);
 
     }
