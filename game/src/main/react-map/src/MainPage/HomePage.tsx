@@ -64,6 +64,7 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
     const [showCustomPopUp, setCustomPopUp] = useState(false);
     const [gameId, setGameId] = useState('');
 
+
     const handleMyAccount = (event: FormEvent<HTMLFormElement>) => {
 
         event.preventDefault();
@@ -203,6 +204,8 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
            setPopUp(true);
         } else {
             setPopUp(false);
+            setErrorMessage("");
+            setSuccessMessage("");
         }
     }
     const handleCustomPopUp = () => {
@@ -210,26 +213,59 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
             setCustomPopUp(true);
         } else {
             setCustomPopUp(false);
+            setErrorMessage("");
+            setSuccessMessage("");
         }
     }
 
 const clientRef = useRef(null);
 
 
-    // Handler for input change
-    const handleInputChange = (event) => {
-        setGameId(event.target.value);
-    };
-
     const handlePlay = (event) => {
 
         event.preventDefault();
-
         onPlayButtonClick(color, gameId);
-        handlePopUp();
+        handlePopUp()
 
     }
+    const handlePlayPrivate = (event: FormEvent<HTMLFormElement>) =>{
+
+        event.preventDefault();
+
+        const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
+        const client = Stomp.over(socket);
+        clientRef.current = client;
+
+        const form = event.currentTarget;
+        const data = new FormData(form);
+
+        const gameId = data.get('gameId') as string;
+
+        client.connect({}, () => {
+            client.subscribe('/topic/tryConnect/', (message) => {
+                const response = JSON.parse(message.body);
+
+                if (response === 0) {
+                    setErrorMessage("This Game does not exist");
+                    setGameId("");
+                } else if (response === 1) {
+                    setErrorMessage("The Game is full");
+                    setGameId("");
+                } else if (response === 2) {
+                    setGameId(gameId);
+                    onPlayButtonClick(color, gameId);
+                    handlePopUp();
+                }
+            });
+            sendJoinRequest(gameId);
+        });
+    }
     const handleCustomGame = (event: FormEvent<HTMLFormElement>) => {
+
+        const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
+
+        const client = Stomp.over(socket);
+        clientRef.current = client;
 
         event.preventDefault();
 
@@ -241,25 +277,29 @@ const clientRef = useRef(null);
         const crewmates = data.get('crewmates')
 
 
-        const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
-        const client = Stomp.over(socket);
-
-        clientRef.current = client;
-
         client.connect({},() =>{
             client.subscribe('/topic/createGame/', (message)=>{
                 const response = JSON.parse(message.body);
 
                 if(response === true){
+                    //setGameId(gameId);
+                    setErrorMessage("");
                     handleCustomPopUp();
                 }else {
-
-                    alert("error creating the game");
+                    setErrorMessage("GameId is taken, choose a new one");
+                    //alert("gameId is taken");
                 }
             });
             sendCreateRequest(imposters, crewmates, gameId);
         });
     }
+
+    const sendJoinRequest = (gameId) => {
+        console.log("AAAAA");
+        console.log(gameId);
+        clientRef.current.send(`/app/tryConnect/`, {}, gameId);
+    }
+
     const sendCreateRequest = (numberImposters, numberCrewmates, gameId) => {
         const payload = {
             gameId: gameId,
@@ -277,8 +317,15 @@ const clientRef = useRef(null);
                 <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
 
                     <div className="grid grid-rows-3 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-2/6 h-70">
-                        <div className="row-span-1 flex items-center justify-center text-white">
-                            <b>Game Settings</b>
+
+                        <div className="grid grid-rows-2 row-span-1 flex items-center justify-center text-white">
+                            <div className="row-span-1">
+                                {errorMessage &&
+                                    <p className="error-notification">{errorMessage}</p>}
+                            </div>
+                            <div className="row-span-1 flex items-center justify-center text-white">
+                                <b>Game Settings</b>
+                            </div>
                         </div>
                         <div className="row-span-2 justify-self-center">
                             <form onSubmit={handleCustomGame} className="p-3">
@@ -322,23 +369,25 @@ const clientRef = useRef(null);
 
                     <div
                         className="grid grid-rows-3 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-2/6 h-70">
-                        <div className="row-span-1 flex items-center justify-center text-white">
-                            <b>Enter Game ID</b>
+                        <div className="grid grid-rows-2 row-span-1 flex items-center justify-center text-white">
+                            <div className="row-span-1">
+                                {errorMessage &&
+                                    <p className="error-notification">{errorMessage}</p>}
+                            </div>
+                            <div className="row-span-1 flex items-center justify-center text-white">
+                                <b>Enter Game ID</b>
+                            </div>
                         </div>
                         <div className="row-span-2 justify-self-center">
-                            <form onSubmit={handlePlay} className="p-3 gameIdForm">
+                            <form onSubmit={handlePlayPrivate} className="p-3 gameIdForm">
                                 <div>
-                                    <input
-                                        className=" bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                           required
-                                           value={gameId}
-                                           onChange={handleInputChange}
-                                        /><br/>
+                                    <input name="gameId"
+                                           className="mt-1.5 bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                    /><br/>
                                 </div>
 
                                 <div className="flex justify-between">
                                     <button type="submit"
-                                            onClick={handlePlay}
                                             className="bg-gray-500 hover:bg-gray-400 text-slate-50 font-bold py-2 px-4 rounded mt-3">Save
                                     </button>
                                     <button onClick={handlePopUp}
@@ -351,20 +400,14 @@ const clientRef = useRef(null);
                     </div>
                 </div>
             )}
-
-            ///////////////////////////////////
             <div
                 className="grid grid-cols-12 w-full h-14 mt-3 bg-transparent border-double rounded-lg border-2 border-amber-500 justify-self-center row-span-2 ">
-        <div id="user-div"
-             className="col-span-1" style={{
-            backgroundImage: `url(${playerImage})`
-        }
-        }/>
-        <div className="col-span-01 text-3xl text-cyan-500 text-center">
-            {loggesInUser.getUsername()}
-        </div>
-        <button onClick={onFriendsButtonClick}
-                className="col-span-10 w-1/6 h-10 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 mt-1.5">
+                <div id="user-div" className="col-span-1" style={{backgroundImage: `url(${playerImage})`}}/>
+                <div className="col-span-01 text-3xl text-cyan-500 text-center">
+                    {loggesInUser.getUsername()}
+                </div>
+                <button onClick={onFriendsButtonClick}
+                        className="col-span-10 w-1/6 h-10 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 mt-1.5">
             <b className="text-3xl">FRIENDS</b>
         </button>
         {showSocialBox ?
