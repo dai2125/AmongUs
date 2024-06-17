@@ -173,6 +173,11 @@ public class MovementController {
                 messagingTemplate.convertAndSend("/topic/kill/" + objectInteraction.getObjectOne(), new ObjectMapper().writeValueAsString("kill"));
                 messagingTemplate.convertAndSend("/topic/dead/" + objectInteraction.getObjectTwo(), new ObjectMapper().writeValueAsString("dead"));
                 messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
+
+                messagingTemplate.convertAndSend("/topic/killButtonNotActive/" + objectInteraction.getObjectOne(), new ObjectMapper().writeValueAsString("killButtonNotActive"));
+                countdownKill(objectInteraction.getObjectOne());
+
+
                 registerService.crewmateDied(u);
                 System.out.println("Hello After KILL OF " + objectInteraction.getObjectTwo());
 
@@ -335,5 +340,20 @@ public class MovementController {
                 System.out.println("Thread was interrupted: " + e.getMessage());
             }
         }
+    }
+
+    public void countdownKill(String userName) throws JsonProcessingException {
+        for(int i = 15; i >= 0; i--) {
+            try {
+                Thread.sleep(1000);
+                messagingTemplate.convertAndSend("/topic/killCooldown/" + userName, new ObjectMapper().writeValueAsString(i));
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Thread was interrupted: " + e.getMessage());
+            }
+        }
+        messagingTemplate.convertAndSend("/topic/killButtonActive/" + userName, new ObjectMapper().writeValueAsString("killButtonActive"));
+
     }
 }

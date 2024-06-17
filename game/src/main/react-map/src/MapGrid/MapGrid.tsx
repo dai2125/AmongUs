@@ -135,6 +135,7 @@ import Stomp, {client} from "stompjs";
 import skeldImage from '../Images/Maps/Skeld.png';
 import '../CSS/MapGrid.css';
 import {Player} from "../Player";
+import {send} from "vite";
 
 
 interface MapGridProps {
@@ -177,6 +178,8 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [deadPlayer, setDeadPlayer] = useState('');
     const [yourDead, setYourDead] = useState(false);
     const [yourTheImpostor, setYourTheImpostor] = useState(currentPlayer.getRole() === 'impostor');
+    const [killActive, setKillActive] = useState(true);
+    const [killCooldown, setKillCooldown] = useState(0);
 
     useEffect(() => {
         const updateScrollPosition = () => {
@@ -893,6 +896,10 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         reportButtonClicked();
     }
 
+    const handleKillButtonPress = () => {
+        // sendKill();
+    }
+
     useEffect(() => {
         const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
         const client = Stomp.over(socket);
@@ -1019,6 +1026,30 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 currentPlayer.setX(response.x);
                 currentPlayer.setY(response.y);
             });
+
+            if(currentPlayer.getRole() === "impostor") {
+                client.subscribe(`/topic/killButtonNotActive/${currentPlayer.getUserName()}`, () => {
+                    console.log('kill button not active')
+
+                    setKillActive(false);
+                });
+
+                client.subscribe(`/topic/killButtonActive/${currentPlayer.getUserName()}`, () => {
+                    console.log('kill button active')
+
+                    setKillActive(true);
+                });
+
+                client.subscribe(`/topic/killCooldown/${currentPlayer.getUserName()}`, (message) => {
+                    const response = JSON.parse(message.body);
+                    setKillCooldown(response);
+
+                    if(response === 0) {
+
+                        setKillActive(true);
+                    }
+                });
+            }
         });
 
         const handleMove = (event: string) => {
@@ -1245,14 +1276,30 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                         src={votingboxButton}></img></button>
                     </div> : <div></div>
                 }
-                {yourTheImpostor ? <h1>You are the impostor</h1> : <h1>You are a crewmate</h1>}
-                <h2>Keyboard controls</h2>
-                <p>Up Arrow up</p>
-                <p>Down Arrow Down</p>
-                <p>Left Arrow Left</p>
-                <p>Right Arrow Right</p>
-                <p>Kill E</p>
-                <p>Task W</p>
+                {yourTheImpostor ? <div>
+                    {/*<h1>You are the impostor</h1>*/}
+                    <h2>Keyboard controls</h2>
+
+                    { killActive ?
+                        <div><p>Kill E</p></div> : <div><p>Cooldown {killCooldown}</p></div>
+                    }
+                    <p>Vent Q</p>
+                    <p>Up Arrow up</p>
+                    <p>Down Arrow Down</p>
+                    <p>Left Arrow Left</p>
+                    <p>Right Arrow Right</p>
+                </div> :
+                <div>
+                    {/*<h1>You are a crewmate</h1>*/}
+                    <h2>Keyboard controls</h2>
+                    <p>Task W</p>
+                    <p>Up Arrow up</p>
+                    <p>Down Arrow Down</p>
+                    <p>Left Arrow Left</p>
+                    <p>Right Arrow Right</p>
+                </div>
+                }
+
                 {/*<p>Sabotage S</p>*/}
             </div>
         </div>
