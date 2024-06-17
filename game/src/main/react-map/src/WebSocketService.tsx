@@ -146,7 +146,7 @@ class WebSocketService {
                     //this.gimmework();
                 });
 
-                this.client.subscribe(`/topic/gimmework/${sessionId}`, (message) => {
+                this.client.subscribe(`/topic/gimmework/${playerRef.current.getUserName()}`, (message) => {
 
                     const data = JSON.parse(message.body);
                     console.log('gimmeMywork: ' + data.task1 + ' ' + data.task2 + ' ' + data.task3 + ' ' + data.role);
@@ -154,10 +154,12 @@ class WebSocketService {
                     this.playerRef.current.setTask2(data.task2);
                     this.playerRef.current.setTask3(data.task3);
                     this.playerRef.current.setRole(data.role);
+                    console.log('GIMME WORK: ' + data.role + ' playerRole: ' + this.playerRef.current.getRole());
                     this.playerInstance();
                 });
 
                 this.client.subscribe(`/topic/kill/${playerRef.current.getUserName()}`, () => {
+                    console.log('kill button pressed')
                     this.kill();
                 });
 
@@ -379,7 +381,7 @@ class WebSocketService {
         console.log(sessionId);
         if (this.client) {
             const player = this.playerRef.current;
-            this.client.send('/app/gimmework/', {}, JSON.stringify({
+            this.client.send(`/app/gimmework/${player.getUserName()}`, {}, JSON.stringify({
                 'userName': this.playerRef.current.getUserName(),
                 'action': player.getAction(),
                 'sessionId': sessionId,

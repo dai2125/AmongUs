@@ -25,12 +25,6 @@ public class MovementController2 {
     @Autowired
     private AirSystemService airSystemService;
 
-    @Autowired
-    private MapLoader mapLoader;
-
-    @Autowired
-    private BorderService borderService;
-
     @EventListener
     public void sessionConnectEvent(SessionConnectEvent event) throws InterruptedException, JsonProcessingException {
     }

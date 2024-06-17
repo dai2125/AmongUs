@@ -1,108 +1,96 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-const generateRandomNumber = (): string => {
-    return Math.floor(10000000 + Math.random() * 90000000).toString();
-};
+interface ModalProps {
+    isVisible: boolean;
+    onClose: () => void;
+    children: React.ReactNode;
+    startGame: boolean;
+}
 
-const NumpadInputCodeMiniGame: React.FC<{ onCompletion: () => void }> = ({ onCompletion }) => {
-    const [randomNumber, setRandomNumber] = useState<string>(generateRandomNumber());
-    const [userInput, setUserInput] = useState<string>('');
-    const [correctIndex, setCorrectIndex] = useState<number | null>(null);
-    const [wrongPress, setWrongPress] = useState<boolean>(false);
+const questions = [
+    { question: "What is the primary purpose of version control systems like Git?", answers: ["To manage changes to documents, programs, and other information", "To enhance the speed of the computer", "To clean the computer from viruses"], correct: "To manage changes to documents, programs, and other information" },
+    { question: "What is a common software development methodology that focuses on iterative development and collaboration?", answers: ["Waterfall", "Agile", "Spiral"], correct: "Agile" },
+    { question: "In software engineering, what design pattern describes an object that encapsulates how a set of objects interact?", answers: ["Singleton", "Mediator", "Decorator"], correct: "Mediator" },
+];
 
-    const handleButtonClick = (num: string, index: number) => {
-        const newInput = userInput + num;
-        if (randomNumber.startsWith(newInput)) {
-            setUserInput(newInput);
-            setCorrectIndex(index);
-            setTimeout(() => setCorrectIndex(null), 500);
-            if (newInput === randomNumber) {
+const Modal: React.FC<{ onCompletion: () => void }> = ({ onCompletion }) => {
+    const [isVisible, setIsVisible] = React.useState(true);
+    const [currentQuestion, setCurrentQuestion] = React.useState<number>(0);
+    const [isCorrect, setIsCorrect] = React.useState<boolean | null>(null);
+
+    // Funktion zum Zufälligen Auswählen einer Frage beim ersten Rendern
+    React.useEffect(() => {
+        const randomIndex = Math.floor(Math.random() * questions.length);
+        setCurrentQuestion(randomIndex);
+    }, []);
+
+    const handleAnswer = (answer: string) => {
+        const correct = questions[currentQuestion].correct === answer;
+        setIsCorrect(correct);
+        if (correct) {
+            setTimeout(() => {
+                setIsVisible(false);
                 onCompletion();
-            }
-        } else {
-            setUserInput('');
-            setRandomNumber(generateRandomNumber());
-            setWrongPress(true);
-            setTimeout(() => setWrongPress(false), 500);
+            }, 1000);
         }
     };
 
+    if (!isVisible) {
+        return null;
+    }
+
+    const question = questions[currentQuestion];
+
     return (
-        <div style={styles.container}>
-            <div style={styles.prompt}>
-                <p style={{
-                    color:"black"
-                }}>Follow this sequence:</p>
-                <h1>{randomNumber}</h1>
-            </div>
-            <div style={styles.numpad}>
-                {Array.from({ length: 9 }, (_, i) => i + 1).map((num, index) => (
-                    <button
-                        key={num}
-                        style={{
-                            ...styles.button,
-                            ...(correctIndex === index ? styles.correctButton : {}),
-                            ...(wrongPress ? styles.wrongButton : {})
-                        }}
-                        onClick={() => handleButtonClick(num.toString(), index)}
-                    >
-                        {num}
-                    </button>
-                ))}
-                <button
-                    style={{
-                        ...styles.button,
-                        ...(correctIndex === 9 ? styles.correctButton : {}),
-                        ...(wrongPress ? styles.wrongButton : {})
-                    }}
-                    onClick={() => handleButtonClick('0', 9)}
-                >
-                    0
-                </button>
+        <div style={styles.overlay}>
+            <div style={styles.modal}>
+                <button style={styles.closeButton} onClick={() => {
+                    setIsVisible(false);
+                    onCompletion();
+                }}>X</button>
+                <div>
+                    <p style={{ color: 'blue' }}>{question.question}</p>
+                    {question.answers.map((answer, index) => (
+                        <button key={index} onClick={() => handleAnswer(answer)}>{answer}<pre></pre></button>
+                    ))}
+                    {isCorrect !== null && <p style={{ color: 'blue' }}>{isCorrect ? '++' : '--'}</p>}
+                </div>
             </div>
         </div>
     );
 };
 
 const styles = {
-    container: {
+    overlay: {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100vh',
-        backgroundColor: '#f0f0f0',
-        fontFamily: 'Arial, sans-serif'
+        zIndex: 1000
     } as React.CSSProperties,
-    prompt: {
-        marginBottom: '20px',
-        textAlign: 'center'
-    } as React.CSSProperties,
-    numpad: {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 80px)',
-        gridGap: '10px'
-    } as React.CSSProperties,
-    button: {
-        width: '80px',
-        height: '80px',
-        fontSize: '24px',
-        fontWeight: 'bold',
-        backgroundColor: '#ffffff',
-        border: '2px solid #cccccc',
+    modal: {
+        backgroundColor: '#fff',
         borderRadius: '8px',
-        cursor: 'pointer',
-        outline: 'none',
-        transition: 'background-color 0.3s'
+        padding: '20px',
+        maxWidth: '500px',
+        width: '100%',
+        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',
+        position: 'relative'
     } as React.CSSProperties,
-    correctButton: {
-        backgroundColor: '#4caf50',
-        color: 'white'
-    } as React.CSSProperties,
-    wrongButton: {
-        backgroundColor: '#f44336',
-        color: 'white'
+    closeButton: {
+        position: 'absolute',
+        top: '10px',
+        right: '10px',
+        background: 'none',
+        border: 'none',
+        fontSize: '16px',
+        cursor: 'pointer'
     } as React.CSSProperties
 };
 
-export default NumpadInputCodeMiniGame;
+export default Modal;

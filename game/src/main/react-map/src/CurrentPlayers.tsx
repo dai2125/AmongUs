@@ -49,7 +49,6 @@ import webSocketService from "./WebSocketService";
 import Ejected from "./Screens/Ejected";
 import OtherPlayerEjected from "./Screens/OtherPlayerEjected";
 import NoOneGotEjected from "./Screens/NoOneGotEjected";
-import TestGrid from "./MapGrid/TestGrid";
 
 interface Props {
     userColor: string;
@@ -200,9 +199,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }, []);
 
     const handleKeyPress = (key: string) => {
-        if (key === 'w') {
+        if (key === 'w' && playerRef.current.getRole() === "crewmate") {
             taskAction();
-        } else if (key === 'e' && playerRef.current.getRole() === 'impostor') {
+        } else if (key === 'e' && playerRef.current.getRole() === "impostor") {
             taskKill(key);
         } else if (webSocketServiceRef.current) {
             const {current: webSocketService} = webSocketServiceRef;
@@ -234,33 +233,45 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         closeMiniGame();
         const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
         const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
-        if(xPosTask === 1 && yPosTask === 4) {
-            webSocketServiceRef.current.sendTaskResolved("task1", 1, 4);
-        } else if(xPosTask === 7 && yPosTask === 1) {
-            webSocketServiceRef.current.sendTaskResolved("task2", 7, 1);
-        } else if(xPosTask === 9 && yPosTask === 7) {
-            webSocketServiceRef.current.sendTaskResolved("task3", 9, 7);
-        } else if(xPosTask === 23 && yPosTask === 21) {
-            webSocketServiceRef.current.sendTaskResolved("task4", 23, 21);
-        } else if(xPosTask === 22 && yPosTask === 6) {
-            webSocketServiceRef.current.sendTaskResolved("task5", 22, 6);
+        if(xPosTask === 11 && yPosTask === 5) {
+            webSocketServiceRef.current.sendTaskResolved("Guess the number", 11, 5);
+        } else if(xPosTask === 36 && (yPosTask === 4 || yPosTask === 5)) {
+            webSocketServiceRef.current.sendTaskResolved("Download the file", 36, 4);
+        } else if(xPosTask === 72 && (yPosTask === 17 || yPosTask === 18 || yPosTask === 19)) {
+            webSocketServiceRef.current.sendTaskResolved("Enter the number sequence", 72, 17);
+        } else if(xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) {
+            webSocketServiceRef.current.sendTaskResolved("Answer the question", 51, 37);
+        } else if(yPosTask === 40 && (xPosTask === 40 || xPosTask === 41)) {
+            webSocketServiceRef.current.sendTaskResolved("Memory game", 40, 40);
         }
     };
 
     const taskAction = () => {
+        console.log("pressed w")
         if(GridService.isTask(playerRef.current.getY(), playerRef.current.getX())) {
             const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
             const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
+            console.log("Checking task: " + xPosTask + ", " + yPosTask);
             if(xPosTask != null && yPosTask != null) {
-                if(xPosTask === 1 && yPosTask === 4) {
+                if((xPosTask === 11 && yPosTask === 5) && (playerRef.current.getTask1() === "Guess the number" || playerRef.current.getTask2() === "Guess the number" || playerRef.current.getTask3() === "Guess the number")) {
+                    console.log('openMiniGame: 1')
                     openMiniGame(<GuessTheNumberMiniGame onCompletion={handleMiniGameCompletion} />);
-                } else if(xPosTask === 7 && yPosTask === 1) {
+                } else if((xPosTask === 36 && (yPosTask === 4 || yPosTask === 5)) && (playerRef.current.getTask1() === "Download the file" || playerRef.current.getTask2() === "Download the file" || playerRef.current.getTask3() === "Download the file")) {
+                    console.log('openMiniGame: 2')
+
                     openMiniGame(<DownloadMiniGame onCompletion={handleMiniGameCompletion} />);
-                } else if(xPosTask === 9 && yPosTask === 7) {
+                } else if((xPosTask === 72 && (yPosTask === 17 || yPosTask === 18 || yPosTask === 19)) && (playerRef.current.getTask1() === "Enter the number sequence" || playerRef.current.getTask2() === "Enter the number sequence" || playerRef.current.getTask3() === "Enter the number sequence")) {
+                    console.log('openMiniGame: 3')
+
                     openMiniGame(<ClickInOrderMiniGame onCompletion={handleMiniGameCompletion} />);
-                } else if(xPosTask === 23 && yPosTask === 21) {
+                } else if((xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) && (playerRef.current.getTask1() === "Answer the question" || playerRef.current.getTask2() === "Answer the question" || playerRef.current.getTask3() === "Answer the question")) {
+                    console.log('openMiniGame: 4')
+
                     openMiniGame(<NumpadInputCodeMiniGame onCompletion={handleMiniGameCompletion} />);
-                } else if(xPosTask === 22 && yPosTask === 6) {
+                    console.log("NumpadInputCodeMiniGame")
+                } else if((yPosTask === 40 && (xPosTask === 40 || xPosTask === 41)) && (playerRef.current.getTask1() === "Memory game" || playerRef.current.getTask2() === "Memory game" || playerRef.current.getTask3() === "Memory game")) {
+                    console.log('openMiniGame: 5')
+
                     openMiniGame(<MemoryMiniGame onCompletion={handleMiniGameCompletion} />);
                 }
             }

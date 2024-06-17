@@ -58,18 +58,18 @@ export class GridService {
 
 
     public static getXPosTask(x: number, y: number): number | null {
-        if (this.grid[y] && this.grid[y][x + 1] === '?') {
+        if (this.grid[y] && this.grid[y][x + 1] === 2) {
             return x + 1;
-        } else if (this.grid[y] && this.grid[y][x - 1] === '?') {
+        } else if (this.grid[y] && this.grid[y][x - 1] === 2) {
             return x - 1;
         }
         return x;
     }
 
     public static getYPosTask(x: number, y: number): number | null {
-        if (this.grid[y + 1] && this.grid[y + 1][x] === '?') {
+        if (this.grid[y + 1] && this.grid[y + 1][x] === 2) {
             return y + 1;
-        } else if (this.grid[y - 1] && this.grid[y - 1][x] === '?') {
+        } else if (this.grid[y - 1] && this.grid[y - 1][x] === 2) {
             return y - 1;
         }
         return y;

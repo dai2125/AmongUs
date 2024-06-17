@@ -5,19 +5,16 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class GameInstance {
 
-    private static final String TASK1 = "task1";
-    private static final String TASK2 = "task2";
-    private static final String TASK3 = "task3";
-    private static final String TASK4 = "task4";
-    private static final String TASK5 = "task5";
+    private static final String TASK1 = "Guess the number";
+    private static final String TASK2 = "Download the file";
+    private static final String TASK3 = "Enter the number sequence";
+    private static final String TASK4 = "Answer the question";
+    private static final String TASK5 = "Memory game";
 
     @Setter
     @Getter
@@ -44,7 +41,8 @@ public class GameInstance {
     private boolean impostor = false;
     int impostorIndex = (int) (Math.random() * GROUP_FULL);
     int counter = 0;
-    public int getGroupSize(){
+
+    public int getGroupSize() {
         return GROUP_FULL;
     }
 
@@ -62,8 +60,8 @@ public class GameInstance {
 
     public List<User> userListExceptTheSender(User user) {
         List<User> tempUserList = new ArrayList<>();
-        for(User u : userList) {
-            if(!u.equals(user)) {
+        for (User u : userList) {
+            if (!u.equals(user)) {
                 tempUserList.add(u);
             }
         }
@@ -81,45 +79,56 @@ public class GameInstance {
     public void setTheImposter() {
         int random = (int) (Math.random() * userList.size());
         userList.get(random).setImpostor();
-        for (int i =0; i < userList.size(); i++){
+        for (int i = 0; i < userList.size(); i++) {
             System.out.println("PLAYER " + i + userList.get(i).getImpostor());
         }
     }
 
     public boolean groupIsFull() {
-        if(userList.size() == GROUP_FULL) {
+        if (userList.size() == GROUP_FULL) {
             return true;
         }
         return false;
     }
 
     public void distributeTask(User u) {
+        Set<Integer> usedIndices = new HashSet<>();
+        int taskIndex;
 
-                if (!u.getImpostor()){
-                    taskDTO.setRole("crewmate");
-                    for(int i = 0; i < 3; i++) {
-                        int random = (int) (Math.random() * taskList.size());
-                        if(i == 0) {
-                            taskDTO.setTask1(taskList.get(random));
-                        } else if(i == 1) {
-                            taskDTO.setTask2(taskList.get(random));
-                        } else if(i == 2) {
-                            taskDTO.setTask3(taskList.get(random));
-                        }
-                    }
-                    taskCounter++;
-                }else  {
-                    taskDTO.setRole("impostor");
-                    impostor = true;
-                    taskDTO.setTask1("kill");
-                    taskDTO.setTask2("sabotage");
-                    taskDTO.setTask3("vent");
+        if (!u.getImpostor()) {
+            taskDTO.setRole("crewmate");
+            for (int i = 0; i < 3; i++) {
+                do {
+                    taskIndex = (int) (Math.random() * taskList.size());
+                } while (usedIndices.contains(taskIndex));
+                usedIndices.add(taskIndex);
+
+                switch (i) {
+                    case 0:
+                        taskDTO.setTask1(taskList.get(taskIndex));
+                        break;
+                    case 1:
+                        taskDTO.setTask2(taskList.get(taskIndex));
+                        break;
+                    case 2:
+                        taskDTO.setTask3(taskList.get(taskIndex));
+                        break;
                 }
+                taskCounter++;
+                System.out.println("distribute task taskcounter: " + taskCounter);
+            }
+        } else {
+            taskDTO.setRole("impostor");
+            impostor = true;
+            taskDTO.setTask1("kill");
+            taskDTO.setTask2("sabotage");
+            taskDTO.setTask3("vent");
+        }
 
-                counter++;
-
+        counter++;
         System.out.println(taskDTO.getRole());
     }
+
 
     public TaskDTO getTask() {
         return taskDTO;
@@ -127,8 +136,8 @@ public class GameInstance {
 
     public boolean allCrewmatesAreDead() {
 
-        for(User user : userList) {
-            if(!user.getImpostor()) {
+        for (User user : userList) {
+            if (!user.getImpostor()) {
                 return false;
             }
         }
@@ -158,10 +167,13 @@ public class GameInstance {
     }
 
     public boolean taskResolved() {
+        System.out.println("taskResolvedCounter before: " + taskResolvedCounter);
         taskResolvedCounter--;
-        if(taskResolvedCounter > 0) {
+        System.out.println("taskResolvedCounter after: " + taskResolvedCounter);
+
+        if (taskResolvedCounter > 0) {
             return false;
-        }else {
+        } else {
             return true;
         }
     }

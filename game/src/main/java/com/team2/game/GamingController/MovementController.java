@@ -89,10 +89,16 @@ public class MovementController {
     public void taskResolved(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
         System.out.println("Hello from taskResolved " + user.getGameId());
         boolean crewmatesWon = registerService.taskResolved(user.getGameId());
-        if (crewmatesWon){
+
+        registerService.removeTask("task");
+
+        if(registerService.allTasksAreSolved()) {
+            System.out.println("CREWMATES WIN");
+            messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
+        } else if (crewmatesWon) {
             messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
             messagingTemplate.convertAndSend("/topic/crewmateWins/" + user.getGameId(), crewmatesWon);
-        }else {
+        } else {
             messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
             System.out.println("Hello after sending task resolved");
         }
@@ -107,13 +113,13 @@ public class MovementController {
 
     }
 
-    @MessageMapping("/gimmework/")
+    @MessageMapping("/gimmework/{userName}")
     public void processGimmeWork(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
         System.out.println("Hello from GIMMEWORK");
         System.out.println("USERNAME " + user.getSessionId());
         TaskDTO task = registerService.getTask();
         System.out.println("GGGG " + task.getRole());
-        messagingTemplate.convertAndSend("/topic/gimmework/" + user.getSessionId(), new ObjectMapper().writeValueAsString(task));
+        messagingTemplate.convertAndSend("/topic/gimmework/" + user.getUserName(), new ObjectMapper().writeValueAsString(task));
 
     }
 

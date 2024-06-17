@@ -136,6 +136,7 @@ import skeldImage from '../Images/Maps/Skeld.png';
 import '../CSS/MapGrid.css';
 import {Player} from "../Player";
 
+
 interface MapGridProps {
     currentPlayer: Player;
     otherPlayers: any[];
@@ -175,7 +176,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [otherPlayerPosition, setOtherPlayerPosition] = useState({});
     const [deadPlayer, setDeadPlayer] = useState('');
     const [yourDead, setYourDead] = useState(false);
-    const [yourTheImpostor, setYourTheImpostor] = useState(false);
+    const [yourTheImpostor, setYourTheImpostor] = useState(currentPlayer.getRole() === 'impostor');
 
     useEffect(() => {
         const updateScrollPosition = () => {
@@ -1046,6 +1047,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         };
 
         function sendMovementNorth() {
+            console.log("YOUR ROLE: " + currentPlayer.getRole());
             if(!currentPlayer.getMovable()) {
                 return;
             } else {
@@ -1110,6 +1112,11 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         }
 
         function sendKill() {
+            console.log('kill e pressed: ' + currentPlayer.getRole());
+            if(currentPlayer.getRole() === "crewmate") {
+                console.log('you cant kill');
+                return;
+            }
             console.log("Hello from new kill");
             let payload;
             for (let player of otherPlayers) {
@@ -1206,12 +1213,16 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                                   backgroundSize: 'cover',
                                                   width: '30px',
                                                   height: '30px'
+                                                  // transform: 'translate(-50%, -50%)'
                                               }}>
                                     </span>
                                 );
                             }
+
+                            const blinkClass = cellContent === 2 ? style.blink : '';
+
                             return (
-                                <span key={colIndex} className={style.cell} style={{...cellStyle, color: 'transparent', borderColor: 'transparent'}}>
+                                <span key={colIndex} className={`${style.cell} ${blinkClass}`} style={{cellStyle}}>
                                 {cellContent}
                             </span>
                             );
@@ -1234,6 +1245,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                         src={votingboxButton}></img></button>
                     </div> : <div></div>
                 }
+                {yourTheImpostor ? <h1>You are the impostor</h1> : <h1>You are a crewmate</h1>}
                 <h2>Keyboard controls</h2>
                 <p>Up Arrow up</p>
                 <p>Down Arrow Down</p>
