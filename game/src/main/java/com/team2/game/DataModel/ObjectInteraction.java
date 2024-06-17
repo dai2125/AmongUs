@@ -13,4 +13,10 @@ public class ObjectInteraction {
     @Setter
     @Getter
     private String gameId;
+    @Setter
+    @Getter
+    private int positionDeadPlayerX;
+    @Setter
+    @Getter
+    private int positionDeadPlayerY;
 }

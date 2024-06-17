@@ -1,17 +1,6 @@
 import React, {useEffect, useRef, useState, useCallback, useMemo} from 'react';
 import style from "../CSS/MapGridStyle.module.css";
-import purple from "../Images/Character_Movement/Purple.png";
-import red from "../Images/Character_Movement/red.jpg";
-import blue from "../Images/Character_Movement/Blue.jpg";
-import green from "../Images/Character_Movement/Green.jpg";
-import orange from "../Images/Character_Movement/Orange.jpg";
-import yellow from "../Images/Character_Movement/Yellow.png";
-import black from "../Images/Character_Movement/Black.jpg";
-import white from "../Images/Character_Movement/White.jpg";
-import brown from "../Images/Character_Movement/Brown.jpg";
-import cyan from "../Images/Character_Movement/Cyan.jpg";
 import lime from "../Images/Character_Movement/Lime.jpg";
-import pink from "../Images/Character_Movement/Pink.jpg";
 import dead from "../Images/Character_Movement/dead.png";
 import ghost from "../Images/Character_Movement/Ghost.jpg";
 
@@ -182,6 +171,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [killCooldown, setKillCooldown] = useState(0);
     const [ventActive, setVentActive] = useState(true);
     const [ventCooldown, setVentCooldown] = useState(0);
+    const [lastMove, setLastMove] = useState(Date.now());
 
     useEffect(() => {
         const updateScrollPosition = () => {
@@ -793,14 +783,15 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         });
     }, [otherPlayers]);
 
-    useEffect(() => {
-        const visibleDeadPlayer = otherPlayers.find(player => {
-            const isVisible = isCellVisible(currentPlayer.getX(), currentPlayer.getY(), player.getX(), player.getY());
-            return player.getColor() === 'dead' && isVisible;
-        });
-        setShowReportButton(visibleDeadPlayer !== undefined);
-
-    }, [otherPlayers, currentPlayer]);
+    // useEffect(() => {
+    //     const visibleDeadPlayer = otherPlayers.find(player => {
+    //         console.log('isCellVisible: ' + isCellVisible(currentPlayer.getX(), currentPlayer.getY(), player.getX(), player.getY()));
+    //         const isVisible = isCellVisible(currentPlayer.getX(), currentPlayer.getY(), player.getX(), player.getY());
+    //         return player.getColor() === "dead" && isVisible;
+    //     });
+    //     setShowReportButton(visibleDeadPlayer !== undefined);
+    //
+    // }, [otherPlayers, currentPlayer]);
 
 
 
@@ -1029,6 +1020,14 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 currentPlayer.setY(response.y);
             });
 
+            client.subscribe(`/topic/deadPlayerVisible/${currentPlayer.getUserName()}`, () => {
+                setShowReportButton(true);
+            });
+
+            client.subscribe(`/topic/deadPlayerNotVisible/${currentPlayer.getUserName()}`, () => {
+                setShowReportButton(false);
+            });
+
             if(currentPlayer.getRole() === "impostor") {
                 client.subscribe(`/topic/killButtonNotActive/${currentPlayer.getUserName()}`, () => {
                     console.log('kill button not active')
@@ -1072,6 +1071,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                         setVentActive(true);
                     }
                 });
+
             }
         });
 
@@ -1101,6 +1101,14 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         };
 
         function sendMovementNorth() {
+            const now = Date.now();
+            const delay = 100;
+
+            if (now - lastMove < delay) {
+                setLastMove(now);
+
+            }
+
             console.log("YOUR ROLE: " + currentPlayer.getRole());
             if(!currentPlayer.getMovable()) {
                 return;
@@ -1180,6 +1188,8 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                      payload = JSON.stringify({
                         objectOne: currentPlayer.getUserName(),
                         objectTwo: player.getUserName(),
+                        positionDeadPlayerX: player.getX(),
+                        positionDeadPlayerY: player.getY(),
                         gameId: currentPlayer.getGameId(),
                     });
                      break;

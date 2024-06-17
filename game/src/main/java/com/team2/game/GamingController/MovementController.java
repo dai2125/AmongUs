@@ -174,6 +174,11 @@ public class MovementController {
                 messagingTemplate.convertAndSend("/topic/dead/" + objectInteraction.getObjectTwo(), new ObjectMapper().writeValueAsString("dead"));
                 messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
 
+                // TODO set location of dead player
+
+                groupManager.addDeadPlayerPosition(objectInteraction.getPositionDeadPlayerX(), objectInteraction.getPositionDeadPlayerY());
+
+
                 messagingTemplate.convertAndSend("/topic/killButtonNotActive/" + objectInteraction.getObjectOne(), new ObjectMapper().writeValueAsString("killButtonNotActive"));
                 countdownKill(objectInteraction.getObjectOne());
 

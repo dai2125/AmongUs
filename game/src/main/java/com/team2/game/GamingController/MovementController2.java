@@ -24,6 +24,8 @@ public class MovementController2 {
 
     @Autowired
     private AirSystemService airSystemService;
+    @Autowired
+    private GroupManager groupManager;
 
     @EventListener
     public void sessionConnectEvent(SessionConnectEvent event) throws InterruptedException, JsonProcessingException {
@@ -42,14 +44,16 @@ public class MovementController2 {
             System.out.println("movement/north/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
             messagingTemplate.convertAndSend("/topic/movement/north/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/north/otherPlayer/", new ObjectMapper().writeValueAsString(user));
-        }
 
-//        System.out.println("North: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-//        if (!borderService.isWithinBorder(user.getY(), user.getX())) {
-//            user.setY(user.getY() - moveSpeed);
-//            System.out.println("movement/north/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-//            messagingTemplate.convertAndSend("/topic/movement/north/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
-//        }
+//            if (groupManager.getPositionsNearY(user.getY())) {
+            if (groupManager.getPositionsNearDeadPlayer(user.getX(), user.getY())) {
+
+                messagingTemplate.convertAndSend("/topic/deadPlayerVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerPositions"));
+
+            } else {
+                messagingTemplate.convertAndSend("/topic/deadPlayerNotVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerNotVisible"));
+            }
+        }
     }
 
     @MessageMapping("/movement/south/{userName}")
@@ -59,14 +63,16 @@ public class MovementController2 {
             System.out.println("movement/south/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
             messagingTemplate.convertAndSend("/topic/movement/south/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/south/otherPlayer/", new ObjectMapper().writeValueAsString(user));
+
+//            if (groupManager.getPositionsNearY(user.getY())) {
+            if (groupManager.getPositionsNearDeadPlayer(user.getX(), user.getY())) {
+                messagingTemplate.convertAndSend("/topic/deadPlayerVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerPositions"));
+
+            } else {
+                messagingTemplate.convertAndSend("/topic/deadPlayerNotVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerNotVisible"));
+            }
         }
 
-//        System.out.println("South: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-//        if (!borderService.isWithinBorder(user.getY(), user.getX())) {
-//            user.setY(user.getY() + moveSpeed);
-//            System.out.println("movement/south/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-//            messagingTemplate.convertAndSend("/topic/movement/south/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
-//        }
     }
 
     @MessageMapping("/movement/west/{userName}")
@@ -76,14 +82,16 @@ public class MovementController2 {
             System.out.println("movement/west/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
             messagingTemplate.convertAndSend("/topic/movement/west/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/west/otherPlayer/", new ObjectMapper().writeValueAsString(user));
+
+//            if (groupManager.getPositionsNearX(user.getX())) {
+            if (groupManager.getPositionsNearDeadPlayer(user.getX(), user.getY())) {
+                messagingTemplate.convertAndSend("/topic/deadPlayerVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerPositions"));
+
+            } else {
+                messagingTemplate.convertAndSend("/topic/deadPlayerNotVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerNotVisible"));
+            }
         }
 
-//        System.out.println("West: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-//        if (!borderService.isWithinBorder(user.getY(), user.getX())) {
-//            user.setY(user.getX() - moveSpeed);
-//            System.out.println("movement/west/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-//            messagingTemplate.convertAndSend("/topic/movement/west/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
-//        }
     }
 
     @MessageMapping("/movement/east/{userName}")
@@ -93,14 +101,17 @@ public class MovementController2 {
             System.out.println("movement/east/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
             messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/east/otherPlayer/", new ObjectMapper().writeValueAsString(user));
+
+//            if (groupManager.getPositionsNearX(user.getX())) {
+            if (groupManager.getPositionsNearDeadPlayer(user.getX(), user.getY())) {
+
+                messagingTemplate.convertAndSend("/topic/deadPlayerVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerPositions"));
+
+            } else {
+                messagingTemplate.convertAndSend("/topic/deadPlayerNotVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerNotVisible"));
+            }
         }
 
-//        System.out.println("East: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-//        if (!borderService.isWithinBorder(user.getY(), user.getX())) {
-//            user.setY(user.getY() + moveSpeed);
-//            System.out.println("movement/east/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
-//            messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
-//        }
     }
 
     @MessageMapping("/airsystem/{userName}")
