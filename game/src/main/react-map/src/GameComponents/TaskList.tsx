@@ -3,6 +3,7 @@ import '../CSS/main.css';
 import '../CSS/output.css';
 
 interface Props {
+    role: string;
     tasks: {
         task1: string;
         task2: string;
@@ -10,11 +11,13 @@ interface Props {
     };
 }
 
-const TaskList = ({tasks}) => {
-
+const TaskList = ({role, tasks}) => {
+    const [myRole, setMyRole] = useState("");
     const [myTasks, setMyTasks] = useState([]);
 
+
     useEffect(() => {
+        setMyRole(role);
         setMyTasks([
             tasks.task1,
             tasks.task2,
@@ -46,13 +49,14 @@ const TaskList = ({tasks}) => {
     return (
         <div className="absolute top-32 left-1 w-100 h-100 bg-white bg-opacity-80 border  px-4 py-1"
              style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', display: 'flex', alignItems: 'center'}}>
-             <div style={{ flex: 1, minHeight: '100%', borderRight: '1px solid #ccc' }}>
-                 {myTasks.map((task, index) => (
-                     <p key={index}>{task}</p>
-                 ))}
-             </div>
-             <div style={{ marginLeft: 20, whiteSpace: 'nowrap', writingMode: 'vertical-lr', transform: 'rotate(180deg)' }}>
-                 <h1>Tasks</h1>
+            <div style={{flex: 1, minHeight: '100%', borderRight: '1px solid #ccc'}}>
+                <p className="text-black bold text-xl">{myRole}</p>
+                {myTasks.map((task, index) => (
+                    <p key={index}>{task}</p>
+                ))}
+            </div>
+            <div style={{ marginLeft: 20, whiteSpace: 'nowrap', writingMode: 'vertical-lr', transform: 'rotate(180deg)' }}>
+                 <h1>Tasks</h1><br/>
              </div>
          </div>
      );
