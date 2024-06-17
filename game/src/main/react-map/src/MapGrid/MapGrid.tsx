@@ -180,6 +180,8 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [yourTheImpostor, setYourTheImpostor] = useState(currentPlayer.getRole() === 'impostor');
     const [killActive, setKillActive] = useState(true);
     const [killCooldown, setKillCooldown] = useState(0);
+    const [ventActive, setVentActive] = useState(true);
+    const [ventCooldown, setVentCooldown] = useState(0);
 
     useEffect(() => {
         const updateScrollPosition = () => {
@@ -1049,6 +1051,27 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                         setKillActive(true);
                     }
                 });
+
+                client.subscribe(`/topic/ventNotActive/${currentPlayer.getUserName()}`, () => {
+                    console.log('vent not active')
+
+                    setVentActive(false);
+                });
+
+                client.subscribe(`/topic/ventActive/${currentPlayer.getUserName()}`, () => {
+                    console.log('vent active')
+
+                    setVentActive(true);
+                });
+
+                client.subscribe(`/topic/ventCooldown/${currentPlayer.getUserName()}`, (message) => {
+                    const response = JSON.parse(message.body);
+                    setVentCooldown(response);
+                    if(response === 0) {
+
+                        setVentActive(true);
+                    }
+                });
             }
         });
 
@@ -1283,7 +1306,10 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     { killActive ?
                         <div><p>Kill E</p></div> : <div><p>Cooldown {killCooldown}</p></div>
                     }
-                    <p>Vent Q</p>
+                    { ventActive ?
+                        <div><p>Vent Q</p></div> : <div><p>Cooldown {ventCooldown}</p></div>
+                    }
+
                     <p>Up Arrow up</p>
                     <p>Down Arrow Down</p>
                     <p>Left Arrow Left</p>

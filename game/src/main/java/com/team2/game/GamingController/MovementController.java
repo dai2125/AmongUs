@@ -356,4 +356,6 @@ public class MovementController {
         messagingTemplate.convertAndSend("/topic/killButtonActive/" + userName, new ObjectMapper().writeValueAsString("killButtonActive"));
 
     }
+
+
 }

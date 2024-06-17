@@ -109,7 +109,24 @@ public class MovementController2 {
 
         if(airSystemService.isAirSystem(user)) {
             messagingTemplate.convertAndSend("/topic/airsystem/" + user.getUserName(), new ObjectMapper().writeValueAsString(airSystemService.newPositionAirSystem(user)));
+            messagingTemplate.convertAndSend("/topic/ventNotActive/" + user.getUserName(), new ObjectMapper().writeValueAsString("ventNotActive"));
+            countdownVent(user.getUserName());
+
         }
     }
 
+    public void countdownVent(String userName) throws JsonProcessingException {
+        for(int i = 15; i >= 0; i--) {
+            try {
+                Thread.sleep(1000);
+                messagingTemplate.convertAndSend("/topic/ventCooldown/" + userName, new ObjectMapper().writeValueAsString(i));
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Thread was interrupted: " + e.getMessage());
+            }
+        }
+        messagingTemplate.convertAndSend("/topic/ventActive/" + userName, new ObjectMapper().writeValueAsString("killButtonActive"));
+
+    }
 }
