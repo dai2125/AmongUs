@@ -1,5 +1,7 @@
 package com.team2.game.DataModel;
 
+import com.team2.game.GamingController.TaskDTO;
+
 import java.util.ArrayList;
 
 public class User {
@@ -12,7 +14,7 @@ public class User {
     private int x;
     private int y;
     private boolean isImpostor;
-    private ArrayList<String> tasks = new ArrayList<>();
+    private TaskDTO tasks ;
 
 //    private String userName;
     private String email;
@@ -95,13 +97,16 @@ public class User {
         return isImpostor;
     }
 
-    public void setTask(String task) {
-        tasks.add(task);
+    public TaskDTO getTasks() {
+        return tasks;
+    }
+    public void setTasks(TaskDTO taskDTO) {
+        this.tasks = taskDTO;
     }
 
-    public int getTaskSize() {
-        return tasks.size();
-    }
+    //public void setTask(String task) {tasks.add(task);}
+
+    //public int getTaskSize() {return tasks.size();}
 
     @Override
     public String toString() {
@@ -113,4 +118,5 @@ public class User {
                 ", y=" + y +
                 '}';
     }
+
 }

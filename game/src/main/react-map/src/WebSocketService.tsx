@@ -141,9 +141,10 @@ class WebSocketService {
             setTimeout(() => {
 
                 this.client.subscribe(`/topic/startGame/${playerRef.current.getGameId()}`, () => {
+                    setTimeout(() => {
+                        this.gimmeWork();
+                    }, 100);
                     this.startTimer();
-                    //this.gimmeWork();
-                    //this.gimmework();
                 });
 
                 this.client.subscribe(`/topic/gimmework/${playerRef.current.getUserName()}`, (message) => {
@@ -205,10 +206,6 @@ class WebSocketService {
                     // TODO
                     this.impostorWins();
                 });
-            }, 500);
-
-            setTimeout(() => {
-                this.gimmeWork();
             }, 500);
 
 
@@ -385,6 +382,7 @@ class WebSocketService {
                 'userName': this.playerRef.current.getUserName(),
                 'action': player.getAction(),
                 'sessionId': sessionId,
+                'gameId': player.getGameId(),
                 'color': player.getColor(),
                 'x': player.getX(),
                 'y': player.getY()
