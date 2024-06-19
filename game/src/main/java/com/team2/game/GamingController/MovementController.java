@@ -69,8 +69,8 @@ public class MovementController {
 
         UserRegisterDTO registeredUser = registerService.registerUser(user, simpMessageHeaderAccessor);
         messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(registeredUser));
-
-        for(User u : registerService.getGroupManager().getGameInstance(registeredUser.getGameId()).getUserList()) {
+        String gameId = registeredUser.getGameId();
+        for(User u : registerService.getGroupManager().getGameInstance(gameId).getUserList()) {
                 messagingTemplate.convertAndSend("/topic/register/", new ObjectMapper().writeValueAsString(u));
             }
             if(registerService.startGame && !registerService.sendAlready) {
@@ -127,11 +127,22 @@ public class MovementController {
 
     @MessageMapping("/gimmework/{userName}")
     public void processGimmeWork(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
+
+        String gameId = user.getGameId();
+
+        for (User u : groupManager.getGameInstance(gameId).getUserList()){
+            TaskDTO tasks = u.getTasks();
+            System.out.println("Hello from GIMMEWORK, The user " +u.getUserName() + " is " + u.getTasks().getRole() );
+            messagingTemplate.convertAndSend("/topic/gimmework/" + u.getUserName(), new ObjectMapper().writeValueAsString(tasks));
+        }
+        /*
         System.out.println("Hello from GIMMEWORK");
         System.out.println("USERNAME " + user.getSessionId());
         TaskDTO task = registerService.getTask();
         System.out.println("GGGG " + task.getRole());
         messagingTemplate.convertAndSend("/topic/gimmework/" + user.getUserName(), new ObjectMapper().writeValueAsString(task));
+
+         */
 
     }
 

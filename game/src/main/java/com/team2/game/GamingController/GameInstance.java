@@ -38,6 +38,8 @@ public class GameInstance {
 
     TaskDTO taskDTO = new TaskDTO();
 
+    int random;
+
     private boolean impostor = false;
     int impostorIndex = (int) (Math.random() * GROUP_FULL);
     int counter = 0;
@@ -77,8 +79,9 @@ public class GameInstance {
     }
 
     public void setTheImposter() {
-        int random = (int) (Math.random() * userList.size());
+        random = (int) (Math.random() * userList.size());
         userList.get(random).setImpostor();
+        System.out.println("PLAYER : " + random+1 + " will be the imposter");
         for (int i = 0; i < userList.size(); i++) {
             System.out.println("PLAYER " + i + userList.get(i).getImpostor());
         }
@@ -90,6 +93,53 @@ public class GameInstance {
         }
         return false;
     }
+
+    public void distributeTasks() {
+        Set<Integer> usedIndices = new HashSet<>();
+        int taskIndex;
+
+        for (User u : userList) {
+            TaskDTO taskDTO = new TaskDTO();
+
+            if (!u.getImpostor()) {
+                taskDTO.setRole("crewmate");
+                usedIndices.clear();
+                for (int i = 0; i < 3; i++) {
+                    do {
+                        taskIndex = (int) (Math.random() * taskList.size());
+                    } while (usedIndices.contains(taskIndex));
+                    usedIndices.add(taskIndex);
+
+                    switch (i) {
+                        case 0:
+                            taskDTO.setTask1(taskList.get(taskIndex));
+                            break;
+                        case 1:
+                            taskDTO.setTask2(taskList.get(taskIndex));
+                            break;
+                        case 2:
+                            taskDTO.setTask3(taskList.get(taskIndex));
+                            break;
+                    }
+                    taskCounter++;
+                    System.out.println("distribute task taskcounter: " + taskCounter);
+                }
+            } else {
+                taskDTO.setRole("impostor");
+                impostor = true;
+                taskDTO.setTask1("kill");
+                taskDTO.setTask2("sabotage");
+                taskDTO.setTask3("vent");
+            }
+
+            u.setTasks(taskDTO);
+            System.out.println("Assigned tasks to user: " + u.getUserName() + " with role: " + taskDTO.getRole());
+        }
+
+        counter++;
+        System.out.println("Total users assigned tasks: " + userList.size());
+    }
+
 
     public void distributeTask(User u) {
         Set<Integer> usedIndices = new HashSet<>();

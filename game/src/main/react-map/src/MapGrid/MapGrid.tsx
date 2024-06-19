@@ -108,7 +108,7 @@ import brownImageRight2 from '../Images/Character_Brown_Movement/Brown_East_Left
 import brownImageLeft from '../Images/Character_Brown_Movement/Brown_West_Left.png';
 import brownImageLeft2 from '../Images/Character_Brown_Movement/Brown_West_Right.png';
 import brownImageUp from '../Images/Character_Brown_Movement/Brown_North_Left.png';
-import brownImageUp2 from '../Images/Character_Brown_Movement/Brown_North_Right.png';
+//import brownImageUp2 from '../Images/Character_Brown_Movement/Brown_North_Right.png';
 import brownImageDown from '../Images/Character_Brown_Movement/Brown_South_Left.png';
 import brownImageDown2 from '../Images/Character_Brown_Movement/Brown_South_Right.png';
 
@@ -350,7 +350,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if(currentPlayer.getColor() === 'black') {
                     imageSrc = blackImageUp2;
                 } else if(currentPlayer.getColor() === 'brown') {
-                    imageSrc = brownImageUp2;
+                    //imageSrc = brownImageUp2;
                 } else if(currentPlayer.getColor() === 'dead') {
                     imageSrc = dead;
                 } else if(currentPlayer.getColor() === 'ghost') {
