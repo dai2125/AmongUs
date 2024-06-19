@@ -104,8 +104,8 @@ class WebSocketService {
                     );
                     this.signedIn = true;
                     this.signedIn = true;
-                    this.sendMovement("ArrowUp");
-                    this.sendMovement("ArrowDown");
+                    // this.sendMovement("ArrowUp");
+                    // this.sendMovement("ArrowDown");
 
                 }
                 const otherPlayer = new Player(
@@ -506,6 +506,78 @@ class WebSocketService {
 
             this.client.send(`/app/taskResolved/`, {}, payload);
             //this.client.send(`/app/movement/${player.getSessionId()}`, {}, payload);
+        }
+    }
+
+    sendMovementNorth() {
+        const player = this.playerRef.current;
+        console.log("YOUR ROLE: " + player.getRole());
+        if(!player.getMovable()) {
+            return;
+        } else {
+            const payload = JSON.stringify({
+                userName: player.getUserName(),
+                action: player.getAction(),
+                sessionId: player.getSessionId(),
+                color: player.getColor(),
+                x: player.getX(),
+                y: player.getY()
+            });
+            this.client.send(`/app/movement/north/${player.getUserName()}`, {}, payload);
+        }
+    }
+
+    sendMovementSouth() {
+        const player = this.playerRef.current;
+        console.log("YOUR ROLE: " + player.getRole());
+        if(!player.getMovable()) {
+            return;
+        } else {
+            const payload = JSON.stringify({
+                userName: player.getUserName(),
+                action: player.getAction(),
+                sessionId: player.getSessionId(),
+                color: player.getColor(),
+                x: player.getX(),
+                y: player.getY()
+            });
+            this.client.send(`/app/movement/south/${player.getUserName()}`, {}, payload);
+        }
+    }
+
+    sendMovementWest() {
+        const player = this.playerRef.current;
+        console.log("YOUR ROLE: " + player.getRole());
+        if(!player.getMovable()) {
+            return;
+        } else {
+            const payload = JSON.stringify({
+                userName: player.getUserName(),
+                action: player.getAction(),
+                sessionId: player.getSessionId(),
+                color: player.getColor(),
+                x: player.getX(),
+                y: player.getY()
+            });
+            this.client.send(`/app/movement/west/${player.getUserName()}`, {}, payload);
+        }
+    }
+
+    sendMovementEast() {
+        const player = this.playerRef.current;
+        console.log("YOUR ROLE: " + player.getRole());
+        if(!player.getMovable()) {
+            return;
+        } else {
+            const payload = JSON.stringify({
+                userName: player.getUserName(),
+                action: player.getAction(),
+                sessionId: player.getSessionId(),
+                color: player.getColor(),
+                x: player.getX(),
+                y: player.getY()
+            });
+            this.client.send(`/app/movement/east/${player.getUserName()}`, {}, payload);
         }
     }
 }

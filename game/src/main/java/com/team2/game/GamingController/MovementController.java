@@ -46,6 +46,8 @@ public class MovementController {
     @Autowired
     private GroupManager groupManager;
 
+    private boolean votingComplete = false;
+
     @EventListener
     public void sessionConnectEvent(SessionConnectEvent event) throws InterruptedException, JsonProcessingException {
      }
@@ -284,6 +286,7 @@ public class MovementController {
         counter--;
 
         if(counter == 0) {
+            votingComplete = true;
             int max = 0;
             String maxKey = "";
             for(String key : votingList.keySet()) {
@@ -335,7 +338,7 @@ public class MovementController {
     }
 
     public void countdownVoting() throws JsonProcessingException {
-        for(int i = 30; i >= 0; i--) {
+        for(int i = 30; i >= 0 && !votingComplete; i--) {
             try {
                 Thread.sleep(1000);
                 messagingTemplate.convertAndSend("/topic/countdownVoting/", new ObjectMapper().writeValueAsString(i));
@@ -345,6 +348,8 @@ public class MovementController {
                 System.out.println("Thread was interrupted: " + e.getMessage());
             }
         }
+        messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
+        votingComplete = false;
     }
 
     public void countdownKill(String userName) throws JsonProcessingException {

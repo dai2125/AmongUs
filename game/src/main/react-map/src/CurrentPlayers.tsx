@@ -49,6 +49,7 @@ import webSocketService from "./WebSocketService";
 import Ejected from "./Screens/Ejected";
 import OtherPlayerEjected from "./Screens/OtherPlayerEjected";
 import NoOneGotEjected from "./Screens/NoOneGotEjected";
+import WaitingRoom from "./MapGrid/WaitingRoom";
 
 interface Props {
     userColor: string;
@@ -93,7 +94,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const [showRoleImpostor, setShowRoleImpostor] = useState(false);
     const [showThereIsAImpostorAmoungUs, setShowThereIsAImpostorAmoungUs] = useState(false);
     const [completedTasksCount, setCompletedTasksCount] = useState(0);
-    const [showLobby, setShowLobby] = useState(true);
+    const [showLobby, setShowLobby] = useState(false);
     const [showMap, setShowMap] = useState(false);
     const [victoryImpostor, setVictoryImpostor] = useState(false);
     const [defeatImpostor, setDefeatImpostor] = useState(false);
@@ -110,22 +111,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const [deadPlayer, setDeadPlayer] = useState('');
     const [showVotingActive, setShowVotingActive] = useState(false);
     const [showTestGrid, setShowTestGrid] = useState(false);
+    const [showWaitingRoom, setShowWaitingRoom] = useState(true);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
     const playerRef = useRef<Player>(new Player(userName, '', '', gameId, '', 2, 2, '', '', '', ''));
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentMiniGame, setCurrentMiniGame] = useState<React.ReactNode>(null);
-
-
-
-    useEffect(() => {
-
-        playerRef.current.setX(getRandom(12, 7));
-        playerRef.current.setY(getRandom(15, 10));
-        console.log('XXXXX: ' + playerRef.current.getX() + ' ' + playerRef.current.getY());
-    }, []);
-
 
     useEffect(() => {
         playerRef.current.setColor(userColor);
@@ -208,7 +200,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
             const {current: webSocketService} = webSocketServiceRef;
             // TODO for testing
             // webSocketService.sendMovement(key);
-
         }
     };
 
@@ -236,14 +227,64 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
         if(xPosTask === 11 && yPosTask === 5) {
             webSocketServiceRef.current.sendTaskResolved("Guess the number", 11, 5);
+            if(playerRef.current.getTask1() === "Guess the number") {
+                playerRef.current.setTask1("");
+            } else if(playerRef.current.getTask2() === "Guess the number") {
+                playerRef.current.setTask2("");
+            } else if(playerRef.current.getTask3() === "Guess the number") {
+                playerRef.current.setTask3("");
+            }
+            playerInstance();
+            setShowTaskList(false);
+            setShowTaskList(true);
         } else if(xPosTask === 36 && (yPosTask === 4 || yPosTask === 5)) {
             webSocketServiceRef.current.sendTaskResolved("Download the file", 36, 4);
+            if(playerRef.current.getTask1() === "Download the file") {
+                playerRef.current.setTask1("");
+            } else if(playerRef.current.getTask2() === "Download the file") {
+                playerRef.current.setTask2("");
+            } else if(playerRef.current.getTask3() === "Download the file") {
+                playerRef.current.setTask3("");
+            }
+            playerInstance();
+            setShowTaskList(false);
+            setShowTaskList(true);
         } else if(xPosTask === 72 && (yPosTask === 17 || yPosTask === 18 || yPosTask === 19)) {
             webSocketServiceRef.current.sendTaskResolved("Enter the number sequence", 72, 17);
+            if(playerRef.current.getTask1() === "Enter the number sequence") {
+                playerRef.current.setTask1("");
+            } else if(playerRef.current.getTask2() === "Enter the number sequence") {
+                playerRef.current.setTask2("");
+            } else if(playerRef.current.getTask3() === "Enter the number sequence") {
+                playerRef.current.setTask3("");
+            }
+            playerInstance();
+            setShowTaskList(false);
+            setShowTaskList(true);
         } else if(xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) {
             webSocketServiceRef.current.sendTaskResolved("Answer the question", 51, 37);
+            if(playerRef.current.getTask1() === "Answer the question") {
+                playerRef.current.setTask1("");
+            } else if(playerRef.current.getTask2() === "Answer the question") {
+                playerRef.current.setTask2("");
+            } else if(playerRef.current.getTask3() === "Answer the question") {
+                playerRef.current.setTask3("");
+            }
+            playerInstance();
+            setShowTaskList(false);
+            setShowTaskList(true);
         } else if(yPosTask === 40 && (xPosTask === 40 || xPosTask === 41)) {
             webSocketServiceRef.current.sendTaskResolved("Memory game", 40, 40);
+            if(playerRef.current.getTask1() === "Memory game") {
+                playerRef.current.setTask1("");
+            } else if(playerRef.current.getTask2() === "Memory game") {
+                playerRef.current.setTask2("");
+            } else if(playerRef.current.getTask3() === "Memory game") {
+                playerRef.current.setTask3("");
+            }
+            playerInstance();
+            setShowTaskList(false);
+            setShowTaskList(true);
         }
     };
 
@@ -481,7 +522,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                                 <div></div>}
                         </div>
                         <div className="col-span-11 border-solid rounded-lg flex justify-center items-center">
-                            {showTestGrid ? <TestGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
+                            {showTestGrid ?
+                                <TestGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
                                 <div></div>}
                         </div>
                         <div>
@@ -489,8 +531,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                                 <TaskList role={playerRef.current.getRole()} tasks={tasks}/> : <div></div>
                             }
                         </div>
+                        {/*<div className="col-span-8 border-solid rounded-lg flex justify-center items-center">*/}
+                        {/*    {showLobby ? <Lobby currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :*/}
+                        {/**/}
+                        {/*        <div></div>}*/}
+                        {/*</div>*/}
                         <div className="col-span-8 border-solid rounded-lg flex justify-center items-center">
-                            {showLobby ? <Lobby currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
+                            {showWaitingRoom ? <WaitingRoom /> :
 
                                 <div></div>}
                         </div>

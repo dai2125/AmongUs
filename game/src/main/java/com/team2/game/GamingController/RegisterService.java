@@ -25,6 +25,9 @@ public class RegisterService {
     public boolean sendAlready = false;
     private int random;
     private String gameID;
+    int positionCounter = 0;
+    int[] arrayY = {12, 11, 18, 19, 23, 24, 25};
+    int[] arrayX = {14, 32, 18, 68, 47, 4, 27};
 
     private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
 
@@ -129,11 +132,19 @@ public class RegisterService {
             user.setGameId(gameID);
 //            user.setColor(colors[counter++]);
 //            user.setY(r.nextInt(5) + 2);
-//            user.setX(r.nextInt(5) + 2);
-            user.setY(10);
-            user.setX(31);
+//            user.setX(r.nextInt(5) + 2); 12 14 |  11 32 | 18 18 | 19 68 | 23 47 | 24 4 | 25 27
+//            user.setY(10);
+//            user.setX(31);
+            user.setX(arrayX[positionCounter]);
+            user.setY(arrayY[positionCounter]);
+            positionCounter++;
+            if(positionCounter == 6) {
+                positionCounter = 0;
+            }
+            System.out.println("User " + user.getUserName() + " get position x: " + user.getX() + " y: " + user.getY() + " positionCounter: " + positionCounter);
         }
     }
+
 
     public TaskDTO getTask() {
         return gameInstance.getTask();
