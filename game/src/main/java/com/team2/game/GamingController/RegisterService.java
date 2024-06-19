@@ -77,23 +77,31 @@ public class RegisterService {
                 userRegisterDTO.setX(user.getX());
                 userRegisterDTO.setY(user.getY());
                 //TODO set the game id for this user
+                System.out.println("Initializing userDto BEFORE");
                 userRegisterDTO.setGameId(user.getGameId());
+                System.out.println("Initializing userDto AFTER");
+                System.out.println(userRegisterDTO.getUserName()+" " + userRegisterDTO.getGameId());
                 resetCounter(counter);
 
-                if (userList.size() == random){
+                /*if (gameInstance.getGroupSize() == random){
                     user.setImpostor();
-                }
+                }*/
                 gameInstance.addToTheGroup(user);
-                gameInstance.distributeTask(user);
+                //gameInstance.distributeTask(user);
             }
             System.out.println("this users id is : " + userRegisterDTO.getSessionId() + "and he belongs to game with id: " + gameID);
 
             if(gameInstance.groupIsFull() && !sendAlready) {
+                System.out.println("game starting");
                 //groupManager.setTheImposter();
                 /*for (User u : userList){
                     groupManager.distributeTask(u.getSessionId());
                 }*/
                 //groupManager.distributeTask(u.getSessionId());
+                gameInstance.setTheImposter();
+                System.out.println("imposter set");
+                gameInstance.distributeTasks();
+                System.out.println("tasks distributed");
                 startGame = true;
                 userList.clear();
 
@@ -106,6 +114,7 @@ public class RegisterService {
             return null;
         }
     }
+
     public GroupManager getGroupManager() {
         return groupManager;
     }
