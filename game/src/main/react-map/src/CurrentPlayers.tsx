@@ -457,10 +457,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                         </div>
                     </div>
                     <div className="grid grid-cols-12 row-span-8 gap-5 h-5/6">
-                        <div className="col-span-11 border-solid rounded-lg flex justify-center items-center">
-                            {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []} reportButtonClicked={reportButtonClicked}/> :
-                                <div></div>}
-                        </div>
                         <div>
                             {showTaskList ?
                                 <TaskList role={playerRef.current.getRole()} tasks={tasks}/> : <div></div>
