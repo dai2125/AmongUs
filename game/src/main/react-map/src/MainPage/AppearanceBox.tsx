@@ -5,7 +5,7 @@ import blue from '../Images/Characters/Blue.jpg';
 import cyan from '../Images/Characters/Cyan.jpg';
 import lime from '../Images/Characters/Lime.jpg';
 import pink from '../Images/Characters/Pink.jpg';
-import gray from '../Images/Characters/Gray.jpg';
+// import gray from '../Images/Characters/Gray.jpg';
 import green from '../Images/Characters/Green.jpg';
 import brown from '../Images/Characters/Brown.jpg';
 import white from '../Images/Characters/White.jpg';
@@ -22,7 +22,7 @@ const AppearanceBox = ({ setUserColor }) => {
     const [showRed, setShowRed] = React.useState<boolean>(true);
     const [showBlue, setShowBlue] = React.useState<boolean>(false);
     const [showCyan, setShowCyan] = React.useState<boolean>(false);
-    const [showGray, setShowGray] = React.useState<boolean>(false);
+    // const [showGray, setShowGray] = React.useState<boolean>(false);
     const [showPink, setShowPink] = React.useState<boolean>(false);
     const [showLime, setShowLime] = React.useState<boolean>(false);
     const [showGreen, setShowGreen] = React.useState<boolean>(false);
@@ -40,7 +40,7 @@ const AppearanceBox = ({ setUserColor }) => {
         setShowRed(true);
         setShowCyan(false);
         setShowBlue(false);
-        setShowGray(false);
+        // setShowGray(false);
         setShowLime(false);
         setShowPink(false);
         setShowBrown(false);
@@ -59,7 +59,7 @@ const AppearanceBox = ({ setUserColor }) => {
         setShowRed(false);
         setShowCyan(false);
         setShowBlue(false);
-        setShowGray(false);
+        // setShowGray(false);
         setShowLime(false);
         setShowPink(false);
         setShowGreen(false);
@@ -77,7 +77,7 @@ const AppearanceBox = ({ setUserColor }) => {
         setShowRed(false);
         setShowCyan(false);
         setShowBlue(false);
-        setShowGray(false);
+        // setShowGray(false);
         setShowLime(false);
         setShowPink(false);
         setShowGreen(false);
@@ -95,7 +95,7 @@ const AppearanceBox = ({ setUserColor }) => {
         setShowRed(false);
         setShowCyan(false);
         setShowBlue(false);
-        setShowGray(false);
+        // setShowGray(false);
         setShowLime(false);
         setShowPink(false);
         setShowBlack(false);
@@ -112,7 +112,7 @@ const AppearanceBox = ({ setUserColor }) => {
         setShowCyan(true);
         setShowRed(false);
         setShowBlue(false);
-        setShowGray(false);
+        // setShowGray(false);
         setShowLime(false);
         setShowPink(false);
         setShowBlack(false);
@@ -130,7 +130,7 @@ const AppearanceBox = ({ setUserColor }) => {
         setShowBlue(true);
         setShowRed(false);
         setShowCyan(false);
-        setShowGray(false);
+        // setShowGray(false);
         setShowLime(false);
         setShowPink(false);
         setShowBrown(false);
@@ -149,7 +149,7 @@ const AppearanceBox = ({ setUserColor }) => {
         setShowRed(false);
         setShowCyan(false);
         setShowBlue(false);
-        setShowGray(false);
+        // setShowGray(false);
         setShowLime(false);
         setShowPink(false);
         setShowBlack(false);
@@ -167,7 +167,7 @@ const AppearanceBox = ({ setUserColor }) => {
         setShowRed(false);
         setShowCyan(false);
         setShowBlue(false);
-        setShowGray(false);
+        // setShowGray(false);
         setShowLime(false);
         setShowPink(false);
         setShowBlack(false);
@@ -181,7 +181,7 @@ const AppearanceBox = ({ setUserColor }) => {
     const grayButtonClicked = () => {
         setColor('gray');
         setUserColor('gray');
-        setShowGray(true);
+        // setShowGray(true);
         setShowRed(false);
         setShowCyan(false);
         setShowBlue(false);
@@ -203,7 +203,7 @@ const AppearanceBox = ({ setUserColor }) => {
         setShowRed(false);
         setShowCyan(false);
         setShowBlue(false);
-        setShowGray(false);
+        // setShowGray(false);
         setShowPink(false);
         setShowGreen(false);
         setShowBrown(false);
@@ -221,7 +221,7 @@ const AppearanceBox = ({ setUserColor }) => {
         setShowRed(false);
         setShowCyan(false);
         setShowBlue(false);
-        setShowGray(false);
+        // setShowGray(false);
         setShowLime(false);
         setShowGreen(false);
         setShowBlack(false);
@@ -239,7 +239,7 @@ const AppearanceBox = ({ setUserColor }) => {
         setShowRed(false);
         setShowCyan(false);
         setShowBlue(false);
-        setShowGray(false);
+        // setShowGray(false);
         setShowLime(false);
         setShowPink(false);
         setShowGreen(false);
@@ -257,7 +257,7 @@ const AppearanceBox = ({ setUserColor }) => {
         setShowRed(false);
         setShowCyan(false);
         setShowBlue(false);
-        setShowGray(false);
+        // setShowGray(false);
         setShowLime(false);
         setShowPink(false);
         setShowGreen(false);
@@ -274,7 +274,7 @@ const AppearanceBox = ({ setUserColor }) => {
                 {showRed ? <img src={red} /> : <div></div>}
                 {showBlue ? <img src={blue} /> : <div></div>}
                 {showCyan ? <img src={cyan} /> : <div></div>}
-                {showGray ? <img src={gray} /> : <div></div>}
+                {/*{showGray ? <img src={gray} /> : <div></div>}*/}
                 {showLime ? <img src={lime} /> : <div></div>}
                 {showPink ? <img src={pink} /> : <div></div>}
                 {showGreen ? <img src={green} /> : <div></div>}
@@ -290,7 +290,7 @@ const AppearanceBox = ({ setUserColor }) => {
                 <button className="red-button" onClick={redButtonClicked}></button>
                 <button className="cyan-button" onClick={cyanButtonClicked}></button>
                 <button className="blue-button" onClick={blueButtonClicked}></button>
-                <button className="gray-button" onClick={grayButtonClicked}></button>
+                {/*<button className="gray-button" onClick={grayButtonClicked}></button>*/}
                 <button className="lime-button" onClick={limeButtonClicked}></button>
                 <button className="pink-button" onClick={pinkButtonClicked}></button>
                 <button className="brown-button" onClick={brownButtonClicked}></button>

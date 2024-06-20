@@ -12,7 +12,8 @@ export class Player {
         private task2: string,
         private task3: string,
         private role: string,
-        private movable : boolean = true
+        private movable : boolean = true,
+        private direction: string
     ) {
         this.userName = userName;
         this.action = "";
@@ -24,6 +25,7 @@ export class Player {
         this.task2 = task2;
         this.task3 = task3;
         this.role = role;
+        this.direction = direction;
     }
 
     getUserName() { return this.userName; }
@@ -38,6 +40,7 @@ export class Player {
     getTask3() { return this.task3; }
     getRole() { return this.role; }
     getMovable() { return this.movable; }
+    getDirection() { return this.direction; }
 
     setUserName(userName: string) { this.userName = userName; }
     setAction(action: string) { this.action = action; }
@@ -51,4 +54,5 @@ export class Player {
     setTask3(task3: string) { this.task3 = task3; }
     setRole(role: string) { this.role = role; }
     setMovable(movable: boolean) { this.movable = movable; }
+    setDirection(direction: string) { this.direction = direction; }
 }

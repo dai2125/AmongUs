@@ -13,7 +13,6 @@ import TaskBar from "./GameComponents/TaskBar";
 import TaskList from "./GameComponents/TaskList";
 import {GridService} from "./MapGrid/GridService";
 import KillCrewMate from "./Screens/KillCrewMate";
-import Lobby from "./MapGrid/Lobby";
 import CrewmateWins from "./Screens/VictoryImpostor";
 import VictoryCrewmate from "./Screens/VictoryCrewmate";
 import VictoryImpostor from "./Screens/VictoryImpostor";
@@ -114,7 +113,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const [showWaitingRoom, setShowWaitingRoom] = useState(true);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
-    const playerRef = useRef<Player>(new Player(userName, '', '', gameId, '', 2, 2, '', '', '', ''));
+    const playerRef = useRef<Player>(new Player(userName, '', '', gameId, '', 2, 2, '', '', '', '', true, 'down'));
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentMiniGame, setCurrentMiniGame] = useState<React.ReactNode>(null);
@@ -196,13 +195,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
             taskAction();
         } else if (key === 'e' && playerRef.current.getRole() === "impostor") {
             taskKill(key);
-        } else if (webSockWeetServiceRef.current) {
-            const {current: webSocketService} = webSocketServiceRef;
-            // TODO for testing
-            // webSocketService.sendMovement(key);
         }
     };
-
 
     const [showPopup, setShowPopup] = useState(false);
 
@@ -210,7 +204,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         setShowPopup(!showPopup);
     };
 
-    //Test Games
     const openMiniGame = (minigame: React.ReactNode) => {
         setCurrentMiniGame(minigame);
         setIsModalVisible(true);
@@ -320,11 +313,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         }
     }
 
-    const taskKill = (key: string) => {
-        //webSocketServiceRef.current.sendKill(key);
-
-    }
-
     const updateTasks = () => {
         if (completedTasksCount < 9) {
             setCompletedTasksCount(prevCount => prevCount + 1);
@@ -372,47 +360,24 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
             task2: playerRef.current.getTask2(),
             task3: playerRef.current.getTask3()
         });
-
-       // setTimeout(() => {
-       //     setShowTaskList(true);
-       // }, 3000);/
-        // / setShowTaskList(true);
     }
 
     const kill = () => {
-        // setShowMap(false);
-        // TODO killCrewmate Screen stucks and doesnt end
          setShowYouKilledACrewmate(true);
 
          setTimeout(() => {
-             //setShowKillCrewMate(false);
              setShowYouKilledACrewmate(false);
          }, 1500);
     }
 
-    // const handleButtonPress = () => {
-    //     webSocketServiceRef.current.yourAGhostNow();
-    // }
-
     const reportButtonClicked = () => {
-        // TODO button wurde in der Map gedrückt
         console.log("CurrentPlayer.tsx: Report Button clicked");
         webSocketServiceRef.current.sendReportButtonPressed();
-        webSocketServiceRef.current.sendReportButtonPressed();
-        // setShowVotingbox(true);
     }
 
     const handleButtonPress = (votedFor: string) => {
-        // TODO button wurde in der VotingBox gedrückt
         console.log('CurrentPlayers.tsx: Votingbox submit button pressed ' + votedFor);
         webSocketServiceRef.current.sendVotingButtonPressed(votedFor);
-        // setShowVotingbox(false);
-    }
-
-    function getRandom(min: number, max: number) {
-        const minCeiled = Math.ceil(min);
-        const maxFloored = Math.floor(max);
-        return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
     }
 
     const votingActive = (deadPlayer) => {
@@ -433,11 +398,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }
 
     const ejectMe = () => {
-        // TODO show eject screen
-
         setShowMap(false);
         setShowEjected(true);
-
         setTimeout(() => {
             onQuit();
         }, 3000);
@@ -447,7 +409,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         setEjectedPlayer(ejectedPlayer);
         setShowMap(false);
         setShowOtherPlayerEjected(true);
-
         setTimeout(() => {
             setShowOtherPlayerEjected(false);
             setShowMap(true);
@@ -457,13 +418,11 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const noOneGotEjected = () => {
         setShowMap(false);
         setNoOneGotEjected(true);
-
         setTimeout(() => {
             setNoOneGotEjected(false);
             setShowMap(true);
         }, 3000);
     }
-
 
     return (
         <div>
@@ -475,24 +434,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             <div id="user-div"
                                  className="col-span-1" style={{
                                 backgroundImage: `url(${playerImage})`
-                            }
-                            }/>
-                            {/*<button onClick={toggleChat} className="text-white bg-gray-700 hover:bg-gray-800 font-bold py-2 px-4 rounded m-10">*/}
-                            {/*    Press me*/}
-                            {/*</button>*/}
-
-                            {/*<button className="w-10 h-10" onClick={toggleChat}><img alt="chatButton"*/}
-                            {/*                                                        className="w-10 b-10 "*/}
-                            {/*                                                        src={chatButton}></img></button>*/}
-
-                            {/* Chat-Fenster, das nur sichtbar ist, wenn chatVisible true ist */}
-
-                            {/*{chatVisible ?*/}
-                            {/*    <Chatbox/> : <div></div>*/}
-                            {/*}*/}
-                            {/*<div className={chatVisible ? "" : "hidden"}>*/}
-                            {/*    <Chatbox/>*/}
-                            {/*</div>*/}
+                            }}/>
                             <Chatbox playerColor={playerRef.current.getColor()}
                                      playerName={playerRef.current.getUserName()}></Chatbox>
 
@@ -503,11 +445,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             { showVotingActive ? <VotingActive></VotingActive> : <div></div> }
                         </div>
                     </div>
-                    {/*<div >{purple}</div>*/}
                     <div className="grid grid-cols-12 row-span-1">
                         <div className="col-span-8 border-solid rounded-lg w-1/2 justify-self-">
                             {showTaskBar ?
-                                // <TaskBar  /> : <div></div>
                                 <TaskBar completedTasksCount={completedTasksCount}/> : <div></div>
                             }
                         </div>
@@ -518,12 +458,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                     </div>
                     <div className="grid grid-cols-12 row-span-8 gap-5 h-5/6">
                         <div className="col-span-11 border-solid rounded-lg flex justify-center items-center">
-                            {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
-                                <div></div>}
-                        </div>
-                        <div className="col-span-11 border-solid rounded-lg flex justify-center items-center">
-                            {showTestGrid ?
-                                <TestGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
+                            {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []} reportButtonClicked={reportButtonClicked}/> :
                                 <div></div>}
                         </div>
                         <div>
@@ -531,15 +466,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                                 <TaskList role={playerRef.current.getRole()} tasks={tasks}/> : <div></div>
                             }
                         </div>
-                        {/*<div className="col-span-8 border-solid rounded-lg flex justify-center items-center">*/}
-                        {/*    {showLobby ? <Lobby currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :*/}
-                        {/**/}
-                        {/*        <div></div>}*/}
-                        {/*</div>*/}
                         <div className="col-span-8 border-solid rounded-lg flex justify-center items-center">
-                            {showWaitingRoom ? <WaitingRoom /> :
-
-                                <div></div>}
+                            {showWaitingRoom ? <WaitingRoom /> : <div></div>}
                         </div>
                         <div>
                             <Modal isVisible={isModalVisible} onClose={closeMiniGame}>
@@ -547,24 +475,15 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             </Modal>
                         </div>
 
-
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}
-                                                reportButtonClicked={reportButtonClicked}/> :
-                                <div></div>}
+                                                reportButtonClicked={reportButtonClicked}/> : <div></div>}
                         </div>
-                        {/*<div>*/}
-                        {/*    <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">*/}
-                        {/*        { showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :*/}
-                        {/*            <div></div> }*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
 
                         {showPopup && (
                             <div id="popup"
                                  className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50">
                                 <div className="bg-white p-8 rounded-lg">
-                                    {/* Your input fields or content for settings popup */}
                                     <label className="text-white">Number of players:</label><br/>
                                     <input type="number" max="15"
                                            className="input-field w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
@@ -583,20 +502,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             </div>
                         )}
 
-                        {/*<div className="grid grid-cols-12 row-span-9 gap-5 h-5/6">*/}
-                        {/*    <div className="col-span-3 border-solid rounded-lg w-1/2 justify-self-start">*/}
-                        {/*        <button onClick={togglePopup}*/}
-                        {/*                className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Settings*/}
-                        {/*        </button>*/}
-                        {/*        <button*/}
-                        {/*            className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Map*/}
-                        {/*        </button>*/}
-                        {/*        <button*/}
-                        {/*            onClick={onQuit}*/}
-                        {/*            className="bg-gray-700 hover:bg-gray-800 text-white w-full font-bold py-2 px-4 rounded m-10">Quit*/}
-                        {/*        </button>*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
                         <div style={{
                             position: 'absolute',
                             bottom: '0',
@@ -623,7 +528,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             {showKillCrewMate ? <KillCrewMate onStart={handleRole}/> : <div></div>}
                         </div>
                         <div>
-                            {/*{ showKillImpostor ? <KillImpostor onStart={handleRole}/> : <div></div> }*/}
                         </div>
                         <div>
                             {victoryImpostor ? <VictoryImpostor onStart={handleRole}/> : <div></div>}
@@ -651,9 +555,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             {showNoOneGotEjected ?
                                 <NoOneGotEjected onStart={handleRole}/> : <div></div>}
                         </div>
-                        {/*<div>*/}
-                        {/*    {youGotKilled ? <YouGotKilled onStart={handleRole}/> : <div></div>}*/}
-                        {/*</div>*/}
                     </div>
                     <KeyInput onKeyPress={handleKeyPress}/>
                 </div>

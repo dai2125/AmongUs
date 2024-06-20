@@ -67,14 +67,14 @@ import greenImageUp2 from '../Images/Character_Green_Movement/Green_North_Right.
 import greenImageDown from '../Images/Character_Green_Movement/Green_South_Left.png';
 import greenImageDown2 from '../Images/Character_Green_Movement/Green_South_Right.png';
 
-import pinkImageRight from '../Images/Character_Pink_Movement/Pink_East_Right.png';
-import pinkImageRight2 from '../Images/Character_Pink_Movement/Pink_East_Left.png';
-import pinkImageLeft from '../Images/Character_Pink_Movement/Pink_West_Left.png';
-import pinkImageLeft2 from '../Images/Character_Pink_Movement/Pink_West_Right.png';
-import pinkImageUp from '../Images/Character_Pink_Movement/Pink_North_Left.png';
-import pinkImageUp2 from '../Images/Character_Pink_Movement/Pink_North_Right.png';
-import pinkImageDown from '../Images/Character_Pink_Movement/Pink_South_Left.png';
-import pinkImageDown2 from '../Images/Character_Pink_Movement/Pink_South_Right.png';
+import pinkImageEast from '../Images/Character_Pink_Movement/Pink_East_Right.png';
+import pinkImageEast2 from '../Images/Character_Pink_Movement/Pink_East_Left.png';
+import pinkImageWest from '../Images/Character_Pink_Movement/Pink_West_Left.png';
+import pinkImageWest2 from '../Images/Character_Pink_Movement/Pink_West_Right.png';
+import pinkImageNorth from '../Images/Character_Pink_Movement/Pink_North_Left.png';
+import pinkImageNorth2 from '../Images/Character_Pink_Movement/Pink_North_Right.png';
+import pinkImageSouth from '../Images/Character_Pink_Movement/Pink_South_Left.png';
+import pinkImageSouth2 from '../Images/Character_Pink_Movement/Pink_South_Right.png';
 
 import orangeImageRight from '../Images/Character_Orange_Movement/Orange_East_Right.png';
 import orangeImageRight2 from '../Images/Character_Orange_Movement/Orange_East_Left.png';
@@ -127,7 +127,6 @@ import {Player} from "../Player";
 import {send} from "vite";
 import KeyInput from "../KeyInputs";
 
-
 interface MapGridProps {
     currentPlayer: Player;
     otherPlayers: any[];
@@ -135,7 +134,10 @@ interface MapGridProps {
 }
 
 const colorToImageUrl = {
-    purple: purpleImageDown,
+    purpleImageSouth: purpleImageDown,
+    purpleNorth: purpleImageUp,
+    purpleEast: purpleImageRight,
+    purpleWest: purpleImageLeft,
     red: redImageDown,
     blue: blueImageDown,
     green: greenImageDown,
@@ -146,7 +148,11 @@ const colorToImageUrl = {
     brown: brownImageDown,
     cyan: cyanImageDown,
     lime: limeImageDown,
-    pink: pinkImageDown,
+    pinkImageSouth: pinkImageSouth,
+    pinkImageNorth: pinkImageNorth,
+    pinkImageEast: pinkImageEast,
+    pinkImageWest: pinkImageWest,
+
     dead: dead,
     ghost: ghost
 };
@@ -174,6 +180,8 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [ventCooldown, setVentCooldown] = useState(0);
     const [lastMove, setLastMove] = useState(Date.now());
     const [notConnected, setNotConnected] = useState(false);
+    const [otherPlayerDirections, setOtherPlayerDirections] = useState({});
+
 
     useEffect(() => {
         const updateScrollPosition = () => {
@@ -212,7 +220,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getColor() === 'green') {
                     imageSrc = greenImageRight;
                 } else if (currentPlayer.getColor() === 'pink') {
-                    imageSrc = pinkImageRight;
+                    imageSrc = pinkImageSouth;
                 } else if (currentPlayer.getColor() === 'orange') {
                     imageSrc = orangeImageRight;
                 } else if (currentPlayer.getColor() === 'white') {
@@ -245,7 +253,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getColor() === 'green') {
                     imageSrc = greenImageRight2;
                 } else if (currentPlayer.getColor() === 'pink') {
-                    imageSrc = pinkImageRight2;
+                    imageSrc = pinkImageEast2;
                 } else if (currentPlayer.getColor() === 'orange') {
                     imageSrc = orangeImageRight2;
                 } else if (currentPlayer.getColor() === 'white') {
@@ -278,7 +286,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getColor() === 'green') {
                     imageSrc = greenImageLeft;
                 } else if (currentPlayer.getColor() === 'pink') {
-                    imageSrc = pinkImageLeft;
+                    imageSrc = pinkImageWest;
                 } else if (currentPlayer.getColor() === 'orange') {
                     imageSrc = orangeImageLeft;
                 } else if (currentPlayer.getColor() === 'white') {
@@ -311,7 +319,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getColor() === 'green') {
                     imageSrc = greenImageLeft2;
                 } else if (currentPlayer.getColor() === 'pink') {
-                    imageSrc = pinkImageLeft2;
+                    imageSrc = pinkImageWest2;
                 } else if (currentPlayer.getColor() === 'orange') {
                     imageSrc = orangeImageLeft2;
                 } else if (currentPlayer.getColor() === 'white') {
@@ -344,7 +352,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getColor() === 'green') {
                     imageSrc = greenImageUp2;
                 } else if (currentPlayer.getColor() === 'pink') {
-                    imageSrc = pinkImageUp2;
+                    imageSrc = pinkImageNorth2;
                 } else if (currentPlayer.getColor() === 'orange') {
                     imageSrc = orangeImageUp2;
                 } else if (currentPlayer.getColor() === 'white') {
@@ -377,7 +385,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getColor() === 'green') {
                     imageSrc = greenImageUp;
                 } else if (currentPlayer.getColor() === 'pink') {
-                    imageSrc = pinkImageUp;
+                    imageSrc = pinkImageNorth;
                 } else if (currentPlayer.getColor() === 'orange') {
                     imageSrc = orangeImageUp;
                 } else if (currentPlayer.getColor() === 'white') {
@@ -410,7 +418,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getColor() === 'green') {
                     imageSrc = greenImageDown;
                 } else if (currentPlayer.getColor() === 'pink') {
-                    imageSrc = pinkImageDown;
+                    imageSrc = pinkImageSouth;
                 } else if (currentPlayer.getColor() === 'orange') {
                     imageSrc = orangeImageDown;
                 } else if (currentPlayer.getColor() === 'white') {
@@ -443,7 +451,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getColor() === 'green') {
                     imageSrc = greenImageDown;
                 } else if (currentPlayer.getColor() === 'pink') {
-                    imageSrc = pinkImageDown2;
+                    imageSrc = pinkImageSouth2;
                 } else if (currentPlayer.getColor() === 'orange') {
                     imageSrc = orangeImageDown2;
                 } else if (currentPlayer.getColor() === 'white') {
@@ -467,280 +475,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         setPlayerImage(imageSrc);
     }, [playerDirection]);
 
-    // useEffect(() => {
-    //     let imageSrc;
-    //     switch (otherPlayerDirection) {
-    //         case 'right':
-    //             if(otherPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageRight;
-    //             } else if(otherPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageRight;
-    //             } else if(otherPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageRight;
-    //             } else if(otherPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageRight;
-    //             } else if(otherPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageRight;
-    //             } else if(otherPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageRight;
-    //             } else if(otherPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageRight;
-    //             } else if(otherPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageRight;
-    //             } else if(otherPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageRight;
-    //             } else if(otherPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageRight;
-    //             } else if(otherPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageRight;
-    //             } else if(otherPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageRight;
-    //             } else if(otherPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if(otherPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghostImageRight;
-    //             } else {
-    //                 imageSrc = redImageRight;
-    //             }
-    //             break;
-    //         case 'right2':
-    //             if(otherPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageRight2;
-    //             } else if(otherPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageRight2;
-    //             } else if(otherPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageRight2;
-    //             } else if(otherPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageRight2;
-    //             } else if(otherPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageRight2;
-    //             } else if(otherPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageRight2;
-    //             } else if(otherPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageRight2;
-    //             } else if(otherPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageRight2;
-    //             } else if(otherPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageRight2;
-    //             } else if(otherPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageRight2;
-    //             } else if(otherPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageRight2;
-    //             } else if(otherPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageRight2;
-    //             } else if(otherPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if(otherPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghostImageRight;
-    //             }  else {
-    //                 imageSrc = redImageRight2;
-    //             }
-    //             break;
-    //         case 'left':
-    //             if(otherPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageLeft;
-    //             } else if(otherPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageLeft;
-    //             } else if(otherPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageLeft;
-    //             } else if(otherPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageLeft;
-    //             } else if(otherPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageLeft;
-    //             } else if(otherPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageLeft;
-    //             } else if(otherPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageLeft;
-    //             } else if(otherPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageLeft;
-    //             } else if(otherPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageLeft;
-    //             } else if(otherPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageLeft;
-    //             } else if(otherPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageLeft;
-    //             } else if(otherPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageLeft;
-    //             } else if(otherPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if(otherPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghostImageLeft;
-    //             }  else {
-    //                 imageSrc = redImageLeft;
-    //             }
-    //             break;
-    //         case 'left2':
-    //             if(otherPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageLeft2;
-    //             } else if(otherPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageLeft2;
-    //             } else if(otherPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageLeft2;
-    //             } else if(otherPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageLeft2;
-    //             } else if(otherPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageLeft2;
-    //             } else if(otherPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageLeft2;
-    //             } else if(otherPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageLeft2;
-    //             } else if(otherPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageLeft2;
-    //             } else if(otherPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageLeft2;
-    //             } else if(otherPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageLeft2;
-    //             } else if(otherPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageLeft2;
-    //             } else if(otherPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageLeft2;
-    //             } else if(otherPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if(otherPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghostImageLeft;
-    //             } else {
-    //                 imageSrc = redImageLeft2;
-    //             }
-    //             break;
-    //         case 'up':
-    //             if(otherPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageUp2;
-    //             } else if(otherPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageUp2;
-    //             } else if(otherPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageUp2;
-    //             } else if(otherPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageUp2;
-    //             } else if(otherPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageUp2;
-    //             } else if(otherPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageUp2;
-    //             } else if(otherPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageUp2;
-    //             } else if(otherPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageUp2;
-    //             } else if(otherPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageUp2;
-    //             } else if(otherPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageUp2;
-    //             } else if(otherPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageUp2;
-    //             } else if(otherPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageUp2;
-    //             } else if(otherPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if(otherPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghost;
-    //             } else {
-    //                 imageSrc = redImageUp2;
-    //             }
-    //             break;
-    //         case 'up2':
-    //             if(otherPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageUp;
-    //             } else if(otherPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageUp;
-    //             } else if(otherPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageUp;
-    //             } else if(otherPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageUp;
-    //             } else if(otherPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageUp;
-    //             } else if(otherPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageUp;
-    //             } else if(otherPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageUp;
-    //             } else if(otherPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageUp;
-    //             } else if(otherPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageUp;
-    //             } else if(otherPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageUp;
-    //             } else if(otherPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageUp;
-    //             } else if(otherPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageUp;
-    //             } else if(otherPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if(otherPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghost;
-    //             } else {
-    //                 imageSrc = redImageUp;
-    //             }
-    //             break;
-    //         case 'down':
-    //             if(otherPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageDown;
-    //             } else if(otherPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageDown;
-    //             } else if(otherPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageDown;
-    //             } else if(otherPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageDown;
-    //             } else if(otherPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageDown;
-    //             } else if(otherPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageDown;
-    //             } else if(otherPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageDown;
-    //             } else if(otherPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageDown;
-    //             } else if(otherPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageDown;
-    //             } else if(otherPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageDown;
-    //             } else if(otherPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageDown;
-    //             } else if(otherPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageDown;
-    //             } else if(otherPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if(otherPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghost;
-    //             } else {
-    //                 imageSrc = redImageDown;
-    //             }
-    //             break;
-    //         case 'down2':
-    //             if(otherPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageDown2;
-    //             } else if(otherPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageDown2;
-    //             } else if(otherPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageDown2;
-    //             } else if(otherPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageDown2;
-    //             } else if(otherPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageDown2;
-    //             } else if(otherPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageDown2;
-    //             } else if(otherPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageDown;
-    //             } else if(otherPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageDown2;
-    //             } else if(otherPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageDown2;
-    //             } else if(otherPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageDown2;
-    //             } else if(otherPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageDown2;
-    //             } else if(otherPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageDown2;
-    //             } else if(otherPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if(otherPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghost;
-    //             } else {
-    //                 imageSrc = redImageDown;
-    //             }
-    //             break;
-    //         default:
-    //             imageSrc = redImageRight;
-    //     }
-    //
-    //     setPlayerImage(imageSrc);
-    // }, [otherPlayerDirection]);
-
     useEffect(() => {
         const image = new Image();
         image.src = skeldImage;
@@ -749,31 +483,9 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         };
     }, [skeldImage]);
 
-    const playerImages = {
-        red: "../images/Character_Movement/red.jpg",
-        cyan: "../images/Character_Movement/Cyan.jpg",
-        lime: "../images/Character_Movement/Lime.jpg",
-        pink: "../images/Character_Movement/Pink.jpg",
-        gray: "../images/Character_Movement/Gray.jpg",
-        blue: "../images/Character_Movement/Blue.jpg",
-        green: "../images/Character_Movement/Green.jpg",
-        black: "../images/Character_Movement/Black.jpg",
-        white: "../images/Character_Movement/White.jpg",
-        brown: "../images/Character_Movement/Brown.jpg",
-        orange: "../images/Character_Movement/Orange.jpg",
-        yellow: "../images/Character_Movement/Yellow.jpg",
-        purple: "../images/Character_Movement/Purple.png",
-        dead: "../images/Character_Movement/dead.png",
-    };
-
     useEffect(() => {
         setPlayerImage(colorToImageUrl[currentPlayer.getColor()]);
     }, [currentPlayer.getColor()]);
-
-    // const currentPlayerImage = useMemo(() => {
-    //     return playerImages[currentPlayer.getColor()];
-    // }, [currentPlayer.getColor()]);
-
 
     useEffect(() => {
         setGridKey(prevKey => prevKey + 1);
@@ -785,18 +497,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         });
     }, [otherPlayers]);
 
-    // useEffect(() => {
-    //     const visibleDeadPlayer = otherPlayers.find(player => {
-    //         console.log('isCellVisible: ' + isCellVisible(currentPlayer.getX(), currentPlayer.getY(), player.getX(), player.getY()));
-    //         const isVisible = isCellVisible(currentPlayer.getX(), currentPlayer.getY(), player.getX(), player.getY());
-    //         return player.getColor() === "dead" && isVisible;
-    //     });
-    //     setShowReportButton(visibleDeadPlayer !== undefined);
-    //
-    // }, [otherPlayers, currentPlayer]);
-
-
-    const updatePlayerImage = (player) => {
+    function updatePlayerImage(player) {
         let newImage;
         if (!player.getMovable()) {
             newImage = colorToImageUrl['dead'];
@@ -805,14 +506,142 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             newImage = colorToImageUrl['dead'];
             console.log('DEADPLAYER: ' + player);
         } else {
-            newImage = colorToImageUrl[player.getColor()];
+            const direction = otherPlayerDirections[player.getSessionId()];
+            const color = player.getColor();
+            console.log('RRRRRRR: ' + player.getDirection() + ' ' + player.getColor() + ' ' + player.getSessionId());
+            console.log('PPPPPPP: ' + player.getUserName() + ' with direction ' + player.getDirection());
 
-
-            // setShowReportButton(false);
+            if (player.getColor() === "pink") {
+                if(player.getDirection() === "north") {
+                    newImage = pinkImageNorth;
+                } else if (player.getDirection() === "south") {
+                    newImage = pinkImageSouth;
+                } else if (player.getDirection() === "east") {
+                    newImage = pinkImageEast;
+                } else if (player.getDirection() === "west") {
+                    newImage = pinkImageWest;
+                }
+            } else if(player.getColor() === "red") {
+                if(player.getDirection() === "south") {
+                    newImage = redImageDown;
+                } else if (player.getDirection() === "north") {
+                    newImage = redImageUp;
+                } else if (player.getDirection() === "east") {
+                    newImage = redImageRight;
+                } else if (player.getDirection() === "west") {
+                    newImage = redImageLeft;
+                }
+            } else if (player.getColor() === "blue") {
+                if(player.getDirection() === "south") {
+                    newImage = blueImageDown;
+                } else if (player.getDirection() === "north") {
+                    newImage = blueImageUp;
+                } else if (player.getDirection() === "east") {
+                    newImage = blueImageRight;
+                } else if (player.getDirection() === "west") {
+                    newImage = blueImageLeft;
+                }
+            } else if (player.getColor() === "green") {
+                if(player.getDirection() === "south") {
+                    newImage = greenImageDown;
+                } else if (player.getDirection() === "north") {
+                    newImage = greenImageUp;
+                } else if (player.getDirection() === "east") {
+                    newImage = greenImageRight;
+                } else if (player.getDirection() === "west") {
+                    newImage = greenImageLeft;
+                }
+            } else if (player.getColor() === "orange") {
+                if(player.getDirection() === "south") {
+                    newImage = orangeImageDown;
+                } else if (player.getDirection() === "north") {
+                    newImage = orangeImageUp;
+                } else if (player.getDirection() === "east") {
+                    newImage = orangeImageRight;
+                } else if (player.getDirection() === "west") {
+                    newImage = orangeImageLeft;
+                }
+            } else if (player.getColor() === "yellow") {
+                if(player.getDirection() === "south") {
+                    newImage = yellowImageDown;
+                } else if (player.getDirection() === "north") {
+                    newImage = yellowImageUp;
+                } else if (player.getDirection() === "east") {
+                    newImage = yellowImageRight;
+                } else if (player.getDirection() === "west") {
+                    newImage = yellowImageLeft;
+                }
+            } else if (player.getColor() === "black") {
+                if(player.getDirection() === "south") {
+                    newImage = blackImageDown;
+                } else if (player.getDirection() === "north") {
+                    newImage = blackImageUp;
+                } else if (player.getDirection() === "east") {
+                    newImage = blackImageRight;
+                } else if (player.getDirection() === "west") {
+                    newImage = blackImageLeft;
+                }
+            } else if (player.getColor() === "white") {
+                if(player.getDirection() === "south") {
+                    newImage = whiteImageDown;
+                } else if (player.getDirection() === "north") {
+                    newImage = whiteImageUp;
+                } else if (player.getDirection() === "east") {
+                    newImage = whiteImageRight;
+                } else if (player.getDirection() === "west") {
+                    newImage = whiteImageLeft;
+                }
+            } else if (player.getColor() === "brown") {
+                if(player.getDirection() === "south") {
+                    newImage = brownImageDown;
+                } else if (player.getDirection() === "north") {
+                    newImage = brownImageUp;
+                } else if (player.getDirection() === "east") {
+                    newImage = brownImageRight;
+                } else if (player.getDirection() === "west") {
+                    newImage = brownImageLeft;
+                }
+            } else if (player.getColor() === "cyan") {
+                if(player.getDirection() === "south") {
+                    newImage = cyanImageDown;
+                } else if (player.getDirection() === "north") {
+                    newImage = cyanImageUp;
+                } else if (player.getDirection() === "east") {
+                    newImage = cyanImageRight;
+                } else if (player.getDirection() === "west") {
+                    newImage = cyanImageLeft;
+                }
+            } else if (player.getColor() === "lime") {
+                if(player.getDirection() === "south") {
+                    newImage = limeImageDown;
+                } else if (player.getDirection() === "north") {
+                    newImage = limeImageUp;
+                } else if (player.getDirection() === "east") {
+                    newImage = limeImageRight;
+                } else if (player.getDirection() === "west") {
+                    newImage = limeImageLeft;
+                }
+            } else if (player.getColor() === "purple") {
+                if(player.getDirection() === "south") {
+                    newImage = purpleImageDown;
+                } else if (player.getDirection() === "north") {
+                    newImage = purpleImageUp;
+                } else if (player.getDirection() === "east") {
+                    newImage = purpleImageRight;
+                } else if (player.getDirection() === "west") {
+                    newImage = purpleImageLeft;
+                }
+            } else if (player.getColor() === "ghost") {
+                if(player.getDirection() === "east") {
+                    newImage = ghostImageRight;
+                } else if (player.getDirection() === "west") {
+                    newImage = ghostImageLeft;
+                }
+            }
 
         }
         setOtherPlayerImages(prevImages => ({...prevImages, [player.getSessionId()]: newImage}));
-    };
+    }
 
     const grid: any[][] = [
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -904,6 +733,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
                 currentPlayer.setX(response.x);
                 currentPlayer.setY(response.y);
+                currentPlayer.setDirection(response.direction);
                 setPlayerPosition({x: response.x, y: response.y});
                 if (currentPlayer.getY() % 2 === 0) {
                     setPlayerDirection('up');
@@ -917,6 +747,8 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
                 currentPlayer.setX(response.x);
                 currentPlayer.setY(response.y);
+                currentPlayer.setDirection(response.direction);
+
                 setPlayerPosition({x: response.x, y: response.y});
                 if (currentPlayer.getY() % 2 === 0) {
                     setPlayerDirection('down');
@@ -929,6 +761,8 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 const response = JSON.parse(message.body);
                 currentPlayer.setX(response.x);
                 currentPlayer.setY(response.y);
+                currentPlayer.setDirection(response.direction);
+
                 setPlayerPosition({x: response.x, y: response.y});
                 // setPlayerDirection('left');
                 if (currentPlayer.getY() % 2 === 0) {
@@ -943,6 +777,8 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
                 currentPlayer.setX(response.x);
                 currentPlayer.setY(response.y);
+                currentPlayer.setDirection(response.direction);
+
                 setPlayerPosition({x: response.x, y: response.y});
                 if (currentPlayer.getX() % 2 === 0) {
                     setPlayerDirection('right');
@@ -956,14 +792,22 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 if (response.userName !== currentPlayer.getUserName()) {
                     setOtherPlayer((prevOtherPlayers) => {
                         const updatedPlayers = prevOtherPlayers.map((p) => {
+
                             if (p.getSessionId() === response.sessionId) {
                                 p.setX(response.x);
                                 p.setY(response.y);
+                                p.setDirection(response.direction);
+                                updatePlayerImage(p);
+
                             }
                             return p;
                         });
                         return updatedPlayers;
                     })
+                    // setOtherPlayerDirections(prevDirections => ({
+                    //     ...prevDirections,
+                    //     [response.sessionId]: 'north'
+                    // }));
                 }
             });
 
@@ -975,11 +819,19 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                             if (p.getSessionId() === response.sessionId) {
                                 p.setX(response.x);
                                 p.setY(response.y);
+                                p.setDirection(response.direction);
+                                updatePlayerImage(p);
+
+
                             }
                             return p;
                         });
                         return updatedPlayers;
                     })
+                    // setOtherPlayerDirections(prevDirections => ({
+                    //     ...prevDirections,
+                    //     [response.sessionId]: 'south'
+                    // }));
                 }
             });
 
@@ -991,11 +843,19 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                             if (p.getSessionId() === response.sessionId) {
                                 p.setX(response.x);
                                 p.setY(response.y);
+                                p.setDirection(response.direction);
+                                updatePlayerImage(p);
+
+
                             }
                             return p;
                         });
                         return updatedPlayers;
                     })
+                    // setOtherPlayerDirections(prevDirections => ({
+                    //     ...prevDirections,
+                    //     [response.sessionId]: 'west'
+                    // }));
                 }
             });
 
@@ -1007,11 +867,19 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                             if (p.getSessionId() === response.sessionId) {
                                 p.setX(response.x);
                                 p.setY(response.y);
+                                p.setDirection(response.direction);
+                                updatePlayerImage(p);
+
+
                             }
                             return p;
                         });
                         return updatedPlayers;
                     })
+                    // setOtherPlayerDirections(prevDirections => ({
+                    //     ...prevDirections,
+                    //     [response.sessionId]: 'east'
+                    // }));
                 }
             });
 
@@ -1054,27 +922,26 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 });
 
                 client.subscribe(`/topic/ventNotActive/${currentPlayer.getUserName()}`, () => {
-                    console.log('vent not active')
-
                     setVentActive(false);
+                    setTimeout(() => {
+                        setVentActive(true);
+                    }, 15000);
                 });
 
                 client.subscribe(`/topic/ventActive/${currentPlayer.getUserName()}`, () => {
-                    console.log('vent active')
-
-                    setVentActive(true);
+                    // setVentActive(true);
                 });
 
                 client.subscribe(`/topic/ventCooldown/${currentPlayer.getUserName()}`, (message) => {
                     const response = JSON.parse(message.body);
                     setVentCooldown(response);
                     if (response === 0) {
-
                         setVentActive(true);
                     }
                 });
-
             }
+
+
         });
 
         const handleMove = (event: string) => {
@@ -1102,18 +969,19 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             }
         };
 
-        function sendMovementNorth() {
-            console.log("YOUR ROLE: " + currentPlayer.getRole());
+        const sendMovementNorth = () => {
             if (!currentPlayer.getMovable()) {
                 return;
             } else {
+                currentPlayer.setDirection("north");
                 const payload = JSON.stringify({
                     userName: currentPlayer.getUserName(),
                     action: currentPlayer.getAction(),
                     sessionId: currentPlayer.getSessionId(),
                     color: currentPlayer.getColor(),
                     x: currentPlayer.getX(),
-                    y: currentPlayer.getY()
+                    y: currentPlayer.getY(),
+                    direction: currentPlayer.getDirection()
                 });
                 client.send(`/app/movement/north/${currentPlayer.getUserName()}`, {}, payload);
             }
@@ -1123,13 +991,15 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             if (!currentPlayer.getMovable()) {
                 return;
             } else {
+                currentPlayer.setDirection("south");
                 const payload = JSON.stringify({
                     userName: currentPlayer.getUserName(),
                     action: currentPlayer.getAction(),
                     sessionId: currentPlayer.getSessionId(),
                     color: currentPlayer.getColor(),
                     x: currentPlayer.getX(),
-                    y: currentPlayer.getY()
+                    y: currentPlayer.getY(),
+                    direction: currentPlayer.getDirection()
                 });
                 client.send(`/app/movement/south/${currentPlayer.getUserName()}`, {}, payload);
             }
@@ -1139,13 +1009,15 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             if (!currentPlayer.getMovable()) {
                 return;
             } else {
+                currentPlayer.setDirection("west");
                 const payload = JSON.stringify({
                     userName: currentPlayer.getUserName(),
                     action: currentPlayer.getAction(),
                     sessionId: currentPlayer.getSessionId(),
                     color: currentPlayer.getColor(),
                     x: currentPlayer.getX(),
-                    y: currentPlayer.getY()
+                    y: currentPlayer.getY(),
+                    direction: currentPlayer.getDirection()
                 });
                 client.send(`/app/movement/west/${currentPlayer.getUserName()}`, {}, payload);
             }
@@ -1155,13 +1027,15 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             if (!currentPlayer.getMovable()) {
                 return;
             } else {
+                currentPlayer.setDirection("east");
                 const payload = JSON.stringify({
                     userName: currentPlayer.getUserName(),
                     action: currentPlayer.getAction(),
                     sessionId: currentPlayer.getSessionId(),
                     color: currentPlayer.getColor(),
                     x: currentPlayer.getX(),
-                    y: currentPlayer.getY()
+                    y: currentPlayer.getY(),
+                    direction: currentPlayer.getDirection()
                 });
                 client.send(`/app/movement/east/${currentPlayer.getUserName()}`, {}, payload);
             }
@@ -1194,7 +1068,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
         const sendAirSystem = () => {
             console.log('airSystem q pressed');
-            if (currentPlayer.getRole() === 'impostor') {
+            if (currentPlayer.getRole() === 'impostor' && ventActive) {
                 const payload = JSON.stringify({
                     userName: currentPlayer.getUserName(),
                     action: currentPlayer.getAction(),
@@ -1207,28 +1081,11 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             }
         }
 
-        const sendReport = (deadPlayer) => {
-            if (deadPlayer) {
-                const payload = JSON.stringify({
-                    reporter: currentPlayer.getUserName(),
-                    deadPlayer: deadPlayer,
-                });
-                client.send(`/app/reportButtonPressed/${currentPlayer.getUserName()}`, {}, payload);
-            }
-        }
 
-
-        document.addEventListener('keydown', (event) => {
+        document.addEventListener('keyup', (event) => {
             handleMove(event.key);
         });
     }
-
-    // return () => {
-    //     window.removeEventListener('keydown', (event) => {
-    // handleMove(event.key);
-    // });
-    // };
-    // }, []);
 
     return (
         <div ref={containerRef} style={{
@@ -1308,14 +1165,14 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     </div> : <div></div>
                 }
                 {yourTheImpostor ? <div>
-                        {/*<h1>You are the impostor</h1>*/}
                         <h2>Keyboard controls</h2>
-
                         {killActive ?
                             <div><p>Kill E</p></div> : <div><p>Cooldown {killCooldown}</p></div>
                         }
                         {ventActive ?
-                            <div><p>Vent Q</p></div> : <div><p>Cooldown {ventCooldown}</p></div>
+                            <div><p>Vent Q</p></div> : <div><p>Please wait for vent to be active
+                                {/*{ventCooldown}*/}
+                            </p></div>
                         }
 
                         <p>Up Arrow up</p>
@@ -1324,7 +1181,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                         <p>Right Arrow Right</p>
                     </div> :
                     <div>
-                        {/*<h1>You are a crewmate</h1>*/}
                         <h2>Keyboard controls</h2>
                         <p>Task W</p>
                         <p>Up Arrow up</p>
@@ -1333,10 +1189,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                         <p>Right Arrow Right</p>
                     </div>
                 }
-
-                {/*<p>Sabotage S</p>*/}
             </div>
-            {/*<KeyInput onKeyPress={handleKeyPress}/>*/}
         </div>
     );
 }

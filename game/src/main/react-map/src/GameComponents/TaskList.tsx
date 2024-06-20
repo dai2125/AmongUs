@@ -2,15 +2,6 @@ import React, { useEffect, useState } from 'react';
 import '../CSS/main.css';
 import '../CSS/output.css';
 
-interface Props {
-    role: string;
-    tasks: {
-        task1: string;
-        task2: string;
-        task3: string;
-    };
-}
-
 const TaskList = ({role, tasks}) => {
     const [myRole, setMyRole] = useState("");
     const [myTasks, setMyTasks] = useState([]);

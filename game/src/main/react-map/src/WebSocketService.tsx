@@ -95,12 +95,14 @@ class WebSocketService {
                         registrationData.sessionId ?? '',
                         registrationData.gameId ?? '' ,
                         registrationData.color ?? '',
-                        registrationData.x ?? 2,
-                        registrationData.y ?? 2,
+                        registrationData.x,
+                        registrationData.y,
                         '',
                         '',
                         '',
-                        ''
+                        '',
+                        true,
+                        'south'
                     );
                     this.signedIn = true;
                     this.signedIn = true;
@@ -119,7 +121,9 @@ class WebSocketService {
                     '',
                     '',
                     '',
-                    ''
+                    '',
+                    true,
+                    'south'
                 )
 
                 if ((registrationData.sessionId !== playerRef.current.getSessionId()) && (registrationData.gameId === playerRef.current.getGameId())) {

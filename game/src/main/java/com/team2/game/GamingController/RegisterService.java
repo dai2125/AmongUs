@@ -79,6 +79,7 @@ public class RegisterService {
                 userRegisterDTO.setColor(user.getColor());
                 userRegisterDTO.setX(user.getX());
                 userRegisterDTO.setY(user.getY());
+
                 //TODO set the game id for this user
                 System.out.println("Initializing userDto BEFORE");
                 userRegisterDTO.setGameId(user.getGameId());
@@ -150,6 +151,7 @@ public class RegisterService {
             if(positionCounter == 6) {
                 positionCounter = 0;
             }
+            user.setDirection(user.getDirection());
             System.out.println("User " + user.getUserName() + " get position x: " + user.getX() + " y: " + user.getY() + " positionCounter: " + positionCounter);
         }
     }

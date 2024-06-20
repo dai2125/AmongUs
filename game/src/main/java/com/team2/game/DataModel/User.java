@@ -15,6 +15,7 @@ public class User {
     private int y;
     private boolean isImpostor;
     private TaskDTO tasks ;
+    private String direction;
 
 //    private String userName;
     private String email;
@@ -27,7 +28,7 @@ public class User {
         this.email = email;
     }
 
-    public User(String userName, String action, String sessionId, String color, int x, int y) {
+    public User(String userName, String action, String sessionId, String color, int x, int y, String direction) {
         this.userName = userName;
         this.action = action;
         this.sessionId = sessionId;
@@ -35,6 +36,7 @@ public class User {
         this.x = x;
         this.y = y;
         this.isImpostor = false;
+        this.direction = direction;
     }
 
     public String getUserName() {
@@ -93,6 +95,10 @@ public class User {
         isImpostor = true;
     }
 
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+
     public boolean getImpostor() {
         return isImpostor;
     }
@@ -102,6 +108,10 @@ public class User {
     }
     public void setTasks(TaskDTO taskDTO) {
         this.tasks = taskDTO;
+    }
+
+    public String getDirection() {
+        return direction;
     }
 
     //public void setTask(String task) {tasks.add(task);}
