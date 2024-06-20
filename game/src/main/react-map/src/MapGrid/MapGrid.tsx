@@ -4,68 +4,68 @@ import lime from "../Images/Character_Movement/Lime.jpg";
 import dead from "../Images/Character_Movement/dead.png";
 import ghost from "../Images/Character_Movement/Ghost.jpg";
 
-import redImageRight from '../Images/Character_Red_Movement/Red_East_Rigth.png';
-import redImageRight2 from '../Images/Character_Red_Movement/Red_East_Left.png';
-import redImageLeft from '../Images/Character_Red_Movement/Red_West_Left.png';
-import redImageLeft2 from '../Images/Character_Red_Movement/Red_West_Right.png';
-import redImageUp from '../Images/Character_Red_Movement/Red_North_Stand.png';
-import redImageUp2 from '../Images/Character_Red_Movement/Red_North_Right.png';
-import redImageDown from '../Images/Character_Red_Movement/Red_South_Left.png';
-import redImageDown2 from '../Images/Character_Red_Movement/Red_South_Right.png';
+import redImageEast from '../Images/Character_Red_Movement/Red_East_Right.png';
+import redImageEast2 from '../Images/Character_Red_Movement/Red_East_Left.png';
+import redImageWest from '../Images/Character_Red_Movement/Red_West_Left.png';
+import redImageWest2 from '../Images/Character_Red_Movement/Red_West_Right.png';
+import redImageNorth from '../Images/Character_Red_Movement/Red_North_Stand.png';
+import redImageNorth2 from '../Images/Character_Red_Movement/Red_North_Right.png';
+import redImageSouth from '../Images/Character_Red_Movement/Red_South_Left.png';
+import redImageSouth2 from '../Images/Character_Red_Movement/Red_South_Right.png';
 
-import blueImageRight from '../Images/Character_Blue_Movement/Blue_East_Right.png';
-import blueImageRight2 from '../Images/Character_Blue_Movement/Blue_East_Left.png';
-import blueImageLeft from '../Images/Character_Blue_Movement/Blue_West_Left.png';
-import blueImageLeft2 from '../Images/Character_Blue_Movement/Blue_West_Right.png';
-import blueImageUp from '../Images/Character_Blue_Movement/Blue_North_Left.png';
-import blueImageUp2 from '../Images/Character_Blue_Movement/Blue_North_Right.png';
-import blueImageDown from '../Images/Character_Blue_Movement/Blue_South_Left.png';
-import blueImageDown2 from '../Images/Character_Blue_Movement/Blue_South_Right.png';
+import blueImageEast from '../Images/Character_Blue_Movement/Blue_East_Right.png';
+import blueImageEast2 from '../Images/Character_Blue_Movement/Blue_East_Left.png';
+import blueImageWest from '../Images/Character_Blue_Movement/Blue_West_Left.png';
+import blueImageWest2 from '../Images/Character_Blue_Movement/Blue_West_Right.png';
+import blueImageNorth from '../Images/Character_Blue_Movement/Blue_North_Left.png';
+import blueImageNorth2 from '../Images/Character_Blue_Movement/Blue_North_Right.png';
+import blueImageSouth from '../Images/Character_Blue_Movement/Blue_South_Left.png';
+import blueImageSouth2 from '../Images/Character_Blue_Movement/Blue_South_Right.png';
 
-import cyanImageRight from '../Images/Character_Cyan_Movement/Cyan_East_Right.png';
-import cyanImageRight2 from '../Images/Character_Cyan_Movement/Cyan_East_Left.png';
-import cyanImageLeft from '../Images/Character_Cyan_Movement/Cyan_West_Left.png';
-import cyanImageLeft2 from '../Images/Character_Cyan_Movement/Cyan_West_Right.png';
-import cyanImageUp from '../Images/Character_Cyan_Movement/Cyan_North_Left.png';
-import cyanImageUp2 from '../Images/Character_Cyan_Movement/Cyan_North_Right.png';
-import cyanImageDown from '../Images/Character_Cyan_Movement/Cyan_South_Left.png';
-import cyanImageDown2 from '../Images/Character_Cyan_Movement/Cyan_South_Right.png';
+import cyanImageEast from '../Images/Character_Cyan_Movement/Cyan_East_Right.png';
+import cyanImageEast2 from '../Images/Character_Cyan_Movement/Cyan_East_Left.png';
+import cyanImageWest from '../Images/Character_Cyan_Movement/Cyan_West_Left.png';
+import cyanImageWest2 from '../Images/Character_Cyan_Movement/Cyan_West_Right.png';
+import cyanImageNorth from '../Images/Character_Cyan_Movement/Cyan_North_Left.png';
+import cyanImageNorth2 from '../Images/Character_Cyan_Movement/Cyan_North_Right.png';
+import cyanImageSouth from '../Images/Character_Cyan_Movement/Cyan_South_Left.png';
+import cyanImageSouth2 from '../Images/Character_Cyan_Movement/Cyan_South_Right.png';
 
-import yellowImageRight from '../Images/Character_Yellow_Movement/Yellow_East_Right.png';
-import yellowImageRight2 from '../Images/Character_Yellow_Movement/Yellow_East_Left.png';
-import yellowImageLeft from '../Images/Character_Yellow_Movement/Yellow_West_Left.png';
-import yellowImageLeft2 from '../Images/Character_Yellow_Movement/Yellow_West_Right.png';
-import yellowImageUp from '../Images/Character_Yellow_Movement/Yellow_North_Left.png';
-import yellowImageUp2 from '../Images/Character_Yellow_Movement/Yellow_North_Right.png';
-import yellowImageDown from '../Images/Character_Yellow_Movement/Yellow_South_Left.png';
-import yellowImageDown2 from '../Images/Character_Yellow_Movement/Yellow_South_Right.png';
+import yellowImageEast from '../Images/Character_Yellow_Movement/Yellow_East_Right.png';
+import yellowImageEast2 from '../Images/Character_Yellow_Movement/Yellow_East_Left.png';
+import yellowImageWest from '../Images/Character_Yellow_Movement/Yellow_West_Left.png';
+import yellowImageWest2 from '../Images/Character_Yellow_Movement/Yellow_West_Right.png';
+import yellowImageNorth from '../Images/Character_Yellow_Movement/Yellow_North_Left.png';
+import yellowImageNorth2 from '../Images/Character_Yellow_Movement/Yellow_North_Right.png';
+import yellowImageSouth from '../Images/Character_Yellow_Movement/Yellow_South_Left.png';
+import yellowImageSouth2 from '../Images/Character_Yellow_Movement/Yellow_South_Right.png';
 
-import purpleImageRight from '../Images/Character_Purple_Movement/Purple_East_Right.png';
-import purpleImageRight2 from '../Images/Character_Purple_Movement/Purple_East_Left.png';
-import purpleImageLeft from '../Images/Character_Purple_Movement/Purple_West_Left.png';
-import purpleImageLeft2 from '../Images/Character_Purple_Movement/Purple_West_Right.png';
-import purpleImageUp from '../Images/Character_Purple_Movement/Purple_North_Left.png';
-import purpleImageUp2 from '../Images/Character_Purple_Movement/Purple_North_Right.png';
-import purpleImageDown from '../Images/Character_Purple_Movement/Purple_South_Left.png';
-import purpleImageDown2 from '../Images/Character_Purple_Movement/Purple_South_Right.png';
+import purpleImageEast from '../Images/Character_Purple_Movement/Purple_East_Right.png';
+import purpleImageEast2 from '../Images/Character_Purple_Movement/Purple_East_Left.png';
+import purpleImageWest from '../Images/Character_Purple_Movement/Purple_West_Left.png';
+import purpleImageWest2 from '../Images/Character_Purple_Movement/Purple_West_Right.png';
+import purpleImageNorth from '../Images/Character_Purple_Movement/Purple_North_Left.png';
+import purpleImageNorth2 from '../Images/Character_Purple_Movement/Purple_North_Right.png';
+import purpleImageSouth from '../Images/Character_Purple_Movement/Purple_South_Left.png';
+import purpleImageSouth2 from '../Images/Character_Purple_Movement/Purple_South_Right.png';
 
-import limeImageRight from '../Images/Character_Lime_Movement/Lime_East_Right.png';
-import limeImageRight2 from '../Images/Character_Lime_Movement/Lime_East_Left.png';
-import limeImageLeft from '../Images/Character_Lime_Movement/Lime_West_Left.png';
-import limeImageLeft2 from '../Images/Character_Lime_Movement/Lime_West_Right.png';
-import limeImageUp from '../Images/Character_Lime_Movement/Lime_North_Left.png';
-import limeImageUp2 from '../Images/Character_Lime_Movement/Lime_North_Right.png';
-import limeImageDown from '../Images/Character_Lime_Movement/Lime_South_Left.png';
-import limeImageDown2 from '../Images/Character_Lime_Movement/Lime_South_Right.png';
+import limeImageEast from '../Images/Character_Lime_Movement/Lime_East_Right.png';
+import limeImageEast2 from '../Images/Character_Lime_Movement/Lime_East_Left.png';
+import limeImageWest from '../Images/Character_Lime_Movement/Lime_West_Left.png';
+import limeImageWest2 from '../Images/Character_Lime_Movement/Lime_West_Right.png';
+import limeImageNorth from '../Images/Character_Lime_Movement/Lime_North_Left.png';
+import limeImageNorth2 from '../Images/Character_Lime_Movement/Lime_North_Right.png';
+import limeImageSouth from '../Images/Character_Lime_Movement/Lime_South_Left.png';
+import limeImageSouth2 from '../Images/Character_Lime_Movement/Lime_South_Right.png';
 
-import greenImageRight from '../Images/Character_Green_Movement/Green_East_Right.png';
-import greenImageRight2 from '../Images/Character_Green_Movement/Green_East_Left.png';
-import greenImageLeft from '../Images/Character_Green_Movement/Green_West_Left.png';
-import greenImageLeft2 from '../Images/Character_Green_Movement/Green_West_Right.png';
-import greenImageUp from '../Images/Character_Green_Movement/Green_North_Left.png';
-import greenImageUp2 from '../Images/Character_Green_Movement/Green_North_Right.png';
-import greenImageDown from '../Images/Character_Green_Movement/Green_South_Left.png';
-import greenImageDown2 from '../Images/Character_Green_Movement/Green_South_Right.png';
+import greenImageEast from '../Images/Character_Green_Movement/Green_East_Right.png';
+import greenImageEast2 from '../Images/Character_Green_Movement/Green_East_Left.png';
+import greenImageWest from '../Images/Character_Green_Movement/Green_West_Left.png';
+import greenImageWest2 from '../Images/Character_Green_Movement/Green_West_Right.png';
+import greenImageNorth from '../Images/Character_Green_Movement/Green_North_Left.png';
+import greenImageNorth2 from '../Images/Character_Green_Movement/Green_North_Right.png';
+import greenImageSouth from '../Images/Character_Green_Movement/Green_South_Left.png';
+import greenImageSouth2 from '../Images/Character_Green_Movement/Green_South_Right.png';
 
 import pinkImageEast from '../Images/Character_Pink_Movement/Pink_East_Right.png';
 import pinkImageEast2 from '../Images/Character_Pink_Movement/Pink_East_Left.png';
@@ -76,46 +76,47 @@ import pinkImageNorth2 from '../Images/Character_Pink_Movement/Pink_North_Right.
 import pinkImageSouth from '../Images/Character_Pink_Movement/Pink_South_Left.png';
 import pinkImageSouth2 from '../Images/Character_Pink_Movement/Pink_South_Right.png';
 
-import orangeImageRight from '../Images/Character_Orange_Movement/Orange_East_Right.png';
-import orangeImageRight2 from '../Images/Character_Orange_Movement/Orange_East_Left.png';
-import orangeImageLeft from '../Images/Character_Orange_Movement/Orange_West_Left.png';
-import orangeImageLeft2 from '../Images/Character_Orange_Movement/Orange_West_Right.png';
-import orangeImageUp from '../Images/Character_Orange_Movement/Orange_North_Left.png';
-import orangeImageUp2 from '../Images/Character_Orange_Movement/Orange_North_Right.png';
-import orangeImageDown from '../Images/Character_Orange_Movement/Orange_South_Left.png';
-import orangeImageDown2 from '../Images/Character_Orange_Movement/Orange_South_Right.png';
+import orangeImageEast from '../Images/Character_Orange_Movement/Orange_East_Right.png';
+import orangeImageEast2 from '../Images/Character_Orange_Movement/Orange_East_Left.png';
+import orangeImageWest from '../Images/Character_Orange_Movement/Orange_West_Left.png';
+import orangeImageWest2 from '../Images/Character_Orange_Movement/Orange_West_Right.png';
+import orangeImageNorth from '../Images/Character_Orange_Movement/Orange_North_Left.png';
+import orangeImageNorth2 from '../Images/Character_Orange_Movement/Orange_North_Right.png';
+import orangeImageSouth from '../Images/Character_Orange_Movement/Orange_South_Left.png';
+import orangeImageSouth2 from '../Images/Character_Orange_Movement/Orange_South_Right.png';
 
-import whiteImageRight from '../Images/Character_White_Movement/White_East_Right.png';
-import whiteImageRight2 from '../Images/Character_White_Movement/White_East_Left.png';
-import whiteImageLeft from '../Images/Character_White_Movement/White_West_Left.png';
-import whiteImageLeft2 from '../Images/Character_White_Movement/White_West_Right.png';
-import whiteImageUp from '../Images/Character_White_Movement/White_North_Left.png';
-import whiteImageUp2 from '../Images/Character_White_Movement/White_North_Right.png';
-import whiteImageDown from '../Images/Character_White_Movement/White_South_Left.png';
-import whiteImageDown2 from '../Images/Character_White_Movement/White_South_Right.png';
+import whiteImageEast from '../Images/Character_White_Movement/White_East_Right.png';
+import whiteImageEast2 from '../Images/Character_White_Movement/White_East_Left.png';
+import whiteImageWest from '../Images/Character_White_Movement/White_West_Left.png';
+import whiteImageWest2 from '../Images/Character_White_Movement/White_West_Right.png';
+import whiteImageNorth from '../Images/Character_White_Movement/White_North_Left.png';
+import whiteImageNorth2 from '../Images/Character_White_Movement/White_North_Right.png';
+import whiteImageSouth from '../Images/Character_White_Movement/White_South_Left.png';
+import whiteImageSouth2 from '../Images/Character_White_Movement/White_South_Right.png';
 
-import blackImageRight from '../Images/Character_Black_Movement/Black_East_Right.png';
-import blackImageRight2 from '../Images/Character_Black_Movement/Black_East_Left.png';
-import blackImageLeft from '../Images/Character_Black_Movement/Black_West_Left.png';
-import blackImageLeft2 from '../Images/Character_Black_Movement/Black_West_Right.png';
-import blackImageUp from '../Images/Character_Black_Movement/Black_North_Left.png';
-import blackImageUp2 from '../Images/Character_Black_Movement/Black_North_Right.png';
-import blackImageDown from '../Images/Character_Black_Movement/Black_South_Left.png';
-import blackImageDown2 from '../Images/Character_Black_Movement/Black_South_Right.png';
+import blackImageEast from '../Images/Character_Black_Movement/Black_East_Right.png';
+import blackImageEast2 from '../Images/Character_Black_Movement/Black_East_Left.png';
+import blackImageWest from '../Images/Character_Black_Movement/Black_West_Left.png';
+import blackImageWest2 from '../Images/Character_Black_Movement/Black_West_Right.png';
+import blackImageNorth from '../Images/Character_Black_Movement/Black_North_Left.png';
+import blackImageNorth2 from '../Images/Character_Black_Movement/Black_North_Right.png';
+import blackImageSouth from '../Images/Character_Black_Movement/Black_South_Left.png';
+import blackImageSouth2 from '../Images/Character_Black_Movement/Black_South_Right.png';
 
-import brownImageRight from '../Images/Character_Brown_Movement/Brown_East_Right.png';
-import brownImageRight2 from '../Images/Character_Brown_Movement/Brown_East_Left.png';
-import brownImageLeft from '../Images/Character_Brown_Movement/Brown_West_Left.png';
-import brownImageLeft2 from '../Images/Character_Brown_Movement/Brown_West_Right.png';
-import brownImageUp from '../Images/Character_Brown_Movement/Brown_North_Left.png';
-import brownImageUp2 from '../Images/Character_Brown_Movement/Brown_North_Right.png';
-import brownImageDown from '../Images/Character_Brown_Movement/Brown_South_Left.png';
-import brownImageDown2 from '../Images/Character_Brown_Movement/Brown_South_Right.png';
+import brownImageEast from '../Images/Character_Brown_Movement/Brown_East_Right.png';
+import brownImageEast2 from '../Images/Character_Brown_Movement/Brown_East_Left.png';
+import brownImageWest from '../Images/Character_Brown_Movement/Brown_West_Left.png';
+import brownImageWest2 from '../Images/Character_Brown_Movement/Brown_West_Right.png';
+import brownImageNorth from '../Images/Character_Brown_Movement/Brown_North_Left.png';
+import brownImageNorth2 from '../Images/Character_Brown_Movement/Brown_North_Right.png';
+import brownImageSouth from '../Images/Character_Brown_Movement/Brown_South_Left.png';
+import brownImageSouth2 from '../Images/Character_Brown_Movement/Brown_South_Right.png';
 
-import ghostImageRight from '../Images/Character_Ghost_Movement/Ghost_East.png';
-import ghostImageLeft from '../Images/Character_Ghost_Movement/Ghost_West.png';
+import ghostImageEast from '../Images/Character_Ghost_Movement/Ghost_East.png';
+import ghostImageWest from '../Images/Character_Ghost_Movement/Ghost_West.png';
+import ghostImageSouth from '../Images/Character_Ghost_Movement/Ghost_South.png';
+import ghostImageNorth from '../Images/Character_Ghost_Movement/Ghost_North.png';
 
-import Votingbox from "../GameComponents/Votingbox";
 import votingboxButton from '../Images/Votingbox/report_player.png';
 
 import SockJS from "sockjs-client";
@@ -124,8 +125,6 @@ import Stomp from "stompjs";
 import skeldImage from '../Images/Maps/Skeld.png';
 import '../CSS/MapGrid.css';
 import {Player} from "../Player";
-import {send} from "vite";
-import KeyInput from "../KeyInputs";
 
 interface MapGridProps {
     currentPlayer: Player;
@@ -134,20 +133,20 @@ interface MapGridProps {
 }
 
 const colorToImageUrl = {
-    purpleImageSouth: purpleImageDown,
-    purpleNorth: purpleImageUp,
-    purpleEast: purpleImageRight,
-    purpleWest: purpleImageLeft,
-    red: redImageDown,
-    blue: blueImageDown,
-    green: greenImageDown,
-    orange: orangeImageDown,
-    yellow: yellowImageDown,
-    black: blackImageDown,
-    white: whiteImageDown,
-    brown: brownImageDown,
-    cyan: cyanImageDown,
-    lime: limeImageDown,
+    purpleImageSouth: purpleImageSouth,
+    purpleNorth: purpleImageNorth,
+    purpleEast: purpleImageEast,
+    purpleWest: purpleImageWest,
+    red: redImageSouth,
+    blue: blueImageSouth,
+    green: greenImageSouth,
+    orange: orangeImageSouth,
+    yellow: yellowImageSouth,
+    black: blackImageSouth,
+    white: whiteImageSouth,
+    brown: brownImageSouth,
+    cyan: cyanImageSouth,
+    lime: limeImageSouth,
     pinkImageSouth: pinkImageSouth,
     pinkImageNorth: pinkImageNorth,
     pinkImageEast: pinkImageEast,
@@ -206,270 +205,270 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         switch (playerDirection) {
             case 'right':
                 if (currentPlayer.getColor() === 'red') {
-                    imageSrc = redImageRight;
+                    imageSrc = redImageEast;
                 } else if (currentPlayer.getColor() === 'blue') {
-                    imageSrc = blueImageRight;
+                    imageSrc = blueImageEast;
                 } else if (currentPlayer.getColor() === 'cyan') {
-                    imageSrc = cyanImageRight;
+                    imageSrc = cyanImageEast;
                 } else if (currentPlayer.getColor() === 'yellow') {
-                    imageSrc = yellowImageRight;
+                    imageSrc = yellowImageEast;
                 } else if (currentPlayer.getColor() === 'purple') {
-                    imageSrc = purpleImageRight;
+                    imageSrc = purpleImageEast;
                 } else if (currentPlayer.getColor() === 'lime') {
-                    imageSrc = limeImageRight;
+                    imageSrc = limeImageEast;
                 } else if (currentPlayer.getColor() === 'green') {
-                    imageSrc = greenImageRight;
+                    imageSrc = greenImageEast;
                 } else if (currentPlayer.getColor() === 'pink') {
                     imageSrc = pinkImageSouth;
                 } else if (currentPlayer.getColor() === 'orange') {
-                    imageSrc = orangeImageRight;
+                    imageSrc = orangeImageEast;
                 } else if (currentPlayer.getColor() === 'white') {
-                    imageSrc = whiteImageRight;
+                    imageSrc = whiteImageEast;
                 } else if (currentPlayer.getColor() === 'black') {
-                    imageSrc = blackImageRight;
+                    imageSrc = blackImageEast;
                 } else if (currentPlayer.getColor() === 'brown') {
-                    imageSrc = brownImageRight;
+                    imageSrc = brownImageEast;
                 } else if (currentPlayer.getColor() === 'dead') {
                     imageSrc = dead;
                 } else if (currentPlayer.getColor() === 'ghost') {
-                    imageSrc = ghostImageRight;
+                    imageSrc = ghostImageEast;
                 } else {
-                    imageSrc = redImageRight;
+                    imageSrc = redImageEast;
                 }
                 break;
             case 'right2':
                 if (currentPlayer.getColor() === 'red') {
-                    imageSrc = redImageRight2;
+                    imageSrc = redImageEast2;
                 } else if (currentPlayer.getColor() === 'blue') {
-                    imageSrc = blueImageRight2;
+                    imageSrc = blueImageEast2;
                 } else if (currentPlayer.getColor() === 'cyan') {
-                    imageSrc = cyanImageRight2;
+                    imageSrc = cyanImageEast2;
                 } else if (currentPlayer.getColor() === 'yellow') {
-                    imageSrc = yellowImageRight2;
+                    imageSrc = yellowImageEast2;
                 } else if (currentPlayer.getColor() === 'purple') {
-                    imageSrc = purpleImageRight2;
+                    imageSrc = purpleImageEast2;
                 } else if (currentPlayer.getColor() === 'lime') {
-                    imageSrc = limeImageRight2;
+                    imageSrc = limeImageEast2;
                 } else if (currentPlayer.getColor() === 'green') {
-                    imageSrc = greenImageRight2;
+                    imageSrc = greenImageEast2;
                 } else if (currentPlayer.getColor() === 'pink') {
                     imageSrc = pinkImageEast2;
                 } else if (currentPlayer.getColor() === 'orange') {
-                    imageSrc = orangeImageRight2;
+                    imageSrc = orangeImageEast2;
                 } else if (currentPlayer.getColor() === 'white') {
-                    imageSrc = whiteImageRight2;
+                    imageSrc = whiteImageEast2;
                 } else if (currentPlayer.getColor() === 'black') {
-                    imageSrc = blackImageRight2;
+                    imageSrc = blackImageEast2;
                 } else if (currentPlayer.getColor() === 'brown') {
-                    imageSrc = brownImageRight2;
+                    imageSrc = brownImageEast2;
                 } else if (currentPlayer.getColor() === 'dead') {
                     imageSrc = dead;
                 } else if (currentPlayer.getColor() === 'ghost') {
-                    imageSrc = ghostImageRight;
+                    imageSrc = ghostImageEast;
                 } else {
-                    imageSrc = redImageRight2;
+                    imageSrc = redImageEast2;
                 }
                 break;
             case 'left':
                 if (currentPlayer.getColor() === 'red') {
-                    imageSrc = redImageLeft;
+                    imageSrc = redImageWest;
                 } else if (currentPlayer.getColor() === 'blue') {
-                    imageSrc = blueImageLeft;
+                    imageSrc = blueImageWest;
                 } else if (currentPlayer.getColor() === 'cyan') {
-                    imageSrc = cyanImageLeft;
+                    imageSrc = cyanImageWest;
                 } else if (currentPlayer.getColor() === 'yellow') {
-                    imageSrc = yellowImageLeft;
+                    imageSrc = yellowImageWest;
                 } else if (currentPlayer.getColor() === 'purple') {
-                    imageSrc = purpleImageLeft;
+                    imageSrc = purpleImageWest;
                 } else if (currentPlayer.getColor() === 'lime') {
-                    imageSrc = limeImageLeft;
+                    imageSrc = limeImageWest;
                 } else if (currentPlayer.getColor() === 'green') {
-                    imageSrc = greenImageLeft;
+                    imageSrc = greenImageWest;
                 } else if (currentPlayer.getColor() === 'pink') {
                     imageSrc = pinkImageWest;
                 } else if (currentPlayer.getColor() === 'orange') {
-                    imageSrc = orangeImageLeft;
+                    imageSrc = orangeImageWest;
                 } else if (currentPlayer.getColor() === 'white') {
-                    imageSrc = whiteImageLeft;
+                    imageSrc = whiteImageWest;
                 } else if (currentPlayer.getColor() === 'black') {
-                    imageSrc = blackImageLeft;
+                    imageSrc = blackImageWest;
                 } else if (currentPlayer.getColor() === 'brown') {
-                    imageSrc = brownImageLeft;
+                    imageSrc = brownImageWest;
                 } else if (currentPlayer.getColor() === 'dead') {
                     imageSrc = dead;
                 } else if (currentPlayer.getColor() === 'ghost') {
-                    imageSrc = ghostImageLeft;
+                    imageSrc = ghostImageWest;
                 } else {
-                    imageSrc = redImageLeft;
+                    imageSrc = redImageWest;
                 }
                 break;
             case 'left2':
                 if (currentPlayer.getColor() === 'red') {
-                    imageSrc = redImageLeft2;
+                    imageSrc = redImageWest2;
                 } else if (currentPlayer.getColor() === 'blue') {
-                    imageSrc = blueImageLeft2;
+                    imageSrc = blueImageWest2;
                 } else if (currentPlayer.getColor() === 'cyan') {
-                    imageSrc = cyanImageLeft2;
+                    imageSrc = cyanImageWest2;
                 } else if (currentPlayer.getColor() === 'yellow') {
-                    imageSrc = yellowImageLeft2;
+                    imageSrc = yellowImageWest2;
                 } else if (currentPlayer.getColor() === 'purple') {
-                    imageSrc = purpleImageLeft2;
+                    imageSrc = purpleImageWest2;
                 } else if (currentPlayer.getColor() === 'lime') {
-                    imageSrc = limeImageLeft2;
+                    imageSrc = limeImageWest2;
                 } else if (currentPlayer.getColor() === 'green') {
-                    imageSrc = greenImageLeft2;
+                    imageSrc = greenImageWest2;
                 } else if (currentPlayer.getColor() === 'pink') {
                     imageSrc = pinkImageWest2;
                 } else if (currentPlayer.getColor() === 'orange') {
-                    imageSrc = orangeImageLeft2;
+                    imageSrc = orangeImageWest2;
                 } else if (currentPlayer.getColor() === 'white') {
-                    imageSrc = whiteImageLeft2;
+                    imageSrc = whiteImageWest2;
                 } else if (currentPlayer.getColor() === 'black') {
-                    imageSrc = blackImageLeft2;
+                    imageSrc = blackImageWest2;
                 } else if (currentPlayer.getColor() === 'brown') {
-                    imageSrc = brownImageLeft2;
+                    imageSrc = brownImageWest2;
                 } else if (currentPlayer.getColor() === 'dead') {
                     imageSrc = dead;
                 } else if (currentPlayer.getColor() === 'ghost') {
-                    imageSrc = ghostImageLeft;
+                    imageSrc = ghostImageWest;
                 } else {
-                    imageSrc = redImageLeft2;
+                    imageSrc = redImageWest2;
                 }
                 break;
             case 'up':
                 if (currentPlayer.getColor() === 'red') {
-                    imageSrc = redImageUp2;
+                    imageSrc = redImageNorth2;
                 } else if (currentPlayer.getColor() === 'blue') {
-                    imageSrc = blueImageUp2;
+                    imageSrc = blueImageNorth2;
                 } else if (currentPlayer.getColor() === 'cyan') {
-                    imageSrc = cyanImageUp2;
+                    imageSrc = cyanImageNorth2;
                 } else if (currentPlayer.getColor() === 'yellow') {
-                    imageSrc = yellowImageUp2;
+                    imageSrc = yellowImageNorth2;
                 } else if (currentPlayer.getColor() === 'purple') {
-                    imageSrc = purpleImageUp2;
+                    imageSrc = purpleImageNorth2;
                 } else if (currentPlayer.getColor() === 'lime') {
-                    imageSrc = limeImageUp2;
+                    imageSrc = limeImageNorth2;
                 } else if (currentPlayer.getColor() === 'green') {
-                    imageSrc = greenImageUp2;
+                    imageSrc = greenImageNorth2;
                 } else if (currentPlayer.getColor() === 'pink') {
                     imageSrc = pinkImageNorth2;
                 } else if (currentPlayer.getColor() === 'orange') {
-                    imageSrc = orangeImageUp2;
+                    imageSrc = orangeImageNorth2;
                 } else if (currentPlayer.getColor() === 'white') {
-                    imageSrc = whiteImageUp2;
+                    imageSrc = whiteImageNorth2;
                 } else if (currentPlayer.getColor() === 'black') {
-                    imageSrc = blackImageUp2;
+                    imageSrc = blackImageNorth2;
                 } else if (currentPlayer.getColor() === 'brown') {
-                    imageSrc = brownImageUp2;
+                    imageSrc = brownImageNorth2;
                 } else if (currentPlayer.getColor() === 'dead') {
                     imageSrc = dead;
                 } else if (currentPlayer.getColor() === 'ghost') {
-                    imageSrc = ghost;
+                    imageSrc = ghostImageNorth;
                 } else {
-                    imageSrc = redImageUp2;
+                    imageSrc = redImageNorth2;
                 }
                 break;
             case 'up2':
                 if (currentPlayer.getColor() === 'red') {
-                    imageSrc = redImageUp;
+                    imageSrc = redImageNorth;
                 } else if (currentPlayer.getColor() === 'blue') {
-                    imageSrc = blueImageUp;
+                    imageSrc = blueImageNorth;
                 } else if (currentPlayer.getColor() === 'cyan') {
-                    imageSrc = cyanImageUp;
+                    imageSrc = cyanImageNorth;
                 } else if (currentPlayer.getColor() === 'yellow') {
-                    imageSrc = yellowImageUp;
+                    imageSrc = yellowImageNorth;
                 } else if (currentPlayer.getColor() === 'purple') {
-                    imageSrc = purpleImageUp;
+                    imageSrc = purpleImageNorth;
                 } else if (currentPlayer.getColor() === 'lime') {
-                    imageSrc = limeImageUp;
+                    imageSrc = limeImageNorth;
                 } else if (currentPlayer.getColor() === 'green') {
-                    imageSrc = greenImageUp;
+                    imageSrc = greenImageNorth;
                 } else if (currentPlayer.getColor() === 'pink') {
                     imageSrc = pinkImageNorth;
                 } else if (currentPlayer.getColor() === 'orange') {
-                    imageSrc = orangeImageUp;
+                    imageSrc = orangeImageNorth;
                 } else if (currentPlayer.getColor() === 'white') {
-                    imageSrc = whiteImageUp;
+                    imageSrc = whiteImageNorth;
                 } else if (currentPlayer.getColor() === 'black') {
-                    imageSrc = blackImageUp;
+                    imageSrc = blackImageNorth;
                 } else if (currentPlayer.getColor() === 'brown') {
-                    imageSrc = brownImageUp;
+                    imageSrc = brownImageNorth;
                 } else if (currentPlayer.getColor() === 'dead') {
                     imageSrc = dead;
                 } else if (currentPlayer.getColor() === 'ghost') {
-                    imageSrc = ghost;
+                    imageSrc = ghostImageNorth;
                 } else {
-                    imageSrc = redImageUp;
+                    imageSrc = redImageNorth;
                 }
                 break;
             case 'down':
                 if (currentPlayer.getColor() === 'red') {
-                    imageSrc = redImageDown;
+                    imageSrc = redImageSouth;
                 } else if (currentPlayer.getColor() === 'blue') {
-                    imageSrc = blueImageDown;
+                    imageSrc = blueImageSouth;
                 } else if (currentPlayer.getColor() === 'cyan') {
-                    imageSrc = cyanImageDown;
+                    imageSrc = cyanImageSouth;
                 } else if (currentPlayer.getColor() === 'yellow') {
-                    imageSrc = yellowImageDown;
+                    imageSrc = yellowImageSouth;
                 } else if (currentPlayer.getColor() === 'purple') {
-                    imageSrc = purpleImageDown;
+                    imageSrc = purpleImageSouth;
                 } else if (currentPlayer.getColor() === 'lime') {
-                    imageSrc = limeImageDown;
+                    imageSrc = limeImageSouth;
                 } else if (currentPlayer.getColor() === 'green') {
-                    imageSrc = greenImageDown;
+                    imageSrc = greenImageSouth;
                 } else if (currentPlayer.getColor() === 'pink') {
                     imageSrc = pinkImageSouth;
                 } else if (currentPlayer.getColor() === 'orange') {
-                    imageSrc = orangeImageDown;
+                    imageSrc = orangeImageSouth;
                 } else if (currentPlayer.getColor() === 'white') {
-                    imageSrc = whiteImageDown;
+                    imageSrc = whiteImageSouth;
                 } else if (currentPlayer.getColor() === 'black') {
-                    imageSrc = blackImageDown;
+                    imageSrc = blackImageSouth;
                 } else if (currentPlayer.getColor() === 'brown') {
-                    imageSrc = brownImageDown;
+                    imageSrc = brownImageSouth;
                 } else if (currentPlayer.getColor() === 'dead') {
                     imageSrc = dead;
                 } else if (currentPlayer.getColor() === 'ghost') {
-                    imageSrc = ghost;
+                    imageSrc = ghostImageSouth;
                 } else {
-                    imageSrc = redImageDown;
+                    imageSrc = redImageSouth;
                 }
                 break;
             case 'down2':
                 if (currentPlayer.getColor() === 'red') {
-                    imageSrc = redImageDown2;
+                    imageSrc = redImageSouth2;
                 } else if (currentPlayer.getColor() === 'blue') {
-                    imageSrc = blueImageDown2;
+                    imageSrc = blueImageSouth2;
                 } else if (currentPlayer.getColor() === 'cyan') {
-                    imageSrc = cyanImageDown2;
+                    imageSrc = cyanImageSouth2;
                 } else if (currentPlayer.getColor() === 'yellow') {
-                    imageSrc = yellowImageDown2;
+                    imageSrc = yellowImageSouth2;
                 } else if (currentPlayer.getColor() === 'purple') {
-                    imageSrc = purpleImageDown2;
+                    imageSrc = purpleImageSouth2;
                 } else if (currentPlayer.getColor() === 'lime') {
-                    imageSrc = limeImageDown2;
+                    imageSrc = limeImageSouth2;
                 } else if (currentPlayer.getColor() === 'green') {
-                    imageSrc = greenImageDown;
+                    imageSrc = greenImageSouth2;
                 } else if (currentPlayer.getColor() === 'pink') {
                     imageSrc = pinkImageSouth2;
                 } else if (currentPlayer.getColor() === 'orange') {
-                    imageSrc = orangeImageDown2;
+                    imageSrc = orangeImageSouth2;
                 } else if (currentPlayer.getColor() === 'white') {
-                    imageSrc = whiteImageDown2;
+                    imageSrc = whiteImageSouth2;
                 } else if (currentPlayer.getColor() === 'black') {
-                    imageSrc = blackImageDown2;
+                    imageSrc = blackImageSouth2;
                 } else if (currentPlayer.getColor() === 'brown') {
-                    imageSrc = brownImageDown2;
+                    imageSrc = brownImageSouth2;
                 } else if (currentPlayer.getColor() === 'dead') {
                     imageSrc = dead;
                 } else if (currentPlayer.getColor() === 'ghost') {
-                    imageSrc = ghost;
+                    imageSrc = ghostImageSouth;
                 } else {
-                    imageSrc = redImageDown;
+                    imageSrc = redImageSouth;
                 }
                 break;
             default:
-                imageSrc = redImageRight;
+                imageSrc = redImageEast;
         }
 
         setPlayerImage(imageSrc);
@@ -523,119 +522,119 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 }
             } else if(player.getColor() === "red") {
                 if(player.getDirection() === "south") {
-                    newImage = redImageDown;
+                    newImage = redImageSouth;
                 } else if (player.getDirection() === "north") {
-                    newImage = redImageUp;
+                    newImage = redImageNorth;
                 } else if (player.getDirection() === "east") {
-                    newImage = redImageRight;
+                    newImage = redImageEast;
                 } else if (player.getDirection() === "west") {
-                    newImage = redImageLeft;
+                    newImage = redImageWest;
                 }
             } else if (player.getColor() === "blue") {
                 if(player.getDirection() === "south") {
-                    newImage = blueImageDown;
+                    newImage = blueImageSouth;
                 } else if (player.getDirection() === "north") {
-                    newImage = blueImageUp;
+                    newImage = blueImageNorth;
                 } else if (player.getDirection() === "east") {
-                    newImage = blueImageRight;
+                    newImage = blueImageEast;
                 } else if (player.getDirection() === "west") {
-                    newImage = blueImageLeft;
+                    newImage = blueImageWest;
                 }
             } else if (player.getColor() === "green") {
                 if(player.getDirection() === "south") {
-                    newImage = greenImageDown;
+                    newImage = greenImageSouth;
                 } else if (player.getDirection() === "north") {
-                    newImage = greenImageUp;
+                    newImage = greenImageNorth;
                 } else if (player.getDirection() === "east") {
-                    newImage = greenImageRight;
+                    newImage = greenImageEast;
                 } else if (player.getDirection() === "west") {
-                    newImage = greenImageLeft;
+                    newImage = greenImageWest;
                 }
             } else if (player.getColor() === "orange") {
                 if(player.getDirection() === "south") {
-                    newImage = orangeImageDown;
+                    newImage = orangeImageSouth;
                 } else if (player.getDirection() === "north") {
-                    newImage = orangeImageUp;
+                    newImage = orangeImageNorth;
                 } else if (player.getDirection() === "east") {
-                    newImage = orangeImageRight;
+                    newImage = orangeImageEast;
                 } else if (player.getDirection() === "west") {
-                    newImage = orangeImageLeft;
+                    newImage = orangeImageWest;
                 }
             } else if (player.getColor() === "yellow") {
                 if(player.getDirection() === "south") {
-                    newImage = yellowImageDown;
+                    newImage = yellowImageSouth;
                 } else if (player.getDirection() === "north") {
-                    newImage = yellowImageUp;
+                    newImage = yellowImageNorth;
                 } else if (player.getDirection() === "east") {
-                    newImage = yellowImageRight;
+                    newImage = yellowImageEast;
                 } else if (player.getDirection() === "west") {
-                    newImage = yellowImageLeft;
+                    newImage = yellowImageWest;
                 }
             } else if (player.getColor() === "black") {
                 if(player.getDirection() === "south") {
-                    newImage = blackImageDown;
+                    newImage = blackImageSouth;
                 } else if (player.getDirection() === "north") {
-                    newImage = blackImageUp;
+                    newImage = blackImageNorth;
                 } else if (player.getDirection() === "east") {
-                    newImage = blackImageRight;
+                    newImage = blackImageEast;
                 } else if (player.getDirection() === "west") {
-                    newImage = blackImageLeft;
+                    newImage = blackImageWest;
                 }
             } else if (player.getColor() === "white") {
                 if(player.getDirection() === "south") {
-                    newImage = whiteImageDown;
+                    newImage = whiteImageSouth;
                 } else if (player.getDirection() === "north") {
-                    newImage = whiteImageUp;
+                    newImage = whiteImageNorth;
                 } else if (player.getDirection() === "east") {
-                    newImage = whiteImageRight;
+                    newImage = whiteImageEast;
                 } else if (player.getDirection() === "west") {
-                    newImage = whiteImageLeft;
+                    newImage = whiteImageWest;
                 }
             } else if (player.getColor() === "brown") {
                 if(player.getDirection() === "south") {
-                    newImage = brownImageDown;
+                    newImage = brownImageSouth;
                 } else if (player.getDirection() === "north") {
-                    newImage = brownImageUp;
+                    newImage = brownImageNorth;
                 } else if (player.getDirection() === "east") {
-                    newImage = brownImageRight;
+                    newImage = brownImageEast;
                 } else if (player.getDirection() === "west") {
-                    newImage = brownImageLeft;
+                    newImage = brownImageWest;
                 }
             } else if (player.getColor() === "cyan") {
                 if(player.getDirection() === "south") {
-                    newImage = cyanImageDown;
+                    newImage = cyanImageSouth;
                 } else if (player.getDirection() === "north") {
-                    newImage = cyanImageUp;
+                    newImage = cyanImageNorth;
                 } else if (player.getDirection() === "east") {
-                    newImage = cyanImageRight;
+                    newImage = cyanImageEast;
                 } else if (player.getDirection() === "west") {
-                    newImage = cyanImageLeft;
+                    newImage = cyanImageWest;
                 }
             } else if (player.getColor() === "lime") {
                 if(player.getDirection() === "south") {
-                    newImage = limeImageDown;
+                    newImage = limeImageSouth;
                 } else if (player.getDirection() === "north") {
-                    newImage = limeImageUp;
+                    newImage = limeImageNorth;
                 } else if (player.getDirection() === "east") {
-                    newImage = limeImageRight;
+                    newImage = limeImageEast;
                 } else if (player.getDirection() === "west") {
-                    newImage = limeImageLeft;
+                    newImage = limeImageWest;
                 }
             } else if (player.getColor() === "purple") {
                 if(player.getDirection() === "south") {
-                    newImage = purpleImageDown;
+                    newImage = purpleImageSouth;
                 } else if (player.getDirection() === "north") {
-                    newImage = purpleImageUp;
+                    newImage = purpleImageNorth;
                 } else if (player.getDirection() === "east") {
-                    newImage = purpleImageRight;
+                    newImage = purpleImageEast;
                 } else if (player.getDirection() === "west") {
-                    newImage = purpleImageLeft;
+                    newImage = purpleImageWest;
                 }
             } else if (player.getColor() === "ghost") {
                 if(player.getDirection() === "east") {
-                    newImage = ghostImageRight;
+                    newImage = ghostImageEast;
                 } else if (player.getDirection() === "west") {
-                    newImage = ghostImageLeft;
+                    newImage = ghostImageWest;
                 }
             }
 
@@ -724,9 +723,9 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     // useEffect(() => {
     if (!notConnected) {
     // connect() {
+        setNotConnected(true);
         const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
         const client = Stomp.over(socket);
-        setNotConnected(true);
         client.connect({}, () => {
             client.subscribe(`/topic/movement/north/${currentPlayer.getUserName()}`, (message) => {
                 const response = JSON.parse(message.body);
@@ -737,7 +736,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 setPlayerPosition({x: response.x, y: response.y});
                 if (currentPlayer.getY() % 2 === 0) {
                     setPlayerDirection('up');
-                } else if (currentPlayer.getY() % 2 !== 0) {
+                } else {
                     setPlayerDirection('up2');
                 }
             });
@@ -752,7 +751,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 setPlayerPosition({x: response.x, y: response.y});
                 if (currentPlayer.getY() % 2 === 0) {
                     setPlayerDirection('down');
-                } else if (currentPlayer.getY() % 2 !== 0) {
+                } else {
                     setPlayerDirection('down2');
                 }
             });
@@ -767,7 +766,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 // setPlayerDirection('left');
                 if (currentPlayer.getY() % 2 === 0) {
                     setPlayerDirection('left');
-                } else if (currentPlayer.getY() % 2 !== 0) {
+                } else {
                     setPlayerDirection('left2');
                 }
             });
@@ -782,7 +781,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 setPlayerPosition({x: response.x, y: response.y});
                 if (currentPlayer.getX() % 2 === 0) {
                     setPlayerDirection('right');
-                } else if (currentPlayer.getX() % 2 !== 0) {
+                } else {
                     setPlayerDirection('right2');
                 }
             });
@@ -804,10 +803,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                         });
                         return updatedPlayers;
                     })
-                    // setOtherPlayerDirections(prevDirections => ({
-                    //     ...prevDirections,
-                    //     [response.sessionId]: 'north'
-                    // }));
                 }
             });
 
@@ -822,16 +817,11 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 p.setDirection(response.direction);
                                 updatePlayerImage(p);
 
-
                             }
                             return p;
                         });
                         return updatedPlayers;
                     })
-                    // setOtherPlayerDirections(prevDirections => ({
-                    //     ...prevDirections,
-                    //     [response.sessionId]: 'south'
-                    // }));
                 }
             });
 
@@ -846,16 +836,11 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 p.setDirection(response.direction);
                                 updatePlayerImage(p);
 
-
                             }
                             return p;
                         });
                         return updatedPlayers;
                     })
-                    // setOtherPlayerDirections(prevDirections => ({
-                    //     ...prevDirections,
-                    //     [response.sessionId]: 'west'
-                    // }));
                 }
             });
 
@@ -870,16 +855,11 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 p.setDirection(response.direction);
                                 updatePlayerImage(p);
 
-
                             }
                             return p;
                         });
                         return updatedPlayers;
                     })
-                    // setOtherPlayerDirections(prevDirections => ({
-                    //     ...prevDirections,
-                    //     [response.sessionId]: 'east'
-                    // }));
                 }
             });
 
@@ -916,7 +896,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     setKillCooldown(response);
 
                     if (response === 0) {
-
                         setKillActive(true);
                     }
                 });
@@ -940,8 +919,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     }
                 });
             }
-
-
         });
 
         const handleMove = (event: string) => {
@@ -1081,7 +1058,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             }
         }
 
-
         document.addEventListener('keyup', (event) => {
             handleMove(event.key);
         });
@@ -1102,11 +1078,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                             const cellContent = cell;
                             const isVisible = isCellVisible(currentPlayer.getX(), currentPlayer.getY(), colIndex, rowIndex);
                             const cellStyle = isVisible ? {
-                                backgroundSize: 'cover',
-                                width: '30px',
-                                height: '30px'
-                            } : {
-                                visibility: 'hidden',
+                                backgroundSize: 'cover', width: '30px', height: '30px' } : { visibility: 'hidden',
                                 // width: '30px',
                                 // height: '30px'
                             };
@@ -1115,10 +1087,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 const playerImage = otherPlayerImages[otherPlayer.getSessionId()];
                                 return (
                                     <span style={{
-                                        backgroundImage: `url(${playerImage})`,
-                                        backgroundSize: 'cover',
-                                        width: '30px',
-                                        height: '30px'
+                                        backgroundImage: `url(${playerImage})`, backgroundSize: 'cover', width: '30px', height: '30px'
                                     }}>
                                     </span>
                                 );
@@ -1126,10 +1095,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 return (
                                     <span style=
                                               {{
-                                                  backgroundImage: `url(${playerImage})`,
-                                                  backgroundSize: 'cover',
-                                                  width: '30px',
-                                                  height: '30px'
+                                                  backgroundImage: `url(${playerImage})`, backgroundSize: 'cover', width: '30px', height: '30px'
                                                   // transform: 'translate(-50%, -50%)'
                                               }}>
                                     </span>
@@ -1139,22 +1105,17 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                             const blinkClass = cellContent === 2 ? style.blink : '';
 
                             return (
-                                <span key={colIndex} className={`${style.cell} ${blinkClass}`} style={{cellStyle}}>
+                                 <span key={colIndex} className={`${style.cell} ${blinkClass}`} style={{cellStyle}}>
                                     {/*TODO Comment this line to hide the array*/}
                                     {/*{cellContent}*/}
-                            </span>
-                            );
+                             </span>
+                             );
                         })}
                     </div>
                 ))}
             </div>
             <div style={{
-                position: 'fixed',
-                right: 10,
-                bottom: 10,
-                backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                padding: '10px',
-                borderRadius: '5px',
+                position: 'fixed', right: 10, bottom: 10, backgroundColor: 'rgba(255, 255, 255, 0.5)', padding: '10px', borderRadius: '5px',
             }}>
                 {showReportButton ?
                     <div>
@@ -1174,7 +1135,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 {/*{ventCooldown}*/}
                             </p></div>
                         }
-
                         <p>Up Arrow up</p>
                         <p>Down Arrow Down</p>
                         <p>Left Arrow Left</p>
