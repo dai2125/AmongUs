@@ -131,12 +131,9 @@ class WebSocketService {
                         return prevOtherPlayers;
                     });
                 }
-
             });
 
             this.sendRegistrationData();
-
-
 
             setTimeout(() => {
 
@@ -165,8 +162,6 @@ class WebSocketService {
                 });
 
                 this.client.subscribe(`/topic/dead/${playerRef.current.getUserName()}`, () => {
-                    // TODO display Screen
-                    // TODO Dead Body stays on the x y coordinate
                     console.log('You are dead now');
                     playerRef.current.setMovable(false);
                     playerRef.current.setColor('dead');
@@ -293,9 +288,6 @@ class WebSocketService {
             this.client.subscribe('/topic/noOneGotEjected/', () => {
                 this.noOneGotEjected();
             });
-
-
-
         }, (error) => {
             console.error('WebSocket connection error:', error);
         });
@@ -314,63 +306,6 @@ class WebSocketService {
                 'y': player.getY()
             }));
         }
-    }
-
-
-    sendMovement(key: string) {
-        if(!this.playerRef.current.getMovable()) {
-            return;
-        }
-        if (this.client) {
-            const player = this.playerRef.current;
-            player.setAction(key);
-
-            const payload = JSON.stringify({
-                userName: player.getUserName(),
-                action: player.getAction(),
-                sessionId: player.getSessionId(),
-                gameId: player.getGameId(),
-                color: player.getColor(),
-                x: player.getX(),
-                y: player.getY()
-            });
-
-            this.client.send(`/app/movement/${player.getSessionId()}`, {}, payload);
-        }
-    }
-
-    gimmework() {
-        const user = {
-            sessionId: this.playerRef.current.getSessionId(),
-        };
-
-        fetch(`http://localhost:8080/task/${this.playerRef.current.getSessionId()}`,{
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user),
-        })
-            .then(response => {
-                if(response.status === 200){
-                    return response.json(); // JSON-Daten aus der Antwort extrahieren
-                } else {
-                    throw new Error('Name or Password is wrong');
-                }
-            })
-            .then((data: TaskResponse) => {
-                this.playerRef.current.setTask1(data.task1);
-                this.playerRef.current.setTask2(data.task2);
-                this.playerRef.current.setTask3(data.task3);
-                this.playerRef.current.setRole(data.role);
-                this.playerInstance();
-
-                this.setTasks({ task1: data.task1, task2: data.task2, task3: data.task3 });
-                console.log('GimmeMyWork: ' + data.task1 + ' ' + data.task2 + ' ' + data.task3 + ' ', data.role );
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
     }
 
     gimmeWork() {

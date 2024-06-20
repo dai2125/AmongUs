@@ -196,7 +196,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
             taskAction();
         } else if (key === 'e' && playerRef.current.getRole() === "impostor") {
             taskKill(key);
-        } else if (webSocketServiceRef.current) {
+        } else if (webSockWeetServiceRef.current) {
             const {current: webSocketService} = webSocketServiceRef;
             // TODO for testing
             // webSocketService.sendMovement(key);
