@@ -354,6 +354,7 @@ public class MovementController {
     @MessageMapping("/movement/north/{userName}")
     public void movementNorth(@Payload User user) throws JsonProcessingException {
         if (movementService.wallNorth(user)) {
+            System.out.println("MOVEMENT NORTH: " + user.getX() + " " + user.getY() + " " + user.getDirection() + " " + user.getUserName() + " " + user.getGameId());
             user.setY(user.getY() - 1);
             user.setDirection("north");
             System.out.println("movement/north/: " + user.getUserName() + " x: " + user.getX() + " y: " + user.getY());
