@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
+import DownloadMiniGame from "../DownloadMiniGame/DownloadMiniGame";
 
 interface MiniGame1Props {
-    onCompletion: () => void;
+    onCompletion: (gameType: string) => void;
 }
-
 const GuessTheNumberMiniGame: React.FC<MiniGame1Props> = ({ onCompletion }) => {
     const [term, setTerm] = useState('');
     const [resultMessage, setResultMessage] = useState('');
@@ -34,7 +34,7 @@ const GuessTheNumberMiniGame: React.FC<MiniGame1Props> = ({ onCompletion }) => {
         } else {
             setResultMessage('Congratulations! You guessed it!');
             setHighlight('green');
-            setTimeout(onCompletion, 500);
+            setTimeout(() => onCompletion("Guess the number"), 500); // Pass the game type here
         }
 
         setTimeout(() => {
@@ -71,6 +71,4 @@ const GuessTheNumberMiniGame: React.FC<MiniGame1Props> = ({ onCompletion }) => {
             </div>
         </div>
     );
-};
-
-export default GuessTheNumberMiniGame;
+}; export default GuessTheNumberMiniGame;

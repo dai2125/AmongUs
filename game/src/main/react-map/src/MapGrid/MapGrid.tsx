@@ -4,7 +4,7 @@ import lime from "../Images/Character_Movement/Lime.jpg";
 import dead from "../Images/Character_Movement/dead.png";
 import ghost from "../Images/Character_Movement/Ghost.jpg";
 
-import redImageEast from '../Images/Character_Red_Movement/Red_East_Right.png';
+//import redImageEast from '../Images/Character_Red_Movement/Red_East_Right.png';
 import redImageEast2 from '../Images/Character_Red_Movement/Red_East_Left.png';
 import redImageWest from '../Images/Character_Red_Movement/Red_West_Left.png';
 import redImageWest2 from '../Images/Character_Red_Movement/Red_West_Right.png';
@@ -65,7 +65,7 @@ import greenImageWest2 from '../Images/Character_Green_Movement/Green_West_Right
 import greenImageNorth from '../Images/Character_Green_Movement/Green_North_Left.png';
 import greenImageNorth2 from '../Images/Character_Green_Movement/Green_North_Right.png';
 import greenImageSouth from '../Images/Character_Green_Movement/Green_South_Left.png';
-import greenImageSouth2 from '../Images/Character_Green_Movement/Green_South_Right.png';
+//import greenImageSouth2 from '../Images/Character_Green_Movement/Green_South_Right.png';
 
 import pinkImageEast from '../Images/Character_Pink_Movement/Pink_East_Right.png';
 import pinkImageEast2 from '../Images/Character_Pink_Movement/Pink_East_Left.png';
@@ -108,14 +108,14 @@ import brownImageEast2 from '../Images/Character_Brown_Movement/Brown_East_Left.
 import brownImageWest from '../Images/Character_Brown_Movement/Brown_West_Left.png';
 import brownImageWest2 from '../Images/Character_Brown_Movement/Brown_West_Right.png';
 import brownImageNorth from '../Images/Character_Brown_Movement/Brown_North_Left.png';
-import brownImageNorth2 from '../Images/Character_Brown_Movement/Brown_North_Right.png';
+//import brownImageNorth2 from '../Images/Character_Brown_Movement/Brown_North_Right.png';
 import brownImageSouth from '../Images/Character_Brown_Movement/Brown_South_Left.png';
 import brownImageSouth2 from '../Images/Character_Brown_Movement/Brown_South_Right.png';
 
 import ghostImageEast from '../Images/Character_Ghost_Movement/Ghost_East.png';
 import ghostImageWest from '../Images/Character_Ghost_Movement/Ghost_West.png';
-import ghostImageSouth from '../Images/Character_Ghost_Movement/Ghost_South.png';
-import ghostImageNorth from '../Images/Character_Ghost_Movement/Ghost_North.png';
+//import ghostImageSouth from '../Images/Character_Ghost_Movement/Ghost_South.png';
+//import ghostImageNorth from '../Images/Character_Ghost_Movement/Ghost_North.png';
 
 import votingboxButton from '../Images/Votingbox/report_player.png';
 
@@ -205,7 +205,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         switch (playerDirection) {
             case 'right':
                 if (currentPlayer.getColor() === 'red') {
-                    imageSrc = redImageEast;
+                    //imageSrc = redImageEast;
                 } else if (currentPlayer.getColor() === 'blue') {
                     imageSrc = blueImageEast;
                 } else if (currentPlayer.getColor() === 'cyan') {
@@ -233,7 +233,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getColor() === 'ghost') {
                     imageSrc = ghostImageEast;
                 } else {
-                    imageSrc = redImageEast;
+                    //imageSrc = redImageEast;
                 }
                 break;
             case 'right2':
@@ -359,11 +359,11 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getColor() === 'black') {
                     imageSrc = blackImageNorth2;
                 } else if (currentPlayer.getColor() === 'brown') {
-                    imageSrc = brownImageNorth2;
+                    //imageSrc = brownImageNorth2;
                 } else if (currentPlayer.getColor() === 'dead') {
                     imageSrc = dead;
                 } else if (currentPlayer.getColor() === 'ghost') {
-                    imageSrc = ghostImageNorth;
+                   // imageSrc = ghostImageNorth;
                 } else {
                     imageSrc = redImageNorth2;
                 }
@@ -396,7 +396,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getColor() === 'dead') {
                     imageSrc = dead;
                 } else if (currentPlayer.getColor() === 'ghost') {
-                    imageSrc = ghostImageNorth;
+                   // imageSrc = ghostImageNorth;
                 } else {
                     imageSrc = redImageNorth;
                 }
@@ -429,7 +429,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getColor() === 'dead') {
                     imageSrc = dead;
                 } else if (currentPlayer.getColor() === 'ghost') {
-                    imageSrc = ghostImageSouth;
+                   // imageSrc = ghostImageSouth;
                 } else {
                     imageSrc = redImageSouth;
                 }
@@ -448,7 +448,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getColor() === 'lime') {
                     imageSrc = limeImageSouth2;
                 } else if (currentPlayer.getColor() === 'green') {
-                    imageSrc = greenImageSouth2;
+                    //imageSrc = greenImageSouth2;
                 } else if (currentPlayer.getColor() === 'pink') {
                     imageSrc = pinkImageSouth2;
                 } else if (currentPlayer.getColor() === 'orange') {
@@ -462,13 +462,13 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (currentPlayer.getColor() === 'dead') {
                     imageSrc = dead;
                 } else if (currentPlayer.getColor() === 'ghost') {
-                    imageSrc = ghostImageSouth;
+                   // imageSrc = ghostImageSouth;
                 } else {
                     imageSrc = redImageSouth;
                 }
                 break;
             default:
-                imageSrc = redImageEast;
+               // imageSrc = redImageEast;
         }
 
         setPlayerImage(imageSrc);
@@ -526,7 +526,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (player.getDirection() === "north") {
                     newImage = redImageNorth;
                 } else if (player.getDirection() === "east") {
-                    newImage = redImageEast;
+                   // newImage = redImageEast;
                 } else if (player.getDirection() === "west") {
                     newImage = redImageWest;
                 }
