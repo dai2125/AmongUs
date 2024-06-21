@@ -48,7 +48,8 @@ import webSocketService from "./WebSocketService";
 import Ejected from "./Screens/Ejected";
 import OtherPlayerEjected from "./Screens/OtherPlayerEjected";
 import NoOneGotEjected from "./Screens/NoOneGotEjected";
-import WaitingRoom from "./MapGrid/WaitingRoom";
+import Lobby from "./MapGrid/Lobby";
+//import WaitingRoom from "./MapGrid/WaitingRoom";
 
 interface Props {
     userColor: string;
@@ -117,6 +118,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentMiniGame, setCurrentMiniGame] = useState<React.ReactNode>(null);
+
+    const [lastCompletedGuessTheNumber, setLastCompletedGuessTheNumber] = useState<number | null>(null);
+    const [lastCompletedDownloadFile, setLastCompletedDownloadFile] = useState<number | null>(null);
+    const [lastCompletedEnterNumberSequence, setLastCompletedEnterNumberSequence] = useState<number | null>(null);
+    const [lastCompletedAnswerQuestion, setLastCompletedAnswerQuestion] = useState<number | null>(null);
+    const [lastCompletedMemoryGame, setLastCompletedMemoryGame] = useState<number | null>(null);
+
 
     useEffect(() => {
         playerRef.current.setColor(userColor);
@@ -194,7 +202,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         if (key === 'w' && playerRef.current.getRole() === "crewmate") {
             taskAction();
         } else if (key === 'e' && playerRef.current.getRole() === "impostor") {
-            taskKill(key);
+            //taskKill(key);
         }
     };
 
@@ -202,6 +210,12 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
     const togglePopup = () => {
         setShowPopup(!showPopup);
+    };
+
+    const [showMiniMap, setShowMiniMap] = useState(false);
+
+    const handleShowMiniMap = () => {
+        setShowMiniMap(!showMiniMap);
     };
 
     const openMiniGame = (minigame: React.ReactNode) => {
@@ -214,104 +228,117 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         setCurrentMiniGame(null);
     };
 
-    const handleMiniGameCompletion = () => {
+    const handleMiniGameCompletion = (gameType: string) => {
         closeMiniGame();
+        const currentTime = Date.now();
+
+        switch (gameType) {
+            case "Guess the number":
+                setLastCompletedGuessTheNumber(currentTime);
+                break;
+            case "Download the file":
+                setLastCompletedDownloadFile(currentTime);
+                break;
+            case "Enter the number sequence":
+                setLastCompletedEnterNumberSequence(currentTime);
+                break;
+            case "Answer the question":
+                setLastCompletedAnswerQuestion(currentTime);
+                break;
+            case "Memory game":
+                setLastCompletedMemoryGame(currentTime);
+                break;
+            default:
+                break;
+        }
+
         const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
         const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
-        if(xPosTask === 11 && yPosTask === 5) {
+
+        if (xPosTask === 11 && yPosTask === 5) {
             webSocketServiceRef.current.sendTaskResolved("Guess the number", 11, 5);
-            if(playerRef.current.getTask1() === "Guess the number") {
-                playerRef.current.setTask1("");
-            } else if(playerRef.current.getTask2() === "Guess the number") {
-                playerRef.current.setTask2("");
-            } else if(playerRef.current.getTask3() === "Guess the number") {
-                playerRef.current.setTask3("");
-            }
-            playerInstance();
-            setShowTaskList(false);
-            setShowTaskList(true);
-        } else if(xPosTask === 36 && (yPosTask === 4 || yPosTask === 5)) {
-            webSocketServiceRef.current.sendTaskResolved("Download the file", 36, 4);
-            if(playerRef.current.getTask1() === "Download the file") {
-                playerRef.current.setTask1("");
-            } else if(playerRef.current.getTask2() === "Download the file") {
-                playerRef.current.setTask2("");
-            } else if(playerRef.current.getTask3() === "Download the file") {
-                playerRef.current.setTask3("");
-            }
-            playerInstance();
-            setShowTaskList(false);
-            setShowTaskList(true);
-        } else if(xPosTask === 72 && (yPosTask === 17 || yPosTask === 18 || yPosTask === 19)) {
+            clearTask("Guess the number");
+        } else if (xPosTask === 58 &&  yPosTask === 7) {
+            webSocketServiceRef.current.sendTaskResolved("Download the file", 58, 7);
+            clearTask("Download the file");
+        } else if (xPosTask === 72 && (yPosTask === 17 || yPosTask === 18 || yPosTask === 19)) {
             webSocketServiceRef.current.sendTaskResolved("Enter the number sequence", 72, 17);
-            if(playerRef.current.getTask1() === "Enter the number sequence") {
-                playerRef.current.setTask1("");
-            } else if(playerRef.current.getTask2() === "Enter the number sequence") {
-                playerRef.current.setTask2("");
-            } else if(playerRef.current.getTask3() === "Enter the number sequence") {
-                playerRef.current.setTask3("");
-            }
-            playerInstance();
-            setShowTaskList(false);
-            setShowTaskList(true);
-        } else if(xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) {
+            clearTask("Enter the number sequence");
+        } else if (xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) {
             webSocketServiceRef.current.sendTaskResolved("Answer the question", 51, 37);
-            if(playerRef.current.getTask1() === "Answer the question") {
-                playerRef.current.setTask1("");
-            } else if(playerRef.current.getTask2() === "Answer the question") {
-                playerRef.current.setTask2("");
-            } else if(playerRef.current.getTask3() === "Answer the question") {
-                playerRef.current.setTask3("");
-            }
-            playerInstance();
-            setShowTaskList(false);
-            setShowTaskList(true);
-        } else if(yPosTask === 40 && (xPosTask === 40 || xPosTask === 41)) {
-            webSocketServiceRef.current.sendTaskResolved("Memory game", 40, 40);
-            if(playerRef.current.getTask1() === "Memory game") {
-                playerRef.current.setTask1("");
-            } else if(playerRef.current.getTask2() === "Memory game") {
-                playerRef.current.setTask2("");
-            } else if(playerRef.current.getTask3() === "Memory game") {
-                playerRef.current.setTask3("");
-            }
-            playerInstance();
-            setShowTaskList(false);
-            setShowTaskList(true);
+            clearTask("Answer the question");
+        } else if (yPosTask === 25 && xPosTask === 9) {
+            webSocketServiceRef.current.sendTaskResolved("Memory game", 9, 25);
+            clearTask("Memory game");
+        }
+
+        playerInstance();
+        setShowTaskList(false);
+        setShowTaskList(true);
+    };
+
+    const clearTask = (taskName: string) => {
+        if (playerRef.current.getTask1() === taskName) {
+            playerRef.current.setTask1("");
+        } else if (playerRef.current.getTask2() === taskName) {
+            playerRef.current.setTask2("");
+        } else if (playerRef.current.getTask3() === taskName) {
+            playerRef.current.setTask3("");
         }
     };
 
+
     const taskAction = () => {
-        console.log("pressed w")
-        if(GridService.isTask(playerRef.current.getY(), playerRef.current.getX())) {
+        console.log("pressed w");
+        if (GridService.isTask(playerRef.current.getY(), playerRef.current.getX())) {
             const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
             const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
             console.log("Checking task: " + xPosTask + ", " + yPosTask);
-            if(xPosTask != null && yPosTask != null) {
-                if((xPosTask === 11 && yPosTask === 5) && (playerRef.current.getTask1() === "Guess the number" || playerRef.current.getTask2() === "Guess the number" || playerRef.current.getTask3() === "Guess the number")) {
-                    console.log('openMiniGame: 1')
-                    openMiniGame(<GuessTheNumberMiniGame onCompletion={handleMiniGameCompletion} />);
-                } else if((xPosTask === 36 && (yPosTask === 4 || yPosTask === 5)) && (playerRef.current.getTask1() === "Download the file" || playerRef.current.getTask2() === "Download the file" || playerRef.current.getTask3() === "Download the file")) {
-                    console.log('openMiniGame: 2')
 
-                    openMiniGame(<DownloadMiniGame onCompletion={handleMiniGameCompletion} />);
-                } else if((xPosTask === 72 && (yPosTask === 17 || yPosTask === 18 || yPosTask === 19)) && (playerRef.current.getTask1() === "Enter the number sequence" || playerRef.current.getTask2() === "Enter the number sequence" || playerRef.current.getTask3() === "Enter the number sequence")) {
-                    console.log('openMiniGame: 3')
+            if (xPosTask != null && yPosTask != null) {
+                const currentTime = Date.now();
+                const cooldown = 1 * 60 * 1000; // 1 minutes in milliseconds
 
-                    openMiniGame(<ClickInOrderMiniGame onCompletion={handleMiniGameCompletion} />);
-                } else if((xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) && (playerRef.current.getTask1() === "Answer the question" || playerRef.current.getTask2() === "Answer the question" || playerRef.current.getTask3() === "Answer the question")) {
-                    console.log('openMiniGame: 4')
-
-                    openMiniGame(<NumpadInputCodeMiniGame onCompletion={handleMiniGameCompletion} />);
-                    console.log("NumpadInputCodeMiniGame")
-                } else if((yPosTask === 40 && (xPosTask === 40 || xPosTask === 41)) && (playerRef.current.getTask1() === "Memory game" || playerRef.current.getTask2() === "Memory game" || playerRef.current.getTask3() === "Memory game")) {
-                    console.log('openMiniGame: 5')
-
-                    openMiniGame(<MemoryMiniGame onCompletion={handleMiniGameCompletion} />);
+                if ((xPosTask === 11 && yPosTask === 5)  && (playerRef.current.getTask1() === "Guess the number" || playerRef.current.getTask2() === "Guess the number" || playerRef.current.getTask3() === "Guess the number")) {
+                    if (!lastCompletedGuessTheNumber || (currentTime - lastCompletedGuessTheNumber > cooldown)) {
+                        console.log('openMiniGame: 1');
+                        openMiniGame(<GuessTheNumberMiniGame onCompletion={() => handleMiniGameCompletion("Guess the number")} />);
+                    } else {
+                        alert("You must wait for the cooldown period to expire before playing this mini-game again.");
+                    }
+                } else if ((xPosTask === 58 &&  yPosTask === 7) && (playerRef.current.getTask1() === "Download the file" || playerRef.current.getTask2() === "Download the file" || playerRef.current.getTask3() === "Download the file")) {
+                    if (!lastCompletedDownloadFile || (currentTime - lastCompletedDownloadFile > cooldown)) {
+                        console.log('openMiniGame: 2');
+                        openMiniGame(<DownloadMiniGame onCompletion={() => handleMiniGameCompletion("Download the file")} />);
+                    } else {
+                        alert("You must wait for the cooldown period to expire before playing this mini-game again.");
+                    }
+                } else if ((xPosTask === 72 && (yPosTask === 17 || yPosTask === 18 || yPosTask === 19))  && (playerRef.current.getTask1() === "Enter the number sequence" || playerRef.current.getTask2() === "Enter the number sequence" || playerRef.current.getTask3() === "Enter the number sequence")) {
+                    if (!lastCompletedEnterNumberSequence || (currentTime - lastCompletedEnterNumberSequence > cooldown)) {
+                        console.log('openMiniGame: 3');
+                        openMiniGame(<ClickInOrderMiniGame onCompletion={() => handleMiniGameCompletion("Enter the number sequence")} />);
+                    } else {
+                        alert("You must wait for the cooldown period to expire before playing this mini-game again.");
+                    }
+                } else if ((xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) && (playerRef.current.getTask1() === "Answer the question" || playerRef.current.getTask2() === "Answer the question" || playerRef.current.getTask3() === "Answer the question")) {
+                    if (!lastCompletedAnswerQuestion || (currentTime - lastCompletedAnswerQuestion > cooldown)) {
+                        console.log('openMiniGame: 4');
+                        openMiniGame(<NumpadInputCodeMiniGame onCompletion={() => handleMiniGameCompletion("Answer the question")} />);
+                        console.log("NumpadInputCodeMiniGame");
+                    } else {
+                        alert("You must wait for the cooldown period to expire before playing this mini-game again.");
+                    }
+                } else if ((yPosTask === 25 && xPosTask === 9 ) && (playerRef.current.getTask1() === "Memory game" || playerRef.current.getTask2() === "Memory game" || playerRef.current.getTask3() === "Memory game")) {
+                    if (!lastCompletedMemoryGame || (currentTime - lastCompletedMemoryGame > cooldown)) {
+                        console.log('openMiniGame: 5');
+                        openMiniGame(<MemoryMiniGame onCompletion={() => handleMiniGameCompletion("Memory game")} />);
+                    } else {
+                        alert("You must wait for the cooldown period to expire before playing this mini-game again.");
+                    }
                 }
             }
         }
-    }
+    };
 
     const updateTasks = () => {
         if (completedTasksCount < 9) {
@@ -452,8 +479,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             }
                         </div>
                         <div className="col-span-4 border-solid rounded-lg justify-self-end mr-2 mt-o">
+
+                            <button onClick={handleShowMiniMap}
+                                    className="bg-blue-300 hover:bg-blue-700 rounded-lg py-3 px-8 mr-12">Map</button>
+
                             <button onClick={onQuit}
-                                className="bg-gray-700 hover:bg-gray-800 rounded-lg py-3 px-8">Quit</button>
+                                    className="bg-gray-700 hover:bg-gray-800 rounded-lg py-3 px-8">Quit
+                            </button>
                         </div>
                     </div>
                     <div className="grid grid-cols-12 row-span-8 gap-5 h-5/6">
@@ -463,7 +495,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             }
                         </div>
                         <div className="col-span-8 border-solid rounded-lg flex justify-center items-center">
-                            {showWaitingRoom ? <WaitingRoom /> : <div></div>}
+                            {showLobby ? <Lobby currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> : <div></div>}
                         </div>
                         <div>
                             <Modal isVisible={isModalVisible} onClose={closeMiniGame}>
@@ -551,6 +583,19 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             {showNoOneGotEjected ?
                                 <NoOneGotEjected onStart={handleRole}/> : <div></div>}
                         </div>
+                        {showMiniMap && (
+                            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                <div className="relative flex flex-col items-center miniMapBackground rounded-lg p-8 w-2/3 h-1/2">
+                                    <button
+                                        onClick={handleShowMiniMap}
+                                        className="absolute bottom-4 bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+
                     </div>
                     <KeyInput onKeyPress={handleKeyPress}/>
                 </div>

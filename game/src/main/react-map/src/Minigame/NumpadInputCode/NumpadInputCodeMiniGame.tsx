@@ -13,7 +13,7 @@ const questions = [
     { question: "In software engineering, what design pattern describes an object that encapsulates how a set of objects interact?", answers: ["Singleton", "Mediator", "Decorator"], correct: "Mediator" },
 ];
 
-const Modal: React.FC<{ onCompletion: () => void }> = ({ onCompletion }) => {
+const Modal: React.FC<{ onCompletion: (gameType: string) => void }> = ({ onCompletion }) => {
     const [isVisible, setIsVisible] = React.useState(true);
     const [currentQuestion, setCurrentQuestion] = React.useState<number>(0);
     const [isCorrect, setIsCorrect] = React.useState<boolean | null>(null);
@@ -30,7 +30,7 @@ const Modal: React.FC<{ onCompletion: () => void }> = ({ onCompletion }) => {
         if (correct) {
             setTimeout(() => {
                 setIsVisible(false);
-                onCompletion();
+                onCompletion("Answer the question");
             }, 1000);
         }
     };
@@ -46,7 +46,7 @@ const Modal: React.FC<{ onCompletion: () => void }> = ({ onCompletion }) => {
             <div style={styles.modal}>
                 <button style={styles.closeButton} onClick={() => {
                     setIsVisible(false);
-                    onCompletion();
+                    onCompletion("Answer the question");
                 }}>X</button>
                 <div>
                     <p style={{ color: 'blue' }}>{question.question}</p>
