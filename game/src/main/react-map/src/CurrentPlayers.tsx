@@ -212,6 +212,12 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         setShowPopup(!showPopup);
     };
 
+    const [showMiniMap, setShowMiniMap] = useState(false);
+
+    const handleShowMiniMap = () => {
+        setShowMiniMap(!showMiniMap);
+    };
+
     const openMiniGame = (minigame: React.ReactNode) => {
         setCurrentMiniGame(minigame);
         setIsModalVisible(true);
@@ -473,8 +479,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             }
                         </div>
                         <div className="col-span-4 border-solid rounded-lg justify-self-end mr-2 mt-o">
+
+                            <button onClick={handleShowMiniMap}
+                                    className="bg-blue-300 hover:bg-blue-700 rounded-lg py-3 px-8 mr-12">Map</button>
+
                             <button onClick={onQuit}
-                                className="bg-gray-700 hover:bg-gray-800 rounded-lg py-3 px-8">Quit</button>
+                                    className="bg-gray-700 hover:bg-gray-800 rounded-lg py-3 px-8">Quit
+                            </button>
                         </div>
                     </div>
                     <div className="grid grid-cols-12 row-span-8 gap-5 h-5/6">
@@ -572,6 +583,19 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             {showNoOneGotEjected ?
                                 <NoOneGotEjected onStart={handleRole}/> : <div></div>}
                         </div>
+                        {showMiniMap && (
+                            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                                <div className="relative flex flex-col items-center miniMapBackground rounded-lg p-8 w-2/3 h-1/2">
+                                    <button
+                                        onClick={handleShowMiniMap}
+                                        className="absolute bottom-4 bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+
                     </div>
                     <KeyInput onKeyPress={handleKeyPress}/>
                 </div>
