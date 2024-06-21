@@ -9,7 +9,7 @@ const shuffleArray = (array: any[]) => {
     return array.sort(() => Math.random() - 0.5);
 };
 
-const MemoryMiniGame: React.FC<{ onCompletion: () => void }> = ({ onCompletion }) => {
+const MemoryMiniGame: React.FC<{ onCompletion: (gameType: string) => void }> = ({ onCompletion }) => {
     const [cards, setCards] = useState<string[]>([]);
     const [flippedCards, setFlippedCards] = useState<number[]>([]);
     const [matchedCards, setMatchedCards] = useState<boolean[]>([]);
@@ -37,7 +37,7 @@ const MemoryMiniGame: React.FC<{ onCompletion: () => void }> = ({ onCompletion }
                 setFlippedCards([]);
 
                 if (newMatchedCards.every(Boolean)) {
-                    onCompletion();
+                    onCompletion("Answer the question");
                 }
             } else {
                 setTimeout(() => setFlippedCards([]), 1000);
