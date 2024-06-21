@@ -299,28 +299,28 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                 const currentTime = Date.now();
                 const cooldown = 1 * 60 * 1000; // 1 minutes in milliseconds
 
-                if ((xPosTask === 11 && yPosTask === 5) /* && (playerRef.current.getTask1() === "Guess the number" || playerRef.current.getTask2() === "Guess the number" || playerRef.current.getTask3() === "Guess the number")*/) {
+                if ((xPosTask === 11 && yPosTask === 5)  && (playerRef.current.getTask1() === "Guess the number" || playerRef.current.getTask2() === "Guess the number" || playerRef.current.getTask3() === "Guess the number")) {
                     if (!lastCompletedGuessTheNumber || (currentTime - lastCompletedGuessTheNumber > cooldown)) {
                         console.log('openMiniGame: 1');
                         openMiniGame(<GuessTheNumberMiniGame onCompletion={() => handleMiniGameCompletion("Guess the number")} />);
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
-                } else if ((xPosTask === 58 &&  yPosTask === 7) /*&& (playerRef.current.getTask1() === "Download the file" || playerRef.current.getTask2() === "Download the file" || playerRef.current.getTask3() === "Download the file")*/) {
+                } else if ((xPosTask === 58 &&  yPosTask === 7) && (playerRef.current.getTask1() === "Download the file" || playerRef.current.getTask2() === "Download the file" || playerRef.current.getTask3() === "Download the file")) {
                     if (!lastCompletedDownloadFile || (currentTime - lastCompletedDownloadFile > cooldown)) {
                         console.log('openMiniGame: 2');
                         openMiniGame(<DownloadMiniGame onCompletion={() => handleMiniGameCompletion("Download the file")} />);
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
-                } else if ((xPosTask === 72 && (yPosTask === 17 || yPosTask === 18 || yPosTask === 19)) /* && (playerRef.current.getTask1() === "Enter the number sequence" || playerRef.current.getTask2() === "Enter the number sequence" || playerRef.current.getTask3() === "Enter the number sequence")*/) {
+                } else if ((xPosTask === 72 && (yPosTask === 17 || yPosTask === 18 || yPosTask === 19))  && (playerRef.current.getTask1() === "Enter the number sequence" || playerRef.current.getTask2() === "Enter the number sequence" || playerRef.current.getTask3() === "Enter the number sequence")) {
                     if (!lastCompletedEnterNumberSequence || (currentTime - lastCompletedEnterNumberSequence > cooldown)) {
                         console.log('openMiniGame: 3');
                         openMiniGame(<ClickInOrderMiniGame onCompletion={() => handleMiniGameCompletion("Enter the number sequence")} />);
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
-                } else if ((xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) /* && (playerRef.current.getTask1() === "Answer the question" || playerRef.current.getTask2() === "Answer the question" || playerRef.current.getTask3() === "Answer the question")*/) {
+                } else if ((xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) && (playerRef.current.getTask1() === "Answer the question" || playerRef.current.getTask2() === "Answer the question" || playerRef.current.getTask3() === "Answer the question")) {
                     if (!lastCompletedAnswerQuestion || (currentTime - lastCompletedAnswerQuestion > cooldown)) {
                         console.log('openMiniGame: 4');
                         openMiniGame(<NumpadInputCodeMiniGame onCompletion={() => handleMiniGameCompletion("Answer the question")} />);
@@ -328,7 +328,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
-                } else if ((yPosTask === 25 && xPosTask === 9 ) /* && (playerRef.current.getTask1() === "Memory game" || playerRef.current.getTask2() === "Memory game" || playerRef.current.getTask3() === "Memory game")*/) {
+                } else if ((yPosTask === 25 && xPosTask === 9 ) && (playerRef.current.getTask1() === "Memory game" || playerRef.current.getTask2() === "Memory game" || playerRef.current.getTask3() === "Memory game")) {
                     if (!lastCompletedMemoryGame || (currentTime - lastCompletedMemoryGame > cooldown)) {
                         console.log('openMiniGame: 5');
                         openMiniGame(<MemoryMiniGame onCompletion={() => handleMiniGameCompletion("Memory game")} />);
