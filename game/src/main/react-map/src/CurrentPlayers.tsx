@@ -136,9 +136,12 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         if (!timerStarted) {
             setTimerStarted(true);
         }
+
+        // setShowMap(true);
     }
 
     const onStart = () => {
+        setShowWaitingRoom(false);
         setShowLobby(false);
         setTimerStarted(false);
         setShowShhhhh(true);
@@ -165,7 +168,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         setShowTaskBar(true);
         // TODO
         setShowMap(true);
-        // setShowTestGrid(true);
     }
 
     useEffect(() => {
