@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 interface NumberButtonGameProps {
-    onCompletion: () => void;
+    onCompletion: (gameType: string) => void;
 }
 
 const ClickInOrderMiniGame: React.FC<NumberButtonGameProps> = ({ onCompletion }) => {
@@ -29,7 +29,7 @@ const ClickInOrderMiniGame: React.FC<NumberButtonGameProps> = ({ onCompletion })
             if (currentNumber === 10) {
                 setGameStarted(false);
                 setCurrentNumber(null);
-                onCompletion();
+                onCompletion("Enter the number sequence");
             } else {
                 setCurrentNumber(currentNumber! + 1);
             }

@@ -35,6 +35,14 @@ body {
     height: 100%; /* Adjust height as needed */
 }
 
+.miniMapBackground {
+    background-image: url('../Images/Maps/MiniGamesMap.png');
+    background-size: contain; /* Adjusted to contain the entire image */
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
 #local-img {
     background-image: url('../Local.png');
     background-repeat: no-repeat;

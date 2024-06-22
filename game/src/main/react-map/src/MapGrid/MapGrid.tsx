@@ -4,7 +4,7 @@ import lime from "../Images/Character_Movement/Lime.jpg";
 import dead from "../Images/Character_Movement/dead.png";
 import ghost from "../Images/Character_Movement/Ghost.jpg";
 
-import redImageEast from '../Images/Character_Red_Movement/Red_East_Right.png';
+//import redImageEast from '../Images/Character_Red_Movement/Red_East_Right.png';
 import redImageEast2 from '../Images/Character_Red_Movement/Red_East_Left.png';
 import redImageWest from '../Images/Character_Red_Movement/Red_West_Left.png';
 import redImageWest2 from '../Images/Character_Red_Movement/Red_West_Right.png';
@@ -65,7 +65,7 @@ import greenImageWest2 from '../Images/Character_Green_Movement/Green_West_Right
 import greenImageNorth from '../Images/Character_Green_Movement/Green_North_Left.png';
 import greenImageNorth2 from '../Images/Character_Green_Movement/Green_North_Right.png';
 import greenImageSouth from '../Images/Character_Green_Movement/Green_South_Left.png';
-import greenImageSouth2 from '../Images/Character_Green_Movement/Green_South_Right.png';
+//import greenImageSouth2 from '../Images/Character_Green_Movement/Green_South_Right.png';
 
 import pinkImageEast from '../Images/Character_Pink_Movement/Pink_East_Right.png';
 import pinkImageEast2 from '../Images/Character_Pink_Movement/Pink_East_Left.png';
@@ -108,14 +108,14 @@ import brownImageEast2 from '../Images/Character_Brown_Movement/Brown_East_Left.
 import brownImageWest from '../Images/Character_Brown_Movement/Brown_West_Left.png';
 import brownImageWest2 from '../Images/Character_Brown_Movement/Brown_West_Right.png';
 import brownImageNorth from '../Images/Character_Brown_Movement/Brown_North_Left.png';
-import brownImageNorth2 from '../Images/Character_Brown_Movement/Brown_North_Right.png';
+//import brownImageNorth2 from '../Images/Character_Brown_Movement/Brown_North_Right.png';
 import brownImageSouth from '../Images/Character_Brown_Movement/Brown_South_Left.png';
 import brownImageSouth2 from '../Images/Character_Brown_Movement/Brown_South_Right.png';
 
 import ghostImageEast from '../Images/Character_Ghost_Movement/Ghost_East.png';
 import ghostImageWest from '../Images/Character_Ghost_Movement/Ghost_West.png';
-import ghostImageSouth from '../Images/Character_Ghost_Movement/Ghost_South.png';
-import ghostImageNorth from '../Images/Character_Ghost_Movement/Ghost_North.png';
+//import ghostImageSouth from '../Images/Character_Ghost_Movement/Ghost_South.png';
+//import ghostImageNorth from '../Images/Character_Ghost_Movement/Ghost_North.png';
 
 import votingboxButton from '../Images/Votingbox/report_player.png';
 
@@ -332,282 +332,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         dead: dead
     };
 
-    // const getPlayerImage = (color, direction) => playerImages[color][direction];
-    // TODO END
-
-    // useEffect(() => {
-    //     let imageSrc;
-    //     switch (playerDirection) {
-    //         case 'east':
-    //             if (currentPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageEast;
-    //             } else if (currentPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageEast;
-    //             } else if (currentPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageEast;
-    //             } else if (currentPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageEast;
-    //             } else if (currentPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageEast;
-    //             } else if (currentPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageEast;
-    //             } else if (currentPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageEast;
-    //             } else if (currentPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageEast;
-    //             } else if (currentPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageEast;
-    //             } else if (currentPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageEast;
-    //             } else if (currentPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageEast;
-    //             } else if (currentPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageEast;
-    //             } else if (currentPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if (currentPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghostImageEast;
-    //             } else {
-    //                 imageSrc = redImageEast;
-    //             }
-    //             break;
-    //         case 'east2':
-    //             if (currentPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageEast2;
-    //             } else if (currentPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageEast2;
-    //             } else if (currentPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageEast2;
-    //             } else if (currentPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageEast2;
-    //             } else if (currentPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageEast2;
-    //             } else if (currentPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageEast2;
-    //             } else if (currentPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageEast2;
-    //             } else if (currentPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageEast2;
-    //             } else if (currentPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageEast2;
-    //             } else if (currentPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageEast2;
-    //             } else if (currentPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageEast2;
-    //             } else if (currentPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageEast2;
-    //             } else if (currentPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if (currentPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghostImageEast;
-    //             } else {
-    //                 imageSrc = redImageEast2;
-    //             }
-    //             break;
-    //         case 'west':
-    //             if (currentPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageWest;
-    //             } else if (currentPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageWest;
-    //             } else if (currentPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageWest;
-    //             } else if (currentPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageWest;
-    //             } else if (currentPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageWest;
-    //             } else if (currentPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageWest;
-    //             } else if (currentPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageWest;
-    //             } else if (currentPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageWest;
-    //             } else if (currentPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageWest;
-    //             } else if (currentPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageWest;
-    //             } else if (currentPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageWest;
-    //             } else if (currentPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageWest;
-    //             } else if (currentPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if (currentPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghostImageWest;
-    //             } else {
-    //                 imageSrc = redImageWest;
-    //             }
-    //             break;
-    //         case 'west2':
-    //             if (currentPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageWest2;
-    //             } else if (currentPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageWest2;
-    //             } else if (currentPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageWest2;
-    //             } else if (currentPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageWest2;
-    //             } else if (currentPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageWest2;
-    //             } else if (currentPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageWest2;
-    //             } else if (currentPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageWest2;
-    //             } else if (currentPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageWest2;
-    //             } else if (currentPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageWest2;
-    //             } else if (currentPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageWest2;
-    //             } else if (currentPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageWest2;
-    //             } else if (currentPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageWest2;
-    //             } else if (currentPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if (currentPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghostImageWest;
-    //             } else {
-    //                 imageSrc = redImageWest2;
-    //             }
-    //             break;
-    //         case 'north':
-    //             if (currentPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageNorth2;
-    //             } else if (currentPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageNorth2;
-    //             } else if (currentPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageNorth2;
-    //             } else if (currentPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageNorth2;
-    //             } else if (currentPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageNorth2;
-    //             } else if (currentPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageNorth2;
-    //             } else if (currentPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageNorth2;
-    //             } else if (currentPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageNorth2;
-    //             } else if (currentPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageNorth2;
-    //             } else if (currentPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageNorth2;
-    //             } else if (currentPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageNorth2;
-    //             } else if (currentPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageNorth2;
-    //             } else if (currentPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if (currentPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghostImageNorth;
-    //             } else {
-    //                 imageSrc = redImageNorth2;
-    //             }
-    //             break;
-    //         case 'north2':
-    //             if (currentPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageNorth;
-    //             } else if (currentPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageNorth;
-    //             } else if (currentPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageNorth;
-    //             } else if (currentPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageNorth;
-    //             } else if (currentPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageNorth;
-    //             } else if (currentPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageNorth;
-    //             } else if (currentPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageNorth;
-    //             } else if (currentPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageNorth;
-    //             } else if (currentPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageNorth;
-    //             } else if (currentPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageNorth;
-    //             } else if (currentPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageNorth;
-    //             } else if (currentPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageNorth;
-    //             } else if (currentPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if (currentPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghostImageNorth;
-    //             } else {
-    //                 imageSrc = redImageNorth;
-    //             }
-    //             break;
-    //         case 'south':
-    //             if (currentPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageSouth;
-    //             } else if (currentPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageSouth;
-    //             } else if (currentPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageSouth;
-    //             } else if (currentPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageSouth;
-    //             } else if (currentPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageSouth;
-    //             } else if (currentPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageSouth;
-    //             } else if (currentPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageSouth;
-    //             } else if (currentPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageSouth;
-    //             } else if (currentPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageSouth;
-    //             } else if (currentPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageSouth;
-    //             } else if (currentPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageSouth;
-    //             } else if (currentPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageSouth;
-    //             } else if (currentPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if (currentPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghostImageSouth;
-    //             } else {
-    //                 imageSrc = redImageSouth;
-    //             }
-    //             break;
-    //         case 'south2':
-    //             if (currentPlayer.getColor() === 'red') {
-    //                 imageSrc = redImageSouth2;
-    //             } else if (currentPlayer.getColor() === 'blue') {
-    //                 imageSrc = blueImageSouth2;
-    //             } else if (currentPlayer.getColor() === 'cyan') {
-    //                 imageSrc = cyanImageSouth2;
-    //             } else if (currentPlayer.getColor() === 'yellow') {
-    //                 imageSrc = yellowImageSouth2;
-    //             } else if (currentPlayer.getColor() === 'purple') {
-    //                 imageSrc = purpleImageSouth2;
-    //             } else if (currentPlayer.getColor() === 'lime') {
-    //                 imageSrc = limeImageSouth2;
-    //             } else if (currentPlayer.getColor() === 'green') {
-    //                 imageSrc = greenImageSouth2;
-    //             } else if (currentPlayer.getColor() === 'pink') {
-    //                 imageSrc = pinkImageSouth2;
-    //             } else if (currentPlayer.getColor() === 'orange') {
-    //                 imageSrc = orangeImageSouth2;
-    //             } else if (currentPlayer.getColor() === 'white') {
-    //                 imageSrc = whiteImageSouth2;
-    //             } else if (currentPlayer.getColor() === 'black') {
-    //                 imageSrc = blackImageSouth2;
-    //             } else if (currentPlayer.getColor() === 'brown') {
-    //                 imageSrc = brownImageSouth2;
-    //             } else if (currentPlayer.getColor() === 'dead') {
-    //                 imageSrc = dead;
-    //             } else if (currentPlayer.getColor() === 'ghost') {
-    //                 imageSrc = ghostImageSouth;
-    //             } else {
-    //                 imageSrc = redImageSouth;
-    //             }
-    //             break;
-    //         default:
-    //             imageSrc = redImageSouth;
-    //     }
-    //
-    //     setPlayerImage(imageSrc);
-    // }, [playerDirection]);
+ 
 
     useEffect(() => {
         const color = currentPlayer.getColor();
@@ -674,7 +399,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (player.getDirection() === "north") {
                     newImage = redImageNorth;
                 } else if (player.getDirection() === "east") {
-                    newImage = redImageEast;
+                   // newImage = redImageEast;
                 } else if (player.getDirection() === "west") {
                     newImage = redImageWest;
                 }
@@ -791,6 +516,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     }
 
     const grid: any[][] = [
+
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -879,6 +605,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+
     ];
 
     // let i: number;

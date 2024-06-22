@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 interface MiniGame2Props {
-    onCompletion: () => void;
+    onCompletion: (gameType: string) => void;
 }
 
 const DownloadMiniGame: React.FC<MiniGame2Props> = ({ onCompletion }) => {
@@ -25,7 +25,7 @@ const DownloadMiniGame: React.FC<MiniGame2Props> = ({ onCompletion }) => {
                         clearInterval(timer);
                         setIsComplete(true);
                         setIsDownloading(false);
-                        onCompletion(); // Call the onCompletion prop when download is complete
+                        onCompletion("Download the file"); // Call the onCompletion prop when download is complete
                         return 100;
                     }
                     return nextProgress;
