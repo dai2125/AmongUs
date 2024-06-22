@@ -1,7 +1,6 @@
 package com.team2.game.GamingController;
 
 import com.team2.game.DataModel.CustomGame;
-import com.team2.game.DataModel.Game;
 import com.team2.game.DataModel.ObjectInteraction;
 import com.team2.game.DataModel.User;
 //import com.example.messagingstompwebsocket.chat.Message;
@@ -28,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 @PropertySource("classpath:application.properties")
-public class MovementController {
+public class GameController {
 
     @Autowired
     private SimpMessagingTemplate messagingTemplate;
@@ -45,7 +44,7 @@ public class MovementController {
     @Autowired
     private AirSystemService airSystemService;
 
-    private static final Logger logger = LoggerFactory.getLogger(MovementController.class);
+    private static final Logger logger = LoggerFactory.getLogger(GameController.class);
     @Autowired
     private GameInstance gameInstance;
     @Autowired
