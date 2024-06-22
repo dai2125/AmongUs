@@ -4,7 +4,7 @@ import lime from "../Images/Character_Movement/Lime.jpg";
 import dead from "../Images/Character_Movement/dead.png";
 import ghost from "../Images/Character_Movement/Ghost.jpg";
 
-//import redImageEast from '../Images/Character_Red_Movement/Red_East_Right.png';
+import redImageEast from '../Images/Character_Red_Movement/Red_East_Right.png';
 import redImageEast2 from '../Images/Character_Red_Movement/Red_East_Left.png';
 import redImageWest from '../Images/Character_Red_Movement/Red_West_Left.png';
 import redImageWest2 from '../Images/Character_Red_Movement/Red_West_Right.png';
@@ -65,7 +65,7 @@ import greenImageWest2 from '../Images/Character_Green_Movement/Green_West_Right
 import greenImageNorth from '../Images/Character_Green_Movement/Green_North_Left.png';
 import greenImageNorth2 from '../Images/Character_Green_Movement/Green_North_Right.png';
 import greenImageSouth from '../Images/Character_Green_Movement/Green_South_Left.png';
-//import greenImageSouth2 from '../Images/Character_Green_Movement/Green_South_Right.png';
+import greenImageSouth2 from '../Images/Character_Green_Movement/Green_South_Right.png';
 
 import pinkImageEast from '../Images/Character_Pink_Movement/Pink_East_Right.png';
 import pinkImageEast2 from '../Images/Character_Pink_Movement/Pink_East_Left.png';
@@ -108,14 +108,14 @@ import brownImageEast2 from '../Images/Character_Brown_Movement/Brown_East_Left.
 import brownImageWest from '../Images/Character_Brown_Movement/Brown_West_Left.png';
 import brownImageWest2 from '../Images/Character_Brown_Movement/Brown_West_Right.png';
 import brownImageNorth from '../Images/Character_Brown_Movement/Brown_North_Left.png';
-//import brownImageNorth2 from '../Images/Character_Brown_Movement/Brown_North_Right.png';
+import brownImageNorth2 from '../Images/Character_Brown_Movement/Brown_North_Right.png';
 import brownImageSouth from '../Images/Character_Brown_Movement/Brown_South_Left.png';
 import brownImageSouth2 from '../Images/Character_Brown_Movement/Brown_South_Right.png';
 
 import ghostImageEast from '../Images/Character_Ghost_Movement/Ghost_East.png';
 import ghostImageWest from '../Images/Character_Ghost_Movement/Ghost_West.png';
-//import ghostImageSouth from '../Images/Character_Ghost_Movement/Ghost_South.png';
-//import ghostImageNorth from '../Images/Character_Ghost_Movement/Ghost_North.png';
+import ghostImageSouth from '../Images/Character_Ghost_Movement/Ghost_South.png';
+import ghostImageNorth from '../Images/Character_Ghost_Movement/Ghost_North.png';
 
 import votingboxButton from '../Images/Votingbox/report_player.png';
 
@@ -156,6 +156,8 @@ const colorToImageUrl = {
     ghost: ghost
 };
 
+const movementQueue = [];
+
 const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportButtonClicked}) => {
 
     const [otherPlayer, setOtherPlayer] = useState(otherPlayers);
@@ -180,6 +182,60 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [lastMove, setLastMove] = useState(Date.now());
     const [notConnected, setNotConnected] = useState(false);
     const [otherPlayerDirections, setOtherPlayerDirections] = useState({});
+
+    setInterval(() => {
+        if (movementQueue.length > 0) {
+            const response = movementQueue.shift();
+
+            setPlayerPosition({x: response.x, y: response.y});
+            if (response.direction === 'north') {
+                if (currentPlayer.getY() % 2 === 0) {
+                    console.log('zzzzzzzzzzzzzzzzzzz');
+                    currentPlayer.setY(response.y);
+
+                    setPlayerDirection('north');
+                } else {
+                    currentPlayer.setY(response.y);
+
+                    setPlayerDirection('north2');
+                }
+            } else if(response.direction === 'south') {
+                if (currentPlayer.getY() % 2 === 0) {
+                    currentPlayer.setY(response.y);
+                    console.log('kkkkkkkkkkkkkkk');
+
+                    setPlayerDirection('south');
+                } else {
+                    currentPlayer.setY(response.y);
+                    setPlayerDirection('south2');
+                    console.log('mmmmmmmmmmmmmmm');
+
+                }
+            } else if(response.direction === 'east') {
+                if (currentPlayer.getX() % 2 === 0) {
+                    currentPlayer.setX(response.x);
+                    setPlayerDirection('east');
+
+                } else {
+                    currentPlayer.setX(response.x);
+                    setPlayerDirection('east2');
+
+                }
+            } else if(response.direction === 'west') {
+                if (currentPlayer.getX() % 2 === 0) {
+                    console.log('hurrrrrra');
+                    currentPlayer.setX(response.x);
+                    setPlayerDirection('west');
+
+                } else {
+                    currentPlayer.setX(response.x);
+                    setPlayerDirection('west2');
+
+                }
+            }
+            currentPlayer.setDirection(response.direction);
+        }
+    }, 100);
 
 
     useEffect(() => {
@@ -332,7 +388,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         dead: dead
     };
 
- 
+
 
     useEffect(() => {
         const color = currentPlayer.getColor();
@@ -660,61 +716,64 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         client.connect({}, () => {
             client.subscribe(`/topic/movement/north/${currentPlayer.getUserName()}`, (message) => {
                 const response = JSON.parse(message.body);
-
-                currentPlayer.setX(response.x);
-                currentPlayer.setY(response.y);
-                currentPlayer.setDirection(response.direction);
-                setPlayerPosition({x: response.x, y: response.y});
-                if (currentPlayer.getY() % 2 === 0) {
-                    setPlayerDirection('north');
-                } else {
-                    setPlayerDirection('north2');
-                }
+                movementQueue.push(response);
+                // currentPlayer.setX(response.x);
+                // currentPlayer.setY(response.y);
+                // currentPlayer.setDirection(response.direction);
+                // setPlayerPosition({x: response.x, y: response.y});
+                // if (currentPlayer.getY() % 2 === 0) {
+                //     setPlayerDirection('north');
+                // } else {
+                //     setPlayerDirection('north2');
+                // }
             });
 
             client.subscribe(`/topic/movement/south/${currentPlayer.getUserName()}`, (message) => {
                 const response = JSON.parse(message.body);
-
-                currentPlayer.setX(response.x);
-                currentPlayer.setY(response.y);
-                currentPlayer.setDirection(response.direction);
-
-                setPlayerPosition({x: response.x, y: response.y});
-                if (currentPlayer.getY() % 2 === 0) {
-                    setPlayerDirection('south');
-                } else {
-                    setPlayerDirection('south2');
-                }
+                movementQueue.push(response);
+                // currentPlayer.setX(response.x);
+                // currentPlayer.setY(response.y);
+                // currentPlayer.setDirection(response.direction);
+                //
+                // setPlayerPosition({x: response.x, y: response.y});
+                // if (currentPlayer.getY() % 2 === 0) {
+                //     setPlayerDirection('south');
+                // } else {
+                //     setPlayerDirection('south2');
+                // }
             });
 
             client.subscribe(`/topic/movement/west/${currentPlayer.getUserName()}`, (message) => {
                 const response = JSON.parse(message.body);
-                currentPlayer.setX(response.x);
-                currentPlayer.setY(response.y);
-                currentPlayer.setDirection(response.direction);
+                movementQueue.push(response);
 
-                setPlayerPosition({x: response.x, y: response.y});
-                // setPlayerDirection('left');
-                if (currentPlayer.getX() % 2 === 0) {
-                    setPlayerDirection('west');
-                } else {
-                    setPlayerDirection('west2');
-                }
+                // currentPlayer.setX(response.x);
+                // currentPlayer.setY(response.y);
+                // currentPlayer.setDirection(response.direction);
+                //
+                // setPlayerPosition({x: response.x, y: response.y});
+                // // setPlayerDirection('left');
+                // if (currentPlayer.getX() % 2 === 0) {
+                //     setPlayerDirection('west');
+                // } else {
+                //     setPlayerDirection('west2');
+                // }
             });
 
             client.subscribe(`/topic/movement/east/${currentPlayer.getUserName()}`, (message) => {
                 const response = JSON.parse(message.body);
+                movementQueue.push(response);
 
-                currentPlayer.setX(response.x);
-                currentPlayer.setY(response.y);
-                currentPlayer.setDirection(response.direction);
-
-                setPlayerPosition({x: response.x, y: response.y});
-                if (currentPlayer.getX() % 2 === 0) {
-                    setPlayerDirection('east');
-                } else {
-                    setPlayerDirection('east2');
-                }
+                // currentPlayer.setX(response.x);
+                // currentPlayer.setY(response.y);
+                // currentPlayer.setDirection(response.direction);
+                //
+                // setPlayerPosition({x: response.x, y: response.y});
+                // if (currentPlayer.getX() % 2 === 0) {
+                //     setPlayerDirection('east');
+                // } else {
+                //     setPlayerDirection('east2');
+                // }
             });
 
             client.subscribe('/topic/movement/north/otherPlayer/', (message) => {

@@ -25,7 +25,7 @@ import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 import votingboxButton from "../Images/Votingbox/report_player.png";
 import skeldImage from "../Images/Maps/Skeld.png";
-import redImageRight from "../Images/Character_Red_Movement/Red_East_Rigth.png";
+import redImageRight from "../Images/Character_Red_Movement/Red_East_Right.png";
 import blueImageRight from "../Images/Character_Blue_Movement/Blue_East_Right.png";
 import cyanImageRight from "../Images/Character_Cyan_Movement/Cyan_East_Right.png";
 import yellowImageRight from "../Images/Character_Yellow_Movement/Yellow_East_Right.png";
