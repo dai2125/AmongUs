@@ -18,7 +18,7 @@ public class GameInstance {
 
     @Setter
     @Getter
-    private int GROUP_FULL = 1;
+    private int GROUP_FULL = 6;
     @Setter
     @Getter
     private int IMPOSTER_COUNT = 1;
