@@ -53,34 +53,34 @@ public class GroupManager {
     private int range = 5;
 
     public void addDeadPlayerPosition(int x, int y) {
-        System.out.println("Adding dead player position");
-        System.out.println("X: " + x + " Y: " + y);
+//        System.out.println("Adding dead player position");
+//        System.out.println("X: " + x + " Y: " + y);
         deadPlayerPositions.add(new Position(x, y));
     }
 
     public boolean getPositionsNearDeadPlayer(int targetX, int targetY) {
         for (Position pos : deadPlayerPositions) {
             if (Math.abs(pos.getX() - targetX) <= range && Math.abs(pos.getY() - targetY) <= range) {
-                System.out.println("Dead player near Y");
+//                System.out.println("Dead player near Y");
                 return true;
             } else if(Math.abs(pos.getX() + targetX) <= range && Math.abs(pos.getY() + targetY) <= range) {
-                System.out.println("Dead player near Y");
+//                System.out.println("Dead player near Y");
                 return true;
             }
         }
-        System.out.println("Dead player not near Y");
+//        System.out.println("Dead player not near Y");
         return false;
     }
 
     public boolean getPositionsNearY(int targetY) {
         for (Position pos : deadPlayerPositions) {
             if ((Math.abs(pos.getY() - targetY) <= range) || Math.abs(pos.getY() + targetY) <= range) {
-                System.out.println("Dead player near Y");
+//                System.out.println("Dead player near Y");
 
                 return true;
             }
         }
-        System.out.println("Dead player not near Y");
+//        System.out.println("Dead player not near Y");
         return false;
     }
 

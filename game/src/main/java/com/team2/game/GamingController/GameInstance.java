@@ -18,8 +18,7 @@ public class GameInstance {
 
     @Setter
     @Getter
-
-    private int GROUP_FULL = 2;
+    private int GROUP_FULL = 4;
 
     @Setter
     @Getter
@@ -104,7 +103,7 @@ public class GameInstance {
             TaskDTO taskDTO = new TaskDTO();
 
             if (!u.getImpostor()) {
-                taskDTO.setRole("crewmate");
+                taskDTO.setRole("Crewmate");
                 usedIndices.clear();
                 for (int i = 0; i < 3; i++) {
                     do {
@@ -127,11 +126,11 @@ public class GameInstance {
                     System.out.println("distribute task taskcounter: " + taskCounter);
                 }
             } else {
-                taskDTO.setRole("impostor");
+                taskDTO.setRole("Impostor");
                 impostor = true;
-                taskDTO.setTask1("kill");
-                taskDTO.setTask2("sabotage");
-                taskDTO.setTask3("vent");
+                taskDTO.setTask1("Kill");
+                taskDTO.setTask2("Sabotage");
+                taskDTO.setTask3("Vent");
             }
 
             u.setTasks(taskDTO);
@@ -148,7 +147,7 @@ public class GameInstance {
         int taskIndex;
 
         if (!u.getImpostor()) {
-            taskDTO.setRole("crewmate");
+            taskDTO.setRole("Crewmate");
             for (int i = 0; i < 3; i++) {
                 do {
                     taskIndex = (int) (Math.random() * taskList.size());
@@ -170,11 +169,11 @@ public class GameInstance {
                 System.out.println("distribute task taskcounter: " + taskCounter);
             }
         } else {
-            taskDTO.setRole("impostor");
+            taskDTO.setRole("Impostor");
             impostor = true;
-            taskDTO.setTask1("kill");
-            taskDTO.setTask2("sabotage");
-            taskDTO.setTask3("vent");
+            taskDTO.setTask1("Kill");
+            taskDTO.setTask2("Sabotage");
+            taskDTO.setTask3("Vent");
         }
 
         counter++;
