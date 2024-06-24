@@ -33,3 +33,88 @@
 .error-notification, .input-field {
     width: 250px;
 }
+
+.play {
+    font: bold 16px/14px 'VCR OSD Mono', monospace;
+    text-align: center;
+    margin-top: 10px;
+    color: white;
+    cursor: pointer;
+    /*background-color: #007BFF;*/
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 250px;
+    font-size: 35px;
+     /*text-3xl*/
+}
+
+.account {
+    font: bold 16px/14px 'VCR OSD Mono', monospace;
+    text-align: center;
+    margin-top: 10px;
+    color: white;
+    cursor: pointer;
+    /*background-color: #007BFF;*/
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 250px;
+    font-size: 35px;
+}
+
+.appearance {
+    font: bold 16px/14px 'VCR OSD Mono', monospace;
+    text-align: center;
+    margin-top: 10px;
+    color: white;
+    cursor: pointer;
+    /*background-color: #007BFF;*/
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 250px;
+    font-size: 35px;
+}
+
+.public {
+    font: bold 16px/14px 'VCR OSD Mono', monospace;
+    text-align: center;
+    margin-top: 10px;
+    color: white;
+    cursor: pointer;
+    /*background-color: #007BFF;*/
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 250px;
+    font-size: 35px;
+}
+
+.private {
+    font: bold 16px/14px 'VCR OSD Mono', monospace;
+    text-align: center;
+    margin-top: 10px;
+    color: white;
+    cursor: pointer;
+    /*background-color: #007BFF;*/
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 250px;
+    font-size: 35px;
+}
+
+.custom-game {
+    font: bold 16px/14px 'VCR OSD Mono', monospace;
+    text-align: center;
+    margin-top: 10px;
+    color: white;
+    cursor: pointer;
+    /*background-color: #007BFF;*/
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    width: 250px;
+    font-size: 35px;
+}

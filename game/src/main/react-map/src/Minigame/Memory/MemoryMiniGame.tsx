@@ -1,9 +1,22 @@
 import React, { useState, useEffect } from 'react';
 
+import yellow from '../../Images/Characters/Yellow.png';
+import blue from '../../Images/Characters/Blue.png';
+import red from '../../Images/Characters/red.png';
+import green from '../../Images/Characters/Green.png';
+import orange from '../../Images/Characters/Orange.png';
+import purple from '../../Images/Characters/Purple.png';
+import pink from '../../Images/Characters/Pink.png';
+import lime from '../../Images/Characters/Lime.png';
+import brown from '../../Images/Characters/Brown.png';
+import cyan from '../../Images/Characters/Cyan.png';
+
 const cardImages = [
-    '🐶', '🐱', '🐭', '🐹', '🐰',
-    '🦊', '🐻', '🐼', '🐨', '🐯'
+    yellow, blue, red, green, orange,
+    purple, pink, lime, brown, cyan,
 ];
+
+
 
 const shuffleArray = (array: any[]) => {
     return array.sort(() => Math.random() - 0.5);
@@ -57,7 +70,8 @@ const MemoryMiniGame: React.FC<{ onCompletion: (gameType: string) => void }> = (
                         }}
                         onClick={() => handleCardClick(index)}
                     >
-                        {flippedCards.includes(index) || matchedCards[index] ? card : '❓'}
+                        {flippedCards.includes(index) || matchedCards[index] ? <img src={card} alt="Memory Card" style={{width: '100%', height: '100%', objectFit: 'cover'}} /> : '❓'}
+
                     </div>
                 ))}
             </div>

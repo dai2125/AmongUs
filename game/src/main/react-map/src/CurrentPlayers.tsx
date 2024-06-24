@@ -13,7 +13,6 @@ import TaskBar from "./GameComponents/TaskBar";
 import TaskList from "./GameComponents/TaskList";
 import {GridService} from "./MapGrid/GridService";
 import KillCrewMate from "./Screens/KillCrewMate";
-import CrewmateWins from "./Screens/VictoryImpostor";
 import VictoryCrewmate from "./Screens/VictoryCrewmate";
 import VictoryImpostor from "./Screens/VictoryImpostor";
 import DefeatImpostor from "./Screens/DefeatImpostor";
@@ -44,12 +43,11 @@ import lime from "./Images/Character_Movement/Lime.jpg";
 import pink from "./Images/Character_Movement/Pink.jpg";
 import dead from "./Images/Character_Movement/dead.png";
 
-import webSocketService from "./WebSocketService";
 import Ejected from "./Screens/Ejected";
 import OtherPlayerEjected from "./Screens/OtherPlayerEjected";
 import NoOneGotEjected from "./Screens/NoOneGotEjected";
 import Lobby from "./MapGrid/Lobby";
-//import WaitingRoom from "./MapGrid/WaitingRoom";
+import WaitingRoom from "./MapGrid/WaitingRoom";
 
 interface Props {
     userColor: string;
@@ -79,15 +77,13 @@ const colorToImageUrl = {
 const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) => {
 
     const [playerImage, setPlayerImage] = useState(colorToImageUrl[userColor]);
-    // const [mapVisible, setMapVisible] = useState(false);
     const [showVotingbox, setShowVotingbox] = useState(false);
     const [tasks, setTasks] = useState({task1: '', task2: '', task3: ''});
     const [showKillCrewMate, setShowKillCrewMate] = useState(false);
-    const [showKillImpostor, setShowKillImpostor] = useState(false);
     const [crewmateDead, setCrewmateDead] = useState(false);
     const [showRole, setShowRole] = useState(false);
     const [showShhhhh, setShowShhhhh] = useState(false);
-    const [showTaskBar, setShowTaskBar] = useState(true);
+    const [showTaskBar, setShowTaskBar] = useState(false);
     const [chatVisible, setChatVisible] = useState(false);
     const [timerStarted, setTimerStarted] = useState(false);
     const [otherPlayers, setOtherPlayers] = useState<Player[]>([]);
@@ -101,7 +97,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const [victoryCrewmate, setVictoryCrewmate] = useState(false);
     const [defeatCrewmate, setDefeatCrewmate] = useState(false);
     const [showTaskList, setShowTaskList] = useState(false);
-    const [youGotKilled, setYouGotKilled] = useState(false);
     const [showYouKilledACrewmate, setShowYouKilledACrewmate] = useState(false);
     // const [reportButtonPressed, setReportButtonPressed] = useState(false);
     const [showEjected, setShowEjected] = useState(false);
@@ -110,7 +105,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const [showNoOneGotEjected, setNoOneGotEjected] = useState(false);
     const [deadPlayer, setDeadPlayer] = useState('');
     const [showVotingActive, setShowVotingActive] = useState(false);
-    const [showTestGrid, setShowTestGrid] = useState(false);
     const [showWaitingRoom, setShowWaitingRoom] = useState(true);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
@@ -158,7 +152,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const handleShhhhh = () => {
         setShowShhhhh(false);
         setShowThereIsAImpostorAmoungUs(true);
-        setShowTaskList(true);
+        // setShowTaskList(true);
     }
 
     const handleThereIsAImpostorAmongUs = () => {
@@ -174,6 +168,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         setShowRole(false);
         setShowRoleImpostor(false);
         setShowTaskBar(true);
+        setShowTaskList(true);
         // TODO
         setShowMap(true);
     }
@@ -257,13 +252,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
         const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
 
-        if (xPosTask === 11 && yPosTask === 5) {
+        if (xPosTask === 120 && yPosTask === 15) {
             webSocketServiceRef.current.sendTaskResolved("Guess the number", 11, 5);
             clearTask("Guess the number");
         } else if (xPosTask === 58 &&  yPosTask === 7) {
             webSocketServiceRef.current.sendTaskResolved("Download the file", 58, 7);
             clearTask("Download the file");
-        } else if (xPosTask === 72 && (yPosTask === 17 || yPosTask === 18 || yPosTask === 19)) {
+        } else if (xPosTask === 143 && (yPosTask === 37 || yPosTask === 38 || yPosTask === 39)) {
             webSocketServiceRef.current.sendTaskResolved("Enter the number sequence", 72, 17);
             clearTask("Enter the number sequence");
         } else if (xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) {
@@ -275,8 +270,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         }
 
         playerInstance();
-        setShowTaskList(false);
-        setShowTaskList(true);
+        // setShowTaskList(false);
+        // setShowTaskList(true);
     };
 
     const clearTask = (taskName: string) => {
@@ -301,28 +296,28 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                 const currentTime = Date.now();
                 const cooldown = 1 * 60 * 1000; // 1 minutes in milliseconds
 
-                if ((xPosTask === 11 && yPosTask === 5)  && (playerRef.current.getTask1() === "Guess the number" || playerRef.current.getTask2() === "Guess the number" || playerRef.current.getTask3() === "Guess the number")) {
+                if ((xPosTask === 24 && yPosTask === 11 || xPosTask === 23 && yPosTask === 11)  && (playerRef.current.getTask1() === "Guess the number" || playerRef.current.getTask2() === "Guess the number" || playerRef.current.getTask3() === "Guess the number")) {
                     if (!lastCompletedGuessTheNumber || (currentTime - lastCompletedGuessTheNumber > cooldown)) {
                         console.log('openMiniGame: 1');
                         openMiniGame(<GuessTheNumberMiniGame onCompletion={() => handleMiniGameCompletion("Guess the number")} />);
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
-                } else if ((xPosTask === 58 &&  yPosTask === 7) && (playerRef.current.getTask1() === "Download the file" || playerRef.current.getTask2() === "Download the file" || playerRef.current.getTask3() === "Download the file")) {
+                } else if ((yPosTask === 31 &&  (xPosTask === 110 || xPosTask === 109)) && (playerRef.current.getTask1() === "Download the file" || playerRef.current.getTask2() === "Download the file" || playerRef.current.getTask3() === "Download the file")) {
                     if (!lastCompletedDownloadFile || (currentTime - lastCompletedDownloadFile > cooldown)) {
                         console.log('openMiniGame: 2');
                         openMiniGame(<DownloadMiniGame onCompletion={() => handleMiniGameCompletion("Download the file")} />);
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
-                } else if ((xPosTask === 72 && (yPosTask === 17 || yPosTask === 18 || yPosTask === 19))  && (playerRef.current.getTask1() === "Enter the number sequence" || playerRef.current.getTask2() === "Enter the number sequence" || playerRef.current.getTask3() === "Enter the number sequence")) {
+                } else if ((yPosTask === 30 && (xPosTask === 136 || xPosTask === 135))  && (playerRef.current.getTask1() === "Enter the number sequence" || playerRef.current.getTask2() === "Enter the number sequence" || playerRef.current.getTask3() === "Enter the number sequence")) {
                     if (!lastCompletedEnterNumberSequence || (currentTime - lastCompletedEnterNumberSequence > cooldown)) {
                         console.log('openMiniGame: 3');
                         openMiniGame(<ClickInOrderMiniGame onCompletion={() => handleMiniGameCompletion("Enter the number sequence")} />);
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
-                } else if ((xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) && (playerRef.current.getTask1() === "Answer the question" || playerRef.current.getTask2() === "Answer the question" || playerRef.current.getTask3() === "Answer the question")) {
+                } else if ((yPosTask === 69 && (xPosTask === 102 || xPosTask === 103)) && (playerRef.current.getTask1() === "Answer the question" || playerRef.current.getTask2() === "Answer the question" || playerRef.current.getTask3() === "Answer the question")) {
                     if (!lastCompletedAnswerQuestion || (currentTime - lastCompletedAnswerQuestion > cooldown)) {
                         console.log('openMiniGame: 4');
                         openMiniGame(<NumpadInputCodeMiniGame onCompletion={() => handleMiniGameCompletion("Answer the question")} />);
@@ -330,7 +325,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
-                } else if ((yPosTask === 25 && xPosTask === 9 ) && (playerRef.current.getTask1() === "Memory game" || playerRef.current.getTask2() === "Memory game" || playerRef.current.getTask3() === "Memory game")) {
+                } else if ((yPosTask === 52 && (xPosTask === 20 || xPosTask === 21) && (playerRef.current.getTask1() === "Memory game" || playerRef.current.getTask2() === "Memory game" || playerRef.current.getTask3() === "Memory game"))) {
                     if (!lastCompletedMemoryGame || (currentTime - lastCompletedMemoryGame > cooldown)) {
                         console.log('openMiniGame: 5');
                         openMiniGame(<MemoryMiniGame onCompletion={() => handleMiniGameCompletion("Memory game")} />);
@@ -540,6 +535,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             marginBottom: '10px'
                         }}>
                             {timerStarted ? <Timer onStart={onStart}/> : <div></div>}
+                        </div>
+                        <div>
+                            {showWaitingRoom ? <WaitingRoom/> : <div></div>}
                         </div>
                         <div>
                             {showShhhhh ? <Shhhhh onStart={handleShhhhh}/> : <div></div>}

@@ -32,7 +32,6 @@
     /*margin-right: 2px;*/
     /*margin-left: 2px;*/
     overflow-x: hidden;
-    overflow-y: auto;
     scrollbar-width: none;
     scrollbar-color: rgb(0, 114, 220) white;
 }
@@ -114,6 +113,7 @@
     margin-right: 10px;
     justify-content: flex-end;
     font: bold 16px/14px 'VCR OSD Mono', monospace;
+    width: 500px;
 
 }
 
@@ -146,6 +146,7 @@
     font: bold 16px/14px 'VCR OSD Mono', monospace;
     /*align-items: flex-start;*/
     position: relative;
+    width: 975px;
 
     /*border-radius: 5px;*/
     /*border-style: solid;*/
@@ -155,12 +156,14 @@
 
 .input-field {
     height: 50px;
-    width: 100%;
+    /*width: 100%;*/
     padding: 10px;
     flex-grow: 1;
     margin-right: 10px;
     /*padding-right: 50px;*/
-
+    width: 925px;
+    min-width: 925px;
+    max-width: 925px;
 }
 
 .send-button {

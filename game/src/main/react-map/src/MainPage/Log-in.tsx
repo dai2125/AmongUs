@@ -84,14 +84,14 @@ export default function LogIn({onLogIn, onCreateAccountNav,}: Props){
                                 <input name="name"
                                        value={name}
                                        onChange={e => setName(e.target.value)}
-                                        className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                        className="input-field-name bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                         /><br/>
                                 <label className="text-white">Password:</label><br/>
                                 <input  type="password"
                                         name="password"
                                         value={password}
                                         onChange={e => setPassword(e.target.value)}
-                                        className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                        className="input-field-password bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                         /><br/>
                             </div>
 
@@ -106,7 +106,7 @@ export default function LogIn({onLogIn, onCreateAccountNav,}: Props){
 
                     <div className="row-span-1 flex justify-between px-4">
                         <p className="text-white">Don't have an Account?</p>
-                        <button onClick={onCreateAccountNav} className="underline text-blue-500">Create Account</button>
+                        <button onClick={onCreateAccountNav} className="create-account text-center mt-2 underline font-bold text-lg leading-tight">Create Account</button>
                     </div>
                 </div>
             </div>

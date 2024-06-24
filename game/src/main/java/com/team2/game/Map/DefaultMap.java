@@ -294,25 +294,15 @@ public final class DefaultMap {
 //        map4: 87 43
 
         if (x >= 0 && x <= 60 && y >= 0 && y <= 44) {
-            System.out.println("DefaultMap.java isWall map1: y: " + y + " x: " + x);
-            return map[y][x] == 1;
+            return map[y][x] == 1 || map[y][x] == 2;
         } else if (x > 60 && x <= 148 && y >= 0 && y <= 44) {
-            System.out.println("DefaultMap.java isWall map2: y: " + y + " x: " + x);
-            return map2[y][x - 61] == 1;
+            return map2[y][x - 61] == 1 || map2[y][x - 61] == 2;
         } else if (x >= 0 && x <= 60 && y >= 45 && y <= 87) {
-            System.out.println("DefaultMap.java isWall map3: y: " + y + " x: " + x);
-            return map3[y - 45][x] == 1;
+            return map3[y - 45][x] == 1 || map3[y - 45][x] == 2;
         } else if (x > 60 && x <= 148 && y >= 45 && y <= 87) {
-            System.out.println("DefaultMap.java isWall map4: y: " + y + " x: " + x);
-            return map4[y - 45][x - 61] == 1;
+            return map4[y - 45][x   - 61] == 1 || map4[y - 45][x   - 61] == 2;
 
         }
-//            return fourthHalf[y][x] == 0;
-//        if(map[y][x] == 1) {
-//            return true;
-//        } else if(map[y][x] == 2) {
-//            return true;
-//        }
 
         return false;
 

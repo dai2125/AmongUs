@@ -406,10 +406,10 @@ const clientRef = useRef(null);
                 <div className="col-span-01 text-3xl text-cyan-500 text-center">
                     {loggesInUser.getUsername()}
                 </div>
-                <button onClick={onFriendsButtonClick}
-                        className="col-span-10 w-1/6 h-10 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 mt-1.5">
-            <b className="text-3xl">FRIENDS</b>
-        </button>
+        {/*        <button onClick={onFriendsButtonClick}*/}
+        {/*                className="col-span-10 w-1/6 h-10 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 mt-1.5">*/}
+        {/*    <b className="text-3xl">FRIENDS</b>*/}
+        {/*</button>*/}
         {showSocialBox ?
             <div>
                 {/*<Socialbox></Socialbox>*/}
@@ -431,18 +431,16 @@ const clientRef = useRef(null);
                 className="p-4 grid grid-rows-3 row-span-7 border-double rounded-lg border-2 border-fuchsia-800 w-11/12 h-5/6 justify-self-center align-items-center">
                 <button onClick={onPlayOptionsClick}
                         className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
-                            <b className="text-3xl">PLAY</b>
+                            <b className="play">Play</b>
                         </button>
 
-                        {/* Wiederhole für die anderen Buttons */}
                         <button onClick={onMyAccountButtonClick}
-                            /*<button*/
                                 className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
-                            <b className="text-3xl">ACCOUNT</b>
+                            <b className="account">Account</b>
                         </button>
                         <button onClick={onMyAppearancesButtonClick}
                                 className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
-                            <b className="text-3xl">APPEARANCE</b>
+                            <b className="appearance">Appearance</b>
                         </button>
                     </div>
 
@@ -450,24 +448,26 @@ const clientRef = useRef(null);
                     <div className="bg-transparent border-double rounded-lg border-2 border-teal-400 col-span-2 w-full justify-self-start p-4">
 
                         {showPlayOptions && (
-                            <div className="grid grid-cols-2 h-full ">
-                                <div className=" col-span-1 flex justify-center items-center">
+                            <div className="grid grid-rows-3 h-full ">
+                                <div className="row-span-1 flex justify-center items-center">
                                     <button onClick={handlePlay}
                                         className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
-                                        <b className="text-3xl">Public</b>
+                                        <b className="public">Public</b>
                                     </button>
                                 </div>
                                 <div className="grid grid-rows-2 col-span-1 ">
-                                    <div className="row-span-1 flex justify-center items-center">
+                                    <div className="row-span-2 flex justify-center items-center">
                                         <button onClick={handlePopUp}
                                             className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
-                                            <b className="text-3xl">Private</b>
+                                            <b className="private">Private</b>
                                         </button>
                                     </div>
-                                    <div className="row-span-1 flex justify-center items-center">
+                                </div>
+                                <div className="grid grid-rows-3 col-span-1">
+                                    <div className="row-span-3 flex justify-center items-center">
                                         <button onClick={handleCustomPopUp}
                                             className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
-                                            <b className="text-3xl">Custom</b>
+                                            <b className="custom-game">Custom game</b>
                                         </button>
                                     </div>
                                 </div>

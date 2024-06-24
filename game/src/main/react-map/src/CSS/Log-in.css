@@ -12,3 +12,40 @@
     margin-top: 10px;
     font: bold 16px/14px 'VCR OSD Mono', monospace;
 }
+
+.input-field {
+    font: bold 16px/14px 'VCR OSD Mono', monospace;
+    background-color: white;
+}
+
+.create-account {
+    font: bold 16px/14px 'VCR OSD Mono', monospace;
+    text-align: center;
+    margin-top: -10px;
+    color: white;
+    text-decoration: underline;
+    text-decoration-color: #007BFF;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+.create-account:hover {
+    color: #007BFF;
+    background-color: transparent;
+}
+
+.log-in {
+    font: bold 16px/14px 'VCR OSD Mono', monospace;
+    text-align: center;
+    margin-top: -10px;
+    color: white;
+    text-decoration: underline;
+    text-decoration-color: #007BFF;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+.log-in:hover {
+    color: #007BFF;
+    background-color: transparent;
+}

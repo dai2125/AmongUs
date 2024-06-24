@@ -123,7 +123,7 @@ export default function CreateAccount({onLoginNavClick}: Props){
                     </div>
                     <div className="row-span-1 flex justify-between px-4">
                         <p className="text-white">Already have an account?</p>
-                        <button onClick={onLoginNavClick} className="underline text-blue-500">Log-in</button>
+                        <button onClick={onLoginNavClick} className="log-in text-center mt-2 underline font-bold text-lg leading-tight">Log-in</button>
                     </div>
                 </div>
             </div>
