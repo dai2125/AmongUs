@@ -158,6 +158,17 @@ const colorToImageUrl = {
 
 const movementQueue = [];
 
+{/* TODO Ghost can walk through walls */}
+{/* TODO Voting system testing */}
+{/* TODO Report button always visible, cooldown for 30 seconds */}
+{/* TODO Sabotage */}
+{/* TODO Memory tasks doesnt work always */}
+{/* TODO Update Tasklist */}
+{/* TODO Update Taskbar*/}
+
+
+
+
 const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportButtonClicked}) => {
 
     const [otherPlayer, setOtherPlayer] = useState(otherPlayers);
@@ -168,7 +179,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [gridKey, setGridKey] = useState(0);
     const containerRef = useRef(null);
     const [playerDirection, setPlayerDirection] = useState('');
-    const [showReportButton, setShowReportButton] = useState(false);
+    const [showReportButton, setShowReportButton] = useState(true);
     const [playerPosition, setPlayerPosition] = useState({x: currentPlayer.getX(), y: currentPlayer.getY()});
     const [otherPlayerDirection, setOtherPlayerDirection] = useState({});
     const [otherPlayerPosition, setOtherPlayerPosition] = useState({});
@@ -224,7 +235,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             }
             currentPlayer.setDirection(response.direction);
         }
-    }, 100);
+    }, 50);
 
 
     useEffect(() => {
@@ -808,11 +819,19 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             });
 
             client.subscribe(`/topic/deadPlayerVisible/${currentPlayer.getUserName()}`, () => {
+                // setShowReportButton(true);
+            });
+
+            client.subscribe('/topic/setShowReportButtonTrue/', () => {
                 setShowReportButton(true);
             });
 
-            client.subscribe(`/topic/deadPlayerNotVisible/${currentPlayer.getUserName()}`, () => {
+            client.subscribe('/topic/setShowReportButtonFalse/', () => {
                 setShowReportButton(false);
+            });
+
+            client.subscribe(`/topic/deadPlayerNotVisible/${currentPlayer.getUserName()}`, () => {
+                // setShowReportButton(false);
             });
 
             if (currentPlayer.getRole() === "Impostor") {
@@ -1068,7 +1087,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                             return (
                                 <span key={colIndex} className={`${style.cell} ${blinkClass}`} style={{cellStyle}}>
                                     {/*TODO Comment this line to hide the array*/}
-                                    {/*{cellContent}*/}
+                                    {cellContent}
                                 </span>
                             );
                         })}

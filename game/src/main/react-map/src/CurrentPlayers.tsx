@@ -355,7 +355,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
     const impostorWinsTheGame = () => {
         setShowMap(false);
-        if (playerRef.current.getRole() === "impostor") {
+        if (playerRef.current.getRole() === "Impostor") {
             setVictoryImpostor(true);
         } else {
             setDefeatCrewmate(true);
@@ -368,7 +368,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const crewmateWinsTheGame = () => {
         setShowMap(false);
         setShowVotingbox(false);
-        if (playerRef.current.getRole() === "crewmate") {
+        if (playerRef.current.getRole() === "Crewmate") {
             setVictoryCrewmate(true);
         } else {
             setDefeatImpostor(true);
@@ -431,7 +431,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
     const someoneGotEjected = (ejectedPlayer) => {
         setEjectedPlayer(ejectedPlayer);
-        setShowMap(false);
+        // setShowMap(false);
         setShowOtherPlayerEjected(true);
         setTimeout(() => {
             setShowOtherPlayerEjected(false);
@@ -440,7 +440,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }
 
     const noOneGotEjected = () => {
-        setShowMap(false);
+        // setShowMap(false);
         setNoOneGotEjected(true);
         setTimeout(() => {
             setNoOneGotEjected(false);

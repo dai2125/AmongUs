@@ -115,14 +115,14 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
     }
 
     const handleSkipButtonPress = () => {
-        setVotingActive(false);
+        // setVotingActive(false);
         setHasVoted(true);
         setVoteMessage("You skipped the vote, please wait.");
         onButtonPress(null);
     };
 
     const handleSubmitButtonPress = () => {
-        setVotingActive(false);
+        // setVotingActive(false);
         setHasVoted(true);
         setVoteMessage("You submitted your vote, please wait.");
         onButtonPress(votedFor);
