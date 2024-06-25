@@ -133,7 +133,9 @@ interface MapGridProps {
     currentPlayer: Player;
     otherPlayers: any[];
     reportButtonClicked: () => void;
-    sabotageButtonClicked: () => void;
+    constSabotageActive: () => void;
+    constSabotageNotActive: () => void;
+
 }
 
 const colorToImageUrl = {
@@ -162,15 +164,28 @@ const colorToImageUrl = {
 
 const movementQueue = [];
 
-{/* TODO Ghost can walk through walls */}
-{/* TODO Voting system testing */}
-{/* DONE TODO Report button always visible, cooldown for 30 seconds */}
-{/* TODO Sabotage */}
-{/* TODO Memory tasks doesnt work always */}
-{/* TODO Update Tasklist */}
-{/* TODO Update Taskbar*/}
+{/* TODO Ghost can walk through walls */
+}
+{/* TODO Voting system testing */
+}
+{/* DONE TODO Report button always visible, cooldown for 30 seconds */
+}
+{/* TODO Sabotage */
+}
+{/* TODO Memory tasks doesnt work always */
+}
+{/* TODO Update Tasklist */
+}
+{/* TODO Update Taskbar*/
+}
 
-const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportButtonClicked, sabotageButtonClicked}) => {
+const MapGrid: React.FC<MapGridProps> = ({
+                                             currentPlayer,
+                                             otherPlayers,
+                                             reportButtonClicked,
+                                                constSabotageActive,
+                                                constSabotageNotActive
+                                         }) => {
 
     const [otherPlayer, setOtherPlayer] = useState(otherPlayers);
     const [playerImage, setPlayerImage] = useState(colorToImageUrl[currentPlayer.getColor()]);
@@ -197,6 +212,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [sabotageActive, setSabotageActive] = useState(true);
     // const [ventActive, setVentActive] = useState(true);
     const [alarm, setAlarm] = useState(false);
+    const [sabotageCountdown, setSabotageCountdown] = useState(300);
 
     setInterval(() => {
         if (movementQueue.length > 0) {
@@ -211,7 +227,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     currentPlayer.setY(response.y);
                     setPlayerDirection('north2');
                 }
-            } else if(response.direction === 'south') {
+            } else if (response.direction === 'south') {
                 if (currentPlayer.getY() % 2 === 0) {
                     currentPlayer.setY(response.y);
                     setPlayerDirection('south');
@@ -219,7 +235,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     currentPlayer.setY(response.y);
                     setPlayerDirection('south2');
                 }
-            } else if(response.direction === 'east') {
+            } else if (response.direction === 'east') {
                 if (currentPlayer.getX() % 2 === 0) {
                     currentPlayer.setX(response.x);
                     setPlayerDirection('east');
@@ -228,7 +244,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     currentPlayer.setX(response.x);
                     setPlayerDirection('east2');
                 }
-            } else if(response.direction === 'west') {
+            } else if (response.direction === 'west') {
                 if (currentPlayer.getX() % 2 === 0) {
                     currentPlayer.setX(response.x);
                     setPlayerDirection('west');
@@ -393,7 +409,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     };
 
 
-
     useEffect(() => {
         const color = currentPlayer.getColor();
         const imageSrc = playerMap[color]?.[playerDirection] || redImageSouth;
@@ -459,7 +474,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (player.getDirection() === "north") {
                     newImage = redImageNorth;
                 } else if (player.getDirection() === "east") {
-                   // newImage = redImageEast;
+                    // newImage = redImageEast;
                 } else if (player.getDirection() === "west") {
                     newImage = redImageWest;
                 }
@@ -708,7 +723,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     }
 
     const handleSabotageButtonPress = () => {
-        sabotageButtonClicked();
+        constSabotageActive();
     }
 
     // useEffect(() => {
@@ -840,10 +855,17 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
             client.subscribe('/topic/sabotageActive/', () => {
                 setAlarm(true);
+                setSabotageActive(false);
+                constSabotageActive();
             });
 
             client.subscribe('/topic/sabotageNotActive/', () => {
                 setAlarm(false);
+                constSabotageNotActive();
+            });
+
+            client.subscribe('/topic/sabotageButtonActive/', () => {
+                setSabotageActive(true);
             });
 
             if (currentPlayer.getRole() === "Impostor") {
@@ -1007,7 +1029,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
         const sendKill = () => {
             console.log('kill e pressed: ' + currentPlayer.getRole());
-            if (currentPlayer.getRole() === "Crewmate") {
+            if (currentPlayer.getRole() === "Crewmate" || alarm) {
                 console.log('you cant kill');
                 return;
             }
@@ -1159,7 +1181,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                             return (
                                 <span key={colIndex} className={`${style.cell} ${blinkClass}`} style={{cellStyle}}>
                                     {/*TODO Comment this line to hide the array*/}
-                                    {cellContent}
+                                    {/*{cellContent}*/}
                                 </span>
                             );
                         })}
@@ -1195,8 +1217,8 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                         {sabotageActive ?
                             <div>
                                 <button className="w-10 h-10" onClick={handleSabotageButtonPress}><img alt="sabotageButton"
-                                                                                       className="w-10 h-10 hover:bg-black"
-                                                                                       src={sabotageButton}></img>
+                                                                                                       className="w-10 h-10 hover:bg-black"
+                                                                                                       src={sabotageButton}></img>
                                 </button>
                             </div> : <div></div>
                         }

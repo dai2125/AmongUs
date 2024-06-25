@@ -62,6 +62,9 @@ public class GameController {
         try {
             messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(registerService.
                     disconnectUser(event.getSessionId())));
+            counter--;
+            alarmCounter--;
+
             logger.info("User disconnected: {}", event.getUser());
         } catch (JsonProcessingException e) {
             logger.error("Error processing UserDisconnect JSON: {}", e.getMessage());
@@ -224,44 +227,6 @@ public class GameController {
         }
     }
 
-    /*
-    @MessageMapping("/kill/{userName}")
-    public void processKill(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-
-        System.out.println("KILL: Name" + user.getUserName() + " gameID: " + user.getGameId() + " SessionId : " + user.getSessionId() + " " + user.getImpostor());
-
-        for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
-            System.out.println("AAAA Check the loop: Username : " + u.getUserName( )+ " sessionId :" + u.getSessionId());
-            if(/*!u.getSessionId().equals(user.getSessionId()) !u.getImpostor()) {
-                if (u.getY() == user.getY() + 1 || u.getY() == user.getY() - 1 || u.getY() == user.getY() && u.getX() == user.getX() + 1 || u.getX() == user.getX() - 1 ||  u.getY() == user.getY()) {
-                    System.out.println("Killed name: " + u.getUserName());
-                    String deadPlayerName = u.getUserName();
-                    messagingTemplate.convertAndSend("/topic/kill/" + user.getUserName(), new ObjectMapper().writeValueAsString("kill"));
-                    messagingTemplate.convertAndSend("/topic/dead/" + deadPlayerName, new ObjectMapper().writeValueAsString("dead"));
-                    messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
-                    registerService.crewmateDied(u);
-                    System.out.println("Hello After KILL OF " + deadPlayerName);
-                    break;
-                }
-            }
-        }
-        if(registerService.areAllCrewmatesDead()) {
-
-            try {Thread.sleep(1000);} catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.out.println("Thread was interrupted: " + e.getMessage());
-            }
-            System.out.println("IMPOSTOR WINS");
-            messagingTemplate.convertAndSend("/topic/impostorWins/" + user.getGameId(), new ObjectMapper().writeValueAsString("impostorWins"));
-
-            for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
-                messagingTemplate.convertAndSend("/topic/disconnected/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
-            }
-        }
-    }  */
-
-
-
     @MessageMapping("/yourAGhostNow/{userName}")
     public void processGhost(@Payload User user) throws JsonProcessingException {
         messagingTemplate.convertAndSend("/topic/yourAGhostNow/" + user.getUserName(), new ObjectMapper().writeValueAsString("ghost"));
@@ -398,6 +363,17 @@ public class GameController {
                 System.out.println("SABOTAGE NOT ACTIVE");
                 messagingTemplate.convertAndSend("/topic/sabotageNotActive/", new ObjectMapper().writeValueAsString("sabotageNotActive"));
                 alarmActive = false;
+
+                for(int i = 0; i < 300; i++) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        System.out.println("Thread was interrupted: " + e.getMessage());
+                    }
+
+                }
+                messagingTemplate.convertAndSend("/topic/sabotageButtonActive/", new ObjectMapper().writeValueAsString("sabotageButtonActive"));
             }
         }
 

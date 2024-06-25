@@ -106,6 +106,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const [deadPlayer, setDeadPlayer] = useState('');
     const [showVotingActive, setShowVotingActive] = useState(false);
     const [showWaitingRoom, setShowWaitingRoom] = useState(true);
+    const [sabotageActive, setSabotageActive] = useState(false);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
     const playerRef = useRef<Player>(new Player(userName, '', '', gameId, '', 2, 2, '', '', '', '', true, 'down'));
@@ -196,9 +197,10 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }, []);
 
     const handleKeyPress = (key: string) => {
-        if (key === 'w' && playerRef.current.getRole() === "crewmate") {
+        console.log("CurrentPlayers.tsx: handleKeyPress: " + key + ' ' + playerRef.current.getRole() + ' ' + sabotageActive);
+        if (key === 'w' && playerRef.current.getRole() === "Crewmate" && !sabotageActive) {
             taskAction();
-        } else if (key === 'e' && playerRef.current.getRole() === "impostor") {
+        } else if (key === 'e' && playerRef.current.getRole() === "Impostor") {
             //taskKill(key);
         }
     };
@@ -448,6 +450,14 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         }, 3000);
     }
 
+    const constSabotageActive = () => {
+        setSabotageActive(true);
+    }
+
+    const constSabotageNotActive = () => {
+        setSabotageActive(false);
+    }
+
     return (
         <div>
             <div className="background">
@@ -502,7 +512,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}
-                                                reportButtonClicked={reportButtonClicked}/> : <div></div>}
+                                                reportButtonClicked={reportButtonClicked} constSabotageActive={constSabotageActive} constSabotageNotActive={constSabotageNotActive}/> : <div></div>}
                         </div>
 
                         {showPopup && (
