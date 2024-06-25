@@ -170,7 +170,7 @@ const movementQueue = [];
 {/* DONE TODO Sabotage */}
 {/* TODO Memory tasks doesnt work always */}
 {/* TODO Update Tasklist */}
-{/* TODO Update Taskbar */}
+{/* DONE TODO Update Taskbar */}
 
 const MapGrid: React.FC<MapGridProps> = ({
                                              currentPlayer,
@@ -393,10 +393,14 @@ const MapGrid: React.FC<MapGridProps> = ({
             south2: brownImageSouth2
         },
         ghost: {
-            east: ghostImageEast,
-            west: ghostImageWest,
             north: ghostImageNorth,
-            south: ghostImageSouth
+            north2: ghostImageNorth,
+            south: ghostImageSouth,
+            south2: ghostImageSouth,
+            west: ghostImageWest,
+            west2: ghostImageWest,
+            east: ghostImageEast,
+            east2: ghostImageEast
         },
         dead: dead
     };
@@ -417,9 +421,9 @@ const MapGrid: React.FC<MapGridProps> = ({
         };
     }, [skeldImage]);
 
-    useEffect(() => {
-        setPlayerImage(colorToImageUrl[currentPlayer.getColor()]);
-    }, [currentPlayer.getColor()]);
+    // useEffect(() => {
+    //     setPlayerImage(colorToImageUrl[currentPlayer.getColor()]);
+    // }, [currentPlayer.getColor()]);
 
     // TODO
     // useEffect(() => {
@@ -439,13 +443,15 @@ const MapGrid: React.FC<MapGridProps> = ({
 
     function updatePlayerImage(player) {
         let newImage;
-        if (!player.getMovable()) {
+        if (player.getColor() === 'dead') {
             newImage = colorToImageUrl['dead'];
-            newImage = lime;
-        } else if (player.getColor() === 'dead') {
-            newImage = colorToImageUrl['dead'];
-            console.log('DEADPLAYER: ' + player);
-        } else {
+            // newImage = lime;
+        }
+        // else if (player.getColor() === 'dead') {
+        //     newImage = colorToImageUrl['dead'];
+        //     console.log('DEADPLAYER: ' + player);
+        // }
+        else {
             const direction = otherPlayerDirections[player.getSessionId()];
             const color = player.getColor();
             console.log('RRRRRRR: ' + player.getDirection() + ' ' + player.getColor() + ' ' + player.getSessionId());
@@ -572,7 +578,11 @@ const MapGrid: React.FC<MapGridProps> = ({
                     newImage = purpleImageWest;
                 }
             } else if (player.getColor() === "ghost") {
-                if (player.getDirection() === "east") {
+                if (player.getDirection() === "north") {
+                    newImage = ghostImageNorth;
+                } else if(player.getDirection() === "south") {
+                    newImage = ghostImageSouth;
+                } else if (player.getDirection() === "east") {
                     newImage = ghostImageEast;
                 } else if (player.getDirection() === "west") {
                     newImage = ghostImageWest;
@@ -704,7 +714,7 @@ const MapGrid: React.FC<MapGridProps> = ({
         }
     }, [currentPlayer, skeldImage]);
 
-    const visibilityRadius = 10;
+    const visibilityRadius = 15;
 
     function isCellVisible(playerX, playerY, cellX, cellY) {
         const distance = Math.abs(cellX - playerX) + Math.abs(cellY - playerY);
@@ -756,6 +766,7 @@ const MapGrid: React.FC<MapGridProps> = ({
                                 p.setX(response.x);
                                 p.setY(response.y);
                                 p.setDirection(response.direction);
+                                p.setColor(response.color);
                                 updatePlayerImage(p);
 
                             }
@@ -775,6 +786,7 @@ const MapGrid: React.FC<MapGridProps> = ({
                                 p.setX(response.x);
                                 p.setY(response.y);
                                 p.setDirection(response.direction);
+                                p.setColor(response.color);
                                 updatePlayerImage(p);
 
                             }
@@ -794,6 +806,8 @@ const MapGrid: React.FC<MapGridProps> = ({
                                 p.setX(response.x);
                                 p.setY(response.y);
                                 p.setDirection(response.direction);
+                                p.setColor(response.color);
+
                                 updatePlayerImage(p);
 
                             }
@@ -813,6 +827,7 @@ const MapGrid: React.FC<MapGridProps> = ({
                                 p.setX(response.x);
                                 p.setY(response.y);
                                 p.setDirection(response.direction);
+                                p.setColor(response.color);
                                 updatePlayerImage(p);
 
                             }
@@ -912,6 +927,33 @@ const MapGrid: React.FC<MapGridProps> = ({
 
                 client.subscribe(`/topic/setSabotageTrue/${currentPlayer.getUserName()}`, () => {
                     setSabotageActive(true);
+
+                });
+            }
+
+            if(currentPlayer.getColor() === 'ghost') {
+                console.log('GHOOOOOOST MOVEMENT UNSUBSCRIBE');
+
+                client.unsubscribe(`/topic/movementNorth/${currentPlayer.getUserName()}`);
+                client.unsubscribe(`/topic/movementSouth/${currentPlayer.getUserName()}`);
+                client.unsubscribe(`/topic/movementWest/${currentPlayer.getUserName()}`);
+                client.unsubscribe(`/topic/movementEast/${currentPlayer.getUserName()}`);
+
+                console.log('GHOOOOOOST MOVEMENT SUBSCRIBED');
+
+                client.subscribe(`/topic/ghostMovementNorth/${currentPlayer.getUserName()}`, () => {
+
+                });
+
+                client.subscribe(`/topic/ghostMovementSouth/${currentPlayer.getUserName()}`, () => {
+
+                });
+
+                client.subscribe(`/topic/ghostMovementWest/${currentPlayer.getUserName()}`, () => {
+
+                });
+
+                client.subscribe(`/topic/ghostMovementEast/${currentPlayer.getUserName()}`, () => {
 
                 });
             }
@@ -1035,7 +1077,6 @@ const MapGrid: React.FC<MapGridProps> = ({
         const sendKill = () => {
             console.log('kill e pressed: ' + currentPlayer.getRole());
             if (currentPlayer.getRole() === "Crewmate" || alarm) {
-                console.log('you cant kill');
                 return;
             }
             console.log("Hello from new kill");
@@ -1137,7 +1178,7 @@ const MapGrid: React.FC<MapGridProps> = ({
                             const cellStyle = isVisible ? {
                                 backgroundSize: 'cover', width: '30px', height: '30px'
                             } : {
-                                visibility: 'hidden',
+                                // visibility: 'hidden',
                                 // width: '30px',
                                 // height: '30px'
                             };
@@ -1152,8 +1193,8 @@ const MapGrid: React.FC<MapGridProps> = ({
                                         height: '30px',
 
                                         position: 'absolute',
-                                        left: `${colIndex * 15 - 7.5}px`, // Adjusted for 2x2 cells
-                                        top: `${rowIndex * 15 - 7.5}px`, // Adjusted for 2x2 cells
+                                        left: `${colIndex * 15 - 7.5}px`,
+                                        top: `${rowIndex * 15 - 7.5}px`,
                                         transform: 'translate(-50%, -50%)'
                                     }}>
                                     </span>
@@ -1164,18 +1205,14 @@ const MapGrid: React.FC<MapGridProps> = ({
                                               {{
                                                   backgroundImage: `url(${playerImage})`,
                                                   backgroundSize: 'cover',
-                                                  // width: '30px',
-                                                  // height: '30px',
                                                   width: '30px',
                                                   height: '30px',
                                                   // position: 'absolute',
-
-                                                  // transform: 'translate(0%, 0%)'
                                                   transform: 'translate(-50%, -50%)',
 
                                                   position: 'absolute',
-                                                  left: `${colIndex * 15 - 7.5}px`, // Adjusted for 2x2 cells
-                                                  top: `${rowIndex * 15 - 7.5}px`, // Adjusted for 2x2 cells
+                                                  left: `${colIndex * 15 - 7.5}px`,
+                                                  top: `${rowIndex * 15 - 7.5}px`,
                                               }}>
                                     </span>
                                 );
@@ -1254,7 +1291,7 @@ const MapGrid: React.FC<MapGridProps> = ({
                     </div> :
                     <div>
                     <h2>Keyboard controls</h2>
-                        <p>Task W</p>
+                        <p>Task E</p>
                         <p>End Sabotage R</p>
                         <p>Up Arrow up</p>
                         <p>Down Arrow Down</p>

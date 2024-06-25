@@ -267,7 +267,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         } else if (yPosTask === 69 && (xPosTask === 102 || xPosTask === 103)) {
             webSocketServiceRef.current.sendTaskResolved("Answer the question", 51, 37);
             clearTask("Answer the question");
-        } else if (yPosTask === 52 && (xPosTask === 20 || xPosTask === 21)) {
+        } else if ((yPosTask === 52 && (xPosTask === 20 || xPosTask === 21 || xPosTask === 22)) || yPosTask === 51 && (xPosTask === 20 || xPosTask === 21 || xPosTask === 22)) {
             webSocketServiceRef.current.sendTaskResolved("Memory game", 9, 25);
             clearTask("Memory game");
         }
@@ -289,7 +289,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
 
     const taskAction = () => {
-        console.log("pressed w");
+        console.log("pressed e");
         if (GridService.isTask(playerRef.current.getY(), playerRef.current.getX())) {
             const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
             const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
@@ -328,7 +328,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
-                } else if ((yPosTask === 52 && (xPosTask === 20 || xPosTask === 21) && (playerRef.current.getTask1() === "Memory game" || playerRef.current.getTask2() === "Memory game" || playerRef.current.getTask3() === "Memory game"))) {
+                } else if (((yPosTask === 52 || yPosTask === 53 || yPosTask === 54) && (xPosTask === 20 || xPosTask === 21 || xPosTask === 22)) && (playerRef.current.getTask1() === "Memory game" || playerRef.current.getTask2() === "Memory game" || playerRef.current.getTask3() === "Memory game")) {
                     if (!lastCompletedMemoryGame || (currentTime - lastCompletedMemoryGame > cooldown)) {
                         console.log('openMiniGame: 5');
                         openMiniGame(<MemoryMiniGame onCompletion={() => handleMiniGameCompletion("Memory game")} />);

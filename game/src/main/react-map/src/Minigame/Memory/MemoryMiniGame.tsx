@@ -51,18 +51,21 @@ const MemoryMiniGame: React.FC<{ onCompletion: (gameType: string) => void }> = (
                 setMatchedCards(newMatchedCards);
                 setFlippedCards([]);
 
+                // Überprüfung, ob alle Karten übereinstimmen und das Spiel beendet ist
                 if (newMatchedCards.every(Boolean)) {
                     onCompletion("Answer the question");
                 }
             } else {
                 setIsWaiting(true);
                 setTimeout(() => {
+                    // Setze die flippedCards hier zurück, nachdem die Zeit abgelaufen ist, nicht sofort
                     setFlippedCards([]);
                     setIsWaiting(false);
-                }, 1000);
-                }
+                }, 1000); // Verzögerungszeit in Millisekunden, in dieser Zeit bleiben die Karten sichtbar
+            }
         }
     };
+
 
     return (
         <div style={styles.container}>
