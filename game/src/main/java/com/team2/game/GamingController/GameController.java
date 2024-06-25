@@ -6,6 +6,7 @@ import com.team2.game.DataModel.User;
 //import com.example.messagingstompwebsocket.chat.Message;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.team2.game.Map.DefaultMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.event.EventListener;
@@ -368,6 +369,78 @@ public class GameController {
 
         }
     }
+
+    @MessageMapping("/sabotage/{userName}")
+    public void processSabotage(@Payload User user) throws JsonProcessingException {
+        System.out.println("Sabotage: y: " + user.getY() + " x: " + user.getX());
+
+        alarmCounter = groupManager.getGameInstance(user.getGameId()).getUserList().size();
+        System.out.println("SABOTAGE ALARM COUNTER: " + alarmCounter);
+        System.out.println("SABOTAGE USERLIST SIZE: " + groupManager.getGameInstance(user.getGameId()).getUserList().size() +  " " + groupManager.getGameInstance(user.getGameId()).getUserList());
+        alarmActive = true;
+
+        messagingTemplate.convertAndSend("/topic/sabotageActive/", new ObjectMapper().writeValueAsString("sabotageActive"));
+//        countdownSabotage(user);
+
+
+    }
+
+    private boolean alarmActive = false;
+    private int alarmCounter = 0;
+    @MessageMapping("/safetyButtonPressed/{userName}")
+    public void processSafetyButtonPressed(@Payload User user) throws JsonProcessingException {
+        System.out.println("Safety Button pressed: " + user.getUserName() + " " + user.getY() + " x: " + user.getX());
+
+        if(alarmActive && DefaultMap.isSafe(user.getY(), user.getX())) {
+            alarmCounter--;
+            System.out.println("ALARM COUNTER: " + alarmCounter);
+            if(alarmCounter == 0) {
+                System.out.println("SABOTAGE NOT ACTIVE");
+                messagingTemplate.convertAndSend("/topic/sabotageNotActive/", new ObjectMapper().writeValueAsString("sabotageNotActive"));
+                alarmActive = false;
+            }
+        }
+
+
+    }
+
+
+    private void countdownSabotage(User user) throws JsonProcessingException {
+        System.out.println("Sabotage GROUPLIST: " + registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList());
+
+        for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
+            System.out.println("Sabotage FOR LOOP: " + u.getUserName() + " " + u.getY() + " " + u.getX() + " " + u.getColor());
+        }
+        boolean allSafe = false;
+        for(int i = 60000; i >= 0; i--) {
+            try {
+                Thread.sleep(1000);
+
+
+                for(User u : registerService.getGroupManager().getGameInstance(user.getGameId()).getUserList()) {
+                    if(DefaultMap.isSafe(u.getY(), u.getX())) {
+                        System.out.print("GAMECONTROLLER SAFE: " + u.getUserName() + " is safe ");
+                        allSafe = true;
+                    } else {
+                        allSafe = false;
+                        break;
+                    }
+                }
+                if(allSafe) {
+                    messagingTemplate.convertAndSend("/topic/sabotageNotActive/", new ObjectMapper().writeValueAsString("sabotageNotActive"));
+
+                    break;
+                }
+
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Thread was interrupted: " + e.getMessage());
+            }
+        }
+        messagingTemplate.convertAndSend("/topic/sabotageNotActive/", new ObjectMapper().writeValueAsString("sabotageNotActive"));
+    }
+
 
     public void countdownVent(String userName) throws JsonProcessingException {
         for(int i = 15; i >= 0; i--) {

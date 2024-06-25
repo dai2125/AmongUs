@@ -61,3 +61,14 @@ p {
     margin-top: 10px;
     /*background-color: green;*/
 }
+
+@keyframes blinkTransparentRed {
+    0%, 100% { background-color: rgba(255, 0, 0, 0); }
+    50% { background-color: rgba(255, 0, 0, 0.5); }
+}
+
+.blinkingTransparentRed {
+    animation: blinkTransparentRed 1s infinite;
+}
+
+
