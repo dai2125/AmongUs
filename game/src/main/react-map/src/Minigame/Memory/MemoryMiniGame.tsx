@@ -28,6 +28,8 @@ const MemoryMiniGame: React.FC<{ onCompletion: (gameType: string) => void }> = (
     const [matchedCards, setMatchedCards] = useState<boolean[]>([]);
     const [moves, setMoves] = useState(0);
 
+    const [isWaiting, setIsWaiting] = useState(false);
+
     useEffect(() => {
         const shuffledCards = shuffleArray([...cardImages, ...cardImages]);
         setCards(shuffledCards);
@@ -35,7 +37,7 @@ const MemoryMiniGame: React.FC<{ onCompletion: (gameType: string) => void }> = (
     }, []);
 
     const handleCardClick = (index: number) => {
-        if (flippedCards.length === 2 || matchedCards[index]) return;
+        if (flippedCards.length === 2 || matchedCards[index] || isWaiting) return;
 
         const newFlippedCards = [...flippedCards, index];
         setFlippedCards(newFlippedCards);
@@ -53,8 +55,12 @@ const MemoryMiniGame: React.FC<{ onCompletion: (gameType: string) => void }> = (
                     onCompletion("Answer the question");
                 }
             } else {
-                setTimeout(() => setFlippedCards([]), 1000);
-            }
+                setIsWaiting(true);
+                setTimeout(() => {
+                    setFlippedCards([]);
+                    setIsWaiting(false);
+                }, 1000);
+                }
         }
     };
 

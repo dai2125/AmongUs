@@ -158,7 +158,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
     const handleThereIsAImpostorAmongUs = () => {
         setShowThereIsAImpostorAmoungUs(false);
-        if (playerRef.current.getRole() === "impostor") {
+        if (playerRef.current.getRole() === "Impostor") {
             setShowRoleImpostor(true);
         } else {
             setShowRole(true);
@@ -172,6 +172,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         setShowTaskList(true);
         // TODO
         setShowMap(true);
+        setChatVisible(false);
     }
 
     useEffect(() => {
@@ -198,7 +199,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
     const handleKeyPress = (key: string) => {
         console.log("CurrentPlayers.tsx: handleKeyPress: " + key + ' ' + playerRef.current.getRole() + ' ' + sabotageActive);
-        if (key === 'w' && playerRef.current.getRole() === "Crewmate" && !sabotageActive) {
+        if (key === 'e' && playerRef.current.getRole() === "Crewmate" && !sabotageActive) {
             taskAction();
         } else if (key === 'e' && playerRef.current.getRole() === "Impostor") {
             //taskKill(key);
@@ -254,19 +255,19 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
         const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
 
-        if (xPosTask === 120 && yPosTask === 15) {
+        if (xPosTask === 24 && yPosTask === 11 || xPosTask === 23 && yPosTask === 11) {
             webSocketServiceRef.current.sendTaskResolved("Guess the number", 11, 5);
             clearTask("Guess the number");
-        } else if (xPosTask === 58 &&  yPosTask === 7) {
+        } else if (yPosTask === 31 &&  (xPosTask === 110 || xPosTask === 109)) {
             webSocketServiceRef.current.sendTaskResolved("Download the file", 58, 7);
             clearTask("Download the file");
-        } else if (xPosTask === 143 && (yPosTask === 37 || yPosTask === 38 || yPosTask === 39)) {
+        } else if (yPosTask === 30 && (xPosTask === 136 || xPosTask === 135)) {
             webSocketServiceRef.current.sendTaskResolved("Enter the number sequence", 72, 17);
             clearTask("Enter the number sequence");
-        } else if (xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) {
+        } else if (yPosTask === 69 && (xPosTask === 102 || xPosTask === 103)) {
             webSocketServiceRef.current.sendTaskResolved("Answer the question", 51, 37);
             clearTask("Answer the question");
-        } else if (yPosTask === 25 && xPosTask === 9) {
+        } else if (yPosTask === 52 && (xPosTask === 20 || xPosTask === 21)) {
             webSocketServiceRef.current.sendTaskResolved("Memory game", 9, 25);
             clearTask("Memory game");
         }

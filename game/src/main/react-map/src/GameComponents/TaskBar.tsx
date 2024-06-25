@@ -9,6 +9,20 @@ import threeOfNineTaskBar from "../Images/Taskbar/Three_of_Nine_task_bar.png";
 import eightOfNineTaskBar from "../Images/Taskbar/Eight_of_Nine_task_bar.png";
 import sevenOfNineTaskBar from "../Images/Taskbar/Seven_of_Nine_task_bar.png";
 
+import emptyOfTwelveTaskBar from "../Images/Taskbar/Zero_Of_Twelve_Task_Bar.png";
+import oneOfTwelveTaskBar from "../Images/Taskbar/One_Of_Twelve_Task_Bar.png";
+import twoOfTwelveTaskBar from "../Images/Taskbar/Two_Of_Twelve_Task_Bar.png";
+import threeOfTwelveTaskBar from "../Images/Taskbar/Three_Of_Twelve_Task_Bar.png";
+import fourOfTwelveTaskBar from "../Images/Taskbar/Four_Of_Twelve_Task_Bar.png";
+import fiveOfTwelveTaskBar from "../Images/Taskbar/Five_Of_Twelve_Task_Bar.png";
+import sixOfTwelveTaskBar from "../Images/Taskbar/Six_Of_Twelve_Task_Bar.png";
+import sevenOfTwelveTaskBar from "../Images/Taskbar/Sevent_Of_Twelve_Task_Bar.png";
+import eightOfTwelveTaskBar from "../Images/Taskbar/Eight_Of_Twelve_Task_Bar.png";
+import nineOfTwelveTaskBar from "../Images/Taskbar/Nine_Of_Twelve_Task_Bar.png";
+import tenOfTwelveTaskBar from "../Images/Taskbar/Ten_Of_Twelve_Task_Bar.png";
+import elevenOfTwelveTaskBar from "../Images/Taskbar/Eleven_Of_Twelve_Task_Bar.png";
+import twelveOfTwelveTaskBar from "../Images/Taskbar/Twelve_Of_Twelve_Task_Bar.png";
+
 interface TaskBarProps {
     completedTasksCount: number;
 }
@@ -17,34 +31,43 @@ const TaskBar: React.FC<TaskBarProps> = ({completedTasksCount}) => {
     let imageSrc;
     switch (completedTasksCount) {
         case 0:
-            imageSrc = emptyTaskBar;
+            imageSrc = emptyOfTwelveTaskBar;
             break;
         case 1:
-            imageSrc = oneOfNineTaskBar;
+            imageSrc = oneOfTwelveTaskBar;
             break;
         case 2:
-            imageSrc = twoOfNineTaskBar;
+            imageSrc = twoOfTwelveTaskBar;
             break;
         case 3:
-            imageSrc = threeOfNineTaskBar;
+            imageSrc = threeOfTwelveTaskBar;
             break;
         case 4:
-            imageSrc = fourOfNineTaskBar;
+            imageSrc = fourOfTwelveTaskBar;
             break;
         case 5:
-            imageSrc = fiveOfNineTaskBar;
+            imageSrc = fiveOfTwelveTaskBar;
             break;
         case 6:
-            imageSrc = sixOfNineTaskBar;
+            imageSrc = sixOfTwelveTaskBar;
             break;
         case 7:
-            imageSrc = sevenOfNineTaskBar;
+            imageSrc = sevenOfTwelveTaskBar;
             break;
         case 8:
-            imageSrc = eightOfNineTaskBar;
+            imageSrc = eightOfTwelveTaskBar;
             break;
         case 9:
-            imageSrc = nineOfNineTaskBar;
+            imageSrc = nineOfTwelveTaskBar;
+            break;
+        case 10:
+            imageSrc = tenOfTwelveTaskBar;
+            break;
+        case 11:
+            imageSrc = elevenOfTwelveTaskBar;
+            break;
+        case 12:
+            imageSrc = twelveOfTwelveTaskBar;
             break;
         default:
             imageSrc = nineOfNineTaskBar;

@@ -164,27 +164,20 @@ const colorToImageUrl = {
 
 const movementQueue = [];
 
-{/* TODO Ghost can walk through walls */
-}
-{/* TODO Voting system testing */
-}
-{/* DONE TODO Report button always visible, cooldown for 30 seconds */
-}
-{/* TODO Sabotage */
-}
-{/* TODO Memory tasks doesnt work always */
-}
-{/* TODO Update Tasklist */
-}
-{/* TODO Update Taskbar*/
-}
+{/* TODO Ghost can walk through walls */}
+{/* TODO Voting system testing */}
+{/* DONE TODO Report button always visible, cooldown for 30 seconds */}
+{/* DONE TODO Sabotage */}
+{/* TODO Memory tasks doesnt work always */}
+{/* TODO Update Tasklist */}
+{/* TODO Update Taskbar */}
 
 const MapGrid: React.FC<MapGridProps> = ({
                                              currentPlayer,
                                              otherPlayers,
                                              reportButtonClicked,
-                                                constSabotageActive,
-                                                constSabotageNotActive
+                                             constSabotageActive,
+                                             constSabotageNotActive
                                          }) => {
 
     const [otherPlayer, setOtherPlayer] = useState(otherPlayers);
@@ -938,13 +931,25 @@ const MapGrid: React.FC<MapGridProps> = ({
                 case 'ArrowRight':
                     sendMovementEast();
                     break;
+                case 'w':
+                    sendMovementNorth();
+                    break;
+                case 's':
+                    sendMovementSouth();
+                    break;
+                case 'a':
+                    sendMovementWest();
+                    break;
+                case 'd':
+                    sendMovementEast();
+                    break;
                 case 'q':
                     sendAirSystem();
                     break;
                 case 'e':
                     sendKill();
                     break;
-                case 's':
+                case 'f':
                     sendSabotage();
                     break;
                 case 'r':
@@ -1207,29 +1212,50 @@ const MapGrid: React.FC<MapGridProps> = ({
                 {yourTheImpostor ? <div>
                         <h2 className="h2">Keyboard controls</h2>
                         {killActive ?
-                            <div><p>Kill E</p></div> : <div><p>Cooldown {killCooldown}</p></div>
+                            <div>
+                                <p>Kill E
+                                    <button className="w-10 h-10" onClick={handleSabotageButtonPress}><img
+                                        alt="sabotageButton"
+                                        className="w-10 h-10 hover:bg-black"
+                                        src={killButton}></img>
+                                    </button>
+                                </p>
+                            </div> : <div><p>Cooldown {killCooldown}</p></div>
                         }
                         {ventActive ?
-                            <div><p>Vent Q</p></div> : <div><p>Please wait for vent to be active
+                            <div>
+                                <p>Vent Q
+                                    <button className="w-10 h-10" onClick={handleSabotageButtonPress}><img
+                                        alt="sabotageButton"
+                                        className="w-10 h-10 hover:bg-black"
+                                        src={ventButton}></img>
+                                    </button>
+                                </p>
+                            </div> : <div><p>Please wait for vent to be active
                                 {/*{ventCooldown}*/}
                             </p></div>
                         }
                         {sabotageActive ?
                             <div>
-                                <button className="w-10 h-10" onClick={handleSabotageButtonPress}><img alt="sabotageButton"
+                                <p>Sabotage S
+                                    <button className="w-10 h-10" onClick={handleSabotageButtonPress}><img
+                                        alt="sabotageButton"
                                                                                                        className="w-10 h-10 hover:bg-black"
                                                                                                        src={sabotageButton}></img>
-                                </button>
+                                </button></p>
                             </div> : <div></div>
                         }
                         <p>Up Arrow up</p>
                         <p>Down Arrow Down</p>
                         <p>Left Arrow Left</p>
                         <p>Right Arrow Right</p>
+                        <p>End Sabotage R</p>
+
                     </div> :
                     <div>
-                        <h2>Keyboard controls</h2>
+                    <h2>Keyboard controls</h2>
                         <p>Task W</p>
+                        <p>End Sabotage R</p>
                         <p>Up Arrow up</p>
                         <p>Down Arrow Down</p>
                         <p>Left Arrow Left</p>
