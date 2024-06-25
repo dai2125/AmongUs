@@ -50,18 +50,18 @@ public class MoveController {
             messagingTemplate.convertAndSend("/topic/movement/north/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/north/otherPlayer/", new ObjectMapper().writeValueAsString(user));
 
-            boolean isDeadPlayerVisible = groupManager.getPositionsNearDeadPlayer(user.getX(), user.getY());
-            Boolean lastVisibility = userVisibilityMap.getOrDefault(user.getUserName(), null);
-
-            if (lastVisibility == null || lastVisibility != isDeadPlayerVisible) {
-                userVisibilityMap.put(user.getUserName(), isDeadPlayerVisible);
-
-                if (isDeadPlayerVisible) {
-                    messagingTemplate.convertAndSend("/topic/deadPlayerVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerPositions"));
-                } else {
-                    messagingTemplate.convertAndSend("/topic/deadPlayerNotVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerNotVisible"));
-                }
-            }
+//            boolean isDeadPlayerVisible = groupManager.getPositionsNearDeadPlayer(user.getX(), user.getY());
+//            Boolean lastVisibility = userVisibilityMap.getOrDefault(user.getUserName(), null);
+//
+//            if (lastVisibility == null || lastVisibility != isDeadPlayerVisible) {
+//                userVisibilityMap.put(user.getUserName(), isDeadPlayerVisible);
+//
+//                if (isDeadPlayerVisible) {
+//                    messagingTemplate.convertAndSend("/topic/deadPlayerVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerPositions"));
+//                } else {
+//                    messagingTemplate.convertAndSend("/topic/deadPlayerNotVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerNotVisible"));
+//                }
+//            }
         }
     }
 
@@ -75,18 +75,18 @@ public class MoveController {
             messagingTemplate.convertAndSend("/topic/movement/south/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/south/otherPlayer/", new ObjectMapper().writeValueAsString(user));
 
-            boolean isDeadPlayerVisible = groupManager.getPositionsNearDeadPlayer(user.getX(), user.getY());
-            Boolean lastVisibility = userVisibilityMap.getOrDefault(user.getUserName(), null);
-
-            if (lastVisibility == null || lastVisibility != isDeadPlayerVisible) {
-                userVisibilityMap.put(user.getUserName(), isDeadPlayerVisible);
-
-                if (isDeadPlayerVisible) {
-                    messagingTemplate.convertAndSend("/topic/deadPlayerVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerPositions"));
-                } else {
-                    messagingTemplate.convertAndSend("/topic/deadPlayerNotVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerNotVisible"));
-                }
-            }
+//            boolean isDeadPlayerVisible = groupManager.getPositionsNearDeadPlayer(user.getX(), user.getY());
+//            Boolean lastVisibility = userVisibilityMap.getOrDefault(user.getUserName(), null);
+//
+//            if (lastVisibility == null || lastVisibility != isDeadPlayerVisible) {
+//                userVisibilityMap.put(user.getUserName(), isDeadPlayerVisible);
+//
+//                if (isDeadPlayerVisible) {
+//                    messagingTemplate.convertAndSend("/topic/deadPlayerVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerPositions"));
+//                } else {
+//                    messagingTemplate.convertAndSend("/topic/deadPlayerNotVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerNotVisible"));
+//                }
+//            }
         }
     }
 
@@ -100,18 +100,18 @@ public class MoveController {
             messagingTemplate.convertAndSend("/topic/movement/west/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/west/otherPlayer/", new ObjectMapper().writeValueAsString(user));
 
-            boolean isDeadPlayerVisible = groupManager.getPositionsNearDeadPlayer(user.getX(), user.getY());
-            Boolean lastVisibility = userVisibilityMap.getOrDefault(user.getUserName(), null);
-
-            if (lastVisibility == null || lastVisibility != isDeadPlayerVisible) {
-                userVisibilityMap.put(user.getUserName(), isDeadPlayerVisible);
-
-                if (isDeadPlayerVisible) {
-                    messagingTemplate.convertAndSend("/topic/deadPlayerVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerPositions"));
-                } else {
-                    messagingTemplate.convertAndSend("/topic/deadPlayerNotVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerNotVisible"));
-                }
-            }
+//            boolean isDeadPlayerVisible = groupManager.getPositionsNearDeadPlayer(user.getX(), user.getY());
+//            Boolean lastVisibility = userVisibilityMap.getOrDefault(user.getUserName(), null);
+//
+//            if (lastVisibility == null || lastVisibility != isDeadPlayerVisible) {
+//                userVisibilityMap.put(user.getUserName(), isDeadPlayerVisible);
+//
+//                if (isDeadPlayerVisible) {
+//                    messagingTemplate.convertAndSend("/topic/deadPlayerVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerPositions"));
+//                } else {
+//                    messagingTemplate.convertAndSend("/topic/deadPlayerNotVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerNotVisible"));
+//                }
+//            }
         }
     }
 
@@ -125,18 +125,18 @@ public class MoveController {
             messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/east/otherPlayer/", new ObjectMapper().writeValueAsString(user));
 
-            boolean isDeadPlayerVisible = groupManager.getPositionsNearDeadPlayer(user.getX(), user.getY());
-            Boolean lastVisibility = userVisibilityMap.getOrDefault(user.getUserName(), null);
-
-            if (lastVisibility == null || lastVisibility != isDeadPlayerVisible) {
-                userVisibilityMap.put(user.getUserName(), isDeadPlayerVisible);
-
-                if (isDeadPlayerVisible) {
-                    messagingTemplate.convertAndSend("/topic/deadPlayerVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerPositions"));
-                } else {
-                    messagingTemplate.convertAndSend("/topic/deadPlayerNotVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerNotVisible"));
-                }
+//            boolean isDeadPlayerVisible = groupManager.getPositionsNearDeadPlayer(user.getX(), user.getY());
+//            Boolean lastVisibility = userVisibilityMap.getOrDefault(user.getUserName(), null);
+//
+//            if (lastVisibility == null || lastVisibility != isDeadPlayerVisible) {
+//                userVisibilityMap.put(user.getUserName(), isDeadPlayerVisible);
+//
+//                if (isDeadPlayerVisible) {
+//                    messagingTemplate.convertAndSend("/topic/deadPlayerVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerPositions"));
+//                } else {
+//                    messagingTemplate.convertAndSend("/topic/deadPlayerNotVisible/" + user.getUserName(), new ObjectMapper().writeValueAsString("deadPlayerNotVisible"));
+//                }
             }
         }
-    }
+//    }
 }
