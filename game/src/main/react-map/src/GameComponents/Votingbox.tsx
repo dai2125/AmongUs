@@ -166,46 +166,59 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
                         )}
                     </div>
 
-                    <div className="votingbox-container">
-                        <div className="voting-list">
-                            {players.map((message, index) => (
-                                <div className="voting-list-item" key={index} onClick={() => handleItemClick(index)}>
-                                    <div className="voting-id" style={{color: message.color}}>
-                                        <img src={`../src/images/Chat/chat_left_${message.color}.png`} alt="user"/><br/>
-                                        {message.userId}
-                                        <div>Votes: {votes[index]}</div>
-                                        {activeIndex === index && (
-                                            <div>
-                                                <button className="submitVote" onClick={() => handleSubmitClick(index)}>
-                                                    <img
-                                                        src={submitVote}></img></button>
-                                                <button className="cancelVote" onClick={() => handleCancelClick(index)}>
-                                                    <img
-                                                        src={cancelVote}></img></button>
+                    <div className="grid grid-rows-12">
+                        <div className="row-span-8">
+                            <div className="votingbox-container">
+                                <div className="voting-list">
+                                    {players.map((message, index) => (
+                                        <div className="voting-list-item" key={index}
+                                             onClick={() => handleItemClick(index)}>
+                                            <div className="voting-id" style={{color: message.color}}>
+                                                <img src={`../src/images/Chat/chat_left_${message.color}.png`}
+                                                     alt="user"/><br/>
+                                                {message.userId}
+                                                <div>Votes: {votes[index]}</div>
+                                                {activeIndex === index && (
+                                                    <div>
+                                                        <button className="submitVote"
+                                                                onClick={() => handleSubmitClick(index)}>
+                                                            <img
+                                                                src={submitVote}></img></button>
+                                                        <button className="cancelVote"
+                                                                onClick={() => handleCancelClick(index)}>
+                                                            <img
+                                                                src={cancelVote}></img></button>
+                                                    </div>
+                                                )}
                                             </div>
-                                        )}
-                                    </div>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            </div>
                         </div>
-                    </div>
-                    <div className="skip-vote-button">
-                        <button onClick={handleSkipButtonPress}><img src={skipVote}></img></button>
-                    </div>
-                    <div className="submit-vote-button">
-                        <button onClick={handleSubmitButtonPress}>Submit Button</button>
-                    </div>
-                    <div className="voting-countdown">
-                        <h1>Time left: {countDown}</h1>
+                        <div className="row-span-2 grid grid-cols-3 gap-4 h-1/6 justify-self-center">
+                            <div className="skip-vote-button col-span-1">
+                                <button onClick={handleSkipButtonPress}><img src={skipVote}></img></button>
+                            </div>
+                            <div className="voting-countdown col-span-1 text-center text-slate-50 bg-gray-600 font-bold h-6 w-32 rounded-lg border-solid">
+                                <h1>Time left: {countDown}</h1>
+                            </div>
+                            <div
+                                className=" col-span-1 bg-green-500 text-center hover:bg-green-600 text-slate-50 w-32 font-bold h-6 rounded-lg ml-5 border-solid">
+                                <button onClick={handleSubmitButtonPress}>Submit</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             ) : (
-                <div>
-                    <h1>{voteMessage}</h1>
+                <div className="votingbox-header">
+                    <div></div>
+                    <h1 className="votingbox-title">{voteMessage}</h1>
                 </div>
             )}
         </div>
     )
+
 
 }
 

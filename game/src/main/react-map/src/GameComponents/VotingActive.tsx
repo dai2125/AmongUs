@@ -5,11 +5,12 @@ import '../CSS/Votingbox.css';
 
 function VotingActive ()  {
 
+
     return (
         <div className="votingbox" style={{backgroundImage: `url(${votingboxBackground}`}}>
             <div className="votingbox-header">
                 <div></div>
-                <h1>You´re dead please wait till the voting is over</h1>
+                <h1 className="votingbox-title">You´re dead please wait till the voting is over</h1>
             </div>
         </div>
     )
