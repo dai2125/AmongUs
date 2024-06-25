@@ -125,6 +125,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }, [userColor]);
 
 
+
     // const toggleChat = () => {
     //     if(!chatVisible) {
     //         setChatVisible(true);
@@ -197,6 +198,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
     const handleKeyPress = (key: string) => {
         if (key === 'w' && playerRef.current.getRole() === "crewmate") {
+            console.log("Anas Pressed W")
             taskAction();
         } else if (key === 'e' && playerRef.current.getRole() === "impostor") {
             //taskKill(key);
@@ -252,21 +254,25 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
         const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
 
-        if (xPosTask === 120 && yPosTask === 15) {
+        console.log(gameType)
+        if (gameType === "Guess the number") {
+            console.log("Before sending to Server Before ClearTask");
+            clearTask(gameType);
+            console.log("Before sending to Server");
             webSocketServiceRef.current.sendTaskResolved("Guess the number", 11, 5);
-            clearTask("Guess the number");
-        } else if (xPosTask === 58 &&  yPosTask === 7) {
+            console.log("After Sending to server");
+        } else if (gameType === "Download the file") {
             webSocketServiceRef.current.sendTaskResolved("Download the file", 58, 7);
             clearTask("Download the file");
-        } else if (xPosTask === 143 && (yPosTask === 37 || yPosTask === 38 || yPosTask === 39)) {
+        } else if (gameType === "Enter the number sequence") {
             webSocketServiceRef.current.sendTaskResolved("Enter the number sequence", 72, 17);
-            clearTask("Enter the number sequence");
-        } else if (xPosTask === 51 && (yPosTask === 37 || yPosTask === 38)) {
+            clearTask(gameType);
+        } else if (gameType === "Answer the question") {
             webSocketServiceRef.current.sendTaskResolved("Answer the question", 51, 37);
-            clearTask("Answer the question");
-        } else if (yPosTask === 25 && xPosTask === 9) {
+            clearTask(gameType);
+        } else if (gameType === "Memory game") {
             webSocketServiceRef.current.sendTaskResolved("Memory game", 9, 25);
-            clearTask("Memory game");
+            clearTask(gameType);
         }
 
         playerInstance();
@@ -275,13 +281,20 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     };
 
     const clearTask = (taskName: string) => {
+        console.log("Clearing ");
+        console.log(taskName);
+        console.log("Current tasks:", playerRef.current.getTask1(), playerRef.current.getTask2(), playerRef.current.getTask3());
         if (playerRef.current.getTask1() === taskName) {
+            console.log("condition met ");
             playerRef.current.setTask1("");
         } else if (playerRef.current.getTask2() === taskName) {
+            console.log("condition met ");
             playerRef.current.setTask2("");
         } else if (playerRef.current.getTask3() === taskName) {
+            console.log("condition met ");
             playerRef.current.setTask3("");
         }
+        playerInstance();
     };
 
 
@@ -502,7 +515,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}
-                                                reportButtonClicked={reportButtonClicked}/> : <div></div>}
+                                                reportButtonClicked={reportButtonClicked} onKeyClick={taskAction}/> : <div></div>}
                         </div>
 
                         {showPopup && (

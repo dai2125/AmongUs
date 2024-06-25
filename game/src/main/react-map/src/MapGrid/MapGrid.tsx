@@ -108,7 +108,7 @@ import brownImageEast2 from '../Images/Character_Brown_Movement/Brown_East_Left.
 import brownImageWest from '../Images/Character_Brown_Movement/Brown_West_Left.png';
 import brownImageWest2 from '../Images/Character_Brown_Movement/Brown_West_Right.png';
 import brownImageNorth from '../Images/Character_Brown_Movement/Brown_North_Left.png';
-import brownImageNorth2 from '../Images/Character_Brown_Movement/Brown_North_Right.png';
+import brownImageNorth2 from '../Images/Character_Brown_Movement/Brown_North_Left.png';
 import brownImageSouth from '../Images/Character_Brown_Movement/Brown_South_Left.png';
 import brownImageSouth2 from '../Images/Character_Brown_Movement/Brown_South_Right.png';
 
@@ -130,6 +130,7 @@ interface MapGridProps {
     currentPlayer: Player;
     otherPlayers: any[];
     reportButtonClicked: () => void;
+    onKeyClick:() => void ;
 }
 
 const colorToImageUrl = {
@@ -158,7 +159,7 @@ const colorToImageUrl = {
 
 const movementQueue = [];
 
-const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportButtonClicked}) => {
+const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportButtonClicked,  onKeyClick}) => {
 
     const [otherPlayer, setOtherPlayer] = useState(otherPlayers);
     const [playerImage, setPlayerImage] = useState(colorToImageUrl[currentPlayer.getColor()]);
@@ -877,6 +878,10 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     break;
                 case 'e':
                     sendKill();
+                    break;
+                case 'w':
+                    console.log("W input")
+                    onKeyClick();
                     break;
                 default:
                     break;
