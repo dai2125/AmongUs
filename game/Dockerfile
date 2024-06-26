@@ -5,7 +5,7 @@ FROM gradle:7.4.2-jdk17 AS build
 WORKDIR /app
 
 # Copy the Gradle wrapper and other build files
-COPY . .
+COPY .. .
 
 RUN chmod +x ./gradlew
 
