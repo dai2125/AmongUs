@@ -23,10 +23,10 @@ FROM openjdk:17-jdk-alpine
 WORKDIR /app
 
 # Copy the Spring Boot jar file from the build stage
-COPY --from=build /app/game/build/libs/*.jar amongus.jar
+COPY --from=build /app/game/build/libs/*.jar AmongUs.jar
 
 # Expose the port the application runs on
 EXPOSE 8080
 
 # Run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "amongus.jar"]
+ENTRYPOINT ["java", "-jar", "AmongUs.jar"]
