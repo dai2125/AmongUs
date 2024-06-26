@@ -166,8 +166,8 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
                         )}
                     </div>
 
-                    <div className="grid grid-rows-12">
-                        <div className="row-span-8">
+                    <div className="grid grid-rows-10">
+                        <div className="row-span-6">
                             <div className="votingbox-container">
                                 <div className="voting-list">
                                     {players.map((message, index) => (
@@ -196,29 +196,30 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
                                 </div>
                             </div>
                         </div>
-                        <div className="row-span-2 grid grid-cols-3 gap-4 h-1/6 justify-self-center">
+
+                        <div className="row-span-4 grid grid-cols-3 gap-4 h-1/6 justify-self-center">
                             <div className="skip-vote-button col-span-1">
                                 <button onClick={handleSkipButtonPress}><img src={skipVote}></img></button>
                             </div>
-                            <div className="voting-countdown col-span-1 text-center text-slate-50 bg-gray-600 font-bold h-6 w-32 rounded-lg border-solid">
-                                <h1>Time left: {countDown}</h1>
+                            <div
+                                className="submit-vote-button col-span-1 bg-green-500 text-center hover:bg-green-600 text-slate-50 w-32 font-bold h-6 rounded-lg ml-15 border-solid mt-12">
+                                <button onClick={handleSubmitButtonPress}>Submit Button</button>
                             </div>
                             <div
-                                className=" col-span-1 bg-green-500 text-center hover:bg-green-600 text-slate-50 w-32 font-bold h-6 rounded-lg ml-5 border-solid">
-                                <button onClick={handleSubmitButtonPress}>Submit</button>
+                                className="voting-countdown col-span-1 text-center text-slate-50 bg-gray-600 font-bold h-6 w-32 rounded-lg border-solid mt-12">
+                                <h1>Time left: {countDown}</h1>
                             </div>
                         </div>
                     </div>
+
                 </div>
             ) : (
-                <div className="votingbox-header">
-                    <div></div>
-                    <h1 className="votingbox-title">{voteMessage}</h1>
+                <div>
+                    <h1>{voteMessage}</h1>
                 </div>
             )}
         </div>
     )
-
 
 }
 
