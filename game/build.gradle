@@ -34,4 +34,10 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
+springBoot {
+	mainClass.set('com.team2.game.GameApplication')
+}
 
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
