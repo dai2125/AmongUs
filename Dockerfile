@@ -1,32 +1,30 @@
-# Use the latest OpenJDK 17 image for the build stage
-FROM openjdk:17-jdk AS build
+# Use an official Gradle image to build the application
+FROM gradle:7.4.2-jdk11 AS build
 
-# Set the working directory for the build stage
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the project files to the container
-COPY . .
+# Copy the Gradle wrapper and other build files
+COPY gradle gradle
+COPY gradlew .
+COPY build.gradle .
+COPY settings.gradle .
+COPY src src
 
-# Ensure the gradlew script has execute permissions
-RUN chmod +x ./gradlew
+# Build the application
+RUN ./gradlew build
 
-# Use Gradle to build the project and create the JAR file
-RUN ./gradlew build -x test
+# Use an official OpenJDK runtime as a parent image
+FROM openjdk:11-jre-slim
 
-# Print the directory structure for debugging
-RUN ls -l /app/game/build/libs
-
-# Use the OpenJDK 17 runtime for the final image
-FROM openjdk:17-jdk-slim
-
-# Set the working directory for the final image
+# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the JAR file from the build stage to the runtime stage
-COPY --from=build /app/game/build/libs/game-0.0.1-SNAPSHOT.jar app.jar
+# Copy the Spring Boot jar file from the build stage
+COPY --from=build /app/build/libs/*.jar amongus.jar
 
-# Expose the port the application will run on
+# Expose the port the application runs on
 EXPOSE 8080
 
-# Define the entry point for the container
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the Spring Boot application
+ENTRYPOINT ["java", "-jar", "amongus.jar"]
