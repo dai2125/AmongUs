@@ -7,10 +7,8 @@ WORKDIR /app
 # Copy the Gradle wrapper and other build files
 COPY . .
 
-RUN chmod +x ./gradlew
-
 # Build the application
-RUN ./gradlew build
+RUN ./gradlew clean build
 
 # Use an official OpenJDK runtime as a parent image
 FROM openjdk:17-jdk-alpine
@@ -19,7 +17,7 @@ FROM openjdk:17-jdk-alpine
 WORKDIR /app
 
 # Copy the Spring Boot jar file from the build stage
-COPY --from=build /app/build/libs/*.jar AmongUs.jar
+COPY --from=build /app/build/libs/AmongUs.jar AmongUs.jar
 
 # Expose the port the application runs on
 EXPOSE 8080

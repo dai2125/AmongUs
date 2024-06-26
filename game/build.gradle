@@ -36,6 +36,14 @@ test {
 	useJUnitPlatform()
 }
 
-application {
+springBoot {
 	mainClassName = 'com.team2.game.GameApplication'
+}
+
+bootJar {
+	manifest {
+		attributes(
+				'Main-Class': 'com.team2.game.GameApplication'
+		)
+	}
 }
