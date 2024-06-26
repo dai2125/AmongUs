@@ -7,14 +7,10 @@ WORKDIR /app
 # Copy the Gradle wrapper and other build files
 COPY . .
 
-# Set the working directory to the game subproject
-WORKDIR /app/game
-
-# Give execution permissions to gradlew
 RUN chmod +x ./gradlew
 
 # Build the application
-RUN ./gradlew bootJar
+RUN ./gradlew build
 
 # Use an official OpenJDK runtime as a parent image
 FROM openjdk:17-jdk-alpine
@@ -23,7 +19,7 @@ FROM openjdk:17-jdk-alpine
 WORKDIR /app
 
 # Copy the Spring Boot jar file from the build stage
-COPY --from=build /app/game/build/libs/*.jar AmongUs.jar
+COPY --from=build /app/build/libs/*.jar AmongUs.jar
 
 # Expose the port the application runs on
 EXPOSE 8080
