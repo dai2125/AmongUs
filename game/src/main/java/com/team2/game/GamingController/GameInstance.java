@@ -18,7 +18,7 @@ public class GameInstance {
 
     @Setter
     @Getter
-    private int GROUP_FULL = 4;
+    private int GROUP_FULL = 2;
 
     @Setter
     @Getter
@@ -55,6 +55,18 @@ public class GameInstance {
 
     public void removeFromTheGroup(User user) {
         userList.remove(user);
+        int tasksToRemove = 0;
+
+        if (!user.getTasks().getTask1().isEmpty()){
+            tasksToRemove++;
+        }
+        if (!user.getTasks().getTask2().isEmpty()){
+            tasksToRemove++;
+        }
+        if (!user.getTasks().getTask3().isEmpty()){
+            tasksToRemove++;
+        }
+        System.out.println("TASKS TO REMOVE : " + tasksToRemove);
     }
 
     public List<User> getUserList() {
@@ -218,10 +230,7 @@ public class GameInstance {
     }
 
     public boolean taskResolved() {
-        System.out.println("taskResolvedCounter before: " + taskResolvedCounter);
         taskResolvedCounter--;
-        System.out.println("taskResolvedCounter after: " + taskResolvedCounter);
-
         if (taskResolvedCounter > 0) {
             return false;
         } else {

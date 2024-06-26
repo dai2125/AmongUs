@@ -177,10 +177,13 @@ public class RegisterService {
         return false;
     }
     public UserRegisterDTO disconnectUser(String sessionId) throws UserNotFoundException {
+
+        GameInstance instanceToDisconnect = groupManager.getGameInstance(gameID);
+
         for (User u : userList) {
             if (u.getSessionId().equals(sessionId)) {
                 UserRegisterDTO userRegisterDTO = new UserRegisterDTO(u.getUserName(), u.getAction(), u.getSessionId(),u.getGameId(), u.getColor(), u.getX(), u.getY());
-                userList.remove(u);
+                //userList.remove(u);
                 gameInstance.removeFromTheGroup(u);
                 return userRegisterDTO;
             }
