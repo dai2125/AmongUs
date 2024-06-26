@@ -7,11 +7,13 @@ WORKDIR /app
 # Copy the Gradle wrapper and other build files
 COPY . .
 
+RUN chmod +x ./gradlew
+
 # Build the application
 RUN ./gradlew build
 
 # Use an official OpenJDK runtime as a parent image
-FROM openjdk:11-jre-slim
+FROM openjdk:17-jdk-alpine
 
 # Set the working directory inside the container
 WORKDIR /app
