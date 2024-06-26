@@ -93,17 +93,25 @@ public class GameController {
 
     @MessageMapping("/taskResolved/")
     public void taskResolved(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        System.out.println("Hello from taskResolved " + user.getGameId());
-        boolean crewmatesWon = registerService.taskResolved(user.getGameId());
+        System.out.println("Hello from taskResolved Removing TASK: " + user.getColor());
+        // user.getColor contains the name of the task
+        boolean crewmatesWon = registerService.taskResolved(user.getGameId(), user.getSessionId(), user.getColor());
 
-        registerService.removeTask("task");
+        //registerService.removeTask("task", user.getSessionId());
 
-        if(registerService.allTasksAreSolved()) {
+        /*if(registerService.allTasksAreSolved()) {
             System.out.println("CREWMATES WIN");
             messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
         } else if (crewmatesWon) {
             messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
             messagingTemplate.convertAndSend("/topic/crewmateWins/" + user.getGameId(), crewmatesWon);
+        } else {
+            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
+            System.out.println("Hello after sending task resolved");
+        }*/
+       if (crewmatesWon) {
+            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
+            messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
         } else {
             messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
             System.out.println("Hello after sending task resolved");
@@ -169,7 +177,7 @@ public class GameController {
             messagingTemplate.convertAndSend("/topic/task/" + u.getUserName(), new ObjectMapper().writeValueAsString("task"));
         }
 
-        registerService.removeTask("task");
+        //registerService.removeTask("task");
 
         if(registerService.allTasksAreSolved()) {
             System.out.println("CREWMATES WIN");

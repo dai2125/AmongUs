@@ -178,9 +178,10 @@ public class RegisterService {
     }
     public UserRegisterDTO disconnectUser(String sessionId) throws UserNotFoundException {
 
-        GameInstance instanceToDisconnect = groupManager.getGameInstance(gameID);
+        String gameId = groupManager.getGameBySessionId(sessionId);
+        GameInstance instanceToDisconnect = groupManager.getGameInstance(gameId);
 
-        for (User u : userList) {
+        for (User u : instanceToDisconnect.getUserList()) {
             if (u.getSessionId().equals(sessionId)) {
                 UserRegisterDTO userRegisterDTO = new UserRegisterDTO(u.getUserName(), u.getAction(), u.getSessionId(),u.getGameId(), u.getColor(), u.getX(), u.getY());
                 //userList.remove(u);
@@ -222,8 +223,8 @@ public class RegisterService {
         return false;
     }
 
-    public void removeTask(String task) {
-        gameInstance.removeTask(task);
+    public void removeTask(String task, String sessionId) {
+        gameInstance.removeTask(task, sessionId);
     }
 
     public void crewmateDied(User user) {
@@ -245,8 +246,8 @@ public class RegisterService {
         }
     }
 
-    public boolean taskResolved(String gameID){
-        return groupManager.getGameInstance(gameID).taskResolved();
+    public boolean taskResolved(String gameID, String sessionId, String task){
+        return groupManager.getGameInstance(gameID).taskResolved(sessionId, task);
     }
 
 }

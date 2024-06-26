@@ -35,7 +35,7 @@ public class GameInstance {
     private List<String> taskListCopy = new ArrayList<>(taskList);
     public HashMap<String, Integer> votingList = new HashMap<>();
 
-    private int taskResolvedCounter = 9;
+    private int taskResolvedCounter = 1;
 
     TaskDTO taskDTO = new TaskDTO();
 
@@ -66,7 +66,9 @@ public class GameInstance {
         if (!user.getTasks().getTask3().isEmpty()){
             tasksToRemove++;
         }
-        System.out.println("TASKS TO REMOVE : " + tasksToRemove);
+        System.out.println("TASKS TO complete were : " + taskCounter);
+        taskCounter -= tasksToRemove;
+        System.out.println("TASKS TO complete now are : " + taskCounter);
     }
 
     public List<User> getUserList() {
@@ -213,24 +215,51 @@ public class GameInstance {
         if (taskCounter == 0) {
             return true;
         }
-//        if(taskListCopy.isEmpty()) {
-//            return true;
-//        }
         return false;
     }
 
-    public void removeTask(String task) {
+    public void removeTask(String task, String sessionId) {
         System.out.println("RemoveTask: " + taskCounter);
         taskCounter--;
 //        taskListCopy.remove(task);
+    }
+
+    private int getUserIndex(String sessionId) {
+        int index = 0;
+        for (User user : userList) {
+            if (user.getSessionId().equals(sessionId)) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
     }
 
     public void removePlayerFromList(User user) {
         userList.remove(user);
     }
 
-    public boolean taskResolved() {
+    public boolean taskResolved(String sessionId, String task) {
+
+        for (int i = 0; i < 3; i++) {
+            if ( userList.get(getUserIndex(sessionId)).getTasks().getTask1().equals(task)){
+                userList.get(getUserIndex(sessionId)).getTasks().setTask1("");
+                System.out.println("Condition Met for task 1");
+            }
+            if ( userList.get(getUserIndex(sessionId)).getTasks().getTask2().equals(task)){
+                userList.get(getUserIndex(sessionId)).getTasks().setTask2("");
+                System.out.println("Condition Met for task 2");
+            }
+            if ( userList.get(getUserIndex(sessionId)).getTasks().getTask3().equals(task)){
+                userList.get(getUserIndex(sessionId)).getTasks().setTask3("");
+                System.out.println("Condition Met for task 3");
+            }
+            System.out.println("Task to remove is: " + task);
+
+        }
+
         taskResolvedCounter--;
+        System.out.println("Remaining Tasks: " + taskResolvedCounter);
         if (taskResolvedCounter > 0) {
             return false;
         } else {

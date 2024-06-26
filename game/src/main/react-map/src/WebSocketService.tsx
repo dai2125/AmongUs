@@ -436,7 +436,7 @@ class WebSocketService {
                 action: player.getAction(),
                 sessionId: player.getSessionId(),
                 gameId: player.getGameId(),
-                color: player.getColor(),
+                color: task,
                 x: player.getX(),
                 y: player.getY(),
             });
