@@ -28,6 +28,13 @@
     font: bold 30px/14px 'VCR OSD Mono', monospace;
 }
 
+.votingbox-title {
+    margin-top: 10px;  /* Adjust as needed */
+    margin-bottom: 10px;  /* Adjust as needed */
+    line-height: 1.5;
+    /* This will increase the space between lines of text */
+}
+
 .votingbox-container {
     display: flex;
     width: 100%;
