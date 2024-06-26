@@ -34,3 +34,6 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
+bootJar {
+	mainClassName = 'com.team2.game.GameApplication' // Replace with your actual main class
+}
