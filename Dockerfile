@@ -7,6 +7,9 @@ WORKDIR /app
 # Copy the Gradle wrapper and other build files
 COPY . .
 
+RUN chmod +x ./gradlew
+
+
 # Build the application
 RUN ./gradlew clean build
 
