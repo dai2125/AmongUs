@@ -1,29 +1,32 @@
-# Use the official Gradle image to build the application
-FROM gradle:7.3.3-jdk11 AS build
+# Use the latest OpenJDK 17 image for the build stage
+FROM openjdk:17-jdk AS build
 
-# Set the working directory inside the container
-WORKDIR /home/gradle/project
-
-# Copy the Gradle wrapper and build files
-COPY gradlew gradlew
-COPY gradlew.bat gradlew.bat
-COPY build.gradle build.gradle
-COPY settings.gradle settings.gradle
-
-# Copy the rest of the source code
-COPY . .
-
-# Build the application
-RUN ./gradlew build
-
-# Use the official OpenJDK image to run the application
-FROM openjdk:11-jre-slim
-
-# Set the working directory inside the container
+# Set the working directory for the build stage
 WORKDIR /app
 
-# Copy the jar file from the build stage
-COPY --from=build /home/gradle/project/build/libs/*.jar app.jar
+# Copy the project files to the container
+COPY . .
 
-# Run the application
+# Ensure the gradlew script has execute permissions
+RUN chmod +x ./gradlew
+
+# Use Gradle to build the project and create the JAR file
+RUN ./gradlew build -x test
+
+# Print the directory structure for debugging
+RUN ls -l /app/game/build/libs
+
+# Use the OpenJDK 17 runtime for the final image
+FROM openjdk:17-jdk-slim
+
+# Set the working directory for the final image
+WORKDIR /app
+
+# Copy the JAR file from the build stage to the runtime stage
+COPY --from=build /app/game/build/libs/game-0.0.1-SNAPSHOT.jar app.jar
+
+# Expose the port the application will run on
+EXPOSE 8080
+
+# Define the entry point for the container
 ENTRYPOINT ["java", "-jar", "app.jar"]
