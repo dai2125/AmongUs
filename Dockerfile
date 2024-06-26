@@ -10,8 +10,8 @@ COPY gradlew.bat gradlew.bat
 COPY build.gradle build.gradle
 COPY settings.gradle settings.gradle
 
-# Copy the source code
-COPY src src
+# Copy the rest of the source code
+COPY . .
 
 # Build the application
 RUN ./gradlew build
