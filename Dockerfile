@@ -10,7 +10,8 @@ COPY . .
 RUN chmod +x ./gradlew
 
 # Build the application
-RUN ./gradlew build
+# RUN ./gradlew build
+RUN ./gradlew bootJar
 
 # Use an official OpenJDK runtime as a parent image
 FROM openjdk:17-jdk-alpine
