@@ -5,11 +5,7 @@ FROM gradle:7.4.2-jdk11 AS build
 WORKDIR /app
 
 # Copy the Gradle wrapper and other build files
-COPY gradle gradle
-COPY gradlew .
-COPY build.gradle .
-COPY settings.gradle .
-COPY src src
+COPY . .
 
 # Build the application
 RUN ./gradlew build
