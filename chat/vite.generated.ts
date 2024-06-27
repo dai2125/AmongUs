@@ -606,7 +606,6 @@ function runWatchDog(watchDogPort, watchDogHost) {
   const client = net.Socket();
   client.setEncoding('utf8');
   client.on('error', function (err) {
-    console.log('Watchdog connection error. Terminating vite process...', err);
     client.destroy();
     process.exit(0);
   });

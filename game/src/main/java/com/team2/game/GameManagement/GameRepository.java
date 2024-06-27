@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 @Service
 public interface GameRepository extends JpaRepository<Game, Long> {
     Game findById(long id);
+
     boolean existsById(Long id);
 
     @Transactional

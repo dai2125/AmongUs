@@ -16,5 +16,4 @@ public class UserMovementDTO {
     private String color;
     private int x;
     private int y;
-
 }

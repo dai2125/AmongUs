@@ -9,7 +9,6 @@
 .grid-row {
     flex: 1;
     display: flex;
-    /*background-color: blue;*/
 }
 
 .cell {
@@ -25,7 +24,6 @@
     background-repeat: no-repeat;
     background-color: transparent;
     filter: invert(100%) opacity(0);
-    /*opacity: 0;*/
 }
 
 .style.root {
@@ -44,27 +42,27 @@
     align-items: center;
     margin: 10px;
     font: bold 16px/14px 'VCR OSD Mono', monospace;
-
 }
 
 h2 {
     font: bold 16px/14px 'VCR OSD Mono', monospace;
     text-align: center;
     margin-top: 10px;
-    /*background-color: green;*/
-
 }
 
 p {
     font: bold 16px/14px 'VCR OSD Mono', monospace;
     text-align: left;
     margin-top: 10px;
-    /*background-color: green;*/
 }
 
 @keyframes blinkTransparentRed {
-    0%, 100% { background-color: rgba(255, 0, 0, 0); }
-    50% { background-color: rgba(255, 0, 0, 0.5); }
+    0%, 100% {
+        background-color: rgba(255, 0, 0, 0);
+    }
+    50% {
+        background-color: rgba(255, 0, 0, 0.5);
+    }
 }
 
 .blinkingTransparentRed {
@@ -76,5 +74,3 @@ p {
     justify-content: start;
     gap: 10px;
 }
-
-

@@ -1,5 +1,3 @@
-import {getX} from "./store";
-
 interface Player {
     action: string;
     userId: string;
@@ -12,13 +10,10 @@ interface Player {
 let players: Player[] = [];
 
 export const upsertPlayer = (newPlayer: Player) => {
-    console.log('New Player: ', newPlayer.userId + ' X ', newPlayer.x + ' Y ', newPlayer.y + ' Color ', newPlayer.color);
     const index = players.findIndex(player => player.userId === newPlayer.userId);
     if (index !== -1) {
-        // Aktualisiere den bestehenden Spieler
         players[index] = newPlayer;
     } else {
-        // Füge einen neuen Spieler hinzu
         players.push(newPlayer);
     }
 };

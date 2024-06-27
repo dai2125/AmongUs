@@ -11,8 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 public interface PersonRepository extends JpaRepository<Person, Long> {
 
     Person findByNameAndEmail(String name, String email);
+
     boolean existsByNameAndPassword(String name, String password);
+
     boolean existsByNameAndPasswordAndOnlineIsFalse(String name, String password);
+
     boolean existsByEmail(String email);
 
     @Transactional

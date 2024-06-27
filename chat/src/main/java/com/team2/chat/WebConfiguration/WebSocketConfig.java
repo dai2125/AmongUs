@@ -15,21 +15,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	public void configureMessageBroker(MessageBrokerRegistry config) {
 		config.enableSimpleBroker("/topic");
 		config.setApplicationDestinationPrefixes("/app");
-//		config.setUserDestinationPrefix("/user");
 	}
 
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry.addEndpoint("/chat")
-//				.setAllowedOrigins("http://localhost:8080", "http://localhost:4173", "http://localhost:5173")
-//				.setAllowedOrigins("*")
 				.setAllowedOriginPatterns("*")
 				.withSockJS();
 	}
-//		registry.addEndpoint("/gs-guide-websocket")
-//				.setAllowedOrigins("http://localhost:8080", "http://localhost:4173", "http://localhost:5173")
-//				.withSockJS();
-
-//	}
-
 }

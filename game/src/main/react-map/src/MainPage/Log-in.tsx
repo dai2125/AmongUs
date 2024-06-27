@@ -3,17 +3,17 @@ import '../CSS/Log-in.css';
 import {User} from "../User";
 
 let loggedInUser = new User();
-type Props ={
+type Props = {
     onLogIn(loggedInUser: User): void;
-    onCreateAccountNav():void;
+    onCreateAccountNav(): void;
 }
 
-export default function LogIn({onLogIn, onCreateAccountNav,}: Props){
+export default function LogIn({onLogIn, onCreateAccountNav,}: Props) {
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState<string>('');
 
-    function onFormSubmit(event: FormEvent<HTMLFormElement>){
+    function onFormSubmit(event: FormEvent<HTMLFormElement>) {
 
         event.preventDefault();
 
@@ -22,25 +22,24 @@ export default function LogIn({onLogIn, onCreateAccountNav,}: Props){
         const name = data.get('name') as string;
         const password = data.get('password') as string;
 
-
         if (name === '' || password === '') {
             setErrorMessage('Please fill out all fields');
             return;
-        }else { handleLogin(name, password);}
-
+        } else {
+            handleLogin(name, password);
+        }
         setName('');
         setPassword('');
-
     }
 
-    const handleLogin = (name:string, password: string) => {
+    const handleLogin = (name: string, password: string) => {
 
-        const user ={
-            name : name,
+        const user = {
+            name: name,
             password: password
         }
 
-        fetch('http://192.168.0.142:8080/login',{
+        fetch('http://localhost:8080/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -48,8 +47,7 @@ export default function LogIn({onLogIn, onCreateAccountNav,}: Props){
             body: JSON.stringify(user),
         })
             .then(data => {
-                if(data.status === 200){
-                    // alert("Log In Successful");
+                if (data.status === 200) {
                     loggedInUser.setUsername(name);
                     loggedInUser.setPassword(password);
                     loggedInUser.setColor("red");
@@ -63,10 +61,11 @@ export default function LogIn({onLogIn, onCreateAccountNav,}: Props){
             });
     };
 
-    return(
+    return (
         <div className="background">
             <div className="flex items-center justify-center h-screen">
-                <div className="grid grid-rows-10 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-1/2 h-96">
+                <div
+                    className="grid grid-rows-10 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-1/2 h-96">
                     <div className="row-span-2 flex items-center justify-center text-white">
                         <div className="grid grid-rows-2 row-span-2 justify-center text-white">
                             <div className="error-notification row-span-1 justify-self-center">
@@ -84,15 +83,15 @@ export default function LogIn({onLogIn, onCreateAccountNav,}: Props){
                                 <input name="name"
                                        value={name}
                                        onChange={e => setName(e.target.value)}
-                                        className="input-field-name bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                        /><br/>
+                                       className="input-field-name bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                /><br/>
                                 <label className="text-white">Password:</label><br/>
-                                <input  type="password"
-                                        name="password"
-                                        value={password}
-                                        onChange={e => setPassword(e.target.value)}
-                                        className="input-field-password bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                        /><br/>
+                                <input type="password"
+                                       name="password"
+                                       value={password}
+                                       onChange={e => setPassword(e.target.value)}
+                                       className="input-field-password bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                /><br/>
                             </div>
 
                             <div className="flex justify-center">
@@ -106,7 +105,10 @@ export default function LogIn({onLogIn, onCreateAccountNav,}: Props){
 
                     <div className="row-span-1 flex justify-between px-4">
                         <p className="text-white">Don't have an Account?</p>
-                        <button onClick={onCreateAccountNav} className="create-account text-center mt-2 underline font-bold text-lg leading-tight">Create Account</button>
+                        <button onClick={onCreateAccountNav}
+                                className="create-account text-center mt-2 underline font-bold text-lg leading-tight">Create
+                            Account
+                        </button>
                     </div>
                 </div>
             </div>

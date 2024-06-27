@@ -1,8 +1,6 @@
 import React, {useEffect, useRef, useState, useCallback, useMemo} from 'react';
 import style from "../CSS/MapGridStyle.module.css";
-import lime from "../Images/Character_Movement/Lime.jpg";
 import dead from "../Images/Character_Movement/dead.png";
-import ghost from "../Images/Character_Movement/Ghost.jpg";
 
 import redImageEast from '../Images/Character_Red_Movement/Red_East_Right.png';
 import redImageEast2 from '../Images/Character_Red_Movement/Red_East_Left.png';
@@ -118,9 +116,6 @@ import ghostImageSouth from '../Images/Character_Ghost_Movement/Ghost_South.png'
 import ghostImageNorth from '../Images/Character_Ghost_Movement/Ghost_North.png';
 
 import votingboxButton from '../Images/Votingbox/report_player.png';
-import sabotageButton from '../Images/Buttons/Sabotage_Button.png';
-import ventButton from '../Images/Buttons/Vent_Button.png';
-import killButton from '../Images/Buttons/Kill_Button.png';
 
 import AlarmScreen from '../Screens/AlarmScreen';
 import AirSystemScreen from '../Screens/AirSystem';
@@ -131,14 +126,12 @@ import Stomp from "stompjs";
 import skeldImage from '../Images/Maps/Skeld.png';
 import '../CSS/MapGrid.css';
 import {Player} from "../Player";
-import {Simulate} from "react-dom/test-utils";
-import keyPress = Simulate.keyPress;
 
 interface MapGridProps {
     currentPlayer: Player;
     otherPlayers: any[];
     reportButtonClicked: () => void;
-    onKeyClick:() => void ;
+    onKeyClick: () => void;
 }
 
 const colorToImageUrl = {
@@ -160,14 +153,14 @@ const colorToImageUrl = {
     pinkImageNorth: pinkImageNorth,
     pinkImageEast: pinkImageEast,
     pinkImageWest: pinkImageWest,
-
     dead: dead,
     ghost: ghostImageSouth
 };
 
 const movementQueue = [];
 
-const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportButtonClicked,  onKeyClick
+const MapGrid: React.FC<MapGridProps> = ({
+                                             currentPlayer, otherPlayers, reportButtonClicked, onKeyClick
                                          }) => {
 
 
@@ -181,28 +174,16 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [playerDirection, setPlayerDirection] = useState('south');
     const [showReportButton, setShowReportButton] = useState(true);
     const [playerPosition, setPlayerPosition] = useState({x: currentPlayer.getX(), y: currentPlayer.getY()});
-    const [otherPlayerDirection, setOtherPlayerDirection] = useState({});
-    const [otherPlayerPosition, setOtherPlayerPosition] = useState({});
-    const [deadPlayer, setDeadPlayer] = useState('');
-    const [yourDead, setYourDead] = useState(false);
     const [yourTheImpostor, setYourTheImpostor] = useState(currentPlayer.getRole() === 'Impostor');
     const [killActive, setKillActive] = useState(true);
     const [killCooldown, setKillCooldown] = useState(0);
     const [ventActive, setVentActive] = useState(true);
-    const [airSystemCountdown, setAirSystemCountdown] = useState(0);
-    const [lastMove, setLastMove] = useState(Date.now());
     const [notConnected, setNotConnected] = useState(false);
-    const [otherPlayerDirections, setOtherPlayerDirections] = useState({});
     const [sabotageActive, setSabotageActive] = useState(false);
-    // const [ventActive, setVentActive] = useState(true);
     const [alarm, setAlarm] = useState(false);
     const [sabotageCountdown, setSabotageCountdown] = useState(300);
-    const [test, setTest] = useState(false);
-
     const [showAlarmScreen, setShowAlarmScreen] = useState(false);
     const [showAirSystem, setShowAirSystem] = useState(false);
-
-
 
     setInterval(() => {
         if (movementQueue.length > 0) {
@@ -229,7 +210,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 if (currentPlayer.getX() % 2 === 0) {
                     currentPlayer.setX(response.x);
                     setPlayerDirection('east');
-
                 } else {
                     currentPlayer.setX(response.x);
                     setPlayerDirection('east2');
@@ -247,15 +227,13 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         }
     }, 100);
 
-
     useEffect(() => {
         const updateScrollPosition = () => {
             if (containerRef.current && canvasRef.current) {
-                const centerX = containerRef.current.offsetWidth / 2;
-                const centerY = containerRef.current.offsetHeight / 2;
-
                 const playerX = currentPlayer.getX() * 30;
                 const playerY = currentPlayer.getY() * 30;
+                const centerX = containerRef.current.offsetWidth / 2;
+                const centerY = containerRef.current.offsetHeight / 2;
 
                 containerRef.current.scrollLeft = playerX - centerX;
                 containerRef.current.scrollTop = playerY - centerY;
@@ -266,8 +244,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
     const [loadedImage, setLoadedImage] = useState(null);
 
-
-    // TODO
     const playerMap = {
         red: {
             east: redImageEast,
@@ -402,13 +378,11 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         dead: dead
     };
 
-
     useEffect(() => {
         const color = currentPlayer.getColor();
         const imageSrc = playerMap[color]?.[playerDirection] || redImageSouth;
         setPlayerImage(imageSrc);
     }, [playerDirection]);
-    // TODO END
 
     useEffect(() => {
         const image = new Image();
@@ -421,12 +395,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     useEffect(() => {
         setPlayerImage(colorToImageUrl[currentPlayer.getColor()]);
     }, [currentPlayer.getColor()]);
-
-    // TODO
-    // useEffect(() => {
-    //     setPlayerImage(getPlayerImage(currentPlayer.getColor(), playerDirection));
-    // }, [currentPlayer, playerDirection]);
-    // TODO
 
     useEffect(() => {
         setGridKey(prevKey => prevKey + 1);
@@ -445,18 +413,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         let newImage;
         if (player.getColor() === 'dead') {
             newImage = colorToImageUrl['dead'];
-            // newImage = lime;
-        }
-        // else if (player.getColor() === 'dead') {
-        //     newImage = colorToImageUrl['dead'];
-        //     console.log('DEADPLAYER: ' + player);
-        // }
-        else {
-            const direction = otherPlayerDirections[player.getSessionId()];
-            const color = player.getColor();
-            console.log('RRRRRRR: ' + player.getDirection() + ' ' + player.getColor() + ' ' + player.getSessionId());
-            console.log('PPPPPPP: ' + player.getUserName() + ' with direction ' + player.getDirection());
-
+        } else {
             if (player.getColor() === "pink") {
                 if (player.getDirection() === "north") {
                     newImage = pinkImageNorth;
@@ -473,7 +430,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (player.getDirection() === "north") {
                     newImage = redImageNorth;
                 } else if (player.getDirection() === "east") {
-                    // newImage = redImageEast;
+                    newImage = redImageEast;
                 } else if (player.getDirection() === "west") {
                     newImage = redImageWest;
                 }
@@ -580,7 +537,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             } else if (player.getColor() === "ghost") {
                 if (player.getDirection() === "north") {
                     newImage = ghostImageNorth;
-                } else if(player.getDirection() === "south") {
+                } else if (player.getDirection() === "south") {
                     newImage = ghostImageSouth;
                 } else if (player.getDirection() === "east") {
                     newImage = ghostImageEast;
@@ -588,12 +545,11 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     newImage = ghostImageWest;
                 }
             }
-
         }
         setOtherPlayerImages(prevImages => ({...prevImages, [player.getSessionId()]: newImage}));
     }
 
-    const grid: any[][] =   [
+    const grid: any[][] = [
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -644,16 +600,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
     ];
 
-    // let i: number;
-    // let j: number;
-    // for(i = 0; i < grid.length; i++) {
-    //     for(j = 0; j < grid[i].length; j++) {
-    //         if(grid[i][j] === 2) {
-    //             console.log(grid[i][j] + ' ' + i + ' ' + j);
-    //         }
-    //     }
-    // }
-
     useEffect(() => {
         const context = canvasRef.current?.getContext('2d');
         if (context) {
@@ -685,38 +631,17 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     }
 
     const handleKill = () => {
-        console.log('HANDLE KILL');
         setKillActive(false);
     }
 
     const handleSabotageAndKill = () => {
-        console.log('HANDLESABOTAGEANDKILL');
         setSabotageActive(true);
         setKillActive(true);
     };
 
-    // const handleKillButtonPress = () => {
-    //     killButtonClicked();
-        // setKillActive(false);
-    // }
-
-    // const handleAirSystemButtonPress = () => {
-    //     airSystemButtonClicked();
-    // }
-
-    // const handleSabotageButtonPress = () => {
-    //     setAlarm(true);
-    //     setKillActive(false);
-    //     sabotageButtonClicked();
-    // }
-
-
-
-    // useEffect(() => {
     if (!notConnected) {
-        // connect() {
         setNotConnected(true);
-        const socket = new SockJS("http://192.168.0.142:8080/gs-guide-websocket");
+        const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
         const client = Stomp.over(socket);
         client.connect({}, () => {
             client.subscribe(`/topic/movement/north/${currentPlayer.getUserName()}`, (message) => {
@@ -751,7 +676,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 p.setDirection(response.direction);
                                 p.setColor(response.color);
                                 updatePlayerImage(p);
-
                             }
                             return p;
                         });
@@ -771,7 +695,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 p.setDirection(response.direction);
                                 p.setColor(response.color);
                                 updatePlayerImage(p);
-
                             }
                             return p;
                         });
@@ -792,7 +715,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 p.setColor(response.color);
 
                                 updatePlayerImage(p);
-
                             }
                             return p;
                         });
@@ -812,7 +734,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 p.setDirection(response.direction);
                                 p.setColor(response.color);
                                 updatePlayerImage(p);
-
                             }
                             return p;
                         });
@@ -834,7 +755,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             });
 
             client.subscribe(`/topic/deadPlayerVisible/${currentPlayer.getUserName()}`, () => {
-                // setShowReportButton(true);
             });
 
             client.subscribe('/topic/setShowReportButtonTrue/', () => {
@@ -846,29 +766,20 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             });
 
             client.subscribe(`/topic/deadPlayerNotVisible/${currentPlayer.getUserName()}`, () => {
-                // setShowReportButton(false);
             });
 
             client.subscribe('/topic/sabotageActive/', () => {
                 setAlarm(true);
-                console.log('ALARM ACTIVE AFTER INCOME: ' + alarm);
 
-                if(currentPlayer.getRole() === 'Impostor') {
+                if (currentPlayer.getRole() === 'Impostor') {
                     currentPlayer.setTask2('SabotageNotActive');
                 }
 
-                // setKillActive(false);
-                console.log('SETKILLACTIVE ' + killActive);
                 setShowAlarmScreen(true);
 
-                // setTimeout(() => {
-                //     setShowAlarmScreen(false);
-                //
-                // }, 5000);
                 currentPlayer.setAction('SabotageActive');
                 setKillActive(false);
                 setSabotageActive(true);
-                // constSabotageActive();
             });
 
             client.subscribe('/topic/sabotageNotActive/', () => {
@@ -877,8 +788,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             });
 
             client.subscribe('/topic/sabotageButtonActive/', () => {
-                // setSabotageActive(true);
-                // setKillActive(true);
                 handleSabotageAndKill();
             });
 
@@ -896,14 +805,12 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
             if (currentPlayer.getRole() === "impostor") {
                 client.subscribe(`/topic/killButtonNotActive/${currentPlayer.getUserName()}`, () => {
-                    console.log('kill button not active')
                     handleKill();
                     currentPlayer.setAction('KillNotActive');
                     setKillActive(false);
                 });
 
                 client.subscribe('/topic/killButtonActive/', () => {
-                    console.log('kill button active ' + currentPlayer.getAction());
                     currentPlayer.setAction('KillActive');
 
                     setKillActive(true);
@@ -919,7 +826,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 });
 
                 client.subscribe(`/topic/ventNotActive/${currentPlayer.getUserName()}`, () => {
-                        setVentActive(false);
+                    setVentActive(false);
                     setTimeout(() => {
                         setVentActive(true);
                     }, 10000);
@@ -931,14 +838,12 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
                 client.subscribe(`/topic/airSystemCountdown/${currentPlayer.getUserName()}`, (message) => {
                     const response = JSON.parse(message.body);
-                     // setAirSystemCountdown(response);
                     if (response === 0) {
                         setVentActive(true);
                     }
                 });
 
                 client.subscribe(`/topic/sabotage/${currentPlayer.getUserName()}`, () => {
-                    // setVentActive(true);
                 });
 
                 client.subscribe(`/topic/setSabotageFalse/${currentPlayer.getUserName()}`, () => {
@@ -947,30 +852,25 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
                 client.subscribe(`/topic/setSabotageTrue/${currentPlayer.getUserName()}`, () => {
                     setSabotageActive(true);
-
                 });
 
                 client.subscribe('/topic/sabotageButtonCountdown/', (message) => {
                     const response = JSON.parse(message.body);
                     setSabotageCountdown(response);
-                    if(response === 0) {
+                    if (response === 0) {
                         setSabotageActive(true);
                     }
                 });
             }
 
-            if(currentPlayer.getColor() === 'ghost') {
-                console.log('GHOOOOOOST MOVEMENT UNSUBSCRIBE');
+            if (currentPlayer.getColor() === 'ghost') {
 
                 client.unsubscribe(`/topic/movementNorth/${currentPlayer.getUserName()}`);
                 client.unsubscribe(`/topic/movementSouth/${currentPlayer.getUserName()}`);
                 client.unsubscribe(`/topic/movementWest/${currentPlayer.getUserName()}`);
                 client.unsubscribe(`/topic/movementEast/${currentPlayer.getUserName()}`);
 
-                console.log('GHOOOOOOST MOVEMENT SUBSCRIBED');
-
                 client.subscribe(`/topic/ghostMovementNorth/${currentPlayer.getUserName()}`, () => {
-
                 });
 
                 client.subscribe(`/topic/ghostMovementSouth/${currentPlayer.getUserName()}`, () => {
@@ -986,20 +886,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 });
             }
         });
-
-        const handleRandomMove = () => {
-            const moveEvents = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
-            const randomIndex = Math.floor(Math.random() * moveEvents.length);
-            const randomEvent = moveEvents[randomIndex];
-            handleMove(randomEvent);
-        };
-
-        // setInterval(() => {
-        //     if (currentPlayer.getMovable()) {
-        //         handleRandomMove();
-        //     }
-        // }, 1000);
-
 
         const handleMove = (event: string) => {
             switch (event) {
@@ -1022,8 +908,8 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     sendKill();
                     break;
                 case 'w':
-                    console.log("W input")
                     onKeyClick();
+                    break;
                 case 'f':
                     sendSabotage();
                     break;
@@ -1111,23 +997,21 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         }
 
         const sendKill = () => {
-            console.log('SEND KILL() alarm: ' + alarm + ' sabotageActive: ' + sabotageActive + ' test:' + test + ' getAction(): ' + currentPlayer.getAction());
 
             if (currentPlayer.getRole() === "crewmate" || alarm || sabotageActive) {
                 return;
             }
 
-            if(currentPlayer.getAction() === 'SabotageActive' || currentPlayer.getAction() === 'KillNotActive') {
+            if (currentPlayer.getAction() === 'SabotageActive' || currentPlayer.getAction() === 'KillNotActive') {
                 return;
             }
 
             let payload;
-            for (let player of otherPlayers) {
+            for (const player of otherPlayers) {
                 if ((player.getY() == currentPlayer.getY() && (player.getX() == currentPlayer.getX() + 1 || player.getX() == currentPlayer.getX() - 1)) ||
                     (player.getX() == currentPlayer.getX() && (player.getY() == currentPlayer.getY() + 1 || player.getY() == currentPlayer.getY() - 1)) ||
                     (player.getY() == currentPlayer.getY() && (player.getX() == currentPlayer.getX() + 2 || player.getX() == currentPlayer.getX() - 2)) ||
                     (player.getX() == currentPlayer.getX() && (player.getY() == currentPlayer.getY() + 2 || player.getY() == currentPlayer.getY() - 2))) {
-                    console.log("Hello from new kill inside ", currentPlayer.getGameId());
                     payload = JSON.stringify({
                         objectOne: currentPlayer.getUserName(),
                         objectTwo: player.getUserName(),
@@ -1152,7 +1036,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     y: currentPlayer.getY()
                 });
                 setVentActive(false);
-                console.log('VENT ACTIVE: ' + ventActive);
                 client.send(`/app/airsystem/${currentPlayer.getUserName()}`, {}, payload);
             }
         }
@@ -1169,8 +1052,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     gameId: currentPlayer.getGameId()
                 });
                 client.send(`/app/sabotage/${currentPlayer.getUserName()}`, {}, payload);
-                // setAlarm(true);
-                // setKillActive(false);
             }
         }
 
@@ -1222,11 +1103,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                             const isVisible = isCellVisible(currentPlayer.getX(), currentPlayer.getY(), colIndex, rowIndex);
                             const cellStyle = isVisible ? {
                                 backgroundSize: 'cover', width: '30px', height: '30px'
-                            } : {
-                                // visibility: 'hidden',
-                                // width: '30px',
-                                // height: '30px'
-                            };
+                            } : {};
 
                             if (otherPlayer && isVisible) {
                                 const playerImage = otherPlayerImages[otherPlayer.getSessionId()];
@@ -1236,11 +1113,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                         backgroundSize: 'cover',
                                         width: '30px',
                                         height: '30px',
-
-                                       // position: 'absolute',
-                                       //  left: `${colIndex * 15 - 7.5}px`,
-                                       //   top: `${rowIndex * 15 - 7.5}px`,
-                                       //   transform: 'translate(-50%, -50%)'
                                     }}>
                                     </span>
                                 );
@@ -1252,12 +1124,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                                   backgroundSize: 'cover',
                                                   width: '30px',
                                                   height: '30px',
-                                                   //position: 'absolute',
-                                                   //transform: 'translate(-50%, -50%)',
-
-                                                   //position: 'absolute',
-                                                   //left: `${colIndex * 15 - 7.5}px`,
-                                                   //top: `${rowIndex * 15 - 7.5}px`,
                                               }}>
                                     </span>
                                 );
@@ -1267,8 +1133,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
                             return (
                                 <span key={colIndex} className={`${style.cell} ${blinkClass}`} style={{cellStyle}}>
-                                    {/*TODO Comment this line to hide the array*/}
-                                    {cellContent}
+                                    {/*{cellContent}*/}
                                 </span>
                             );
                         })}
@@ -1304,45 +1169,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                     </button>
                                 </div> : <div></div>
                             }
-                            {/*{killActive ? (*/}
-                            {/*    <div>*/}
-                            {/*            <button className="w-10 h-10" ><img*/}
-                            {/*                alt="sabotageButton"*/}
-                            {/*                className="w-10 h-10 hover:bg-black"*/}
-                            {/*                src={killButton}></img>*/}
-                            {/*            </button>*/}
-                            {/*        /!*</p>*!/*/}
-                            {/*    </div>*/}
-                            {/*) : (*/}
-                            {/*    <div><p>Cooldown {killCooldown}</p></div>*/}
-                            {/*)}*/}
-                            {/*{ventActive ? (*/}
-                            {/*    <div>*/}
-
-                            {/*            <button className="w-10 h-10" ><img*/}
-                            {/*                alt="sabotageButton"*/}
-                            {/*                className="w-10 h-10 hover:bg-black"*/}
-                            {/*                src={ventButton}></img>*/}
-                            {/*            </button>*/}
-                            {/*        /!*</p>*!/*/}
-                            {/*    </div>*/}
-                            {/*) : (*/}
-                            {/*    <div><p>{airSystemCountdown}</p></div>*/}
-                            {/*)}*/}
-                            {/*{sabotageActive ? (*/}
-                            {/*    <div>*/}
-                            {/*            <button className="w-10 h-10" ><img*/}
-                            {/*                alt="sabotageButton"*/}
-                            {/*                className="w-10 h-10 hover:bg-black"*/}
-                            {/*                src={sabotageButton}></img>*/}
-                            {/*            </button>*/}
-                            {/*        /!*</p>*!/*/}
-                            {/*    </div>*/}
-                            {/*) : (*/}
-                            {/*    <div></div>*/}
-                            {/*)}*/}
-
-
                         </div>
                         <p>Vent Q</p>
                         <p>Kill E</p>
@@ -1372,7 +1198,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                         <p>Right Arrow Right</p>
                     </div>
                 )}
-
             </div>
         </div>
     );

@@ -2,16 +2,15 @@ import React, {FormEvent, useState} from "react";
 import {User} from "../User";
 
 type Props = {
-    //onCreateClick(name:string, email: string, password: string, passwordConfirm: string ): void;
     onLoginNavClick(): void;
 }
 
-export default function CreateAccount({onLoginNavClick}: Props){
+export default function CreateAccount({onLoginNavClick}: Props) {
     const [errorMessage, setErrorMessage] = useState<string>('');
     const [successMessage, setSuccessMessage] = useState<string>('');
     let loggedInUser = new User();
 
-    function onFormSubmit(event: FormEvent<HTMLFormElement>){
+    function onFormSubmit(event: FormEvent<HTMLFormElement>) {
         event.preventDefault();
 
         const form = event.currentTarget;
@@ -21,22 +20,16 @@ export default function CreateAccount({onLoginNavClick}: Props){
         const password = data.get('password') as string;
         const passwordConfirm = data.get('passwordConfirm') as string;
 
-        // Regex for 8 characters long
         const passwordRegex = /^.{8,}$/;
-        /**
-         * Regex for email validation
-         */
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if((passwordRegex.test(password)) && (emailRegex.test(email))){
+        if ((passwordRegex.test(password)) && (emailRegex.test(email))) {
             handleCreate(name, email, password, passwordConfirm);
-        }else {
+        } else {
             setErrorMessage("Email or password is not valid");
         }
-
-
     }
 
-    const handleCreate = (name:string, email: string, password: string, passwordConfirm: string) => {
+    const handleCreate = (name: string, email: string, password: string, passwordConfirm: string) => {
 
         const newUser = {
             name: name,
@@ -45,13 +38,12 @@ export default function CreateAccount({onLoginNavClick}: Props){
             passwordConfirm: passwordConfirm
         }
 
-        if(!(password === passwordConfirm)){
-            // alert("password and confirm-password do not match")
+        if (!(password === passwordConfirm)) {
             setErrorMessage("password and confirm-password do not match");
             setSuccessMessage("");
-        }else {
+        } else {
 
-            fetch('http://192.168.0.142:8080/signUp',{
+            fetch('http://localhost:8080/signUp', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -59,11 +51,10 @@ export default function CreateAccount({onLoginNavClick}: Props){
                 body: JSON.stringify(newUser),
             })
                 .then((data) => {
-                    if (data.status === 200){
+                    if (data.status === 200) {
                         setSuccessMessage("Account Created Successfully");
                         setErrorMessage("");
                     } else {
-                        //alert("Failed to create account, please make sure to enter all fields correctly");
                         setErrorMessage("Failed to create account, please make sure to enter all fields correctly");
                         setSuccessMessage("");
                     }
@@ -74,10 +65,11 @@ export default function CreateAccount({onLoginNavClick}: Props){
         }
     };
 
-    return(
+    return (
         <div className="background">
             <div className="flex items-center justify-center h-screen">
-                <div className="grid grid-rows-10 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-1/2 h-auto">
+                <div
+                    className="grid grid-rows-10 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-1/2 h-auto">
                     <div className="grid grid-rows-2 row-span-2 justify-center text-white">
                         <div className="row-span-1 justify-self-center">
                             <div className="error-notification">
@@ -124,7 +116,9 @@ export default function CreateAccount({onLoginNavClick}: Props){
                     </div>
                     <div className="row-span-1 flex justify-between px-4">
                         <p className="text-white">Already have an account?</p>
-                        <button onClick={onLoginNavClick} className="log-in text-center mt-2 underline font-bold text-lg leading-tight">Log-in</button>
+                        <button onClick={onLoginNavClick}
+                                className="log-in text-center mt-2 underline font-bold text-lg leading-tight">Log-in
+                        </button>
                     </div>
                 </div>
             </div>
