@@ -206,7 +206,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         if (key === 'w' && playerRef.current.getRole() === "crewmate") {
           taskAction();
         }
-           
+
         console.log("CurrentPlayers.tsx: handleKeyPress: " + key + ' ' + playerRef.current.getRole() + ' ' + sabotageActive);
         if (key === 'e' && playerRef.current.getRole() === "crewmate" && !sabotageActive && playerRef.current.getAction() !== 'SabotageActive') {
             taskAction();
@@ -263,8 +263,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                 break;
         }
 
-        const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
-        const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
 
         if (gameType === "Guess the number") {
             console.log("Before sending to Server Before ClearTask");
@@ -349,7 +347,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
-                } else if ((yPosTask === 10 && xPosTask === 26) && (playerRef.current.getTask1() === "Memory game" || playerRef.current.getTask2() === "Memory game" || playerRef.current.getTask3() === "Memory game")) {
+                } else if ((yPosTask === 26 && xPosTask === 10) && (playerRef.current.getTask1() === "Memory game" || playerRef.current.getTask2() === "Memory game" || playerRef.current.getTask3() === "Memory game")) {
                     if (!lastCompletedMemoryGame || (currentTime - lastCompletedMemoryGame > cooldown)) {
                         console.log('openMiniGame: 5');
                         openMiniGame(<MemoryMiniGame onCompletion={() => handleMiniGameCompletion("Memory game")} />);
