@@ -519,8 +519,11 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             {showChatbox ?  <Chatbox playerColor={playerRef.current.getColor()}
                                      playerName={playerRef.current.getUserName()}></Chatbox> : <div></div>
                             }
+                            <div className="col-span-01 text-3xl text-cyan-500 text-center">
+                                {playerRef.current.getUserName()}
+                            </div>
                             {showVotingbox ?
-                            <Votingbox onButtonPress={handleButtonPress} currentPlayer={playerRef.current}
+                                <Votingbox onButtonPress={handleButtonPress} currentPlayer={playerRef.current}
                                        otherPlayers={otherPlayers} deadPlayer={deadPlayer} ></Votingbox> : <div></div>
                             }
                             { showVotingActive ? <VotingActive></VotingActive> : <div></div> }
@@ -542,9 +545,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                                 </button>
                             )}
 
-                            <button onClick={onQuit}
+                            {/*<button onClick={onQuit}
                                     className="bg-gray-700 hover:bg-gray-800 rounded-lg py-3 px-8">Quit
-                            </button>
+                            </button>*/}
                         </div>
                     </div>
                     <div className="grid grid-cols-12 row-span-8 gap-5 h-5/6">
