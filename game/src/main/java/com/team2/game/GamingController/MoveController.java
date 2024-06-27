@@ -21,21 +21,6 @@ public class MoveController {
     @Autowired
     private MovementService movementService;
 
-    @Autowired
-    private RegisterService registerService;
-
-    @Autowired
-    private ActionService actionService;
-
-    @Autowired
-    private AirSystemService airSystemService;
-
-    @Autowired
-    private GameInstance gameInstance;
-
-    @Autowired
-    private GroupManager groupManager;
-
     @MessageMapping("/movement/north/{userName}")
     public void movementNorth(@Payload User user) throws JsonProcessingException {
         if (user.getColor().equals("ghost")) {
@@ -78,7 +63,7 @@ public class MoveController {
     public void movementWest(@Payload User user) throws JsonProcessingException {
         if (user.getColor().equals("ghost")) {
             if (movementService.wallWestGhost(user)) {
-                user.setX(user.getX() - 1);
+//                user.setX(user.getX() - 1);
                 messagingTemplate.convertAndSend("/topic/movement/west/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
                 messagingTemplate.convertAndSend("/topic/movement/west/otherPlayer/", new ObjectMapper().writeValueAsString(user));
             }
@@ -87,7 +72,7 @@ public class MoveController {
 
         if (movementService.wallWest(user)) {
 //            user.setX(user.getX() - 1);
-            user.setDirection("west");
+//            user.setDirection("west");
             messagingTemplate.convertAndSend("/topic/movement/west/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/west/otherPlayer/", new ObjectMapper().writeValueAsString(user));
 
@@ -98,7 +83,7 @@ public class MoveController {
     public void movementEast(@Payload User user) throws JsonProcessingException {
         if (user.getColor().equals("ghost")) {
             if (movementService.wallEastGhost(user)) {
-                user.setX(user.getX() + 1);
+//                user.setX(user.getX() + 1);
                 messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
                 messagingTemplate.convertAndSend("/topic/movement/east/otherPlayer/", new ObjectMapper().writeValueAsString(user));
             }
@@ -107,7 +92,6 @@ public class MoveController {
 
         if (movementService.wallEast(user)) {
 //            user.setX(user.getX() + 1);
-            user.setDirection("east");
 
             messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/east/otherPlayer/", new ObjectMapper().writeValueAsString(user));

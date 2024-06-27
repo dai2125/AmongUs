@@ -8,7 +8,7 @@ import orange from '../../Images/Characters/Orange.png';
 import purple from '../../Images/Characters/Purple.png';
 import pink from '../../Images/Characters/Pink.png';
 import lime from '../../Images/Characters/Lime.png';
-import brown from '../../Images/Characters/Brown.png';
+import brown from '../../Images/Characters/Brown.jpg';
 import cyan from '../../Images/Characters/Cyan.png';
 
 const cardImages = [

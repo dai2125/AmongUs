@@ -26,8 +26,8 @@ public class RegisterService {
     private int random;
     private String gameID;
     int positionCounter = 0;
-    int[] arrayY = {24, 22, 36, 38, 46, 48, 50};
-    int[] arrayX = {28, 64, 36, 136, 94, 8, 54};
+    int[] arrayY = {12, 11, 18, 19, 23, 24, 25};
+    int[] arrayX = {24, 32, 18, 68, 47, 4, 27};
 
     private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
 
@@ -177,10 +177,14 @@ public class RegisterService {
         return false;
     }
     public UserRegisterDTO disconnectUser(String sessionId) throws UserNotFoundException {
-        for (User u : userList) {
+
+        String gameId = groupManager.getGameBySessionId(sessionId);
+        GameInstance instanceToDisconnect = groupManager.getGameInstance(gameId);
+
+        for (User u : instanceToDisconnect.getUserList()) {
             if (u.getSessionId().equals(sessionId)) {
                 UserRegisterDTO userRegisterDTO = new UserRegisterDTO(u.getUserName(), u.getAction(), u.getSessionId(),u.getGameId(), u.getColor(), u.getX(), u.getY());
-                userList.remove(u);
+                //userList.remove(u);
                 gameInstance.removeFromTheGroup(u);
                 return userRegisterDTO;
             }
@@ -219,8 +223,8 @@ public class RegisterService {
         return false;
     }
 
-    public void removeTask(String task) {
-        gameInstance.removeTask(task);
+    public void removeTask(String task, String sessionId) {
+        gameInstance.removeTask(task, sessionId);
     }
 
     public void crewmateDied(User user) {
@@ -242,8 +246,8 @@ public class RegisterService {
         }
     }
 
-    public boolean taskResolved(String gameID){
-        return groupManager.getGameInstance(gameID).taskResolved();
+    public boolean taskResolved(String gameID, String sessionId, String task){
+        return groupManager.getGameInstance(gameID).taskResolved(sessionId, task);
     }
 
 }

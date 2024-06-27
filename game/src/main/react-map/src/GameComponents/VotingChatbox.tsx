@@ -21,19 +21,21 @@ function VotingChatbox({ playerColor, playerName }) {
     const [votingChatVisible, setVotingChatVisible] = useState(false);
     const [chatIcon, setChatIcon] = useState(chatButton);
 
+    console.log('playerName: ', playerName);
+
     if (userId === 0) {
         setUserId(getRandomIntInclusive());
     }
 
     useEffect(() => {
         if (!userId) return;
-        const socket = new SockJS("http://localhost:8081/chat");
+        const socket = new SockJS("http://192.168.0.45.218:8081/chat");
         const stompClient = Stomp.over(socket);
         setClient(stompClient);
 
         stompClient.connect({}, () => {
 
-            stompClient.subscribe('/topic/ingoing/', message => {
+            stompClient.subscribe('/topic/votingChatIngoing/', message => {
                 const messageData = JSON.parse(message.body);
                 if (messageData.userName !== userId) {
                     setMessages(prev => [...prev, {
@@ -41,6 +43,7 @@ function VotingChatbox({ playerColor, playerName }) {
                         text: messageData.message,
                         isOwnMessage: false,
                         color: messageData.color
+                        // color: 'black'
                     }]);
                     if(!votingChatVisible) {
                         notification(false);
@@ -48,7 +51,7 @@ function VotingChatbox({ playerColor, playerName }) {
                 }
             });
 
-            stompClient.subscribe(`/topic/ingoing/${ playerName }`, message => {
+            stompClient.subscribe(`/topic/votingChatIngoing/${ playerName }`, message => {
                 const messageData = JSON.parse(message.body);
 
                 setMessages(prev => [...prev, {
@@ -56,6 +59,8 @@ function VotingChatbox({ playerColor, playerName }) {
                     text: messageData.message,
                     isOwnMessage: true,
                     color: messageData.color
+                    // color: 'black'
+
                 }]);
             });
         }, error => {
@@ -63,9 +68,11 @@ function VotingChatbox({ playerColor, playerName }) {
         });
 
         return () => {
-            stompClient.disconnect(() => {
-                console.log('Disconnected');
-            });
+            if(client && client.connected) {
+                stompClient.disconnect(() => {
+                    console.log('Disconnected');
+                });
+            }
         };
     }, [userId]);
 
@@ -78,7 +85,7 @@ function VotingChatbox({ playerColor, playerName }) {
     const sendMessage = () => {
         if (inputValue.trim() !== '') {
             // client.send('/app/ingoing/', {}, JSON.stringify({
-            client.send(`/app/ingoing/${userId}`, {}, JSON.stringify({
+            client.send(`/app/votingChatIngoing/${userId}`, {}, JSON.stringify({
                 'userName': playerName,
                 'message': inputValue,
                 'color': playerColor
@@ -110,7 +117,7 @@ function VotingChatbox({ playerColor, playerName }) {
                                                                     className="w-10 h-10 hover:bg-black"
                                                                     src={chatIcon}></img></button>
             <div className={votingChatVisible ? "" : "hidden"}>
-                <div className="chatbox">
+                <div className="voting-chatbox">
                     <div className="message-list">
                         {messages.map((message, index) => (
                             message.isOwnMessage ?
@@ -137,14 +144,14 @@ function VotingChatbox({ playerColor, playerName }) {
                         ))}
                     </div>
                     <div className="character-counter">{inputValue.length}/100</div>
-                    <div className="input-area">
+                    <div className="voting-input-area">
                         <input
                             type="text"
                             value={inputValue}
                             maxLength={100}
                             onChange={(e) => setInputValue(e.target.value)}
                             placeholder="Type your message..."
-                            className="input-field"
+                            className="voting-input-field"
                         />
                         <button onClick={sendMessage} className="send-button"></button>
                     </div>

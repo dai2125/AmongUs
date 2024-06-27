@@ -45,3 +45,13 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
 }
+
+.waiting-room-p {
+    font: bold 64px/14px 'VCR OSD Mono', monospace;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}

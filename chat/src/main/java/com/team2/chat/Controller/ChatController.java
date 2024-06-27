@@ -24,25 +24,47 @@ public class ChatController {
     @Autowired
     private ChatService chatService;
 
-    @MessageMapping("/ingoing/")
-    @SendTo("topic/ingoing/")
-    public void ingoing(@Payload Message message) {
+    @MessageMapping("/votingChatIngoing/")
+//    @SendTo("topic/votingChatIngoing/")
+    public void votingChatIngoing(@Payload Message message) {
 
-        System.out.println("ingoing: " + message.getMessage());
+        System.out.println("votingChatIngoing: " + message.getMessage());
 
         chatService.processMessage(message);
-        messagingTemplate.convertAndSend("/topic/ingoing/", message);
+        messagingTemplate.convertAndSend("/topic/votingChatIngoing/", message);
     }
 
-    @MessageMapping("/ingoing/{userId}")
-    public void ingoingUserId(@Payload Message message, @DestinationVariable String userId) {
+    @MessageMapping("/votingChatIngoing/{userId}")
+    public void votingChatIngoingUserId(@Payload Message message, @DestinationVariable String userId) {
 
         System.out.println("ingoing: " + message.getMessage());
 
 
         message.setMessage(chatService.getSomething(message.getMessage()));
 
-        messagingTemplate.convertAndSend(String.format("/topic/ingoing/%s", userId), message);
-        messagingTemplate.convertAndSend("/topic/ingoing/", message);
+        messagingTemplate.convertAndSend(String.format("/topic/votingChatIngoing/%s", userId), message);
+        messagingTemplate.convertAndSend("/topic/votingChatIngoing/", message);
+    }
+
+    @MessageMapping("/chatIngoing/")
+//    @SendTo("topic/ingoing/")
+    public void chatIngoing(@Payload Message message) {
+
+        System.out.println("votingChatIngoing: " + message.getMessage());
+
+        chatService.processMessage(message);
+        messagingTemplate.convertAndSend("/topic/chatIngoing/", message);
+    }
+
+    @MessageMapping("/chatIngoing/{userId}")
+    public void chatIngoingUserId(@Payload Message message, @DestinationVariable String userId) {
+
+        System.out.println("ingoing: " + message.getMessage());
+
+
+        message.setMessage(chatService.getSomething(message.getMessage()));
+
+        messagingTemplate.convertAndSend(String.format("/topic/chatIngoing/%s", userId), message);
+        messagingTemplate.convertAndSend("/topic/chatIngoing/", message);
     }
 }

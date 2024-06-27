@@ -40,6 +40,7 @@ public class MovementService {
     public boolean wallEast(User user) {
         if(!DefaultMap.isWall(user.getY(), user.getX() + 1)) {
             user.setX(user.getX() + 1);
+//            user.setDirection("east");
             return true;
         }
         return false;
@@ -47,7 +48,7 @@ public class MovementService {
 
     public boolean wallNorthGhost(User user) {
         if(!DefaultMap.isEndOfMap(user.getY() - 1, user.getX())) {
-//            user.setY(user.getY() - 1);
+            user.setY(user.getY() - 1);
             return true;
         }
         return false;
@@ -55,7 +56,7 @@ public class MovementService {
 
     public boolean wallSouthGhost(User user) {
         if(!DefaultMap.isEndOfMap(user.getY() + 1, user.getX())) {
-//            user.setY(user.getY() + 1);
+            user.setY(user.getY() + 1);
             return true;
         }
         return false;
@@ -63,7 +64,7 @@ public class MovementService {
 
     public boolean wallWestGhost(User user) {
         if(!DefaultMap.isEndOfMap(user.getY(), user.getX() - 1)) {
-//            user.setX(user.getX() - 1);
+            user.setX(user.getX() - 1);
             return true;
         }
         return false;
@@ -71,7 +72,7 @@ public class MovementService {
 
     public boolean wallEastGhost(User user) {
         if(!DefaultMap.isEndOfMap(user.getY(), user.getX() + 1)) {
-//            user.setX(user.getX() + 1);
+            user.setX(user.getX() + 1);
             return true;
         }
         return false;

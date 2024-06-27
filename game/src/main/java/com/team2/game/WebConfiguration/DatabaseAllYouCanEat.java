@@ -49,5 +49,56 @@ public class DatabaseAllYouCanEat implements CommandLineRunner {
                 .email("greta@greta.at")
                 .password("d02mco2klc")
                 .build());
+        personRepository.save(Person.builder()
+                .name("Regine")
+                .email("regine.kadgien@fhv.at")
+                .password("bre")
+                .build());
+        personRepository.save(Person.builder()
+                .name("Jutta")
+                .email("jutta.lung-babutzky@fhv.at")
+                .password("lbju")
+                .build());
+        personRepository.save(Person.builder()
+                .name("Jan")
+                .email("jan.amann@fhv.at")
+                .password("jam6924")
+                .build());
+        personRepository.save(Person.builder()
+                .name("Wolfgang")
+                .email("wolfgang.auer@fhv.at")
+                .password("aw")
+                .build());
+        personRepository.save(Person.builder()
+                .name("Peter")
+                .email("peter.stadelwieser@fhv.at")
+                .password("pst7730")
+                .build());
+        personRepository.save(Person.builder()
+                .name("Peter Hoffman")
+                .email("peter.hoffman@fhv.at")
+                .password("hope")
+                .build());
+        personRepository.save(Person.builder()
+                .name("Christoph")
+                .email("christoph.loacker@fhv.at")
+                .password("clo9807")
+                .build());
+        personRepository.save(Person.builder()
+                .name("Andrea")
+                .email("andrea.janes@fhv.at")
+                .password("aja5506")
+                .build());
+        personRepository.save(Person.builder()
+                .name("Gerhard")
+                .email("gerhard.gaube@fhv.at")
+                .password("gga7456")
+                .build());
+        personRepository.save(Person.builder()
+                .name("Andreas")
+                .email("andreas.gottardi@fhv.at")
+                .password("ago1516")
+                .build());
+
     }
 }
