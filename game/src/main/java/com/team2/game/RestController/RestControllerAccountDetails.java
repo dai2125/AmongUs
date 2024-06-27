@@ -14,19 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RestControllerAccountDetails {
 
-//    private final IPersonService personService;
-
-//    @Autowired
-//    public RestControllerAccountDetails(IPersonService personService) {
-//        this.personService = personService;
-//    }
-
     @Autowired
     private PersonService personService;
 
     @PostMapping("/accountDetails")
-    public ResponseEntity<String> accountDetails(@RequestBody ChangeDetailDTO changeDetailDTO){
-        if (personService.changeAccountDetail(changeDetailDTO)){
+    public ResponseEntity<String> accountDetails(@RequestBody ChangeDetailDTO changeDetailDTO) {
+        if (personService.changeAccountDetail(changeDetailDTO)) {
             return ResponseEntity.ok(ResponseStatusSuccesMessage.USER_CHANGED_ACCOUNT_DETAILS.getMessage());
         }
         return ResponseEntity.badRequest().body(ResponseStatusExceptionMessage.USER_ALREADY_EXISTS.getMessage());

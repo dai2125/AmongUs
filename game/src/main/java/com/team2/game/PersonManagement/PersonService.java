@@ -17,25 +17,25 @@ public class PersonService implements IPersonService {
 
     @Override
     public boolean signUpRequest(PersonSignUpDTO personSignUpDTO) throws ResponseStatusExceptionCustom {
-        if(!PersonValidationUtil.validatePersonName(personSignUpDTO.getName())) {
+        if (!PersonValidationUtil.validatePersonName(personSignUpDTO.getName())) {
             return false;
         }
 
-        if(!PersonValidationUtil.validatePersonEmail(personSignUpDTO.getEmail())) {
+        if (!PersonValidationUtil.validatePersonEmail(personSignUpDTO.getEmail())) {
             return false;
         }
 
-        if(!PersonValidationUtil.validatePersonPassword(personSignUpDTO.getPassword())) {
+        if (!PersonValidationUtil.validatePersonPassword(personSignUpDTO.getPassword())) {
             return false;
         }
 
-        if(!PersonValidationUtil.validatePersonPasswordEqualsPasswordConfirm(personSignUpDTO.getPassword(), personSignUpDTO.getPasswordConfirm())) {
+        if (!PersonValidationUtil.validatePersonPasswordEqualsPasswordConfirm(personSignUpDTO.getPassword(), personSignUpDTO.getPasswordConfirm())) {
             return false;
         }
 
         try {
             Person person = this.personRepository.findByNameAndEmail(personSignUpDTO.getName(), personSignUpDTO.getEmail());
-            if(person == null) {
+            if (person == null) {
                 personRepository.save(Person.builder().name(personSignUpDTO.getName()).email(personSignUpDTO.getEmail()).password(personSignUpDTO.getPassword()).build());
                 return true;
             } else {
@@ -47,15 +47,15 @@ public class PersonService implements IPersonService {
     }
 
     @Override
-    public boolean loginRequest(PersonLoginDTO personLoginDTO) throws ResponseStatusExceptionCustom{
+    public boolean loginRequest(PersonLoginDTO personLoginDTO) throws ResponseStatusExceptionCustom {
         try {
-            if(personRepository.existsByNameAndPassword(personLoginDTO.getName(), personLoginDTO.getPassword())) {
+            if (personRepository.existsByNameAndPassword(personLoginDTO.getName(), personLoginDTO.getPassword())) {
                 personRepository.updatePersonOnlineStatus(personLoginDTO.getName(), personLoginDTO.getPassword());
                 return true;
             } else {
                 return false;
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new ResponseStatusExceptionCustom(ResponseStatusExceptionMessage.USER_NOT_FOUND);
         }
     }
@@ -63,7 +63,7 @@ public class PersonService implements IPersonService {
     @Override
     public boolean changeAccountDetail(ChangeDetailDTO changeDetailDTO) {
 
-        if (!personRepository.existsByEmail(changeDetailDTO.getNewEmail())){
+        if (!personRepository.existsByEmail(changeDetailDTO.getNewEmail())) {
             personRepository.updatePersonDetails(
                     changeDetailDTO.getOldName(),
                     changeDetailDTO.getOldPassword(),

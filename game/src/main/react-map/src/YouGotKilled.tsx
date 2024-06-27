@@ -20,7 +20,15 @@ const YouGotKilled = ({onStart}) => {
 
     return (
         <div>
-            <img src={ youGotKilled } style={{position: 'fixed', top: '0', left: '0', minWidth: '100%', minHeight: '100%', width: 'auto', height: 'auto'}} ></img>
+            <img src={youGotKilled} style={{
+                position: 'fixed',
+                top: '0',
+                left: '0',
+                minWidth: '100%',
+                minHeight: '100%',
+                width: 'auto',
+                height: 'auto'
+            }}></img>
         </div>
     );
 }

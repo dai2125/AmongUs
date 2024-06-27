@@ -6,7 +6,7 @@ interface ModalProps {
     children: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ isVisible, onClose, children }) => {
+const Modal: React.FC<ModalProps> = ({isVisible, onClose, children}) => {
     if (!isVisible) {
         return null;
     }

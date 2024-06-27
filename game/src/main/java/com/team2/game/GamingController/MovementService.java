@@ -10,11 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class MovementService {
 
-    private static final DefaultMap defaultMap = new DefaultMap();
-    private static final DefaultLobby defaultLobby = new DefaultLobby();
-
     public boolean wallNorth(User user) {
-        if(!DefaultMap.isWall(user.getY() - 1, user.getX())) {
+        if (!DefaultMap.isWall(user.getY() - 1, user.getX())) {
             user.setY(user.getY() - 1);
             return true;
         }
@@ -22,7 +19,7 @@ public class MovementService {
     }
 
     public boolean wallSouth(User user) {
-        if(!DefaultMap.isWall(user.getY() + 1, user.getX())) {
+        if (!DefaultMap.isWall(user.getY() + 1, user.getX())) {
             user.setY(user.getY() + 1);
             return true;
         }
@@ -30,7 +27,7 @@ public class MovementService {
     }
 
     public boolean wallWest(User user) {
-        if(!DefaultMap.isWall(user.getY(), user.getX() - 1)) {
+        if (!DefaultMap.isWall(user.getY(), user.getX() - 1)) {
             user.setX(user.getX() - 1);
             return true;
         }
@@ -38,16 +35,15 @@ public class MovementService {
     }
 
     public boolean wallEast(User user) {
-        if(!DefaultMap.isWall(user.getY(), user.getX() + 1)) {
+        if (!DefaultMap.isWall(user.getY(), user.getX() + 1)) {
             user.setX(user.getX() + 1);
-//            user.setDirection("east");
             return true;
         }
         return false;
     }
 
     public boolean wallNorthGhost(User user) {
-        if(!DefaultMap.isEndOfMap(user.getY() - 1, user.getX())) {
+        if (!DefaultMap.isEndOfMap(user.getY() - 1, user.getX())) {
             user.setY(user.getY() - 1);
             return true;
         }
@@ -55,7 +51,7 @@ public class MovementService {
     }
 
     public boolean wallSouthGhost(User user) {
-        if(!DefaultMap.isEndOfMap(user.getY() + 1, user.getX())) {
+        if (!DefaultMap.isEndOfMap(user.getY() + 1, user.getX())) {
             user.setY(user.getY() + 1);
             return true;
         }
@@ -63,7 +59,7 @@ public class MovementService {
     }
 
     public boolean wallWestGhost(User user) {
-        if(!DefaultMap.isEndOfMap(user.getY(), user.getX() - 1)) {
+        if (!DefaultMap.isEndOfMap(user.getY(), user.getX() - 1)) {
             user.setX(user.getX() - 1);
             return true;
         }
@@ -71,7 +67,7 @@ public class MovementService {
     }
 
     public boolean wallEastGhost(User user) {
-        if(!DefaultMap.isEndOfMap(user.getY(), user.getX() + 1)) {
+        if (!DefaultMap.isEndOfMap(user.getY(), user.getX() + 1)) {
             user.setX(user.getX() + 1);
             return true;
         }

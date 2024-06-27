@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 
 import yellow from '../../Images/Characters/Yellow.png';
 import blue from '../../Images/Characters/Blue.png';
@@ -16,13 +16,11 @@ const cardImages = [
     purple, pink, lime, brown, cyan,
 ];
 
-
-
 const shuffleArray = (array: any[]) => {
     return array.sort(() => Math.random() - 0.5);
 };
 
-const MemoryMiniGame: React.FC<{ onCompletion: (gameType: string) => void }> = ({ onCompletion }) => {
+const MemoryMiniGame: React.FC<{ onCompletion: (gameType: string) => void }> = ({onCompletion}) => {
     const [cards, setCards] = useState<string[]>([]);
     const [flippedCards, setFlippedCards] = useState<number[]>([]);
     const [matchedCards, setMatchedCards] = useState<boolean[]>([]);
@@ -51,21 +49,18 @@ const MemoryMiniGame: React.FC<{ onCompletion: (gameType: string) => void }> = (
                 setMatchedCards(newMatchedCards);
                 setFlippedCards([]);
 
-                // Überprüfung, ob alle Karten übereinstimmen und das Spiel beendet ist
                 if (newMatchedCards.every(Boolean)) {
                     onCompletion("Answer the question");
                 }
             } else {
                 setIsWaiting(true);
                 setTimeout(() => {
-                    // Setze die flippedCards hier zurück, nachdem die Zeit abgelaufen ist, nicht sofort
                     setFlippedCards([]);
                     setIsWaiting(false);
-                }, 1000); // Verzögerungszeit in Millisekunden, in dieser Zeit bleiben die Karten sichtbar
+                }, 1000);
             }
         }
     };
-
 
     return (
         <div style={styles.container}>
@@ -79,7 +74,12 @@ const MemoryMiniGame: React.FC<{ onCompletion: (gameType: string) => void }> = (
                         }}
                         onClick={() => handleCardClick(index)}
                     >
-                        {flippedCards.includes(index) || matchedCards[index] ? <img src={card} alt="Memory Card" style={{width: '100%', height: '100%', objectFit: 'cover'}} /> : '❓'}
+                        {flippedCards.includes(index) || matchedCards[index] ? <img src={card} alt="Memory Card"
+                                                                                    style={{
+                                                                                        width: '100%',
+                                                                                        height: '100%',
+                                                                                        objectFit: 'cover'
+                                                                                    }}/> : '❓'}
 
                     </div>
                 ))}

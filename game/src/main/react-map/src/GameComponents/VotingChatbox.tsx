@@ -11,7 +11,7 @@ function getRandomIntInclusive(): number {
     return Math.floor(Math.random() * 100) + 1;
 }
 
-function VotingChatbox({ playerColor, playerName }) {
+function VotingChatbox({playerColor, playerName}) {
 
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
@@ -20,8 +20,6 @@ function VotingChatbox({ playerColor, playerName }) {
     const messageEndRef = useRef(null);
     const [votingChatVisible, setVotingChatVisible] = useState(false);
     const [chatIcon, setChatIcon] = useState(chatButton);
-
-    console.log('playerName: ', playerName);
 
     if (userId === 0) {
         setUserId(getRandomIntInclusive());
@@ -43,15 +41,14 @@ function VotingChatbox({ playerColor, playerName }) {
                         text: messageData.message,
                         isOwnMessage: false,
                         color: messageData.color
-                        // color: 'black'
                     }]);
-                    if(!votingChatVisible) {
+                    if (!votingChatVisible) {
                         notification(false);
                     }
                 }
             });
 
-            stompClient.subscribe(`/topic/votingChatIngoing/${ playerName }`, message => {
+            stompClient.subscribe(`/topic/votingChatIngoing/${playerName}`, message => {
                 const messageData = JSON.parse(message.body);
 
                 setMessages(prev => [...prev, {
@@ -59,7 +56,6 @@ function VotingChatbox({ playerColor, playerName }) {
                     text: messageData.message,
                     isOwnMessage: true,
                     color: messageData.color
-                    // color: 'black'
 
                 }]);
             });
@@ -68,7 +64,7 @@ function VotingChatbox({ playerColor, playerName }) {
         });
 
         return () => {
-            if(client && client.connected) {
+            if (client && client.connected) {
                 stompClient.disconnect(() => {
                     console.log('Disconnected');
                 });
@@ -84,7 +80,6 @@ function VotingChatbox({ playerColor, playerName }) {
 
     const sendMessage = () => {
         if (inputValue.trim() !== '') {
-            // client.send('/app/ingoing/', {}, JSON.stringify({
             client.send(`/app/votingChatIngoing/${userId}`, {}, JSON.stringify({
                 'userName': playerName,
                 'message': inputValue,
@@ -104,9 +99,9 @@ function VotingChatbox({ playerColor, playerName }) {
     }
 
     const notification = (read: boolean) => {
-        if(read) {
+        if (read) {
             setChatIcon(chatButton);
-        } else if(!read) {
+        } else if (!read) {
             setChatIcon(chatButtonNotification);
         }
     }

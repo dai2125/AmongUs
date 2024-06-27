@@ -11,7 +11,7 @@ function getRandomIntInclusive(): number {
     return Math.floor(Math.random() * 100) + 1;
 }
 
-function ChatBox({ playerColor, playerName }) {
+function ChatBox({playerColor, playerName}) {
 
     const [messages, setMessages] = useState([]);
     const [inputValue, setInputValue] = useState('');
@@ -36,22 +36,20 @@ function ChatBox({ playerColor, playerName }) {
             stompClient.subscribe('/topic/chatIngoing/', message => {
                 const messageData = JSON.parse(message.body);
                 if (messageData.userName !== userId) {
-                    console.log('RECEIVED MESSAGE messageData.userName: ', messageData.userName + ' userId: ', userId);
                     setMessages(prev => [...prev, {
                         userId: messageData.userName,
                         text: messageData.message,
                         isOwnMessage: false,
                         color: messageData.color
                     }]);
-                    if(!chatVisible) {
+                    if (!chatVisible) {
                         notification(false);
                     }
                 }
             });
 
-            stompClient.subscribe(`/topic/chatIngoing/${ playerName }`, message => {
+            stompClient.subscribe(`/topic/chatIngoing/${playerName}`, message => {
                 const messageData = JSON.parse(message.body);
-                console.log('RECEIVED MESSAGE2 messageData.userName: ', messageData.userName + ' userId: ', userId);
 
                 setMessages(prev => [...prev, {
                     userId: messageData.userName,
@@ -71,12 +69,6 @@ function ChatBox({ playerColor, playerName }) {
         };
     }, [userId]);
 
-    // useEffect(() => {
-    //     if (messageEndRef.current) {
-    //         messageEndRef.current.scrollIntoView({behavior: 'smooth'});
-    //     }
-    // }, [messages]);
-
     useEffect(() => {
         const scrollToEnd = () => {
             const messageList = messageEndRef.current?.parentNode;
@@ -84,15 +76,12 @@ function ChatBox({ playerColor, playerName }) {
                 messageList.scrollTop = messageList.scrollHeight;
             }
         };
-
         scrollToEnd();
     }, [messages]);
 
 
     const sendMessage = () => {
         if (inputValue.trim() !== '') {
-            console.log('SENDING MESSAGE: ' + playerName);
-            // client.send('/app/ingoing/', {}, JSON.stringify({
             client.send(`/app/chatIngoing/${userId}`, {}, JSON.stringify({
                 'userName': playerName,
                 'message': inputValue,
@@ -112,9 +101,9 @@ function ChatBox({ playerColor, playerName }) {
     }
 
     const notification = (read: boolean) => {
-        if(read) {
+        if (read) {
             setChatIcon(chatButton);
-        } else if(!read) {
+        } else if (!read) {
             setChatIcon(chatButtonNotification);
         }
     }

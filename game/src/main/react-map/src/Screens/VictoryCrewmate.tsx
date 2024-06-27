@@ -20,7 +20,15 @@ const VictoryCrewmate = ({onStart}) => {
 
     return (
         <div>
-            <img src={ victoryCrewmate } style={{position: 'fixed', top: '0', left: '0', minWidth: '100%', minHeight: '100%', width: 'auto', height: 'auto'}} ></img>
+            <img src={victoryCrewmate} style={{
+                position: 'fixed',
+                top: '0',
+                left: '0',
+                minWidth: '100%',
+                minHeight: '100%',
+                width: 'auto',
+                height: 'auto'
+            }}></img>
         </div>
     );
 }

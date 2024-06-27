@@ -13,7 +13,8 @@ public enum ResponseStatusExceptionMessage {
     USER_ALREADY_ONLINE("User already online", HttpStatus.CONFLICT),
     USER_NOT_FOUND("User not found", HttpStatus.NOT_FOUND),
 
-    GAME_ALREADY_EXISTS("Game already exists", HttpStatus.CONFLICT),;
+    GAME_ALREADY_EXISTS("Game already exists", HttpStatus.CONFLICT),
+    ;
     private final String _message;
     private final HttpStatus _status;
 

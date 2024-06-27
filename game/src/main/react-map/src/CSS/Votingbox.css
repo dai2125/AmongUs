@@ -29,20 +29,15 @@
 }
 
 .votingbox-title {
-    margin-top: 10px;  /* Adjust as needed */
-    margin-bottom: 10px;  /* Adjust as needed */
+    margin-top: 10px; /* Adjust as needed */
+    margin-bottom: 10px; /* Adjust as needed */
     line-height: 1.5;
-    /* This will increase the space between lines of text */
 }
 
 .votingbox-container {
     display: flex;
     width: 100%;
     justify-content: space-between;
-
-    /*color: black;*/
-    /*float: left;*/
-    /*clear: both;*/
 }
 
 .votingboxChatButton {
@@ -53,11 +48,9 @@
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    /*margin: 4px 2px;*/
     margin-right: 5px;
     cursor: pointer;
     border-radius: 5px;
-    /*padding: 1px;*/
     width: 35px;
     height: 35px;
 }
@@ -69,8 +62,6 @@
     margin: 5px;
     height: 70%;
     width: 80%;
-    /*min-width: 70%;*/
-    /*max-width: 70%;*/
 }
 
 .voting-list-item {
@@ -109,14 +100,12 @@
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    /*margin: 4px 2px;*/
     margin-right: 5px;
     margin-left: 35px;
     margin-top: 50px;
     margin-bottom: 15px;
     cursor: pointer;
     border-radius: 5px;
-    /*padding: 1px;*/
     width: 100px;
     height: 100px;
 }
@@ -129,14 +118,12 @@
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    /*margin: 4px 2px;*/
     margin-right: 5px;
     margin-left: -125px;
     margin-top: 50px;
     margin-bottom: 15px;
     cursor: pointer;
     border-radius: 5px;
-    /*padding: 1px;*/
     width: 100px;
     height: 100px;
 }

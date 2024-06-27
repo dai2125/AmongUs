@@ -3,7 +3,7 @@ import votingboxBackground from '../Images/Votingbox/Votingbox_background.png';
 
 import '../CSS/Votingbox.css';
 
-function VotingActive ()  {
+function VotingActive() {
 
     return (
         <div className="votingbox" style={{backgroundImage: `url(${votingboxBackground}`}}>

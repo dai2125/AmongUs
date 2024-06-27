@@ -33,7 +33,6 @@ body {
     background-repeat: no-repeat;
 }
 
-
 #local-img {
     background-image: url('../Local.png');
     background-repeat: no-repeat;
@@ -41,14 +40,10 @@ body {
     width: 100%;
     height: 100%;
 }
+
 #user-div {
     background-repeat: no-repeat;
     background-position: center;
     background-size: 100% 100%;
     width: 50%;
 }
-
-/*.input-field {*/
-/*    width: 100%;*/
-/*    padding: 10px;*/
-/*}*/

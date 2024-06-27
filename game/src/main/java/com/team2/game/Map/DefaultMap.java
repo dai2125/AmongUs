@@ -47,18 +47,17 @@ public final class DefaultMap {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
     };
 
-
     public static boolean isWall(int y, int x) {
-        if(map[y][x] == 1) {
+        if (map[y][x] == 1) {
             return true;
-        } else if(map[y][x] == 2) {
+        } else if (map[y][x] == 2) {
             return true;
         }
         return false;
     }
 
     public static boolean isTask(int y, int x) {
-        if(map[y + 1][x] == 2 || map[y][x + 1] == 2 || map[y - 1][x] == 2 || map[y][x - 1] == 2) {
+        if (map[y + 1][x] == 2 || map[y][x + 1] == 2 || map[y - 1][x] == 2 || map[y][x - 1] == 2) {
             return true;
         }
         return false;
@@ -69,25 +68,23 @@ public final class DefaultMap {
     }
 
     public static boolean isAirSystem(int y, int x) {
-        if(map[y][x] == 3) {
-            System.out.println("DefaultMap.java Air System: y: " + y + " x: " + x);
+        if (map[y][x] == 3) {
             return true;
         }
         return false;
     }
 
     public static boolean isEndOfMap(int y, int x) {
-        if(x >= 80 || y >= 45 || x <= 0 || y <= 0) {
+        if (x >= 80 || y >= 45 || x <= 0 || y <= 0) {
             return true;
         }
         return false;
     }
 
     public static boolean isSafe(int y, int x) {
-        if(map[y][x] == 4) {
+        if (map[y][x] == 4) {
             return true;
         }
         return false;
     }
-
 }

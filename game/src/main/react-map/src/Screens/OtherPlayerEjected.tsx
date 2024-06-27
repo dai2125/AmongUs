@@ -4,7 +4,6 @@ import otherPlayerEjected from "../Images/Ejected/Other_Player_Ejected.jpg";
 const OtherPlayerEjected = ({onStart, ejectedPlayer}) => {
 
     const [count, setCount] = useState(3);
-    console.log('EJECTED PLAYER IS: ', ejectedPlayer);
     useEffect(() => {
         if (!count) {
             onStart();
@@ -20,7 +19,15 @@ const OtherPlayerEjected = ({onStart, ejectedPlayer}) => {
 
     return (
         <div>
-            <img src={ otherPlayerEjected } style={{position: 'fixed', top: '0', left: '0', minWidth: '100%', minHeight: '100%', width: 'auto', height: 'auto'}} ></img>
+            <img src={otherPlayerEjected} style={{
+                position: 'fixed',
+                top: '0',
+                left: '0',
+                minWidth: '100%',
+                minHeight: '100%',
+                width: 'auto',
+                height: 'auto'
+            }}></img>
         </div>
     );
 }
