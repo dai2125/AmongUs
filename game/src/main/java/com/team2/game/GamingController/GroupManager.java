@@ -41,6 +41,18 @@ public class GroupManager {
         return gameInstances.get(gameId);
     }
 
+    public String getGameBySessionId(String sessionId) {
+        for (Map.Entry<String, GameInstance> entry : gameInstances.entrySet()) {
+            for (User user : entry.getValue().getUserList()) {
+                if (user.getSessionId().equals(sessionId)) {
+                    System.out.println("Disconnecting " + sessionId + " from game " + entry.getKey());
+                    return entry.getKey();
+                }
+            }
+        }
+        return null;
+    }
+
     public void removeGameInstance(String gameId) {
         gameInstances.remove(gameId);
     }

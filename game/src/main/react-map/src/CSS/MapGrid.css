@@ -71,4 +71,10 @@ p {
     animation: blinkTransparentRed 1s infinite;
 }
 
+.button-container {
+    display: flex;
+    justify-content: start;
+    gap: 10px;
+}
+
 

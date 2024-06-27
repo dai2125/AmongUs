@@ -28,9 +28,9 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
     const [activeIndex, setActiveIndex] = useState(null);
     const [votes, setVotes] = useState([]);
     const [hasVoted, setHasVoted] = useState(false);
-    const [votedFor, setVotedFor] = useState(null);
+    const [votedFor, setVotedFor] = useState('');
     const [votingActive, setVotingActive] = useState(true);
-    const [voteMessage, setVoteMessage] = useState("");
+    const [voteMessage, setVoteMessage] = useState("Replace me");
     const [deadPlayer1, setDeadPlayer] = useState([]);
     const [countDown, setCountDown] = useState(30);
 
@@ -40,7 +40,7 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
     // }, [players.length]);
 
     useEffect(() => {
-        setPlayers([...otherPlayers.filter(player => player.getColor() !== 'dead').map(player => ({
+        setPlayers([...otherPlayers.filter(player => player.getColor() !== 'dead' || player.getColor() !== 'ghost').map(player => ({
             userId: player.userName,
             color: player.color
         }))]);
@@ -71,20 +71,20 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
         }
     }
 
-    if(players.length === 0) {
-        setPlayers([{userId: "Player1", color: "red"},
-            {userId: "Player9", color: "cyan"},
-            {userId: "Player2", color: "blue"},
-            {userId: "Player3", color: "green"},
-            {userId: "Player6", color: "black"},
-            {userId: "Player7", color: "white"},
-            {userId: "Player8", color: "brown"},
-            {userId: "Player11", color: "pink"},
-            {userId: "Player10", color: "lime"},
-            {userId: "Player4", color: "orange"},
-            {userId: "Player5", color: "yellow"},
-            {userId: "Player12", color: "purple"}]);
-    }
+    // if(players.length === 0) {
+    //     setPlayers([{userId: "Player1", color: "red"},
+    //         {userId: "Player9", color: "cyan"},
+    //         {userId: "Player2", color: "blue"},
+    //         {userId: "Player3", color: "green"},
+    //         {userId: "Player6", color: "black"},
+    //         {userId: "Player7", color: "white"},
+    //         {userId: "Player8", color: "brown"},
+    //         {userId: "Player11", color: "pink"},
+    //         {userId: "Player10", color: "lime"},
+    //         {userId: "Player4", color: "orange"},
+    //         {userId: "Player5", color: "yellow"},
+    //         {userId: "Player12", color: "purple"}]);
+    // }
 
     const handleItemClick = (index) => {
         setActiveIndex(index === activeIndex ? null : index);
@@ -97,8 +97,12 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
             setVotes(newVotes);
             setHasVoted(true);
             setVotedFor(players[index].userId);
-            console.log('VOTED FOR: ' + players[index].userId);
+            console.log('voted for: ' + players[index].userId + ' votedFor ' + votedFor);
             // onButtonPress(players[index].userId);
+
+            // setVotingActive(false);
+            setVoteMessage("You submitted your vote, please wait.");
+            // onButtonPress(votedFor);
         } else if (hasVoted) {
             resetVoting();
         }
@@ -111,18 +115,18 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
     const resetVoting = () => {
         setVotes(new Array(players.length).fill(0));
         setHasVoted(false);
-        setVotedFor(null);
+        setVotedFor("null");
     }
 
     const handleSkipButtonPress = () => {
-        // setVotingActive(false);
+        setVotingActive(false);
         setHasVoted(true);
         setVoteMessage("You skipped the vote, please wait.");
-        onButtonPress(null);
+        onButtonPress("null");
     };
 
     const handleSubmitButtonPress = () => {
-        // setVotingActive(false);
+        setVotingActive(false);
         setHasVoted(true);
         setVoteMessage("You submitted your vote, please wait.");
         onButtonPress(votedFor);
@@ -132,12 +136,17 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
         if(countDown === 0 && !hasVoted) {
             setVotingActive(false);
             setVoteMessage("Time is up, please wait.");
-            onButtonPress(null);
+
+            setTimeout(() => {
+
+                onButtonPress("null");
+            }, 3000);
         }
+
     }, [countDown]);
 
     useEffect(() => {
-        const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
+        const socket = new SockJS("http://192.168.0.45:8080/gs-guide-websocket");
         const client = Stomp.over(socket);
         client.connect({}, () => {
             client.subscribe('/topic/countdownVoting/', (message) => {
@@ -147,6 +156,13 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
                 setCountDown(response);
             });
         });
+
+        return () => {
+            client.disconnect(() => {
+                console.log('Disconnected');
+            });
+        }
+
     }, []);
 
     return (
@@ -162,60 +178,48 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
                         {/*<h2>{deadPlayer} is dead</h2>*/}
                         {/*<h2>{deadPlayer1}</h2>*/}
                         {deadPlayer1.length > 0 && (
-                            <h2>{deadPlayer1.map(player => `${player.userId} is dead`).join(', ')}</h2>
+                            <h2 className="voting-h2">{deadPlayer1.map(player => `${player.userId} is dead`).join(', ')}</h2>
                         )}
                     </div>
 
-                    <div className="grid grid-rows-10">
-                        <div className="row-span-6">
-                            <div className="votingbox-container">
-                                <div className="voting-list">
-                                    {players.map((message, index) => (
-                                        <div className="voting-list-item" key={index}
-                                             onClick={() => handleItemClick(index)}>
-                                            <div className="voting-id" style={{color: message.color}}>
-                                                <img src={`../src/images/Chat/chat_left_${message.color}.png`}
-                                                     alt="user"/><br/>
-                                                {message.userId}
-                                                <div>Votes: {votes[index]}</div>
-                                                {activeIndex === index && (
-                                                    <div>
-                                                        <button className="submitVote"
-                                                                onClick={() => handleSubmitClick(index)}>
-                                                            <img
-                                                                src={submitVote}></img></button>
-                                                        <button className="cancelVote"
-                                                                onClick={() => handleCancelClick(index)}>
-                                                            <img
-                                                                src={cancelVote}></img></button>
-                                                    </div>
-                                                )}
+                    <div className="votingbox-container">
+                        <div className="voting-list">
+                            {players.map((message, index) => (
+                                <div className="voting-list-item" key={index} onClick={() => handleItemClick(index)}>
+                                    <div className="voting-id" style={{color: message.color}}>
+                                        <img src={`../src/images/Chat/chat_left_${message.color}.png`} alt="user"/><br/>
+                                        {message.userId}
+                                        <div>Votes: {votes[index]}</div>
+                                        {activeIndex === index && (
+                                            <div>
+                                                <button className="submitVote" onClick={() => handleSubmitClick(index)}>
+                                                    <img
+                                                        src={submitVote}></img></button>
+                                                <button className="cancelVote" onClick={() => handleCancelClick(index)}>
+                                                    <img
+                                                        src={cancelVote}></img></button>
                                             </div>
-                                        </div>
-                                    ))}
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div className="row-span-4 grid grid-cols-3 gap-4 h-1/6 justify-self-center">
-                            <div className="skip-vote-button col-span-1">
-                                <button onClick={handleSkipButtonPress}><img src={skipVote}></img></button>
-                            </div>
-                            <div
-                                className="submit-vote-button col-span-1 bg-green-500 text-center hover:bg-green-600 text-slate-50 w-32 font-bold h-6 rounded-lg ml-15 border-solid mt-12">
-                                <button onClick={handleSubmitButtonPress}>Submit Button</button>
-                            </div>
-                            <div
-                                className="voting-countdown col-span-1 text-center text-slate-50 bg-gray-600 font-bold h-6 w-32 rounded-lg border-solid mt-12">
-                                <h1>Time left: {countDown}</h1>
-                            </div>
+                            ))}
                         </div>
                     </div>
-
+                    <div className="row-span-4 grid grid-cols-3 gap-4 h-1/6 justify-self-center">
+                        <div className="skip-vote-button">
+                            <button onClick={handleSkipButtonPress}><img src={skipVote}></img></button>
+                        </div>
+                        <div className="submit-vote-button">
+                            <button onClick={handleSubmitButtonPress}>Submit Button</button>
+                        </div>
+                        <div className="voting-countdown">
+                            <h1 style={{ fontFamily: 'bold 30px 14px VCR OSD Mono monospace', fontSize: '20px', color: 'white' }}>Time left: {countDown}</h1>
+                    </div>
+                    </div>
                 </div>
             ) : (
                 <div>
-                    <h1>{voteMessage}</h1>
+                    <h2 className="voting-h2" style={{ fontFamily: 'bold 30px 14px VCR OSD Mono monospace', fontSize: '20px', color: 'white' }}>{voteMessage}</h2>
                 </div>
             )}
         </div>

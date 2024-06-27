@@ -31,44 +31,44 @@ const TaskBar: React.FC<TaskBarProps> = ({completedTasksCount}) => {
     let imageSrc;
     switch (completedTasksCount) {
         case 0:
-            imageSrc = emptyOfTwelveTaskBar;
+            imageSrc = emptyTaskBar;
             break;
         case 1:
-            imageSrc = oneOfTwelveTaskBar;
+            imageSrc = oneOfNineTaskBar;
             break;
         case 2:
-            imageSrc = twoOfTwelveTaskBar;
+            imageSrc = twoOfNineTaskBar;
             break;
         case 3:
-            imageSrc = threeOfTwelveTaskBar;
+            imageSrc = threeOfNineTaskBar;
             break;
         case 4:
-            imageSrc = fourOfTwelveTaskBar;
+            imageSrc = fourOfNineTaskBar;
             break;
         case 5:
-            imageSrc = fiveOfTwelveTaskBar;
+            imageSrc = fiveOfNineTaskBar;
             break;
         case 6:
-            imageSrc = sixOfTwelveTaskBar;
+            imageSrc = sixOfNineTaskBar;
             break;
         case 7:
-            imageSrc = sevenOfTwelveTaskBar;
+            imageSrc = sevenOfNineTaskBar;
             break;
         case 8:
-            imageSrc = eightOfTwelveTaskBar;
+            imageSrc = eightOfNineTaskBar;
             break;
         case 9:
-            imageSrc = nineOfTwelveTaskBar;
+            imageSrc = nineOfNineTaskBar;
             break;
-        case 10:
-            imageSrc = tenOfTwelveTaskBar;
-            break;
-        case 11:
-            imageSrc = elevenOfTwelveTaskBar;
-            break;
-        case 12:
-            imageSrc = twelveOfTwelveTaskBar;
-            break;
+        // case 10:
+        //     imageSrc = tenOfTwelveTaskBar;
+        //     break;
+        // case 11:
+        //     imageSrc = elevenOfTwelveTaskBar;
+        //     break;
+        // case 12:
+        //     imageSrc = twelveOfTwelveTaskBar;
+        //     break;
         default:
             imageSrc = nineOfNineTaskBar;
             break;
