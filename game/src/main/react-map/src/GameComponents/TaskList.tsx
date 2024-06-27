@@ -16,7 +16,7 @@ const TaskList = ({role, tasks}) => {
     }, [tasks]);
 
     return (
-        <div className="absolute top-32 left-1 w-100 h-100 bg-white bg-opacity-80 border  px-4 py-1"
+        <div className="absolute top-36 left-1 w-100 h-100 bg-white bg-opacity-80 border  px-4 py-1"
              style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', display: 'flex', alignItems: 'center', zIndex: 1}}>
             <div style={{flex: 1, minHeight: '100%', borderRight: '1px solid #ccc', fontFamily: "'VCR OSD Mono', monospace"}}>
                 <p className="text-black bold text-xl">{myRole}</p>

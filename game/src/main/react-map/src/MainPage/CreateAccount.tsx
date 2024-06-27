@@ -51,7 +51,7 @@ export default function CreateAccount({onLoginNavClick}: Props){
             setSuccessMessage("");
         }else {
 
-            fetch('http://localhost:8080/signUp',{
+            fetch('http://192.168.0.45:8080/signUp',{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -97,10 +97,11 @@ export default function CreateAccount({onLoginNavClick}: Props){
                                 <label className="text-white">Username:</label><br/>
                                 <input name="name"
                                        className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                       style={{width: "505"}}
                                        required/><br/>
                                 <label className="text-white">E-mail:</label><br/>
                                 <input name="email"
-                                       className="input-field bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                       className="input-field w-72 h-10 bg-white border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                        required/><br/>
                                 <label className="text-white">Password:</label><br/>
                                 <input type="password" name="password"

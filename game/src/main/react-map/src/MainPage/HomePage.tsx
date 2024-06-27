@@ -106,7 +106,7 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
             (user.newPassword == user.passwordConfirm) &&
             (user.oldPassword == user.oldPasswordInput)) {
 
-            fetch('http://localhost:8080/accountDetails', {
+            fetch('http://192.168.0.45:8080/accountDetails', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -232,7 +232,7 @@ const clientRef = useRef(null);
 
         event.preventDefault();
 
-        const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
+        const socket = new SockJS('http://192.168.0.45:8080/gs-guide-websocket');
         const client = Stomp.over(socket);
         clientRef.current = client;
 
@@ -262,7 +262,7 @@ const clientRef = useRef(null);
     }
     const handleCustomGame = (event: FormEvent<HTMLFormElement>) => {
 
-        const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
+        const socket = new SockJS('http://192.168.0.45:8080/gs-guide-websocket');
 
         const client = Stomp.over(socket);
         clientRef.current = client;
@@ -518,7 +518,6 @@ const clientRef = useRef(null);
                                             className="w-full-myAccount h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
                                         UPDATE MY ACCOUNT
                                     </button>
-                                    // TODO disable error and success message when re-open the account settings
                                     {successMessage &&
                                         <p className="text-2xl-success text-left font-light text-amber-600 ">{successMessage}</p>}
                                     {errorMessage &&
@@ -526,7 +525,7 @@ const clientRef = useRef(null);
                             </form>
                         </div>
                     ) : (
-                        <div>Select an option</div>
+                        <div></div>
                     )}
                     <div>
                         {showAppearanceBox ?

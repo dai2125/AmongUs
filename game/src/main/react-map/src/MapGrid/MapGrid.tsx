@@ -118,6 +118,12 @@ import ghostImageSouth from '../Images/Character_Ghost_Movement/Ghost_South.png'
 import ghostImageNorth from '../Images/Character_Ghost_Movement/Ghost_North.png';
 
 import votingboxButton from '../Images/Votingbox/report_player.png';
+import sabotageButton from '../Images/Buttons/Sabotage_Button.png';
+import ventButton from '../Images/Buttons/Vent_Button.png';
+import killButton from '../Images/Buttons/Kill_Button.png';
+
+import AlarmScreen from '../Screens/AlarmScreen';
+import AirSystemScreen from '../Screens/AirSystem';
 
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
@@ -125,6 +131,8 @@ import Stomp from "stompjs";
 import skeldImage from '../Images/Maps/Skeld.png';
 import '../CSS/MapGrid.css';
 import {Player} from "../Player";
+import {Simulate} from "react-dom/test-utils";
+import keyPress = Simulate.keyPress;
 
 interface MapGridProps {
     currentPlayer: Player;
@@ -159,7 +167,9 @@ const colorToImageUrl = {
 
 const movementQueue = [];
 
-const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportButtonClicked,  onKeyClick}) => {
+const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportButtonClicked,  onKeyClick
+                                         }) => {
+
 
     const [otherPlayer, setOtherPlayer] = useState(otherPlayers);
     const [playerImage, setPlayerImage] = useState(colorToImageUrl[currentPlayer.getColor()]);
@@ -168,8 +178,8 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [scrollPosition, setScrollPosition] = useState({x: 0, y: 0});
     const [gridKey, setGridKey] = useState(0);
     const containerRef = useRef(null);
-    const [playerDirection, setPlayerDirection] = useState('');
-    const [showReportButton, setShowReportButton] = useState(false);
+    const [playerDirection, setPlayerDirection] = useState('south');
+    const [showReportButton, setShowReportButton] = useState(true);
     const [playerPosition, setPlayerPosition] = useState({x: currentPlayer.getX(), y: currentPlayer.getY()});
     const [otherPlayerDirection, setOtherPlayerDirection] = useState({});
     const [otherPlayerPosition, setOtherPlayerPosition] = useState({});
@@ -179,10 +189,20 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     const [killActive, setKillActive] = useState(true);
     const [killCooldown, setKillCooldown] = useState(0);
     const [ventActive, setVentActive] = useState(true);
-    const [ventCooldown, setVentCooldown] = useState(0);
+    const [airSystemCountdown, setAirSystemCountdown] = useState(0);
     const [lastMove, setLastMove] = useState(Date.now());
     const [notConnected, setNotConnected] = useState(false);
     const [otherPlayerDirections, setOtherPlayerDirections] = useState({});
+    const [sabotageActive, setSabotageActive] = useState(false);
+    // const [ventActive, setVentActive] = useState(true);
+    const [alarm, setAlarm] = useState(false);
+    const [sabotageCountdown, setSabotageCountdown] = useState(300);
+    const [test, setTest] = useState(false);
+
+    const [showAlarmScreen, setShowAlarmScreen] = useState(false);
+    const [showAirSystem, setShowAirSystem] = useState(false);
+
+
 
     setInterval(() => {
         if (movementQueue.length > 0) {
@@ -197,7 +217,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     currentPlayer.setY(response.y);
                     setPlayerDirection('north2');
                 }
-            } else if(response.direction === 'south') {
+            } else if (response.direction === 'south') {
                 if (currentPlayer.getY() % 2 === 0) {
                     currentPlayer.setY(response.y);
                     setPlayerDirection('south');
@@ -205,7 +225,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     currentPlayer.setY(response.y);
                     setPlayerDirection('south2');
                 }
-            } else if(response.direction === 'east') {
+            } else if (response.direction === 'east') {
                 if (currentPlayer.getX() % 2 === 0) {
                     currentPlayer.setX(response.x);
                     setPlayerDirection('east');
@@ -214,7 +234,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     currentPlayer.setX(response.x);
                     setPlayerDirection('east2');
                 }
-            } else if(response.direction === 'west') {
+            } else if (response.direction === 'west') {
                 if (currentPlayer.getX() % 2 === 0) {
                     currentPlayer.setX(response.x);
                     setPlayerDirection('west');
@@ -370,14 +390,17 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             south2: brownImageSouth2
         },
         ghost: {
-            east: ghostImageEast,
-            west: ghostImageWest,
             north: ghostImageNorth,
-            south: ghostImageSouth
+            north2: ghostImageNorth,
+            south: ghostImageSouth,
+            south2: ghostImageSouth,
+            west: ghostImageWest,
+            west2: ghostImageWest,
+            east: ghostImageEast,
+            east2: ghostImageEast
         },
         dead: dead
     };
-
 
 
     useEffect(() => {
@@ -415,15 +438,20 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         });
     }, [otherPlayers]);
 
+    useEffect(() => {
+    }, [setAlarm, setKillActive]);
+
     function updatePlayerImage(player) {
         let newImage;
-        if (!player.getMovable()) {
+        if (player.getColor() === 'dead') {
             newImage = colorToImageUrl['dead'];
-            newImage = lime;
-        } else if (player.getColor() === 'dead') {
-            newImage = colorToImageUrl['dead'];
-            console.log('DEADPLAYER: ' + player);
-        } else {
+            // newImage = lime;
+        }
+        // else if (player.getColor() === 'dead') {
+        //     newImage = colorToImageUrl['dead'];
+        //     console.log('DEADPLAYER: ' + player);
+        // }
+        else {
             const direction = otherPlayerDirections[player.getSessionId()];
             const color = player.getColor();
             console.log('RRRRRRR: ' + player.getDirection() + ' ' + player.getColor() + ' ' + player.getSessionId());
@@ -445,7 +473,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 } else if (player.getDirection() === "north") {
                     newImage = redImageNorth;
                 } else if (player.getDirection() === "east") {
-                   // newImage = redImageEast;
+                    // newImage = redImageEast;
                 } else if (player.getDirection() === "west") {
                     newImage = redImageWest;
                 }
@@ -550,7 +578,11 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     newImage = purpleImageWest;
                 }
             } else if (player.getColor() === "ghost") {
-                if (player.getDirection() === "east") {
+                if (player.getDirection() === "north") {
+                    newImage = ghostImageNorth;
+                } else if(player.getDirection() === "south") {
+                    newImage = ghostImageSouth;
+                } else if (player.getDirection() === "east") {
                     newImage = ghostImageEast;
                 } else if (player.getDirection() === "west") {
                     newImage = ghostImageWest;
@@ -577,10 +609,10 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 3, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -596,14 +628,14 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1],
         [1, 0, 1, 0, 0, 0, 0, 3, 3, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1],
         [1, 0, 1, 0, 0, 0, 0, 3, 3, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
-        [1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
-        [1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+        [1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 4, 4, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 4, 4, 4, 4, 4, 4, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 4, 4, 4, 4, 4, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 4, 4, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+        [1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
         [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1],
         [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1],
         [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 3, 3, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1],
@@ -639,10 +671,10 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -682,7 +714,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         }
     }, [currentPlayer, skeldImage]);
 
-    const visibilityRadius = 10;
+    const visibilityRadius = 15;
 
     function isCellVisible(playerX, playerY, cellX, cellY) {
         const distance = Math.abs(cellX - playerX) + Math.abs(cellY - playerY);
@@ -691,17 +723,42 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
 
     const handleButtonPress = () => {
         reportButtonClicked();
+        setShowReportButton(false);
     }
 
-    const handleKillButtonPress = () => {
-        // sendKill();
+    const handleKill = () => {
+        console.log('HANDLE KILL');
+        setKillActive(false);
     }
+
+    const handleSabotageAndKill = () => {
+        console.log('HANDLESABOTAGEANDKILL');
+        setSabotageActive(true);
+        setKillActive(true);
+    };
+
+    // const handleKillButtonPress = () => {
+    //     killButtonClicked();
+        // setKillActive(false);
+    // }
+
+    // const handleAirSystemButtonPress = () => {
+    //     airSystemButtonClicked();
+    // }
+
+    // const handleSabotageButtonPress = () => {
+    //     setAlarm(true);
+    //     setKillActive(false);
+    //     sabotageButtonClicked();
+    // }
+
+
 
     // useEffect(() => {
     if (!notConnected) {
         // connect() {
         setNotConnected(true);
-        const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
+        const socket = new SockJS("http://192.168.0.45:8080/gs-guide-websocket");
         const client = Stomp.over(socket);
         client.connect({}, () => {
             client.subscribe(`/topic/movement/north/${currentPlayer.getUserName()}`, (message) => {
@@ -734,6 +791,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 p.setX(response.x);
                                 p.setY(response.y);
                                 p.setDirection(response.direction);
+                                p.setColor(response.color);
                                 updatePlayerImage(p);
 
                             }
@@ -753,6 +811,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 p.setX(response.x);
                                 p.setY(response.y);
                                 p.setDirection(response.direction);
+                                p.setColor(response.color);
                                 updatePlayerImage(p);
 
                             }
@@ -772,6 +831,8 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 p.setX(response.x);
                                 p.setY(response.y);
                                 p.setDirection(response.direction);
+                                p.setColor(response.color);
+
                                 updatePlayerImage(p);
 
                             }
@@ -791,6 +852,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                 p.setX(response.x);
                                 p.setY(response.y);
                                 p.setDirection(response.direction);
+                                p.setColor(response.color);
                                 updatePlayerImage(p);
 
                             }
@@ -802,24 +864,83 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             });
 
             client.subscribe(`/topic/airsystem/${currentPlayer.getUserName()}`, (message) => {
-                console.log('airsystem message received')
+                setShowAirSystem(true);
+
+                setTimeout(() => {
+                    setShowAirSystem(false);
+                }, 10000);
+
                 const response = JSON.parse(message.body);
                 currentPlayer.setX(response.x);
                 currentPlayer.setY(response.y);
             });
 
             client.subscribe(`/topic/deadPlayerVisible/${currentPlayer.getUserName()}`, () => {
+                // setShowReportButton(true);
+            });
+
+            client.subscribe('/topic/setShowReportButtonTrue/', () => {
                 setShowReportButton(true);
             });
 
-            client.subscribe(`/topic/deadPlayerNotVisible/${currentPlayer.getUserName()}`, () => {
+            client.subscribe('/topic/setShowReportButtonFalse/', () => {
                 setShowReportButton(false);
+            });
+
+            client.subscribe(`/topic/deadPlayerNotVisible/${currentPlayer.getUserName()}`, () => {
+                // setShowReportButton(false);
+            });
+
+            client.subscribe('/topic/sabotageActive/', () => {
+                setAlarm(true);
+                console.log('ALARM ACTIVE AFTER INCOME: ' + alarm);
+
+                if(currentPlayer.getRole() === 'Impostor') {
+                    currentPlayer.setTask2('SabotageNotActive');
+                }
+
+                // setKillActive(false);
+                console.log('SETKILLACTIVE ' + killActive);
+                setShowAlarmScreen(true);
+
+                // setTimeout(() => {
+                //     setShowAlarmScreen(false);
+                //
+                // }, 5000);
+                currentPlayer.setAction('SabotageActive');
+                setKillActive(false);
+                setSabotageActive(true);
+                // constSabotageActive();
+            });
+
+            client.subscribe('/topic/sabotageNotActive/', () => {
+                setAlarm(false);
+                currentPlayer.setAction('SabotageNotActive');
+            });
+
+            client.subscribe('/topic/sabotageButtonActive/', () => {
+                // setSabotageActive(true);
+                // setKillActive(true);
+                handleSabotageAndKill();
+            });
+
+            client.subscribe(`/topic/dead/${currentPlayer.getUserName()}`, () => {
+                currentPlayer.setMovable(false);
+                currentPlayer.setColor('dead');
+
+                setShowReportButton(false);
+                client.unsubscribe('topic/setShowReportButtonTrue/');
+                client.unsubscribe('topic/setShowReportButtonFalse/');
+
+                playerImage.src = dead;
+                updatePlayerImage(currentPlayer);
             });
 
             if (currentPlayer.getRole() === "Impostor") {
                 client.subscribe(`/topic/killButtonNotActive/${currentPlayer.getUserName()}`, () => {
                     console.log('kill button not active')
-
+                    handleKill();
+                    currentPlayer.setAction('KillNotActive');
                     setKillActive(false);
                 });
 
@@ -839,25 +960,87 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 });
 
                 client.subscribe(`/topic/ventNotActive/${currentPlayer.getUserName()}`, () => {
-                    setVentActive(false);
+                        setVentActive(false);
                     setTimeout(() => {
                         setVentActive(true);
-                    }, 3000);
+                    }, 10000);
                 });
 
-                client.subscribe(`/topic/ventActive/${currentPlayer.getUserName()}`, () => {
-                    // setVentActive(true);
+                client.subscribe(`/topic/airSystemActive/${currentPlayer.getUserName()}`, () => {
+                    setVentActive(true);
                 });
 
-                client.subscribe(`/topic/ventCooldown/${currentPlayer.getUserName()}`, (message) => {
+                client.subscribe(`/topic/airSystemCountdown/${currentPlayer.getUserName()}`, (message) => {
                     const response = JSON.parse(message.body);
-                    setVentCooldown(response);
+                     // setAirSystemCountdown(response);
                     if (response === 0) {
                         setVentActive(true);
                     }
                 });
+
+                client.subscribe(`/topic/sabotage/${currentPlayer.getUserName()}`, () => {
+                    // setVentActive(true);
+                });
+
+                client.subscribe(`/topic/setSabotageFalse/${currentPlayer.getUserName()}`, () => {
+                    setSabotageActive(false);
+                });
+
+                client.subscribe(`/topic/setSabotageTrue/${currentPlayer.getUserName()}`, () => {
+                    setSabotageActive(true);
+
+                });
+
+                client.subscribe('/topic/sabotageButtonCountdown/', (message) => {
+                    const response = JSON.parse(message.body);
+                    setSabotageCountdown(response);
+                    if(response === 0) {
+                        setSabotageActive(true);
+                    }
+                });
+            }
+
+            if(currentPlayer.getColor() === 'ghost') {
+                console.log('GHOOOOOOST MOVEMENT UNSUBSCRIBE');
+
+                client.unsubscribe(`/topic/movementNorth/${currentPlayer.getUserName()}`);
+                client.unsubscribe(`/topic/movementSouth/${currentPlayer.getUserName()}`);
+                client.unsubscribe(`/topic/movementWest/${currentPlayer.getUserName()}`);
+                client.unsubscribe(`/topic/movementEast/${currentPlayer.getUserName()}`);
+
+                console.log('GHOOOOOOST MOVEMENT SUBSCRIBED');
+
+                client.subscribe(`/topic/ghostMovementNorth/${currentPlayer.getUserName()}`, () => {
+
+                });
+
+                client.subscribe(`/topic/ghostMovementSouth/${currentPlayer.getUserName()}`, () => {
+
+                });
+
+                client.subscribe(`/topic/ghostMovementWest/${currentPlayer.getUserName()}`, () => {
+
+                });
+
+                client.subscribe(`/topic/ghostMovementEast/${currentPlayer.getUserName()}`, () => {
+
+                });
             }
         });
+
+        const handleRandomMove = () => {
+            const moveEvents = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
+            const randomIndex = Math.floor(Math.random() * moveEvents.length);
+            const randomEvent = moveEvents[randomIndex];
+            handleMove(randomEvent);
+        };
+
+        // setInterval(() => {
+        //     if (currentPlayer.getMovable()) {
+        //         handleRandomMove();
+        //     }
+        // }, 1000);
+
 
         const handleMove = (event: string) => {
             switch (event) {
@@ -882,6 +1065,14 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 case 'w':
                     console.log("W input")
                     onKeyClick();
+                case 'f':
+                    sendSabotage();
+                    break;
+                case 'r':
+                    sendImSafe();
+                    break;
+                case 't':
+                    reportButtonClicked();
                     break;
                 default:
                     break;
@@ -961,16 +1152,22 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         }
 
         const sendKill = () => {
-            console.log('kill e pressed: ' + currentPlayer.getRole());
-            if (currentPlayer.getRole() === "Crewmate") {
-                console.log('you cant kill');
+            console.log('SEND KILL() alarm: ' + alarm + ' sabotageActive: ' + sabotageActive + ' test:' + test + ' getTask2(): ' + currentPlayer.getTask2());
+
+            if (currentPlayer.getRole() === "Crewmate" || alarm || sabotageActive) {
                 return;
             }
-            console.log("Hello from new kill");
+
+            if(currentPlayer.getAction() === 'SabotageActive' || currentPlayer.getAction() === 'KillNotActive') {
+                return;
+            }
+
             let payload;
             for (let player of otherPlayers) {
                 if ((player.getY() == currentPlayer.getY() && (player.getX() == currentPlayer.getX() + 1 || player.getX() == currentPlayer.getX() - 1)) ||
-                    (player.getX() == currentPlayer.getX() && (player.getY() == currentPlayer.getY() + 1 || player.getY() == currentPlayer.getY() - 1))) {
+                    (player.getX() == currentPlayer.getX() && (player.getY() == currentPlayer.getY() + 2 || player.getY() == currentPlayer.getY() - 2)) ||
+                    (player.getY() == currentPlayer.getY() && (player.getX() == currentPlayer.getX() + 2 || player.getX() == currentPlayer.getX() - 2)) ||
+                    (player.getX() == currentPlayer.getX() && (player.getY() == currentPlayer.getY() + 2 || player.getY() == currentPlayer.getY() - 2))) {
                     console.log("Hello from new kill inside ", currentPlayer.getGameId());
                     payload = JSON.stringify({
                         objectOne: currentPlayer.getUserName(),
@@ -986,7 +1183,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
         }
 
         const sendAirSystem = () => {
-            console.log('airSystem q pressed');
             if (currentPlayer.getRole() === 'Impostor' && ventActive) {
                 const payload = JSON.stringify({
                     userName: currentPlayer.getUserName(),
@@ -996,7 +1192,41 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     x: currentPlayer.getX(),
                     y: currentPlayer.getY()
                 });
+                setVentActive(false);
+                console.log('VENT ACTIVE: ' + ventActive);
                 client.send(`/app/airsystem/${currentPlayer.getUserName()}`, {}, payload);
+            }
+        }
+
+        const sendSabotage = () => {
+            if (currentPlayer.getRole() === 'Impostor' && !sabotageActive) {
+                const payload = JSON.stringify({
+                    userName: currentPlayer.getUserName(),
+                    action: currentPlayer.getAction(),
+                    sessionId: currentPlayer.getSessionId(),
+                    color: currentPlayer.getColor(),
+                    x: currentPlayer.getX(),
+                    y: currentPlayer.getY(),
+                    gameId: currentPlayer.getGameId()
+                });
+                client.send(`/app/sabotage/${currentPlayer.getUserName()}`, {}, payload);
+                // setAlarm(true);
+                // setKillActive(false);
+            }
+        }
+
+        const sendImSafe = () => {
+            if (currentPlayer.getAction() === 'SabotageActive') {
+                const payload = JSON.stringify({
+                    userName: currentPlayer.getUserName(),
+                    action: currentPlayer.getAction(),
+                    sessionId: currentPlayer.getSessionId(),
+                    color: currentPlayer.getColor(),
+                    x: currentPlayer.getX(),
+                    y: currentPlayer.getY(),
+                    gameId: currentPlayer.getGameId()
+                });
+                client.send(`/app/safetyButtonPressed/${currentPlayer.getUserName()}`, {}, payload);
             }
         }
 
@@ -1010,6 +1240,16 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
             position: 'absolute', width: '120%', height: '100%', top: 200, left: -200, overflow: 'auto',
             overflowX: 'hidden', overflowY: 'hidden'
         }}>
+            {alarm && (
+                <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: 2500,
+                    height: 1800,
+                    zIndex: 10,
+                }} className="blinkingTransparentRed"></div>
+            )}
             <canvas ref={canvasRef} id="game" width="2500" height="1800"
                     style={{border: '1px solid black', display: 'block'}}>
 
@@ -1024,7 +1264,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                             const cellStyle = isVisible ? {
                                 backgroundSize: 'cover', width: '30px', height: '30px'
                             } : {
-                                visibility: 'hidden',
+                                // visibility: 'hidden',
                                 // width: '30px',
                                 // height: '30px'
                             };
@@ -1039,8 +1279,8 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                         height: '30px',
 
                                         position: 'absolute',
-                                        left: `${colIndex * 15 - 7.5}px`, // Adjusted for 2x2 cells
-                                        top: `${rowIndex * 15 - 7.5}px`, // Adjusted for 2x2 cells
+                                        left: `${colIndex * 15 - 7.5}px`,
+                                        top: `${rowIndex * 15 - 7.5}px`,
                                         transform: 'translate(-50%, -50%)'
                                     }}>
                                     </span>
@@ -1051,18 +1291,14 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                                               {{
                                                   backgroundImage: `url(${playerImage})`,
                                                   backgroundSize: 'cover',
-                                                  // width: '30px',
-                                                  // height: '30px',
                                                   width: '30px',
                                                   height: '30px',
                                                   // position: 'absolute',
-
-                                                  // transform: 'translate(0%, 0%)'
                                                   transform: 'translate(-50%, -50%)',
 
                                                   position: 'absolute',
-                                                  left: `${colIndex * 15 - 7.5}px`, // Adjusted for 2x2 cells
-                                                  top: `${rowIndex * 15 - 7.5}px`, // Adjusted for 2x2 cells
+                                                  left: `${colIndex * 15 - 7.5}px`,
+                                                  top: `${rowIndex * 15 - 7.5}px`,
                                               }}>
                                     </span>
                                 );
@@ -1080,6 +1316,14 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     </div>
                 ))}
             </div>
+            <div>
+                {showAlarmScreen ?
+                    <AlarmScreen/> : <div></div>}
+            </div>
+            <div>
+                {showAirSystem ?
+                    <AirSystemScreen/> : <div></div>}
+            </div>
             <div style={{
                 position: 'fixed',
                 right: 10,
@@ -1088,38 +1332,88 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 padding: '10px',
                 borderRadius: '5px',
             }}>
-                {showReportButton ?
+
+                {yourTheImpostor ? (
                     <div>
-                        <button className="w-10 h-10" onClick={handleButtonPress}><img alt="reportButton"
-                                                                                       className="w-10 h-10 hover:bg-black"
-                                                                                       src={votingboxButton}></img>
-                        </button>
-                    </div> : <div></div>
-                }
-                {yourTheImpostor ? <div>
-                        <h2 className="h2">Keyboard controls</h2>
-                        {killActive ?
-                            <div><p>Kill E</p></div> : <div><p>Cooldown {killCooldown}</p></div>
-                        }
-                        {ventActive ?
-                            <div><p>Vent Q</p></div> : <div><p>Please wait for vent to be active
-                                {/*{ventCooldown}*/}
-                            </p></div>
-                        }
+                        <h2 className="h2">KEYBOARD CONTROLS</h2>
+                        <div className="button-container">
+                            {showReportButton ?
+                                <div>
+                                    <button className="w-10 h-10" onClick={handleButtonPress}><img alt="reportButton"
+                                                                                                   className="w-10 h-10 hover:bg-black"
+                                                                                                   src={votingboxButton}></img>
+                                    </button>
+                                </div> : <div></div>
+                            }
+                            {/*{killActive ? (*/}
+                            {/*    <div>*/}
+                            {/*            <button className="w-10 h-10" ><img*/}
+                            {/*                alt="sabotageButton"*/}
+                            {/*                className="w-10 h-10 hover:bg-black"*/}
+                            {/*                src={killButton}></img>*/}
+                            {/*            </button>*/}
+                            {/*        /!*</p>*!/*/}
+                            {/*    </div>*/}
+                            {/*) : (*/}
+                            {/*    <div><p>Cooldown {killCooldown}</p></div>*/}
+                            {/*)}*/}
+                            {/*{ventActive ? (*/}
+                            {/*    <div>*/}
+
+                            {/*            <button className="w-10 h-10" ><img*/}
+                            {/*                alt="sabotageButton"*/}
+                            {/*                className="w-10 h-10 hover:bg-black"*/}
+                            {/*                src={ventButton}></img>*/}
+                            {/*            </button>*/}
+                            {/*        /!*</p>*!/*/}
+                            {/*    </div>*/}
+                            {/*) : (*/}
+                            {/*    <div><p>{airSystemCountdown}</p></div>*/}
+                            {/*)}*/}
+                            {/*{sabotageActive ? (*/}
+                            {/*    <div>*/}
+                            {/*            <button className="w-10 h-10" ><img*/}
+                            {/*                alt="sabotageButton"*/}
+                            {/*                className="w-10 h-10 hover:bg-black"*/}
+                            {/*                src={sabotageButton}></img>*/}
+                            {/*            </button>*/}
+                            {/*        /!*</p>*!/*/}
+                            {/*    </div>*/}
+                            {/*) : (*/}
+                            {/*    <div></div>*/}
+                            {/*)}*/}
+
+
+                        </div>
+                        <p>Vent Q</p>
+                        <p>Kill E</p>
+                        <p>Sabotage F</p>
+                        <p>End Sabotage R</p>
                         <p>Up Arrow up</p>
-                        <p>Down Arrow Down</p>
-                        <p>Left Arrow Left</p>
                         <p>Right Arrow Right</p>
-                    </div> :
+                        <p>Left Arrow Left</p>
+                        <p>Down Arrow Down</p>
+                    </div>
+                ) : (
                     <div>
-                        <h2>Keyboard controls</h2>
-                        <p>Task W</p>
+                        <h2>KEYBOARD CONTROLS</h2>
+                        {showReportButton ?
+                            <div>
+                                <button className="w-10 h-10" onClick={handleButtonPress}><img alt="reportButton"
+                                                                                               className="w-10 h-10 hover:bg-black"
+                                                                                               src={votingboxButton}></img>
+                                </button>
+                            </div> : <div></div>
+                        }
+                        <p>Task E</p>
+                        <p>End Sabotage R</p>
                         <p>Up Arrow up</p>
                         <p>Down Arrow Down</p>
                         <p>Left Arrow Left</p>
                         <p>Right Arrow Right</p>
                     </div>
-                }
+                )}
+
             </div>
         </div>
     );

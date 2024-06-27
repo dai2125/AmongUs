@@ -15,7 +15,7 @@ public class MovementService {
 
     public boolean wallNorth(User user) {
         if(!DefaultMap.isWall(user.getY() - 1, user.getX())) {
-//            user.setY(user.getY() - 1);
+            user.setY(user.getY() - 1);
             return true;
         }
         return false;
@@ -23,7 +23,7 @@ public class MovementService {
 
     public boolean wallSouth(User user) {
         if(!DefaultMap.isWall(user.getY() + 1, user.getX())) {
-//            user.setY(user.getY() + 1);
+            user.setY(user.getY() + 1);
             return true;
         }
         return false;
@@ -31,7 +31,7 @@ public class MovementService {
 
     public boolean wallWest(User user) {
         if(!DefaultMap.isWall(user.getY(), user.getX() - 1)) {
-//            user.setX(user.getX() - 1);
+            user.setX(user.getX() - 1);
             return true;
         }
         return false;
@@ -39,39 +39,40 @@ public class MovementService {
 
     public boolean wallEast(User user) {
         if(!DefaultMap.isWall(user.getY(), user.getX() + 1)) {
-//            user.setX(user.getX() + 1);
+            user.setX(user.getX() + 1);
+//            user.setDirection("east");
             return true;
         }
         return false;
     }
 
-    public boolean wallNorthLobby(User user) {
-        if(!DefaultLobby.isWall(user.getY() - 1, user.getX())) {
-//            user.setY(user.getY() - 1);
+    public boolean wallNorthGhost(User user) {
+        if(!DefaultMap.isEndOfMap(user.getY() - 1, user.getX())) {
+            user.setY(user.getY() - 1);
             return true;
         }
         return false;
     }
 
-    public boolean wallSouthLobby(User user) {
-        if(!DefaultLobby.isWall(user.getY() + 1, user.getX())) {
-//            user.setY(user.getY() + 1);
+    public boolean wallSouthGhost(User user) {
+        if(!DefaultMap.isEndOfMap(user.getY() + 1, user.getX())) {
+            user.setY(user.getY() + 1);
             return true;
         }
         return false;
     }
 
-    public boolean wallWestLobby(User user) {
-        if(!DefaultLobby.isWall(user.getY(), user.getX() - 1)) {
-//            user.setX(user.getX() - 1);
+    public boolean wallWestGhost(User user) {
+        if(!DefaultMap.isEndOfMap(user.getY(), user.getX() - 1)) {
+            user.setX(user.getX() - 1);
             return true;
         }
         return false;
     }
 
-    public boolean wallEastLobby(User user) {
-        if(!DefaultLobby.isWall(user.getY(), user.getX() + 1)) {
-//            user.setX(user.getX() + 1);
+    public boolean wallEastGhost(User user) {
+        if(!DefaultMap.isEndOfMap(user.getY(), user.getX() + 1)) {
+            user.setX(user.getX() + 1);
             return true;
         }
         return false;

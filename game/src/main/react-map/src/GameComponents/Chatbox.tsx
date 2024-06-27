@@ -27,13 +27,13 @@ function ChatBox({ playerColor, playerName }) {
 
     useEffect(() => {
         if (!userId) return;
-        const socket = new SockJS("http://localhost:8081/chat");
+        const socket = new SockJS("http://192.168.0.45:8081/chat");
         const stompClient = Stomp.over(socket);
         setClient(stompClient);
 
         stompClient.connect({}, () => {
 
-            stompClient.subscribe('/topic/ingoing/', message => {
+            stompClient.subscribe('/topic/chatIngoing/', message => {
                 const messageData = JSON.parse(message.body);
                 if (messageData.userName !== userId) {
                     console.log('RECEIVED MESSAGE messageData.userName: ', messageData.userName + ' userId: ', userId);
@@ -49,7 +49,7 @@ function ChatBox({ playerColor, playerName }) {
                 }
             });
 
-            stompClient.subscribe(`/topic/ingoing/${ playerName }`, message => {
+            stompClient.subscribe(`/topic/chatIngoing/${ playerName }`, message => {
                 const messageData = JSON.parse(message.body);
                 console.log('RECEIVED MESSAGE2 messageData.userName: ', messageData.userName + ' userId: ', userId);
 
@@ -81,7 +81,7 @@ function ChatBox({ playerColor, playerName }) {
         if (inputValue.trim() !== '') {
             console.log('SENDING MESSAGE: ' + playerName);
             // client.send('/app/ingoing/', {}, JSON.stringify({
-            client.send(`/app/ingoing/${userId}`, {}, JSON.stringify({
+            client.send(`/app/chatIngoing/${userId}`, {}, JSON.stringify({
                 'userName': playerName,
                 'message': inputValue,
                 'color': playerColor
@@ -118,21 +118,21 @@ function ChatBox({ playerColor, playerName }) {
                         {messages.map((message, index) => (
                             message.isOwnMessage ?
                                 <div className="message message-list-my" key={index}>
-                                    <div className="message-content-my">
+                                    <div className="chat-message-content-my">
                                         <div>{message.text}</div>
                                     </div>
-                                    <div className="message-id-my" style={{color: message.color}}>
+                                    <div className="message-id-my" style={{color: 'black'}}>
                                         <img src={`../src/images/Chat/chat_right_${message.color}.png`}
                                              alt="user"/><br/>
                                         {message.userId}
                                     </div>
                                 </div> :
                                 <div className="message message-list-other" key={index}>
-                                    <div className="message-id" style={{color: message.color}}>
+                                    <div className="message-id" style={{color: 'black'}}>
                                         <img src={`../src/images/Chat/chat_left_${message.color}.png`} alt="user"/><br/>
                                         {message.userId}
                                     </div>
-                                    <div className="message-content-other">
+                                    <div className="chat-message-content-other">
                                         <div>{message.text}</div>
                                     </div>
                                     <div ref={messageEndRef}/>

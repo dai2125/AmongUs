@@ -28,6 +28,8 @@ const MemoryMiniGame: React.FC<{ onCompletion: (gameType: string) => void }> = (
     const [matchedCards, setMatchedCards] = useState<boolean[]>([]);
     const [moves, setMoves] = useState(0);
 
+    const [isWaiting, setIsWaiting] = useState(false);
+
     useEffect(() => {
         const shuffledCards = shuffleArray([...cardImages, ...cardImages]);
         setCards(shuffledCards);
@@ -35,7 +37,7 @@ const MemoryMiniGame: React.FC<{ onCompletion: (gameType: string) => void }> = (
     }, []);
 
     const handleCardClick = (index: number) => {
-        if (flippedCards.length === 2 || matchedCards[index]) return;
+        if (flippedCards.length === 2 || matchedCards[index] || isWaiting) return;
 
         const newFlippedCards = [...flippedCards, index];
         setFlippedCards(newFlippedCards);
@@ -49,14 +51,21 @@ const MemoryMiniGame: React.FC<{ onCompletion: (gameType: string) => void }> = (
                 setMatchedCards(newMatchedCards);
                 setFlippedCards([]);
 
+                // Überprüfung, ob alle Karten übereinstimmen und das Spiel beendet ist
                 if (newMatchedCards.every(Boolean)) {
                     onCompletion("Answer the question");
                 }
             } else {
-                setTimeout(() => setFlippedCards([]), 1000);
+                setIsWaiting(true);
+                setTimeout(() => {
+                    // Setze die flippedCards hier zurück, nachdem die Zeit abgelaufen ist, nicht sofort
+                    setFlippedCards([]);
+                    setIsWaiting(false);
+                }, 1000); // Verzögerungszeit in Millisekunden, in dieser Zeit bleiben die Karten sichtbar
             }
         }
     };
+
 
     return (
         <div style={styles.container}>
