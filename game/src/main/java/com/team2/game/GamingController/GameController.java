@@ -391,7 +391,7 @@ public class GameController {
 
         if(!sabotageStop) {
 
-            int numberOfPlayers = groupManager.getGameInstance(user.getGameId()).getUserList().size();
+            int numberOfPlayers = groupManager.getGameInstance(user.getGameId()).getCREWMATE_COUNT();
             alarmCounter = numberOfPlayers;
             alarmActive = true;
             usersPressedSafetyButton.clear();
