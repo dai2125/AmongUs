@@ -188,7 +188,7 @@ const MapGrid: React.FC<MapGridProps> = ({
     const [scrollPosition, setScrollPosition] = useState({x: 0, y: 0});
     const [gridKey, setGridKey] = useState(0);
     const containerRef = useRef(null);
-    const [playerDirection, setPlayerDirection] = useState('');
+    const [playerDirection, setPlayerDirection] = useState('south');
     const [showReportButton, setShowReportButton] = useState(true);
     const [playerPosition, setPlayerPosition] = useState({x: currentPlayer.getX(), y: currentPlayer.getY()});
     const [otherPlayerDirection, setOtherPlayerDirection] = useState({});
@@ -1364,43 +1364,43 @@ const MapGrid: React.FC<MapGridProps> = ({
                                     </button>
                                 </div> : <div></div>
                             }
-                            {killActive ? (
-                                <div>
-                                        <button className="w-10 h-10" ><img
-                                            alt="sabotageButton"
-                                            className="w-10 h-10 hover:bg-black"
-                                            src={killButton}></img>
-                                        </button>
-                                    {/*</p>*/}
-                                </div>
-                            ) : (
-                                <div><p>Cooldown {killCooldown}</p></div>
-                            )}
-                            {ventActive ? (
-                                <div>
+                            {/*{killActive ? (*/}
+                            {/*    <div>*/}
+                            {/*            <button className="w-10 h-10" ><img*/}
+                            {/*                alt="sabotageButton"*/}
+                            {/*                className="w-10 h-10 hover:bg-black"*/}
+                            {/*                src={killButton}></img>*/}
+                            {/*            </button>*/}
+                            {/*        /!*</p>*!/*/}
+                            {/*    </div>*/}
+                            {/*) : (*/}
+                            {/*    <div><p>Cooldown {killCooldown}</p></div>*/}
+                            {/*)}*/}
+                            {/*{ventActive ? (*/}
+                            {/*    <div>*/}
 
-                                        <button className="w-10 h-10" ><img
-                                            alt="sabotageButton"
-                                            className="w-10 h-10 hover:bg-black"
-                                            src={ventButton}></img>
-                                        </button>
-                                    {/*</p>*/}
-                                </div>
-                            ) : (
-                                <div><p>{airSystemCountdown}</p></div>
-                            )}
-                            {sabotageActive ? (
-                                <div>
-                                        <button className="w-10 h-10" ><img
-                                            alt="sabotageButton"
-                                            className="w-10 h-10 hover:bg-black"
-                                            src={sabotageButton}></img>
-                                        </button>
-                                    {/*</p>*/}
-                                </div>
-                            ) : (
-                                <div></div>
-                            )}
+                            {/*            <button className="w-10 h-10" ><img*/}
+                            {/*                alt="sabotageButton"*/}
+                            {/*                className="w-10 h-10 hover:bg-black"*/}
+                            {/*                src={ventButton}></img>*/}
+                            {/*            </button>*/}
+                            {/*        /!*</p>*!/*/}
+                            {/*    </div>*/}
+                            {/*) : (*/}
+                            {/*    <div><p>{airSystemCountdown}</p></div>*/}
+                            {/*)}*/}
+                            {/*{sabotageActive ? (*/}
+                            {/*    <div>*/}
+                            {/*            <button className="w-10 h-10" ><img*/}
+                            {/*                alt="sabotageButton"*/}
+                            {/*                className="w-10 h-10 hover:bg-black"*/}
+                            {/*                src={sabotageButton}></img>*/}
+                            {/*            </button>*/}
+                            {/*        /!*</p>*!/*/}
+                            {/*    </div>*/}
+                            {/*) : (*/}
+                            {/*    <div></div>*/}
+                            {/*)}*/}
 
 
                         </div>
