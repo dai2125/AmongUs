@@ -59,9 +59,23 @@ public class GameController {
     @EventListener
     public void sessionDisconnectEvent(SessionDisconnectEvent event) {
         try {
+            String gameId = registerService.getGroupManager().getGameBySessionId(event.getSessionId());
+
+
             messagingTemplate.convertAndSend("/topic/disconnected/", new ObjectMapper().writeValueAsString(registerService.
                     disconnectUser(event.getSessionId())));
             logger.info("User disconnected: {}", event.getUser());
+            int tasksToRemove = groupManager.getGameInstance(gameId).getTasksToRemove();
+            int taskResolvedCounter = groupManager.getGameInstance(gameId).getTaskResolvedCounter();
+            System.out.println("TASKS TO REMOVE : " + tasksToRemove);
+
+            for (int i = 0; i < tasksToRemove; i++) {
+                messagingTemplate.convertAndSend("/topic/taskResolved/" + gameId, true);
+            }
+            if (taskResolvedCounter < 1){
+                messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
+            }
+
         } catch (JsonProcessingException e) {
             logger.error("Error processing UserDisconnect JSON: {}", e.getMessage());
         } catch (Exception e) {

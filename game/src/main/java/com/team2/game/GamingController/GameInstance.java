@@ -35,7 +35,15 @@ public class GameInstance {
     private List<String> taskListCopy = new ArrayList<>(taskList);
     public HashMap<String, Integer> votingList = new HashMap<>();
 
-    private int taskResolvedCounter = 1;
+    private int taskResolvedCounter = 9;
+    private int tasksToRemove = 0;
+
+    public int getTaskResolvedCounter(){
+        return taskResolvedCounter;
+    }
+    public int getTasksToRemove(){
+        return tasksToRemove;
+    }
 
     TaskDTO taskDTO = new TaskDTO();
 
@@ -55,7 +63,7 @@ public class GameInstance {
 
     public void removeFromTheGroup(User user) {
         userList.remove(user);
-        int tasksToRemove = 0;
+        tasksToRemove = 0;
 
         if (!user.getTasks().getTask1().isEmpty()){
             tasksToRemove++;
@@ -67,7 +75,7 @@ public class GameInstance {
             tasksToRemove++;
         }
         System.out.println("TASKS TO complete were : " + taskCounter);
-        taskCounter -= tasksToRemove;
+        taskResolvedCounter -= tasksToRemove;
         System.out.println("TASKS TO complete now are : " + taskCounter);
     }
 
@@ -117,7 +125,7 @@ public class GameInstance {
             TaskDTO taskDTO = new TaskDTO();
 
             if (!u.getImpostor()) {
-                taskDTO.setRole("Crewmate");
+                taskDTO.setRole("crewmate");
                 usedIndices.clear();
                 for (int i = 0; i < 3; i++) {
                     do {
@@ -140,7 +148,7 @@ public class GameInstance {
                     System.out.println("distribute task taskcounter: " + taskCounter);
                 }
             } else {
-                taskDTO.setRole("Impostor");
+                taskDTO.setRole("impostor");
                 impostor = true;
                 taskDTO.setTask1("Kill");
                 taskDTO.setTask2("Sabotage");
@@ -161,7 +169,7 @@ public class GameInstance {
         int taskIndex;
 
         if (!u.getImpostor()) {
-            taskDTO.setRole("Crewmate");
+            taskDTO.setRole("crewmate");
             for (int i = 0; i < 3; i++) {
                 do {
                     taskIndex = (int) (Math.random() * taskList.size());
@@ -183,7 +191,7 @@ public class GameInstance {
                 System.out.println("distribute task taskcounter: " + taskCounter);
             }
         } else {
-            taskDTO.setRole("Impostor");
+            taskDTO.setRole("impostor");
             impostor = true;
             taskDTO.setTask1("Kill");
             taskDTO.setTask2("Sabotage");
