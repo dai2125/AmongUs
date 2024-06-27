@@ -27,7 +27,7 @@ function ChatBox({ playerColor, playerName }) {
 
     useEffect(() => {
         if (!userId) return;
-        const socket = new SockJS("http://192.168.0.45:8081/chat");
+        const socket = new SockJS("http://192.168.0.142:8081/chat");
         const stompClient = Stomp.over(socket);
         setClient(stompClient);
 
@@ -71,11 +71,23 @@ function ChatBox({ playerColor, playerName }) {
         };
     }, [userId]);
 
+    // useEffect(() => {
+    //     if (messageEndRef.current) {
+    //         messageEndRef.current.scrollIntoView({behavior: 'smooth'});
+    //     }
+    // }, [messages]);
+
     useEffect(() => {
-        if (messageEndRef.current) {
-            messageEndRef.current.scrollIntoView({behavior: 'smooth'});
-        }
+        const scrollToEnd = () => {
+            const messageList = messageEndRef.current?.parentNode;
+            if (messageList) {
+                messageList.scrollTop = messageList.scrollHeight;
+            }
+        };
+
+        scrollToEnd();
     }, [messages]);
+
 
     const sendMessage = () => {
         if (inputValue.trim() !== '') {
@@ -113,7 +125,7 @@ function ChatBox({ playerColor, playerName }) {
                                                                     className="w-10 h-10 hover:bg-black"
                                                                     src={chatIcon}></img></button>
             <div className={chatVisible ? "" : "hidden"}>
-                <div className="chatbox">
+                <div className="chatbox-chatbox">
                     <div className="message-list">
                         {messages.map((message, index) => (
                             message.isOwnMessage ?
@@ -139,7 +151,7 @@ function ChatBox({ playerColor, playerName }) {
                                 </div>
                         ))}
                     </div>
-                    <div className="character-counter">{inputValue.length}/100</div>
+                    <div className="chatbox-character-counter">{inputValue.length}/100</div>
                     <div className="input-area">
                         <input
                             type="text"
@@ -147,7 +159,7 @@ function ChatBox({ playerColor, playerName }) {
                             maxLength={100}
                             onChange={(e) => setInputValue(e.target.value)}
                             placeholder="Type your message..."
-                            className="input-field"
+                            className="chat-box-input-field"
                         />
                         <button onClick={sendMessage} className="send-button"></button>
                     </div>

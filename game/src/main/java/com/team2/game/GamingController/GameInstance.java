@@ -18,7 +18,7 @@ public class GameInstance {
 
     @Setter
     @Getter
-    private int GROUP_FULL = 2;
+    private int GROUP_FULL = 4;
 
     @Setter
     @Getter

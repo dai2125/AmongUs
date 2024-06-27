@@ -40,7 +40,7 @@ export default function LogIn({onLogIn, onCreateAccountNav,}: Props){
             password: password
         }
 
-        fetch('http://192.168.0.45:8080/login',{
+        fetch('http://192.168.0.142:8080/login',{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

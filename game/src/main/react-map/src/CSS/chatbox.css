@@ -1,4 +1,4 @@
-.chatbox {
+.chatbox-chatbox {
     position: absolute;
     top: 20%;
     left: 25%;
@@ -150,7 +150,7 @@
     font: bold 16px/14px 'VCR OSD Mono', monospace;
     /*align-items: flex-start;*/
     position: relative;
-    width: 950px;
+    /*width: 800px;*/
 
     /*border-radius: 5px;*/
     /*border-style: solid;*/
@@ -158,16 +158,16 @@
     /*border-color: black;*/
 }
 
-.input-field {
+.chat-box-input-field {
     height: 50px;
     /*width: 100%;*/
     padding: 10px;
     flex-grow: 1;
     margin-right: 10px;
     /*padding-right: 50px;*/
-    width: 925px;
-    min-width: 900px;
-    max-width: 900px;
+    width: 100%;
+    min-width: 100%;
+    max-width: 100%;
     color: #1a73e8;
 }
 
@@ -177,9 +177,9 @@
     position: absolute;
     /*margin-bottom: 1px;*/
     /*padding: 10px;*/
-    right: 5px ;
+    /*right: 5px ;*/
     bottom: 15px;
-
+    margin-right: 20px;
     background-color: transparent;
     background-image: url("../Images/Buttons/send_button.png");
 }
@@ -188,10 +188,10 @@
     background-color: rgb(255, 255, 255, 0.4);
 }
 
-.character-counter {
+.chatbox-character-counter {
     display: flex;
     justify-content: flex-end;
-    padding-right: 50px;
+    padding-right: 10px;
     font: bold 16px/14px 'VCR OSD Mono', monospace;
 }
 

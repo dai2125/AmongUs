@@ -3,6 +3,7 @@ import votingboxBackground from '../Images/Votingbox/Votingbox_background.png';
 import votingboxButton from '../Images/Buttons/Report_Button.jpg';
 import votingboxChat from '../Images/Buttons/chat_button.png';
 import skipVote from '../Images/Votingbox/Skip_vote.png';
+import submitVote2 from '../Images/Votingbox/Submit_vote_2.png';
 import submitVote from '../Images/Votingbox/submit_vote.png';
 import cancelVote from '../Images/Votingbox/cancel_vote.png';
 
@@ -40,7 +41,7 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
     // }, [players.length]);
 
     useEffect(() => {
-        setPlayers([...otherPlayers.filter(player => player.getColor() !== 'dead' || player.getColor() !== 'ghost').map(player => ({
+        setPlayers([...otherPlayers.filter(player => player.getColor() !== 'dead' && player.getColor() !== 'ghost').map(player => ({
             userId: player.userName,
             color: player.color
         }))]);
@@ -48,7 +49,7 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
     }, [players.length, deadPlayer]);
 
     useEffect(() => {
-        setDeadPlayer([...otherPlayers.filter(player => player.getColor() === 'dead').map(player => ({
+        setDeadPlayer([...otherPlayers.filter(player => player.getColor() === 'dead' && player.getColor() === 'ghost').map(player => ({
             userId: player.userName
         }))]);
     }, []);
@@ -146,7 +147,7 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
     }, [countDown]);
 
     useEffect(() => {
-        const socket = new SockJS("http://192.168.0.45:8080/gs-guide-websocket");
+        const socket = new SockJS("http://192.168.0.142:8080/gs-guide-websocket");
         const client = Stomp.over(socket);
         client.connect({}, () => {
             client.subscribe('/topic/countdownVoting/', (message) => {
@@ -210,10 +211,10 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
                             <button onClick={handleSkipButtonPress}><img src={skipVote}></img></button>
                         </div>
                         <div className="submit-vote-button">
-                            <button onClick={handleSubmitButtonPress}>Submit Button</button>
+                            <button onClick={handleSubmitButtonPress}><img src={submitVote2}></img></button>
                         </div>
                         <div className="voting-countdown">
-                            <h1 style={{ fontFamily: 'bold 30px 14px VCR OSD Mono monospace', fontSize: '20px', color: 'white' }}>Time left: {countDown}</h1>
+                            <h1>Time left: {countDown}</h1>
                     </div>
                     </div>
                 </div>

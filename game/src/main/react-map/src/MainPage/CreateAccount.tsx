@@ -51,7 +51,7 @@ export default function CreateAccount({onLoginNavClick}: Props){
             setSuccessMessage("");
         }else {
 
-            fetch('http://192.168.0.45:8080/signUp',{
+            fetch('http://192.168.0.142:8080/signUp',{
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -22,7 +22,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry.addEndpoint("/chat")
 //				.setAllowedOrigins("http://localhost:8080", "http://localhost:4173", "http://localhost:5173")
-				.setAllowedOrigins("*")
+//				.setAllowedOrigins("*")
+				.setAllowedOriginPatterns("*")
 				.withSockJS();
 	}
 //		registry.addEndpoint("/gs-guide-websocket")

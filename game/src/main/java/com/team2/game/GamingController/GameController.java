@@ -220,8 +220,20 @@ public class GameController {
                 groupManager.addDeadPlayerPosition(objectInteraction.getPositionDeadPlayerX(), objectInteraction.getPositionDeadPlayerY());
 
 
-                messagingTemplate.convertAndSend("/topic/killButtonNotActive/" + objectInteraction.getObjectOne(), new ObjectMapper().writeValueAsString("killButtonNotActive"));
-                countdownKill(objectInteraction.getObjectOne());
+                messagingTemplate.convertAndSend("/topic/killButtonNotActive/", new ObjectMapper().writeValueAsString("killButtonNotActive"));
+//                countdownKill();
+                for(int i = 15; i >= 0; i--) {
+                    try {
+                        Thread.sleep(1000);
+//                messagingTemplate.convertAndSend("/topic/killCooldown/" + userName, new ObjectMapper().writeValueAsString(i));
+
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        System.out.println("Thread was interrupted: " + e.getMessage());
+                    }
+                }
+                System.out.println("KILL BUTTON ACTIVE");
+                messagingTemplate.convertAndSend("/topic/killButtonActive/", new ObjectMapper().writeValueAsString("killButtonActive"));
 
 
                 registerService.crewmateDied(u);
@@ -490,19 +502,19 @@ public class GameController {
         votingComplete = false;
     }
 
-    public void countdownKill(String userName) throws JsonProcessingException {
+    public void countdownKill() throws JsonProcessingException {
         for(int i = 15; i >= 0; i--) {
             try {
                 Thread.sleep(1000);
-                messagingTemplate.convertAndSend("/topic/killCooldown/" + userName, new ObjectMapper().writeValueAsString(i));
+//                messagingTemplate.convertAndSend("/topic/killCooldown/" + userName, new ObjectMapper().writeValueAsString(i));
 
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 System.out.println("Thread was interrupted: " + e.getMessage());
             }
         }
-        messagingTemplate.convertAndSend("/topic/killButtonActive/" + userName, new ObjectMapper().writeValueAsString("killButtonActive"));
-
+        System.out.println("KILL BUTTON ACTIVE");
+        messagingTemplate.convertAndSend("/topic/killButtonActive/", new ObjectMapper().writeValueAsString("killButtonActive"));
     }
 
     private void countdownReportButton() throws JsonProcessingException {

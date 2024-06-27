@@ -353,7 +353,7 @@ const Lobby: React.FC<MapGridProps> = ({currentPlayer, otherPlayers}) => {
     }, [currentPlayer, lobbyImage]);
 
     useEffect(() => {
-        const socket = new SockJS("http://192.168.0.45:8080/gs-guide-websocket");
+        const socket = new SockJS("http://192.168.0.142:8080/gs-guide-websocket");
         const client = Stomp.over(socket);
         client.connect({}, () => {
             client.subscribe(`/topic/movement/lobby/north/${currentPlayer.getUserName()}`, (message) => {

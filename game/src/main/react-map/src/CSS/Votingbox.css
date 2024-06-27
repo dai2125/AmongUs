@@ -120,3 +120,33 @@
     width: 100px;
     height: 100px;
 }
+
+.submit-vote-button {
+    background-color: transparent;
+    border: none;
+    color: white;
+    text-align: right;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    /*margin: 4px 2px;*/
+    margin-right: 5px;
+    margin-left: -125px;
+    margin-top: 50px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    /*padding: 1px;*/
+    width: 100px;
+    height: 100px;
+}
+
+.voting-countdown {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0px;
+    margin-left: -500px;
+    margin-bottom: 10px;
+    font: bold 30px/14px 'VCR OSD Mono', monospace;
+}
