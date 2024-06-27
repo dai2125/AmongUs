@@ -78,7 +78,7 @@ class WebSocketService {
 
 
     connect() {
-        const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
+        const socket = new SockJS('http://192.168.0.45:8080/gs-guide-websocket');
         this.client = Stomp.over(socket);
 
         const { playerRef, setOtherPlayers } = this;
@@ -446,30 +446,29 @@ class WebSocketService {
         }
     }
 
-    sendMovementNorth() {
-        const player = this.playerRef.current;
-        console.log("YOUR ROLE: " + player.getRole());
-        if(!player.getMovable()) {
-            return;
-        } else {
-            const payload = JSON.stringify({
-                userName: player.getUserName(),
-                action: player.getAction(),
-                sessionId: player.getSessionId(),
-                color: player.getColor(),
-                x: player.getX(),
-                y: player.getY()
-            });
-            this.client.send(`/app/movement/north/${player.getUserName()}`, {}, payload);
+    sendSabotageButtonPressed() {
+        console.log('sabotage s pressed');
+        if (this.client) {
+            const player = this.playerRef.current;
+            if (player.getRole() === 'Impostor') {
+                const payload = JSON.stringify({
+                    userName: player.getUserName(),
+                    action: player.getAction(),
+                    sessionId: player.getSessionId(),
+                    color: player.getColor(),
+                    x: player.getX(),
+                    y: player.getY(),
+                    gameId: player.getGameId()
+                });
+                this.client.send(`/app/sabotage/${player.getUserName()}`, {}, payload);
+            }
         }
     }
 
-    sendMovementSouth() {
+    sendAirSystemButtonPressed() {
         const player = this.playerRef.current;
-        console.log("YOUR ROLE: " + player.getRole());
-        if(!player.getMovable()) {
-            return;
-        } else {
+
+        if (player.getRole() === 'Impostor') {
             const payload = JSON.stringify({
                 userName: player.getUserName(),
                 action: player.getAction(),
@@ -478,27 +477,32 @@ class WebSocketService {
                 x: player.getX(),
                 y: player.getY()
             });
-            this.client.send(`/app/movement/south/${player.getUserName()}`, {}, payload);
+            this.client.send(`/app/airsystem/${player.getUserName()}`, {}, payload);
         }
     }
 
-    sendMovementWest() {
+    sendKillButtonPressed() {
         const player = this.playerRef.current;
-        console.log("YOUR ROLE: " + player.getRole());
-        if(!player.getMovable()) {
-            return;
-        } else {
-            const payload = JSON.stringify({
-                userName: player.getUserName(),
-                action: player.getAction(),
-                sessionId: player.getSessionId(),
-                color: player.getColor(),
-                x: player.getX(),
-                y: player.getY()
-            });
-            this.client.send(`/app/movement/west/${player.getUserName()}`, {}, payload);
-        }
+
+        console.log('WEBSOCKET SERVICE: kill e pressed: ' + player.getRole());
+        let payload;
+        // for (let player of other) {
+        //     if ((player.getY() == currentPlayer.getY() && (player.getX() == currentPlayer.getX() + 1 || player.getX() == currentPlayer.getX() - 1)) ||
+        //         (player.getX() == currentPlayer.getX() && (player.getY() == currentPlayer.getY() + 1 || player.getY() == currentPlayer.getY() - 1))) {
+        //         console.log("Hello from new kill inside ", currentPlayer.getGameId());
+        //         payload = JSON.stringify({
+        //             objectOne: currentPlayer.getUserName(),
+        //             objectTwo: player.getUserName(),
+        //             positionDeadPlayerX: player.getX(),
+        //             positionDeadPlayerY: player.getY(),
+        //             gameId: currentPlayer.getGameId(),
+        //         });
+        //         break;
+        //     }
+        // }
+        // client.send(`/app/kill/${currentPlayer.getUserName()}`, {}, payload);
     }
+
 
     sendMovementEast() {
         const player = this.playerRef.current;

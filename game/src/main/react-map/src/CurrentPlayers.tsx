@@ -107,6 +107,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const [showVotingActive, setShowVotingActive] = useState(false);
     const [showWaitingRoom, setShowWaitingRoom] = useState(true);
     const [sabotageActive, setSabotageActive] = useState(false);
+    const [showChatbox, setShowChatbox] = useState(true);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
     const playerRef = useRef<Player>(new Player(userName, '', '', gameId, '', 2, 2, '', '', '', '', true, 'down'));
@@ -171,6 +172,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         setShowTaskBar(true);
         setShowTaskList(true);
         // TODO
+        setShowChatbox(false);
         setShowMap(true);
         setChatVisible(false);
     }
@@ -199,7 +201,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
     const handleKeyPress = (key: string) => {
         console.log("CurrentPlayers.tsx: handleKeyPress: " + key + ' ' + playerRef.current.getRole() + ' ' + sabotageActive);
-        if (key === 'e' && playerRef.current.getRole() === "Crewmate" && !sabotageActive) {
+        if (key === 'e' && playerRef.current.getRole() === "Crewmate" && !sabotageActive && playerRef.current.getAction() !== 'SabotageActive') {
             taskAction();
         } else if (key === 'e' && playerRef.current.getRole() === "Impostor") {
             //taskKill(key);
@@ -290,7 +292,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
     const taskAction = () => {
         console.log("pressed e");
-        if (GridService.isTask(playerRef.current.getY(), playerRef.current.getX())) {
+        if (GridService.isTask(playerRef.current.getY(), playerRef.current.getX()) && !sabotageActive) {
             const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
             const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
             console.log("Checking task: " + xPosTask + ", " + yPosTask);
@@ -347,7 +349,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }
 
     const dead = () => {
-        playerRef.current.setColor('dead');
+        playerRef.current.setColor("dead");
         setShowKillCrewMate(true);
 
         // TODO should close automatically, counter is set in the KillCrewMate.tsx but doesnt work
@@ -402,13 +404,32 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         webSocketServiceRef.current.sendReportButtonPressed();
     }
 
+    const sabotageButtonClicked = () => {
+        console.log("CurrentPlayer.tsx: Sabotage Button clicked");
+        if(!sabotageActive) {
+            webSocketServiceRef.current.sendSabotageButtonPressed();
+        }
+    }
+
+    const airSystemButtonClicked = () => {
+        console.log("CurrentPlayer.tsx: Sabotage Button clicked");
+        webSocketServiceRef.current.sendAirSystemButtonPressed();
+    }
+
+    const killButtonClicked = () => {
+        console.log("CurrentPlayer.tsx: Sabotage Button clicked");
+        webSocketServiceRef.current.sendKillButtonPressed();
+    }
+
+
+
     const handleButtonPress = (votedFor: string) => {
         console.log('CurrentPlayers.tsx: Votingbox submit button pressed ' + votedFor);
         webSocketServiceRef.current.sendVotingButtonPressed(votedFor);
     }
 
     const votingActive = (deadPlayer) => {
-        if(playerRef.current.getColor() === 'dead') {
+        if(playerRef.current.getColor() === 'dead' || playerRef.current.getColor() === 'ghost') {
             setShowVotingActive(true);
         } else {
             setDeadPlayer(deadPlayer);
@@ -417,7 +438,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }
 
     const votingNotActive = () => {
-        if(playerRef.current.getColor() === 'dead') {
+        if(playerRef.current.getColor() === 'dead' || playerRef.current.getColor() === 'ghost') {
             setShowVotingActive(false);
         } else {
             setShowVotingbox(false);
@@ -470,9 +491,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                                  className="col-span-1" style={{
                                 backgroundImage: `url(${playerImage})`
                             }}/>
-                            <Chatbox playerColor={playerRef.current.getColor()}
-                                     playerName={playerRef.current.getUserName()}></Chatbox>
-
+                            {showChatbox ?  <Chatbox playerColor={playerRef.current.getColor()}
+                                     playerName={playerRef.current.getUserName()}></Chatbox> : <div></div>
+                            }
                             {showVotingbox ?
                             <Votingbox onButtonPress={handleButtonPress} currentPlayer={playerRef.current}
                                        otherPlayers={otherPlayers} deadPlayer={deadPlayer} ></Votingbox> : <div></div>
@@ -513,7 +534,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}
-                                                reportButtonClicked={reportButtonClicked} constSabotageActive={constSabotageActive} constSabotageNotActive={constSabotageNotActive}/> : <div></div>}
+                                                reportButtonClicked={reportButtonClicked} /> : <div></div>}
                         </div>
 
                         {showPopup && (

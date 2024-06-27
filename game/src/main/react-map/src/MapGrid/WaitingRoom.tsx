@@ -12,7 +12,7 @@ interface WaitingMessageProps {
 const WaitingMessage: React.FC<WaitingMessageProps> = () => {
     return (
         <div className="waiting-room-message">
-            <p>Waiting for others</p>
+            <p className="waiting-room-p">Waiting for others</p>
             <img src={ghost} alt="Yellow" className="floating-image" style={{animationName: 'float1, rotate'}}/>
             <img src={red} alt="Blue" className="floating-image" style={{animationName: 'float2, rotate'}}/>
             <img src={green} alt="Green" className="floating-image" style={{animationName: 'float3, rotate'}}/>

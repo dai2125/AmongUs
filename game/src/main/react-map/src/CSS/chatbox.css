@@ -20,6 +20,7 @@
 .message-list, .message-list-other {
     overflow-y: auto;
     flex-grow: 1;
+
     /*background-color: #ffffff;*/
     /*float: left;*/
     /*clear: both;*/
@@ -60,6 +61,7 @@
 }
 
 .message-list-my {
+
     background-color: #ffffff;
     float: right;
     clear: both;
@@ -93,7 +95,7 @@
 
 }
 
-.message-content-other {
+.chat-message-content-other {
     display: flex;
     flex-direction: column;
     margin-left: 10px;
@@ -101,11 +103,12 @@
     justify-content: flex-start;
     /*flex: max(0, 1);*/
     font: bold 16px/14px 'VCR OSD Mono', monospace;
+    color: #1a73e8;
 
 
 }
 
-.message-content-my {
+.chat-message-content-my {
     display: flex;
     flex-direction: column;
     flex: max(0, 1);
@@ -114,6 +117,7 @@
     justify-content: flex-end;
     font: bold 16px/14px 'VCR OSD Mono', monospace;
     width: 500px;
+    color: #1a73e8;
 
 }
 
@@ -146,7 +150,7 @@
     font: bold 16px/14px 'VCR OSD Mono', monospace;
     /*align-items: flex-start;*/
     position: relative;
-    width: 975px;
+    width: 950px;
 
     /*border-radius: 5px;*/
     /*border-style: solid;*/
@@ -162,8 +166,9 @@
     margin-right: 10px;
     /*padding-right: 50px;*/
     width: 925px;
-    min-width: 925px;
-    max-width: 925px;
+    min-width: 900px;
+    max-width: 900px;
+    color: #1a73e8;
 }
 
 .send-button {

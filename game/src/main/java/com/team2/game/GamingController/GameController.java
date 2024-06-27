@@ -23,7 +23,9 @@ import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
@@ -123,10 +125,10 @@ public class GameController {
         if (groupManager.gameExists(gameId)){
             if ( groupManager.getGameInstance(gameId).groupIsFull()){
                 message = 1;
-            }else {
+            } else {
                 message = 2;
             }
-        }else {
+        } else {
             message = 0;
         }
 
@@ -142,17 +144,9 @@ public class GameController {
 
         for (User u : groupManager.getGameInstance(gameId).getUserList()){
             TaskDTO tasks = u.getTasks();
-            System.out.println("Hello from GIMMEWORK, The user " +u.getUserName() + " is " + u.getTasks().getRole() );
+//            System.out.println("Hello from GIMMEWORK, The user " +u.getUserName() + " is " + u.getTasks().getRole() );
             messagingTemplate.convertAndSend("/topic/gimmework/" + u.getUserName(), new ObjectMapper().writeValueAsString(tasks));
         }
-        /*
-        System.out.println("Hello from GIMMEWORK");
-        System.out.println("USERNAME " + user.getSessionId());
-        TaskDTO task = registerService.getTask();
-        System.out.println("GGGG " + task.getRole());
-        messagingTemplate.convertAndSend("/topic/gimmework/" + user.getUserName(), new ObjectMapper().writeValueAsString(task));
-
-         */
 
     }
 
@@ -176,22 +170,19 @@ public class GameController {
         registerService.removeTask("task");
 
         if(registerService.allTasksAreSolved()) {
-            System.out.println("CREWMATES WIN");
             messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
         }
     }
 
     @MessageMapping("/kill/{userName}")
     public void processKill(@Payload ObjectInteraction objectInteraction, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-
-        System.out.println("KILLER: Name " + objectInteraction.getObjectOne() + " gameID: " + objectInteraction.getGameId() + " Killed : " + objectInteraction.getObjectTwo());
-
         for(User u : registerService.getGroupManager().getGameInstance(objectInteraction.getGameId()).getUserList()) {
             if (u.getUserName().equals(objectInteraction.getObjectTwo())){
 
                 System.out.println("Killed name: " + u.getUserName());
 
                 messagingTemplate.convertAndSend("/topic/kill/" + objectInteraction.getObjectOne(), new ObjectMapper().writeValueAsString("kill"));
+                System.out.println("KILL FUNCTION THIS PERSON MUST GET THE MESSAGE " + objectInteraction.getObjectTwo());
                 messagingTemplate.convertAndSend("/topic/dead/" + objectInteraction.getObjectTwo(), new ObjectMapper().writeValueAsString("dead"));
                 messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
 
@@ -230,7 +221,6 @@ public class GameController {
     @MessageMapping("/yourAGhostNow/{userName}")
     public void processGhost(@Payload User user) throws JsonProcessingException {
         messagingTemplate.convertAndSend("/topic/yourAGhostNow/" + user.getUserName(), new ObjectMapper().writeValueAsString("ghost"));
-
     }
 
     @MessageMapping("/reportButtonPressed/{userName}")
@@ -250,13 +240,15 @@ public class GameController {
 
         // TODO if the player have the same votes and the votes are the maximum then no one gets ejected
         // TODO there must be a counter in the votingbox if someone doesnt vote it muss be called an empty vote
-        System.out.println("VOTING BUTTON PRESSED: " + user.getAction());
-        System.out.println("UserList: " + groupManager.getGameInstance(user.getGameId()).getUserList().size() + " " + groupManager.getGameInstance(user.getGameId()).getUserList());
+        String action = user.getAction();
+        System.out.println("VOTING BUTTON PRESSED: " + user.getUserName() + " voted for " + action);
 
-        if(votingList.containsKey(user.getAction())) {
-            votingList.compute(user.getAction(), (k, counter) -> counter + 1);
-        } else {
-            votingList.put(user.getAction(), 1);
+        if (action != null && !action.isEmpty() && !action.equals("null")) {
+            votingList.compute(action, (k, counter) -> counter == null ? 1 : counter + 1);
+        }
+
+        for(int i = 0; i < votingList.size(); i++) {
+            System.out.println("VotingList Items: " +  votingList.keySet() + " " + votingList.values());
         }
 
         if(!votingActive) {
@@ -265,6 +257,7 @@ public class GameController {
         }
 
         counter--;
+        int maxCount = 0;
 
         if(counter == 0) {
             votingComplete = true;
@@ -274,8 +267,14 @@ public class GameController {
                 if(votingList.get(key) > max) {
                     max = votingList.get(key);
                     maxKey = key;
-
+                    maxCount = 1;
+                } else if (votingList.get(key) == max) {
+                    maxCount++;
                 }
+            }
+
+            if(maxCount > 1) {
+                maxKey = null;
             }
 
             System.out.println("MAX: " + max + " MAXKEY: " + maxKey);
@@ -306,7 +305,12 @@ public class GameController {
                 messagingTemplate.convertAndSend("/topic/noOneGotEjected/", new ObjectMapper().writeValueAsString("noOneGotEjected"));
                 countdownReportButton();
 
-            } else if(votedForImpostor) {
+            } else if(maxKey.equals("")) {
+                messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
+                messagingTemplate.convertAndSend("/topic/noOneGotEjected/", new ObjectMapper().writeValueAsString("noOneGotEjected"));
+                countdownReportButton();
+            }
+            else if(votedForImpostor) {
                 messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
                 messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("impostorWins"));
             } else if(registerService.userList.size() == 2) {
@@ -317,67 +321,75 @@ public class GameController {
                 messagingTemplate.convertAndSend("/topic/someoneGotEjected/", new ObjectMapper().writeValueAsString(maxKey));
                 messagingTemplate.convertAndSend("/topic/setShowReportButtonFalse/", new ObjectMapper().writeValueAsString(maxKey));
                 countdownReportButton();
-
             }
         }
 
     }
 
+    private boolean airSystemStop = false;
+
     @MessageMapping("/airsystem/{userName}")
     public void processAirSystem(@Payload User user) throws JsonProcessingException {
         System.out.println("Air System: y: " + user.getY() + " x: " + user.getX());
 
-        if(airSystemService.isAirSystem(user)) {
+        if(airSystemService.isAirSystem(user) && !airSystemStop) {
             messagingTemplate.convertAndSend("/topic/airsystem/" + user.getUserName(), new ObjectMapper().writeValueAsString(airSystemService.newPositionAirSystem(user)));
             messagingTemplate.convertAndSend("/topic/ventNotActive/" + user.getUserName(), new ObjectMapper().writeValueAsString("ventNotActive"));
-//            countdownVent(user.getUserName());
+            countdownAirSystem(user.getUserName());
+        }
+        stopTheAirSystemFor30Seconds();
+    }
+
+    private boolean sabotageStop = false;
+
+    @MessageMapping("/sabotage/{userName}")
+    public void processSabotage(@Payload User user) throws JsonProcessingException {
+//        alarmCounter = groupManager.getGameInstance(user.getGameId()).getUserList().size();
+//        alarmActive = true;
+
+        if(!sabotageStop) {
+
+            int numberOfPlayers = groupManager.getGameInstance(user.getGameId()).getUserList().size();
+            alarmCounter = numberOfPlayers;
+            alarmActive = true;
+            usersPressedSafetyButton.clear();
+            messagingTemplate.convertAndSend("/topic/sabotageActive/", new ObjectMapper().writeValueAsString("sabotageActive"));
+
 
         }
     }
 
-    @MessageMapping("/sabotage/{userName}")
-    public void processSabotage(@Payload User user) throws JsonProcessingException {
-        System.out.println("Sabotage: y: " + user.getY() + " x: " + user.getX());
-
-        alarmCounter = groupManager.getGameInstance(user.getGameId()).getUserList().size();
-        System.out.println("SABOTAGE ALARM COUNTER: " + alarmCounter);
-        System.out.println("SABOTAGE USERLIST SIZE: " + groupManager.getGameInstance(user.getGameId()).getUserList().size() +  " " + groupManager.getGameInstance(user.getGameId()).getUserList());
-        alarmActive = true;
-
-        messagingTemplate.convertAndSend("/topic/sabotageActive/", new ObjectMapper().writeValueAsString("sabotageActive"));
-//        countdownSabotage(user);
-
-
-    }
-
+    private Set<String> usersPressedSafetyButton = new HashSet<>();
     private boolean alarmActive = false;
     private int alarmCounter = 0;
+
     @MessageMapping("/safetyButtonPressed/{userName}")
     public void processSafetyButtonPressed(@Payload User user) throws JsonProcessingException {
         System.out.println("Safety Button pressed: " + user.getUserName() + " " + user.getY() + " x: " + user.getX());
 
         if(alarmActive && DefaultMap.isSafe(user.getY(), user.getX())) {
-            alarmCounter--;
-            System.out.println("ALARM COUNTER: " + alarmCounter);
-            if(alarmCounter == 0) {
+            usersPressedSafetyButton.add(user.getUserName());
+            System.out.println("ALARM COUNTER: " + usersPressedSafetyButton.size());
+            if(usersPressedSafetyButton.size() == alarmCounter) {
                 System.out.println("SABOTAGE NOT ACTIVE");
                 messagingTemplate.convertAndSend("/topic/sabotageNotActive/", new ObjectMapper().writeValueAsString("sabotageNotActive"));
                 alarmActive = false;
 
-                for(int i = 0; i < 300; i++) {
+                stopTheSabotageFor300Seconds();
+
+                for(int i = 30; i >= 0; i--) {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
                         System.out.println("Thread was interrupted: " + e.getMessage());
                     }
+                    messagingTemplate.convertAndSend("/topic/sabotageButtonCountdown/", new ObjectMapper().writeValueAsString("sabotageButtonCountdown"));
 
                 }
                 messagingTemplate.convertAndSend("/topic/sabotageButtonActive/", new ObjectMapper().writeValueAsString("sabotageButtonActive"));
             }
         }
-
-
     }
 
 
@@ -418,23 +430,23 @@ public class GameController {
     }
 
 
-    public void countdownVent(String userName) throws JsonProcessingException {
+    public void countdownAirSystem(String userName) throws JsonProcessingException {
         for(int i = 15; i >= 0; i--) {
             try {
                 Thread.sleep(1000);
-                messagingTemplate.convertAndSend("/topic/ventCooldown/" + userName, new ObjectMapper().writeValueAsString(i));
+                messagingTemplate.convertAndSend("/topic/airSystemCountdown/" + userName, new ObjectMapper().writeValueAsString(i));
 
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 System.out.println("Thread was interrupted: " + e.getMessage());
             }
         }
-        messagingTemplate.convertAndSend("/topic/ventActive/" + userName, new ObjectMapper().writeValueAsString("ventButtonActive"));
+        messagingTemplate.convertAndSend("/topic/airSystemActive/" + userName, new ObjectMapper().writeValueAsString("ventButtonActive"));
 
     }
 
     public void countdownVoting() throws JsonProcessingException {
-        for(int i = 30; i >= 0 && !votingComplete; i--) {
+        for(int i = 30; i >= -3 && !votingComplete; i--) {
             try {
                 Thread.sleep(1000);
                 messagingTemplate.convertAndSend("/topic/countdownVoting/", new ObjectMapper().writeValueAsString(i));
@@ -478,4 +490,29 @@ public class GameController {
 
     }
 
+    private void stopTheAirSystemFor30Seconds() {
+        airSystemStop = true;
+        for(int i = 30; i >= 0; i--) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Thread was interrupted: " + e.getMessage());
+            }
+        }
+        airSystemStop = false;
+    }
+
+    private void stopTheSabotageFor300Seconds() {
+        sabotageStop = true;
+        for(int i = 300; i >= 0; i--) {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                System.out.println("Thread was interrupted: " + e.getMessage());
+            }
+        }
+        sabotageStop = false;
+    }
 }
