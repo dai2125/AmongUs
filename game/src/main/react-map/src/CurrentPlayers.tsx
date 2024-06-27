@@ -162,6 +162,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
             setShowRoleImpostor(true);
         } else {
             setShowRole(true);
+            setShowMapButton(true);
         }
     }
 
@@ -212,6 +213,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     };
 
     const [showMiniMap, setShowMiniMap] = useState(false);
+    const [showMapButton, setShowMapButton] = useState(false);
+
 
     const handleShowMiniMap = () => {
         setShowMiniMap(!showMiniMap);
@@ -367,6 +370,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }
 
     const impostorWinsTheGame = () => {
+        setShowTaskBar(false);
+        setShowTaskList(false);
         setShowMap(false);
         if (playerRef.current.getRole() === "impostor") {
             setVictoryImpostor(true);
@@ -379,6 +384,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }
 
     const crewmateWinsTheGame = () => {
+        setShowTaskBar(false);
+        setShowTaskList(false);
         setShowMap(false);
         setShowVotingbox(false);
         if (playerRef.current.getRole() === "crewmate") {
@@ -490,8 +497,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                         </div>
                         <div className="col-span-4 border-solid rounded-lg justify-self-end mr-2 mt-o">
 
-                            <button onClick={handleShowMiniMap}
-                                    className="bg-blue-300 hover:bg-blue-700 rounded-lg py-3 px-8 mr-12">Map</button>
+                            {showMapButton && (
+                                <button
+                                    onClick={handleShowMiniMap}
+                                    className="bg-blue-300 hover:bg-blue-700 rounded-lg py-3 px-8 mr-12">
+                                    Map
+                                </button>
+                            )}
 
                             <button onClick={onQuit}
                                     className="bg-gray-700 hover:bg-gray-800 rounded-lg py-3 px-8">Quit

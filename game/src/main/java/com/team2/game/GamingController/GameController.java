@@ -67,12 +67,16 @@ public class GameController {
             logger.info("User disconnected: {}", event.getUser());
             int tasksToRemove = groupManager.getGameInstance(gameId).getTasksToRemove();
             int taskResolvedCounter = groupManager.getGameInstance(gameId).getTaskResolvedCounter();
+            int imposterCount = groupManager.getGameInstance(gameId).getIMPOSTER_COUNT();
             System.out.println("TASKS TO REMOVE : " + tasksToRemove);
 
             for (int i = 0; i < tasksToRemove; i++) {
                 messagingTemplate.convertAndSend("/topic/taskResolved/" + gameId, true);
             }
             if (taskResolvedCounter < 1){
+                messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
+            }
+            if (imposterCount < 1){
                 messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
             }
 

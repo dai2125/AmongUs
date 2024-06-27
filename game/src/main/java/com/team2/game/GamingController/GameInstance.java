@@ -38,6 +38,8 @@ public class GameInstance {
     private int taskResolvedCounter = 9;
     private int tasksToRemove = 0;
 
+
+
     public int getTaskResolvedCounter(){
         return taskResolvedCounter;
     }
@@ -65,18 +67,20 @@ public class GameInstance {
         userList.remove(user);
         tasksToRemove = 0;
 
-        if (!user.getTasks().getTask1().isEmpty()){
-            tasksToRemove++;
+        if(!user.getImpostor()){
+            if (!user.getTasks().getTask1().isEmpty()){
+                tasksToRemove++;
+            }
+            if (!user.getTasks().getTask2().isEmpty()){
+                tasksToRemove++;
+            }
+            if (!user.getTasks().getTask3().isEmpty()){
+                tasksToRemove++;
+            }
+        } else {
+            IMPOSTER_COUNT--;
         }
-        if (!user.getTasks().getTask2().isEmpty()){
-            tasksToRemove++;
-        }
-        if (!user.getTasks().getTask3().isEmpty()){
-            tasksToRemove++;
-        }
-        System.out.println("TASKS TO complete were : " + taskCounter);
         taskResolvedCounter -= tasksToRemove;
-        System.out.println("TASKS TO complete now are : " + taskCounter);
     }
 
     public List<User> getUserList() {
