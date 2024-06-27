@@ -26,8 +26,8 @@ public class RegisterService {
     private int random;
     private String gameID;
     int positionCounter = 0;
-    int[] arrayY = {24, 22, 36, 38, 46, 48, 50};
-    int[] arrayX = {28, 64, 36, 136, 94, 8, 54};
+    int[] arrayY = {12, 11, 18, 19, 23, 24, 25};
+    int[] arrayX = {24, 32, 18, 68, 47, 4, 27};
 
     private static final Logger logger = LoggerFactory.getLogger(RegisterService.class);
 
