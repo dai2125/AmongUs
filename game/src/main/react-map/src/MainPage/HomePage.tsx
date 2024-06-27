@@ -106,7 +106,7 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
             (user.newPassword == user.passwordConfirm) &&
             (user.oldPassword == user.oldPasswordInput)) {
 
-            fetch('http://192.168.0.142:8080/accountDetails', {
+            fetch('http://localhost:8080/accountDetails', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -232,7 +232,7 @@ const clientRef = useRef(null);
 
         event.preventDefault();
 
-        const socket = new SockJS('http://192.168.0.142:8080/gs-guide-websocket');
+        const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
         const client = Stomp.over(socket);
         clientRef.current = client;
 
@@ -262,7 +262,7 @@ const clientRef = useRef(null);
     }
     const handleCustomGame = (event: FormEvent<HTMLFormElement>) => {
 
-        const socket = new SockJS('http://192.168.0.142:8080/gs-guide-websocket');
+        const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
 
         const client = Stomp.over(socket);
         clientRef.current = client;

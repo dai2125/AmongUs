@@ -716,7 +716,7 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
     if (!notConnected) {
         // connect() {
         setNotConnected(true);
-        const socket = new SockJS("http://192.168.0.142:8080/gs-guide-websocket");
+        const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
         const client = Stomp.over(socket);
         client.connect({}, () => {
             client.subscribe(`/topic/movement/north/${currentPlayer.getUserName()}`, (message) => {

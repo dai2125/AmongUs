@@ -22,7 +22,7 @@ public class GameInstance {
 
     @Setter
     @Getter
-    private int IMPOSTER_COUNT = 1;
+    private int IMPOSTER_COUNT = 3;
     @Setter
     @Getter
     private int CREWMATE_COUNT = 1;

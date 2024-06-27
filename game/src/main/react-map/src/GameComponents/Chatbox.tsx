@@ -27,7 +27,7 @@ function ChatBox({ playerColor, playerName }) {
 
     useEffect(() => {
         if (!userId) return;
-        const socket = new SockJS("http://192.168.0.142:8081/chat");
+        const socket = new SockJS("http://localhost:8081/chat");
         const stompClient = Stomp.over(socket);
         setClient(stompClient);
 

@@ -147,7 +147,7 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
     }, [countDown]);
 
     useEffect(() => {
-        const socket = new SockJS("http://192.168.0.142:8080/gs-guide-websocket");
+        const socket = new SockJS("http://localhost:8080/gs-guide-websocket");
         const client = Stomp.over(socket);
         client.connect({}, () => {
             client.subscribe('/topic/countdownVoting/', (message) => {

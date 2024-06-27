@@ -78,7 +78,7 @@ class WebSocketService {
 
 
     connect() {
-        const socket = new SockJS('http://192.168.0.142:8080/gs-guide-websocket');
+        const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
         this.client = Stomp.over(socket);
 
         const { playerRef, setOtherPlayers } = this;
