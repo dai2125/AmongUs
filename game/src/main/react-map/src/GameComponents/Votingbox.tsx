@@ -213,13 +213,13 @@ function Votingbox ({ onButtonPress, currentPlayer, otherPlayers, deadPlayer})  
                             <button onClick={handleSubmitButtonPress}>Submit Button</button>
                         </div>
                         <div className="voting-countdown">
-                            <h1 style={{ fontFamily: 'bold 30px 14px VCR OSD Mono monospace', fontSize: '20px', color: 'black' }}>Time left: {countDown}</h1>
+                            <h1 style={{ fontFamily: 'bold 30px 14px VCR OSD Mono monospace', fontSize: '20px', color: 'white' }}>Time left: {countDown}</h1>
                     </div>
                     </div>
                 </div>
             ) : (
                 <div>
-                    <h1>{voteMessage}</h1>
+                    <h2 className="voting-h2" style={{ fontFamily: 'bold 30px 14px VCR OSD Mono monospace', fontSize: '20px', color: 'white' }}>{voteMessage}</h2>
                 </div>
             )}
         </div>

@@ -93,6 +93,9 @@ public class GameController {
                 messagingTemplate.convertAndSend("/topic/startGame/" + user.getGameId(), "test");
                 messagingTemplate.convertAndSend("/topic/startGame/", "test");
 
+                airSystemStop = false;
+                sabotageStop = false;
+
                 registerService.sendAlready = true;
             }
     }
@@ -300,7 +303,11 @@ public class GameController {
             counter = groupManager.getGameInstance(user.getGameId()).getUserList().size();
 
 
-            if(maxKey == null) {
+            if(registerService.userList.size() == 2) {
+                messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
+                messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
+            }
+            else if(maxKey == null) {
                 messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
                 messagingTemplate.convertAndSend("/topic/noOneGotEjected/", new ObjectMapper().writeValueAsString("noOneGotEjected"));
                 countdownReportButton();
@@ -313,9 +320,6 @@ public class GameController {
             else if(votedForImpostor) {
                 messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
                 messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("impostorWins"));
-            } else if(registerService.userList.size() == 2) {
-                messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
-                messagingTemplate.convertAndSend("/topic/impostorWins/", new ObjectMapper().writeValueAsString("impostorWins"));
             } else {
                 messagingTemplate.convertAndSend("/topic/votingNotActive/", new ObjectMapper().writeValueAsString("votingNotActive"));
                 messagingTemplate.convertAndSend("/topic/someoneGotEjected/", new ObjectMapper().writeValueAsString(maxKey));
