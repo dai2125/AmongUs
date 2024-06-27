@@ -160,7 +160,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
     const handleThereIsAImpostorAmongUs = () => {
         setShowThereIsAImpostorAmoungUs(false);
-        if (playerRef.current.getRole() === "Impostor") {
+        if (playerRef.current.getRole() === "impostor") {
             setShowRoleImpostor(true);
         } else {
             setShowRole(true);
@@ -208,9 +208,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         }
            
         console.log("CurrentPlayers.tsx: handleKeyPress: " + key + ' ' + playerRef.current.getRole() + ' ' + sabotageActive);
-        if (key === 'e' && playerRef.current.getRole() === "Crewmate" && !sabotageActive && playerRef.current.getAction() !== 'SabotageActive') {
+        if (key === 'e' && playerRef.current.getRole() === "crewmate" && !sabotageActive && playerRef.current.getAction() !== 'SabotageActive') {
             taskAction();
-        } else if (key === 'e' && playerRef.current.getRole() === "Impostor") {
+        } else if (key === 'e' && playerRef.current.getRole() === "impostor") {
             //taskKill(key);
         }
     };
@@ -383,7 +383,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         setShowTaskBar(false);
         setShowTaskList(false);
         setShowMap(false);
-        if (playerRef.current.getRole() === "Impostor") {
+        if (playerRef.current.getRole() === "impostor") {
             setVictoryImpostor(true);
         } else {
             setDefeatCrewmate(true);
@@ -398,7 +398,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         setShowTaskList(false);
         setShowMap(false);
         setShowVotingbox(false);
-        if (playerRef.current.getRole() === "Crewmate") {
+        if (playerRef.current.getRole() === "crewmate") {
             setVictoryCrewmate(true);
         } else {
             setDefeatImpostor(true);
