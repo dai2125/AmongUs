@@ -108,7 +108,7 @@ import brownImageEast2 from '../Images/Character_Brown_Movement/Brown_East_Left.
 import brownImageWest from '../Images/Character_Brown_Movement/Brown_West_Left.png';
 import brownImageWest2 from '../Images/Character_Brown_Movement/Brown_West_Right.png';
 import brownImageNorth from '../Images/Character_Brown_Movement/Brown_North_Left.png';
-import brownImageNorth2 from '../Images/Character_Brown_Movement/Brown_North_Right.png';
+import brownImageNorth2 from '../Images/Character_Brown_Movement/Brown_North_Left.png';
 import brownImageSouth from '../Images/Character_Brown_Movement/Brown_South_Left.png';
 import brownImageSouth2 from '../Images/Character_Brown_Movement/Brown_South_Right.png';
 
@@ -138,6 +138,7 @@ interface MapGridProps {
     currentPlayer: Player;
     otherPlayers: any[];
     reportButtonClicked: () => void;
+    onKeyClick:() => void ;
 }
 
 const colorToImageUrl = {
@@ -166,20 +167,9 @@ const colorToImageUrl = {
 
 const movementQueue = [];
 
-{/* DONE TODO Ghost can walk through walls */}
-{/* TODO Voting system testing */}
-{/* DONE TODO Report button always visible, cooldown for 30 seconds */}
-{/* DONE TODO Sabotage */}
-{/* DONE TODO Memory tasks doesnt work always */}
-{/* TODO Update Tasklist */}
-{/* DONE TODO Update Taskbar */}
-{/* TODO AirSystemScreen und AlarmScreen testen */}
-
-const MapGrid: React.FC<MapGridProps> = ({
-                                             currentPlayer,
-                                             otherPlayers,
-                                             reportButtonClicked,
+const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportButtonClicked,  onKeyClick
                                          }) => {
+
 
     const [otherPlayer, setOtherPlayer] = useState(otherPlayers);
     const [playerImage, setPlayerImage] = useState(colorToImageUrl[currentPlayer.getColor()]);
@@ -1066,24 +1056,15 @@ const MapGrid: React.FC<MapGridProps> = ({
                 case 'ArrowRight':
                     sendMovementEast();
                     break;
-                case 'w':
-                    sendMovementNorth();
-                    break;
-                case 's':
-                    sendMovementSouth();
-                    break;
-                case 'a':
-                    sendMovementWest();
-                    break;
-                case 'd':
-                    sendMovementEast();
-                    break;
                 case 'q':
                     sendAirSystem();
                     break;
                 case 'e':
                     sendKill();
                     break;
+                case 'w':
+                    console.log("W input")
+                    onKeyClick();
                 case 'f':
                     sendSabotage();
                     break;

@@ -127,6 +127,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }, [userColor]);
 
 
+
     // const toggleChat = () => {
     //     if(!chatVisible) {
     //         setChatVisible(true);
@@ -163,6 +164,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
             setShowRoleImpostor(true);
         } else {
             setShowRole(true);
+            setShowMapButton(true);
         }
     }
 
@@ -200,6 +202,11 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }, []);
 
     const handleKeyPress = (key: string) => {
+
+        if (key === 'w' && playerRef.current.getRole() === "crewmate") {
+          taskAction();
+        }
+           
         console.log("CurrentPlayers.tsx: handleKeyPress: " + key + ' ' + playerRef.current.getRole() + ' ' + sabotageActive);
         if (key === 'e' && playerRef.current.getRole() === "Crewmate" && !sabotageActive && playerRef.current.getAction() !== 'SabotageActive') {
             taskAction();
@@ -215,6 +222,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     };
 
     const [showMiniMap, setShowMiniMap] = useState(false);
+    const [showMapButton, setShowMapButton] = useState(false);
+
 
     const handleShowMiniMap = () => {
         setShowMiniMap(!showMiniMap);
@@ -257,21 +266,26 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
         const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
 
-        if (xPosTask === 24 && yPosTask === 11 || xPosTask === 23 && yPosTask === 11) {
+
+        console.log(gameType)
+        if (gameType === "Guess the number") {
+            console.log("Before sending to Server Before ClearTask");
+            clearTask(gameType);
+            console.log("Before sending to Server");
             webSocketServiceRef.current.sendTaskResolved("Guess the number", 11, 5);
-            clearTask("Guess the number");
-        } else if (yPosTask === 31 &&  (xPosTask === 110 || xPosTask === 109)) {
+            console.log("After Sending to server");
+        } else if (gameType === "Download the file") {
             webSocketServiceRef.current.sendTaskResolved("Download the file", 58, 7);
             clearTask("Download the file");
-        } else if (yPosTask === 30 && (xPosTask === 136 || xPosTask === 135)) {
+        } else if (gameType === "Enter the number sequence") {
             webSocketServiceRef.current.sendTaskResolved("Enter the number sequence", 72, 17);
-            clearTask("Enter the number sequence");
-        } else if (yPosTask === 69 && (xPosTask === 102 || xPosTask === 103)) {
+            clearTask(gameType);
+        } else if (gameType === "Answer the question") {
             webSocketServiceRef.current.sendTaskResolved("Answer the question", 51, 37);
-            clearTask("Answer the question");
-        } else if ((yPosTask === 52 && (xPosTask === 20 || xPosTask === 21 || xPosTask === 22)) || yPosTask === 51 && (xPosTask === 20 || xPosTask === 21 || xPosTask === 22)) {
+            clearTask(gameType);
+        } else if (gameType === "Memory game") {
             webSocketServiceRef.current.sendTaskResolved("Memory game", 9, 25);
-            clearTask("Memory game");
+            clearTask(gameType);
         }
 
         playerInstance();
@@ -280,13 +294,20 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     };
 
     const clearTask = (taskName: string) => {
+        console.log("Clearing ");
+        console.log(taskName);
+        console.log("Current tasks:", playerRef.current.getTask1(), playerRef.current.getTask2(), playerRef.current.getTask3());
         if (playerRef.current.getTask1() === taskName) {
+            console.log("condition met ");
             playerRef.current.setTask1("");
         } else if (playerRef.current.getTask2() === taskName) {
+            console.log("condition met ");
             playerRef.current.setTask2("");
         } else if (playerRef.current.getTask3() === taskName) {
+            console.log("condition met ");
             playerRef.current.setTask3("");
         }
+        playerInstance();
     };
 
 
@@ -359,6 +380,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }
 
     const impostorWinsTheGame = () => {
+        setShowTaskBar(false);
+        setShowTaskList(false);
         setShowMap(false);
         if (playerRef.current.getRole() === "Impostor") {
             setVictoryImpostor(true);
@@ -371,6 +394,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }
 
     const crewmateWinsTheGame = () => {
+        setShowTaskBar(false);
+        setShowTaskList(false);
         setShowMap(false);
         setShowVotingbox(false);
         if (playerRef.current.getRole() === "Crewmate") {
@@ -509,8 +534,13 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                         </div>
                         <div className="col-span-4 border-solid rounded-lg justify-self-end mr-2 mt-o">
 
-                            <button onClick={handleShowMiniMap}
-                                    className="bg-blue-300 hover:bg-blue-700 rounded-lg py-3 px-8 mr-12">Map</button>
+                            {showMapButton && (
+                                <button
+                                    onClick={handleShowMiniMap}
+                                    className="bg-blue-300 hover:bg-blue-700 rounded-lg py-3 px-8 mr-12">
+                                    Map
+                                </button>
+                            )}
 
                             <button onClick={onQuit}
                                     className="bg-gray-700 hover:bg-gray-800 rounded-lg py-3 px-8">Quit
@@ -534,7 +564,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}
-                                                reportButtonClicked={reportButtonClicked} /> : <div></div>}
+                                                reportButtonClicked={reportButtonClicked} onKeyClick={taskAction}/> : <div></div>}
+
                         </div>
 
                         {showPopup && (

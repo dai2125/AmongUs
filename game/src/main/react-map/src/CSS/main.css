@@ -18,26 +18,17 @@ body {
 }
 
 .background {
-    /* Set background image */
     background-image: url('../Images/Homepage/stars.jpg');
-
-    /* Specify background image size */
-    background-size: cover; /* This will cover the entire background */
-
-    /* Specify background image position */
-    background-position: center; /* Center the background image */
-
-    /* Optionally, you can set other background properties like repeat */
-    background-repeat: no-repeat; /* Prevent the background from repeating */
-
-    /* Specify dimensions for your div */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     width: 100%;
-    height: 100%; /* Adjust height as needed */
+    height: 100%;
 }
 
 .miniMapBackground {
-    background-image: url('../Images/Maps/MiniGamesMap.png');
-    background-size: contain; /* Adjusted to contain the entire image */
+    background-image: url('../Images/Maps/MiniMap.png');
+    background-size: contain;
     background-position: center;
     background-repeat: no-repeat;
 }

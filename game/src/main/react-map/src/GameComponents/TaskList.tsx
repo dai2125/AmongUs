@@ -13,7 +13,7 @@ const TaskList = ({role, tasks}) => {
             tasks.task2,
             tasks.task3
         ]);
-    }, []);
+    }, [tasks]);
 
     return (
         <div className="absolute top-36 left-1 w-100 h-100 bg-white bg-opacity-80 border  px-4 py-1"
