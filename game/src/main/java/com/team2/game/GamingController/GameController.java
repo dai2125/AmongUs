@@ -205,58 +205,63 @@ public class GameController {
 
     @MessageMapping("/kill/{userName}")
     public void processKill(@Payload ObjectInteraction objectInteraction, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        for(User u : registerService.getGroupManager().getGameInstance(objectInteraction.getGameId()).getUserList()) {
-            if (u.getUserName().equals(objectInteraction.getObjectTwo())){
+        try {
+            for(User u : registerService.getGroupManager().getGameInstance(objectInteraction.getGameId()).getUserList()) {
+                if (u.getUserName().equals(objectInteraction.getObjectTwo())){
 
-                System.out.println("Killed name: " + u.getUserName());
+                    System.out.println("Killed name: " + u.getUserName());
 
-                messagingTemplate.convertAndSend("/topic/kill/" + objectInteraction.getObjectOne(), new ObjectMapper().writeValueAsString("kill"));
-                System.out.println("KILL FUNCTION THIS PERSON MUST GET THE MESSAGE " + objectInteraction.getObjectTwo());
-                messagingTemplate.convertAndSend("/topic/dead/" + objectInteraction.getObjectTwo(), new ObjectMapper().writeValueAsString("dead"));
-                messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
+                    messagingTemplate.convertAndSend("/topic/kill/" + objectInteraction.getObjectOne(), new ObjectMapper().writeValueAsString("kill"));
+                    System.out.println("KILL FUNCTION THIS PERSON MUST GET THE MESSAGE " + objectInteraction.getObjectTwo());
+                    messagingTemplate.convertAndSend("/topic/dead/" + objectInteraction.getObjectTwo(), new ObjectMapper().writeValueAsString("dead"));
+                    messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
 
-                // TODO set location of dead player
+                    // TODO set location of dead player
 
-                groupManager.addDeadPlayerPosition(objectInteraction.getPositionDeadPlayerX(), objectInteraction.getPositionDeadPlayerY());
+                    groupManager.addDeadPlayerPosition(objectInteraction.getPositionDeadPlayerX(), objectInteraction.getPositionDeadPlayerY());
 
 
-                messagingTemplate.convertAndSend("/topic/killButtonNotActive/", new ObjectMapper().writeValueAsString("killButtonNotActive"));
+                    messagingTemplate.convertAndSend("/topic/killButtonNotActive/", new ObjectMapper().writeValueAsString("killButtonNotActive"));
 //                countdownKill();
-                for(int i = 15; i >= 0; i--) {
-                    try {
-                        Thread.sleep(1000);
+                    for(int i = 15; i >= 0; i--) {
+                        try {
+                            Thread.sleep(1000);
 //                messagingTemplate.convertAndSend("/topic/killCooldown/" + userName, new ObjectMapper().writeValueAsString(i));
 
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
-                        System.out.println("Thread was interrupted: " + e.getMessage());
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            System.out.println("Thread was interrupted: " + e.getMessage());
+                        }
                     }
+                    System.out.println("KILL BUTTON ACTIVE");
+                    messagingTemplate.convertAndSend("/topic/killButtonActive/", new ObjectMapper().writeValueAsString("killButtonActive"));
+
+
+                    registerService.crewmateDied(u);
+                    System.out.println("Hello After KILL OF " + objectInteraction.getObjectTwo());
+
+                    break;
                 }
-                System.out.println("KILL BUTTON ACTIVE");
-                messagingTemplate.convertAndSend("/topic/killButtonActive/", new ObjectMapper().writeValueAsString("killButtonActive"));
 
-
-                registerService.crewmateDied(u);
-                System.out.println("Hello After KILL OF " + objectInteraction.getObjectTwo());
-
-                break;
             }
 
+            if(registerService.areAllCrewmatesDead()) {
+
+                try {Thread.sleep(1000);} catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.out.println("Thread was interrupted: " + e.getMessage());
+                }
+                System.out.println("IMPOSTOR WINS");
+                messagingTemplate.convertAndSend("/topic/impostorWins/" + objectInteraction.getGameId(), new ObjectMapper().writeValueAsString("impostorWins"));
+
+                for(User u : registerService.getGroupManager().getGameInstance(objectInteraction.getGameId()).getUserList()) {
+                    messagingTemplate.convertAndSend("/topic/disconnected/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
+                }
+            }
+        }catch (Exception e) {
+            logger.error("An error occurred while processing kill: " + e.getMessage());
         }
 
-        if(registerService.areAllCrewmatesDead()) {
-
-            try {Thread.sleep(1000);} catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                System.out.println("Thread was interrupted: " + e.getMessage());
-            }
-            System.out.println("IMPOSTOR WINS");
-            messagingTemplate.convertAndSend("/topic/impostorWins/" + objectInteraction.getGameId(), new ObjectMapper().writeValueAsString("impostorWins"));
-
-            for(User u : registerService.getGroupManager().getGameInstance(objectInteraction.getGameId()).getUserList()) {
-                messagingTemplate.convertAndSend("/topic/disconnected/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
-            }
-        }
     }
 
     @MessageMapping("/yourAGhostNow/{userName}")

@@ -1022,7 +1022,6 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     sendKill();
                     break;
                 case 'w':
-                    console.log("W input")
                     onKeyClick();
                 case 'f':
                     sendSabotage();
@@ -1121,12 +1120,14 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                 return;
             }
 
-            let payload;
+            let payload = null;
             for (let player of otherPlayers) {
-                if ((player.getY() == currentPlayer.getY() && (player.getX() == currentPlayer.getX() + 1 || player.getX() == currentPlayer.getX() - 1)) ||
+                if (((player.getY() == currentPlayer.getY() && (player.getX() == currentPlayer.getX() + 1 || player.getX() == currentPlayer.getX() - 1)) ||
                     (player.getX() == currentPlayer.getX() && (player.getY() == currentPlayer.getY() + 1 || player.getY() == currentPlayer.getY() - 1)) ||
                     (player.getY() == currentPlayer.getY() && (player.getX() == currentPlayer.getX() + 2 || player.getX() == currentPlayer.getX() - 2)) ||
-                    (player.getX() == currentPlayer.getX() && (player.getY() == currentPlayer.getY() + 2 || player.getY() == currentPlayer.getY() - 2))) {
+                    (player.getX() == currentPlayer.getX() && (player.getY() == currentPlayer.getY() + 2 || player.getY() == currentPlayer.getY() - 2)))
+                     && player.getMovable()) {
+                    player.setMovable(false);
                     console.log("Hello from new kill inside ", currentPlayer.getGameId());
                     payload = JSON.stringify({
                         objectOne: currentPlayer.getUserName(),
@@ -1138,7 +1139,10 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                     break;
                 }
             }
-            client.send(`/app/kill/${currentPlayer.getUserName()}`, {}, payload);
+            if (payload){
+                client.send(`/app/kill/${currentPlayer.getUserName()}`, {}, payload);
+            }
+
         }
 
         const sendAirSystem = () => {
@@ -1266,9 +1270,10 @@ const MapGrid: React.FC<MapGridProps> = ({currentPlayer, otherPlayers, reportBut
                             const blinkClass = cellContent === 2 ? style.blink : '';
 
                             return (
-                                <span key={colIndex} className={`${style.cell} ${blinkClass}`} style={{cellStyle}}>
+                                <span key={colIndex} className={`${style.cell} ${blinkClass}`} style={{/*cellStyle*/}}>
                                     {/*TODO Comment this line to hide the array*/}
-                                    {cellContent}
+                                    {/*cellContent*/
+                                    }
                                 </span>
                             );
                         })}
