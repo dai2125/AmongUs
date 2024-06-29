@@ -180,6 +180,7 @@ public class RegisterService {
 
         String gameId = groupManager.getGameBySessionId(sessionId);
         GameInstance instanceToDisconnect = groupManager.getGameInstance(gameId);
+        System.out.println("GameInstance: " + gameId);
 
         for (User u : instanceToDisconnect.getUserList()) {
             if (u.getSessionId().equals(sessionId)) {
@@ -246,7 +247,7 @@ public class RegisterService {
         }
     }
 
-    public boolean taskResolved(String gameID, String sessionId, String task){
+    public int taskResolved(String gameID, String sessionId, String task){
         return groupManager.getGameInstance(gameID).taskResolved(sessionId, task);
     }
 

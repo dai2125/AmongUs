@@ -31,7 +31,8 @@ public class GroupManager {
         gameInstance.setCREWMATE_COUNT(crewmates);
         gameInstance.setIMPOSTER_COUNT(imposters);
         gameInstance.setGROUP_FULL(crewmates + imposters);
-        System.out.println("Crewmate count: " + gameInstance.getCREWMATE_COUNT() + " Imposters: " + gameInstance.getIMPOSTER_COUNT() + " Group Full: " + gameInstance.getGROUP_FULL());
+        gameInstance.setTaskResolvedCounter(crewmates*3);
+        System.out.println("Crewmate count: " + gameInstance.getCREWMATE_COUNT() + " Imposters: " + gameInstance.getIMPOSTER_COUNT() + " Group Full: " + gameInstance.getGROUP_FULL()+"Number Tasks: " + gameInstance.getTaskResolvedCounter());
 
         gameInstances.put(gameId, gameInstance);
         return true; // Game created successfully
