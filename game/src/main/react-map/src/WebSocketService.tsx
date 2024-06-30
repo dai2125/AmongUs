@@ -41,11 +41,13 @@ class WebSocketService {
     private ejectMe: () => void;
     private someoneGotEjected: (ejectedPlayer) => void;
     private noOneGotEjected: () => void;
+    private setCompletedTaskCount: React.Dispatch<React.SetStateAction<number>>;
+    private taskProgress: React.MutableRefObject<number>;
 
     constructor(playerRef: React.MutableRefObject<Player>,
                 setOtherPlayers: React.Dispatch<React.SetStateAction<Player[]>>,
                 startTimer: () => void,
-                setTasks: React.Dispatch<React.SetStateAction<{task1: string, task2: string, task3: string}>>,
+                setTasks: React.Dispatch<React.SetStateAction<{ task1: string; task2: string; task3: string }>>,
                 setCrewmateDead: React.Dispatch<React.SetStateAction<boolean>>,
                 updateTasks: () => void,
                 dead: () => void,
@@ -57,7 +59,9 @@ class WebSocketService {
                 votingNotActive: () => void,
                 ejectMe: () => void,
                 someoneGotEjected: (ejectedPlayer) => void,
-                noOneGotEjected: () => void) {
+                noOneGotEjected: () => void,
+                setTaskCompletedCount: React.Dispatch<React.SetStateAction<number>>,
+                taskProgress: React.MutableRefObject<number>) {
         this.playerRef = playerRef;
         this.setOtherPlayers = setOtherPlayers;
         this.startTimer = startTimer;
@@ -74,10 +78,12 @@ class WebSocketService {
         this.ejectMe = ejectMe;
         this.someoneGotEjected = someoneGotEjected;
         this.noOneGotEjected = noOneGotEjected;
+        this.setCompletedTaskCount = setTaskCompletedCount;
+        this.taskProgress = taskProgress;
     }
 
 
-    connect() {
+     connect() {
         const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
         this.client = Stomp.over(socket);
 
@@ -190,7 +196,9 @@ class WebSocketService {
                     // playerRef.current.setImage(deadPlayer.image);
                 });
 
-                this.client.subscribe(`/topic/taskResolved/${playerRef.current.getGameId()}`, () => {
+                this.client.subscribe(`/topic/taskResolved/${playerRef.current.getGameId()}`, (message) => {
+                    const percentage = JSON.parse(message.body);
+                    this.taskProgress.current = percentage;
                     this.updateTasks();
                 });
 

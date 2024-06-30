@@ -18,14 +18,14 @@ public class GameInstance {
 
     @Setter
     @Getter
-    private int GROUP_FULL = 2;
+    private int GROUP_FULL = 4;
 
     @Setter
     @Getter
     private int IMPOSTER_COUNT = 1;
     @Setter
     @Getter
-    private int CREWMATE_COUNT = 1;
+    private int CREWMATE_COUNT = 3;
 
 
     private int taskCounter = 0;

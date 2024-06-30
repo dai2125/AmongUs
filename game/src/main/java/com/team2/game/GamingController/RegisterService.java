@@ -247,7 +247,7 @@ public class RegisterService {
         }
     }
 
-    public int taskResolved(String gameID, String sessionId, String task){
+    public float taskResolved(String gameID, String sessionId, String task){
         return groupManager.getGameInstance(gameID).taskResolved(sessionId, task);
     }
 

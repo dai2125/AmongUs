@@ -74,10 +74,11 @@ public class GameController {
             int tasksToRemove = groupManager.getGameInstance(gameId).getTasksToRemove();
             int taskResolvedCounter = groupManager.getGameInstance(gameId).getTaskResolvedCounter();
             int imposterCount = groupManager.getGameInstance(gameId).getIMPOSTER_COUNT();
-            System.out.println("TASKS TO REMOVE : " + tasksToRemove);
+            float percentage = groupManager.getGameInstance(gameId).getTaskPercentage();
+            System.out.println("TASKS TO REMOVE : " + tasksToRemove + " Task percentage : " + percentage);
 
             for (int i = 0; i < tasksToRemove; i++) {
-                messagingTemplate.convertAndSend("/topic/taskResolved/" + gameId, true);
+                messagingTemplate.convertAndSend("/topic/taskResolved/" + gameId, percentage);
             }
             if (taskResolvedCounter < 1){
                 messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
@@ -122,20 +123,18 @@ public class GameController {
     public void taskResolved(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
         System.out.println("Hello from taskResolved Removing TASK: " + user.getColor());
         // user.getColor here contains the name of the resolved task
-        int updatesNeeded = registerService.taskResolved(user.getGameId(), user.getSessionId(), user.getColor());
+        float updatesNeeded = registerService.taskResolved(user.getGameId(), user.getSessionId(), user.getColor());
 
-        boolean crewmatesWon = groupManager.getGameInstance(user.getGameId()).getTasksToRemove() <= 0;
+        //boolean crewmatesWon = groupManager.getGameInstance(user.getGameId()).getTasksToRemove() <= 0;
+        int percentage;
 
         if (groupManager.getGameInstance(user.getGameId()).getTaskResolvedCounter()<=0) {
-            for (int i = 0; i < updatesNeeded; i++) {
-                messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
-            }
+            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), updatesNeeded);
             messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
         } else {
-            for (int i = 0; i < updatesNeeded; i++) {
-                messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
-            }
-            System.out.println("Hello after sending task resolved");
+
+            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), updatesNeeded);
+            System.out.println("Hello after sending task resolved The sent progress is: " + updatesNeeded);
         }
     }
 
