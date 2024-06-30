@@ -39,6 +39,9 @@ public class GameInstance {
     private int taskResolvedCounter = 9;
     private int tasksToRemove = 0;
 
+    @Setter
+    @Getter
+    private float taskPercentage = (float) 1 /(3 * CREWMATE_COUNT)*100;
 
 
     public int getTaskResolvedCounter(){
@@ -65,7 +68,7 @@ public class GameInstance {
     }
 
     public void removeFromTheGroup(User user) {
-        userList.remove(user);
+        //userList.remove(user);
         tasksToRemove = 0;
 
         if(!user.getImpostor()){
@@ -250,10 +253,11 @@ public class GameInstance {
     }
 
     public void removePlayerFromList(User user) {
-        userList.remove(user);
+        //userList.remove(user);
+        //do not remove the player from the list when he dies because he needs to still exist as a ghost and do tasks
     }
 
-    public int taskResolved(String sessionId, String task) {
+    public float taskResolved(String sessionId, String task) {
         for (int i = 0; i < 3; i++) {
             if (userList.get(getUserIndex(sessionId)).getTasks().getTask1().equals(task)){
                 userList.get(getUserIndex(sessionId)).getTasks().setTask1("");
@@ -273,14 +277,7 @@ public class GameInstance {
         taskResolvedCounter--;
         System.out.println("Remaining Tasks: " + taskResolvedCounter);
 
-        int numberOfPlayers = CREWMATE_COUNT;
-        int updatesPerTask = Math.max(3 / numberOfPlayers, 1);
-
-        if (taskResolvedCounter > 0) {
-            return updatesPerTask;
-        } else {
-            return updatesPerTask * (taskResolvedCounter + updatesPerTask);
-        }
+        return taskPercentage;
     }
 
 }
