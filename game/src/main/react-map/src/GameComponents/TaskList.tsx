@@ -14,17 +14,25 @@ const TaskList = ({role, tasks}) => {
             tasks.task3
         ]);
     }, [tasks]);
+/*
+    style={{
+        position: 'fixed',
+            right: 10,
+            bottom: 10,
+            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+            padding: '10px',
 
+    }}
+*/
     return (
-        <div className="absolute top-36 left-1 w-100 h-100 bg-white bg-opacity-80 border  px-4 py-1"
-             style={{backgroundColor: 'rgba(255, 255, 255, 0.8)', display: 'flex', alignItems: 'center', zIndex: 1}}>
+        <div className="absolute bottom-1.5 left-2 w-100 h-100 bg-white bg-opacity-80 border  px-4 py-1"
+             style={{backgroundColor: 'rgba(255, 255, 255, 0.5)', display: 'flex', alignItems: 'center', zIndex: 1, borderRadius: '5px',}}>
             <div style={{
                 flex: 1,
                 minHeight: '100%',
-                borderRight: '1px solid #ccc',
                 fontFamily: "'VCR OSD Mono', monospace"
             }}>
-                <p className="text-black bold text-xl">{myRole}</p>
+                <p className="text-black bold text-2xl">{myRole}</p>
                 {myTasks.map((task, index) => (
                     <p key={index}>{task}</p>
                 ))}
@@ -36,7 +44,7 @@ const TaskList = ({role, tasks}) => {
                 transform: 'rotate(180deg)',
                 fontFamily: "'VCR OSD Mono', monospace"
             }}>
-                <h1>Tasks</h1><br/>
+                <p className="text-xl text-black">Tasks</p><br/>
             </div>
         </div>
     );
