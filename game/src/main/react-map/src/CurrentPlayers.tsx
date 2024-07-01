@@ -48,6 +48,7 @@ import OtherPlayerEjected from "./Screens/OtherPlayerEjected";
 import NoOneGotEjected from "./Screens/NoOneGotEjected";
 import Lobby from "./MapGrid/Lobby";
 import WaitingRoom from "./MapGrid/WaitingRoom";
+import TaskProgress from "./GameComponents/TaskProgress";
 
 interface Props {
     userColor: string;
@@ -110,6 +111,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const [showChatbox, setShowChatbox] = useState(true);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
+    const taskProgress = useRef<number>(0);
+
     const playerRef = useRef<Player>(new Player(userName, '', '', gameId, '', 2, 2, '', '', '', '', true, 'south'));
 
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -193,11 +196,21 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
             votingNotActive,
             ejectMe,
             someoneGotEjected,
-            noOneGotEjected)
+            noOneGotEjected,
+            setCompletedTasksCount,
+            taskProgress)
         webSocketServiceRef.current.connect();
         return () => {
         };
     }, []);
+
+    const updateTasks = () => {
+
+        console.log("IN TASK RESOLVED", taskProgress.current)
+        if (completedTasksCount < 100) {
+            setCompletedTasksCount(prevCount => prevCount + taskProgress.current );
+        }
+    }
 
     const handleKeyPress = (key: string) => {
 
@@ -208,7 +221,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         if (key === 'e' && playerRef.current.getRole() === "crewmate" && !sabotageActive && playerRef.current.getAction() !== 'SabotageActive') {
             taskAction();
         } else if (key === 'e' && playerRef.current.getRole() === "impostor") {
-            //taskKill(key);
+            return;
         }
     };
 
@@ -342,11 +355,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         }
     };
 
-    const updateTasks = () => {
-        if (completedTasksCount < 9) {
-            setCompletedTasksCount(prevCount => prevCount + 1);
-        }
-    }
 
     const dead = () => {
         playerRef.current.setColor("dead");
@@ -491,7 +499,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                     <div className="grid grid-cols-12 row-span-1">
                         <div className="col-span-8 border-solid rounded-lg w-1/2 justify-self-">
                             {showTaskBar ?
-                                <TaskBar completedTasksCount={completedTasksCount}/> : <div></div>
+                                <TaskProgress percentage={completedTasksCount}/> : <div></div>
                             }
                         </div>
                         <div className="col-span-4 border-solid rounded-lg justify-self-end mr-2 mt-o">

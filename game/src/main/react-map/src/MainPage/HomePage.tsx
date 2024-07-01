@@ -321,7 +321,8 @@ export default function HomePage({loggesInUser, onPlayButtonClick, setUserColor}
 
                                 <label className="text-white">Number of imposters:</label><br/>
                                 <input name="imposters"
-                                       type="number" max="3" min="1"
+                                    type="number" max="1" min="1"
+
                                        className=" mt-1.5 w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                        required/>
 

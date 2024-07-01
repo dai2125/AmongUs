@@ -74,9 +74,11 @@ public class GameController {
             int tasksToRemove = groupManager.getGameInstance(gameId).getTasksToRemove();
             int taskResolvedCounter = groupManager.getGameInstance(gameId).getTaskResolvedCounter();
             int imposterCount = groupManager.getGameInstance(gameId).getIMPOSTER_COUNT();
+            float percentage = groupManager.getGameInstance(gameId).getTaskPercentage();
+            
 
             for (int i = 0; i < tasksToRemove; i++) {
-                messagingTemplate.convertAndSend("/topic/taskResolved/" + gameId, true);
+                messagingTemplate.convertAndSend("/topic/taskResolved/" + gameId, percentage);
             }
             if (taskResolvedCounter < 1) {
                 messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
@@ -120,21 +122,17 @@ public class GameController {
 
     @MessageMapping("/taskResolved/")
     public void taskResolved(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        // user.getColor contains the name of the task
-        boolean crewmatesWon = registerService.taskResolved(user.getGameId(), user.getSessionId(), user.getColor());
 
-        //registerService.removeTask("task", user.getSessionId());
+        System.out.println("Hello from taskResolved Removing TASK: " + user.getColor());
+        // user.getColor here contains the name of the resolved task
+        float updatesNeeded = registerService.taskResolved(user.getGameId(), user.getSessionId(), user.getColor());
 
-        /*if(registerService.allTasksAreSolved()) {
-            messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
-        } else if (crewmatesWon) {
-            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
-            messagingTemplate.convertAndSend("/topic/crewmateWins/" + user.getGameId(), crewmatesWon);
-        } else {
-            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
-        }*/
-        if (crewmatesWon) {
-            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
+
+        //boolean crewmatesWon = groupManager.getGameInstance(user.getGameId()).getTasksToRemove() <= 0;
+        int percentage;
+
+        if (groupManager.getGameInstance(user.getGameId()).getTaskResolvedCounter()<=0) {
+            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), updatesNeeded);
             messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
         } else {
             messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
@@ -195,47 +193,64 @@ public class GameController {
 
     @MessageMapping("/kill/{userName}")
     public void processKill(@Payload ObjectInteraction objectInteraction, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        for (User u : registerService.getGroupManager().getGameInstance(objectInteraction.getGameId()).getUserList()) {
-            if (u.getUserName().equals(objectInteraction.getObjectTwo())) {
+        try {
+            for(User u : registerService.getGroupManager().getGameInstance(objectInteraction.getGameId()).getUserList()) {
+                if (u.getUserName().equals(objectInteraction.getObjectTwo())){
+
+                    System.out.println("Killed name: " + u.getUserName());
+
+                    messagingTemplate.convertAndSend("/topic/kill/" + objectInteraction.getObjectOne(), new ObjectMapper().writeValueAsString("kill"));
+                    System.out.println("KILL FUNCTION THIS PERSON MUST GET THE MESSAGE " + objectInteraction.getObjectTwo());
+                    messagingTemplate.convertAndSend("/topic/dead/" + objectInteraction.getObjectTwo(), new ObjectMapper().writeValueAsString("dead"));
+                    messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
+
+                    // TODO set location of dead player
+
+                    groupManager.addDeadPlayerPosition(objectInteraction.getPositionDeadPlayerX(), objectInteraction.getPositionDeadPlayerY());
 
 
-                messagingTemplate.convertAndSend("/topic/kill/" + objectInteraction.getObjectOne(), new ObjectMapper().writeValueAsString("kill"));
-                messagingTemplate.convertAndSend("/topic/dead/" + objectInteraction.getObjectTwo(), new ObjectMapper().writeValueAsString("dead"));
-                messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
+                    messagingTemplate.convertAndSend("/topic/killButtonNotActive/", new ObjectMapper().writeValueAsString("killButtonNotActive"));
+//                countdownKill();
+                    for(int i = 15; i >= 0; i--) {
+                        try {
+                            Thread.sleep(1000);
+//                messagingTemplate.convertAndSend("/topic/killCooldown/" + userName, new ObjectMapper().writeValueAsString(i));
 
-                groupManager.addDeadPlayerPosition(objectInteraction.getPositionDeadPlayerX(), objectInteraction.getPositionDeadPlayerY());
-
-
-                messagingTemplate.convertAndSend("/topic/killButtonNotActive/", new ObjectMapper().writeValueAsString("killButtonNotActive"));
-                for (int i = 15; i >= 0; i--) {
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        Thread.currentThread().interrupt();
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            System.out.println("Thread was interrupted: " + e.getMessage());
+                        }
                     }
+                    System.out.println("KILL BUTTON ACTIVE");
+                    messagingTemplate.convertAndSend("/topic/killButtonActive/", new ObjectMapper().writeValueAsString("killButtonActive"));
+
+
+                    registerService.crewmateDied(u);
+                    System.out.println("Hello After KILL OF " + objectInteraction.getObjectTwo());
+
+                    break;
                 }
-                messagingTemplate.convertAndSend("/topic/killButtonActive/", new ObjectMapper().writeValueAsString("killButtonActive"));
 
-                registerService.crewmateDied(u);
-
-                break;
             }
 
+            if(registerService.areAllCrewmatesDead()) {
+
+                try {Thread.sleep(1000);} catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.out.println("Thread was interrupted: " + e.getMessage());
+                }
+                System.out.println("IMPOSTOR WINS");
+                messagingTemplate.convertAndSend("/topic/impostorWins/" + objectInteraction.getGameId(), new ObjectMapper().writeValueAsString("impostorWins"));
+
+                for(User u : registerService.getGroupManager().getGameInstance(objectInteraction.getGameId()).getUserList()) {
+                    messagingTemplate.convertAndSend("/topic/disconnected/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
+                }
+
+            }
+        }catch (Exception e) {
+            logger.error("An error occurred while processing kill: " + e.getMessage());
         }
 
-        if (registerService.areAllCrewmatesDead()) {
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-            messagingTemplate.convertAndSend("/topic/impostorWins/" + objectInteraction.getGameId(), new ObjectMapper().writeValueAsString("impostorWins"));
-
-            for (User u : registerService.getGroupManager().getGameInstance(objectInteraction.getGameId()).getUserList()) {
-                messagingTemplate.convertAndSend("/topic/disconnected/" + u.getUserName(), new ObjectMapper().writeValueAsString("dead"));
-            }
-        }
     }
 
     @MessageMapping("/yourAGhostNow/{userName}")
