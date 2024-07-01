@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-// TODO @RequestMapping("/api")
 public class RestControllerSignUp {
 
     private final IPersonService personService;
@@ -22,11 +21,10 @@ public class RestControllerSignUp {
 
     @PostMapping("/signUp")
     public ResponseEntity<Void> signUp(@RequestBody PersonSignUpDTO personSignUpDTO) throws ResponseStatusExceptionCustom {
-        if(personService.signUpRequest(personSignUpDTO)) {
-//            return ResponseEntity.ok( ResponseStatusSuccesMessage.USER_CREATED.getMessage());
+        if (personService.signUpRequest(personSignUpDTO)) {
             return ResponseEntity.ok().build();
         }
-      
+
         return ResponseEntity.badRequest().build();
     }
 }

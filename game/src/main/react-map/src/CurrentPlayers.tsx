@@ -111,9 +111,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const [showChatbox, setShowChatbox] = useState(true);
 
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
-    const playerRef = useRef<Player>(new Player(userName, '', '', gameId, '', 2, 2, '', '', '', '', true, 'down'));
     const taskProgress = useRef<number>(0);
 
+    const playerRef = useRef<Player>(new Player(userName, '', '', gameId, '', 2, 2, '', '', '', '', true, 'south'));
 
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentMiniGame, setCurrentMiniGame] = useState<React.ReactNode>(null);
@@ -128,7 +128,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     useEffect(() => {
         playerRef.current.setColor(userColor);
     }, [userColor]);
-
 
 
     // const toggleChat = () => {
@@ -176,7 +175,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         setShowRoleImpostor(false);
         setShowTaskBar(true);
         setShowTaskList(true);
-        // TODO
         setShowChatbox(false);
         setShowMap(true);
         setChatVisible(false);
@@ -217,10 +215,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const handleKeyPress = (key: string) => {
 
         if (key === 'w' && playerRef.current.getRole() === "crewmate") {
-          taskAction();
+            taskAction();
         }
 
-        console.log("CurrentPlayers.tsx: handleKeyPress: " + key + ' ' + playerRef.current.getRole() + ' ' + sabotageActive);
         if (key === 'e' && playerRef.current.getRole() === "crewmate" && !sabotageActive && playerRef.current.getAction() !== 'SabotageActive') {
             taskAction();
         } else if (key === 'e' && playerRef.current.getRole() === "impostor") {
@@ -276,13 +273,9 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                 break;
         }
 
-
         if (gameType === "Guess the number") {
-            console.log("Before sending to Server Before ClearTask");
             clearTask(gameType);
-            console.log("Before sending to Server");
             webSocketServiceRef.current.sendTaskResolved("Guess the number", 11, 5);
-            console.log("After Sending to server");
         } else if (gameType === "Download the file") {
             webSocketServiceRef.current.sendTaskResolved("Download the file", 58, 7);
             clearTask("Download the file");
@@ -303,17 +296,11 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     };
 
     const clearTask = (taskName: string) => {
-        console.log("Clearing ");
-        console.log(taskName);
-        console.log("Current tasks:", playerRef.current.getTask1(), playerRef.current.getTask2(), playerRef.current.getTask3());
         if (playerRef.current.getTask1() === taskName) {
-            console.log("condition met ");
             playerRef.current.setTask1("");
         } else if (playerRef.current.getTask2() === taskName) {
-            console.log("condition met ");
             playerRef.current.setTask2("");
         } else if (playerRef.current.getTask3() === taskName) {
-            console.log("condition met ");
             playerRef.current.setTask3("");
         }
         playerInstance();
@@ -321,49 +308,45 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
 
     const taskAction = () => {
-        console.log("pressed e");
         if (GridService.isTask(playerRef.current.getY(), playerRef.current.getX()) && !sabotageActive) {
             const xPosTask = GridService.getXPosTask(playerRef.current.getX(), playerRef.current.getY());
             const yPosTask = GridService.getYPosTask(playerRef.current.getX(), playerRef.current.getY());
-            console.log("Checking task: " + xPosTask + ", " + yPosTask);
 
             if (xPosTask != null && yPosTask != null) {
                 const currentTime = Date.now();
                 const cooldown = 1 * 60 * 1000; // 1 minutes in milliseconds
 
-                if ((xPosTask === 11 && yPosTask === 5 )  && (playerRef.current.getTask1() === "Guess the number" || playerRef.current.getTask2() === "Guess the number" || playerRef.current.getTask3() === "Guess the number")) {
+                if ((xPosTask === 11 && yPosTask === 5) && (playerRef.current.getTask1() === "Guess the number" || playerRef.current.getTask2() === "Guess the number" || playerRef.current.getTask3() === "Guess the number")) {
                     if (!lastCompletedGuessTheNumber || (currentTime - lastCompletedGuessTheNumber > cooldown)) {
-                        console.log('openMiniGame: 1');
-                        openMiniGame(<GuessTheNumberMiniGame onCompletion={() => handleMiniGameCompletion("Guess the number")} />);
+                        openMiniGame(<GuessTheNumberMiniGame
+                            onCompletion={() => handleMiniGameCompletion("Guess the number")}/>);
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
                 } else if ((xPosTask === 55 && yPosTask === 15) && (playerRef.current.getTask1() === "Download the file" || playerRef.current.getTask2() === "Download the file" || playerRef.current.getTask3() === "Download the file")) {
                     if (!lastCompletedDownloadFile || (currentTime - lastCompletedDownloadFile > cooldown)) {
-                        console.log('openMiniGame: 2');
-                        openMiniGame(<DownloadMiniGame onCompletion={() => handleMiniGameCompletion("Download the file")} />);
+                        openMiniGame(<DownloadMiniGame
+                            onCompletion={() => handleMiniGameCompletion("Download the file")}/>);
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
-                } else if ((yPosTask === 15 && (xPosTask === 67 || xPosTask === 68))  && (playerRef.current.getTask1() === "Enter the number sequence" || playerRef.current.getTask2() === "Enter the number sequence" || playerRef.current.getTask3() === "Enter the number sequence")) {
+                } else if ((yPosTask === 15 && (xPosTask === 67 || xPosTask === 68)) && (playerRef.current.getTask1() === "Enter the number sequence" || playerRef.current.getTask2() === "Enter the number sequence" || playerRef.current.getTask3() === "Enter the number sequence")) {
                     if (!lastCompletedEnterNumberSequence || (currentTime - lastCompletedEnterNumberSequence > cooldown)) {
-                        console.log('openMiniGame: 3');
-                        openMiniGame(<ClickInOrderMiniGame onCompletion={() => handleMiniGameCompletion("Enter the number sequence")} />);
+                        openMiniGame(<ClickInOrderMiniGame
+                            onCompletion={() => handleMiniGameCompletion("Enter the number sequence")}/>);
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
                 } else if ((yPosTask === 34 && (xPosTask === 50 || xPosTask === 51)) && (playerRef.current.getTask1() === "Answer the question" || playerRef.current.getTask2() === "Answer the question" || playerRef.current.getTask3() === "Answer the question")) {
                     if (!lastCompletedAnswerQuestion || (currentTime - lastCompletedAnswerQuestion > cooldown)) {
-                        console.log('openMiniGame: 4');
-                        openMiniGame(<NumpadInputCodeMiniGame onCompletion={() => handleMiniGameCompletion("Answer the question")} />);
-                        console.log("NumpadInputCodeMiniGame");
+                        openMiniGame(<NumpadInputCodeMiniGame
+                            onCompletion={() => handleMiniGameCompletion("Answer the question")}/>);
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
                 } else if ((yPosTask === 26 && xPosTask === 10) && (playerRef.current.getTask1() === "Memory game" || playerRef.current.getTask2() === "Memory game" || playerRef.current.getTask3() === "Memory game")) {
                     if (!lastCompletedMemoryGame || (currentTime - lastCompletedMemoryGame > cooldown)) {
-                        console.log('openMiniGame: 5');
-                        openMiniGame(<MemoryMiniGame onCompletion={() => handleMiniGameCompletion("Memory game")} />);
+                        openMiniGame(<MemoryMiniGame onCompletion={() => handleMiniGameCompletion("Memory game")}/>);
                     } else {
                         alert("You must wait for the cooldown period to expire before playing this mini-game again.");
                     }
@@ -377,7 +360,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         playerRef.current.setColor("dead");
         setShowKillCrewMate(true);
 
-        // TODO should close automatically, counter is set in the KillCrewMate.tsx but doesnt work
         setTimeout(() => {
             setShowKillCrewMate(false);
         }, 3000);
@@ -421,44 +403,23 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }
 
     const kill = () => {
-         setShowYouKilledACrewmate(true);
+        setShowYouKilledACrewmate(true);
 
-         setTimeout(() => {
-             setShowYouKilledACrewmate(false);
-         }, 1500);
+        setTimeout(() => {
+            setShowYouKilledACrewmate(false);
+        }, 1500);
     }
 
     const reportButtonClicked = () => {
-        console.log("CurrentPlayer.tsx: Report Button clicked");
         webSocketServiceRef.current.sendReportButtonPressed();
     }
 
-    const sabotageButtonClicked = () => {
-        console.log("CurrentPlayer.tsx: Sabotage Button clicked");
-        if(!sabotageActive) {
-            webSocketServiceRef.current.sendSabotageButtonPressed();
-        }
-    }
-
-    const airSystemButtonClicked = () => {
-        console.log("CurrentPlayer.tsx: Sabotage Button clicked");
-        webSocketServiceRef.current.sendAirSystemButtonPressed();
-    }
-
-    const killButtonClicked = () => {
-        console.log("CurrentPlayer.tsx: Sabotage Button clicked");
-        webSocketServiceRef.current.sendKillButtonPressed();
-    }
-
-
-
     const handleButtonPress = (votedFor: string) => {
-        console.log('CurrentPlayers.tsx: Votingbox submit button pressed ' + votedFor);
         webSocketServiceRef.current.sendVotingButtonPressed(votedFor);
     }
 
     const votingActive = (deadPlayer) => {
-        if(playerRef.current.getColor() === 'dead' || playerRef.current.getColor() === 'ghost') {
+        if (playerRef.current.getColor() === 'dead' || playerRef.current.getColor() === 'ghost') {
             setShowVotingActive(true);
         } else {
             setDeadPlayer(deadPlayer);
@@ -467,7 +428,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }
 
     const votingNotActive = () => {
-        if(playerRef.current.getColor() === 'dead' || playerRef.current.getColor() === 'ghost') {
+        if (playerRef.current.getColor() === 'dead' || playerRef.current.getColor() === 'ghost') {
             setShowVotingActive(false);
         } else {
             setShowVotingbox(false);
@@ -520,17 +481,19 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                                  className="col-span-1" style={{
                                 backgroundImage: `url(${playerImage})`
                             }}/>
-                            {showChatbox ?  <Chatbox playerColor={playerRef.current.getColor()}
-                                     playerName={playerRef.current.getUserName()}></Chatbox> : <div></div>
+                            {showChatbox ? <Chatbox playerColor={playerRef.current.getColor()}
+                                                    playerName={playerRef.current.getUserName()}></Chatbox> :
+                                <div></div>
                             }
                             <div className="col-span-01 text-3xl text-cyan-500 text-center">
                                 {playerRef.current.getUserName()}
                             </div>
                             {showVotingbox ?
                                 <Votingbox onButtonPress={handleButtonPress} currentPlayer={playerRef.current}
-                                       otherPlayers={otherPlayers} deadPlayer={deadPlayer} ></Votingbox> : <div></div>
+                                           otherPlayers={otherPlayers} deadPlayer={deadPlayer}></Votingbox> :
+                                <div></div>
                             }
-                            { showVotingActive ? <VotingActive></VotingActive> : <div></div> }
+                            {showVotingActive ? <VotingActive></VotingActive> : <div></div>}
                         </div>
                     </div>
                     <div className="grid grid-cols-12 row-span-1">
@@ -561,7 +524,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                             }
                         </div>
                         <div className="col-span-8 border-solid rounded-lg flex justify-center items-center">
-                            {showLobby ? <Lobby currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> : <div></div>}
+                            {showLobby ? <Lobby currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}/> :
+                                <div></div>}
                         </div>
                         <div>
                             <Modal isVisible={isModalVisible} onClose={closeMiniGame}>
@@ -571,7 +535,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
                         <div className="col-span-6 border-solid rounded-lg flex justify-center items-center">
                             {showMap ? <MapGrid currentPlayer={playerRef.current} otherPlayers={otherPlayers || []}
-                                                reportButtonClicked={reportButtonClicked} onKeyClick={taskAction}/> : <div></div>}
+                                                reportButtonClicked={reportButtonClicked} onKeyClick={taskAction}/> :
+                                <div></div>}
 
                         </div>
 
@@ -655,7 +620,8 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
                         </div>
                         {showMiniMap && (
                             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-                                <div className="relative flex flex-col items-center miniMapBackground rounded-lg p-8 w-2/3 h-1/2">
+                                <div
+                                    className="relative flex flex-col items-center miniMapBackground rounded-lg p-8 w-2/3 h-1/2">
                                     <button
                                         onClick={handleShowMiniMap}
                                         className="absolute bottom-4 bg-gray-700 hover:bg-gray-800 text-white font-bold py-2 px-4 rounded">

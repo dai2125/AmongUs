@@ -132,7 +132,6 @@ class Game {
                     this.player.moveDown(parsedMessage.y);
                     break;
                 default:
-                    console.log("Unbekannte Aktion");
             }
         } else if(existingPlayers) {
             updateOtherPlayerPosition(existingPlayers, parsedMessage.x, parsedMessage.y, parsedMessage.userId, parsedMessage.action);
@@ -196,7 +195,6 @@ class Game {
     {
         this.stompClient.deactivate();
         this.stompClient.setConnected(false);
-        console.log("Disconnected");
     }
 
     generateRandomString(length) {
@@ -242,7 +240,6 @@ class Game {
                     window.addEventListener('space', (event) => {
                         if(event.key === 'space') {
                             this.context.fillStyle = 'yellow';
-                            console.log("Space pressed");
                         }
                     });
                 }
@@ -261,7 +258,6 @@ class Game {
         window.addEventListener('keydown', (event) => {
             switch (event.key) {
                 case 'ArrowLeft':
-                    console.log("left");
                     this.sendMovementLeft();
                     break;
                 case 'ArrowRight':
@@ -295,7 +291,6 @@ function updateOtherPlayerPosition(existingPlayer, x, y, userId, action) {
             player.moveDown(y);
             break;
         default:
-            console.log("Other Player Unbekannte Aktion");
     }
 }
 

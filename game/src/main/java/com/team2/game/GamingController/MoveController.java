@@ -32,7 +32,6 @@ public class MoveController {
             return;
         }
         if (movementService.wallNorth(user)) {
-//            user.setY(user.getY() - 1);
             user.setDirection("north");
             messagingTemplate.convertAndSend("/topic/movement/north/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/north/otherPlayer/", new ObjectMapper().writeValueAsString(user));
@@ -52,7 +51,6 @@ public class MoveController {
         }
 
         if (movementService.wallSouth(user)) {
-//            user.setY(user.getY() + 1);
             user.setDirection("south");
             messagingTemplate.convertAndSend("/topic/movement/south/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/south/otherPlayer/", new ObjectMapper().writeValueAsString(user));
@@ -63,7 +61,6 @@ public class MoveController {
     public void movementWest(@Payload User user) throws JsonProcessingException {
         if (user.getColor().equals("ghost")) {
             if (movementService.wallWestGhost(user)) {
-//                user.setX(user.getX() - 1);
                 messagingTemplate.convertAndSend("/topic/movement/west/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
                 messagingTemplate.convertAndSend("/topic/movement/west/otherPlayer/", new ObjectMapper().writeValueAsString(user));
             }
@@ -71,11 +68,8 @@ public class MoveController {
         }
 
         if (movementService.wallWest(user)) {
-//            user.setX(user.getX() - 1);
-//            user.setDirection("west");
             messagingTemplate.convertAndSend("/topic/movement/west/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/west/otherPlayer/", new ObjectMapper().writeValueAsString(user));
-
         }
     }
 
@@ -83,7 +77,6 @@ public class MoveController {
     public void movementEast(@Payload User user) throws JsonProcessingException {
         if (user.getColor().equals("ghost")) {
             if (movementService.wallEastGhost(user)) {
-//                user.setX(user.getX() + 1);
                 messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
                 messagingTemplate.convertAndSend("/topic/movement/east/otherPlayer/", new ObjectMapper().writeValueAsString(user));
             }
@@ -91,10 +84,8 @@ public class MoveController {
         }
 
         if (movementService.wallEast(user)) {
-//            user.setX(user.getX() + 1);
-
             messagingTemplate.convertAndSend("/topic/movement/east/" + user.getUserName(), new ObjectMapper().writeValueAsString(user));
             messagingTemplate.convertAndSend("/topic/movement/east/otherPlayer/", new ObjectMapper().writeValueAsString(user));
-            }
         }
+    }
 }

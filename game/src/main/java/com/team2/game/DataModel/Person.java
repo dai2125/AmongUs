@@ -42,7 +42,7 @@ public class Person {
 
     @PrePersist
     public void prePersist() {
-        if(this.createdAt == null) {
+        if (this.createdAt == null) {
             this.createdAt = LocalDateTime.now();
         }
     }

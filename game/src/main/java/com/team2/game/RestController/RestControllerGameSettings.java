@@ -15,11 +15,13 @@ public class RestControllerGameSettings {
     private final GameService gameService;
 
     @Autowired
-    public RestControllerGameSettings(GameService gameService) {this.gameService = gameService;}
+    public RestControllerGameSettings(GameService gameService) {
+        this.gameService = gameService;
+    }
 
     @PostMapping("/gameSettings")
     public ResponseEntity<Void> gameSettings(@RequestBody GameDTO gameDTO) throws ResponseStatusExceptionCustom {
-        if (gameService.gameSettings(gameDTO)){
+        if (gameService.gameSettings(gameDTO)) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.badRequest().build();

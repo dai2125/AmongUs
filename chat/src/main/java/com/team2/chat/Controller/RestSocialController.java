@@ -18,9 +18,6 @@ public class RestSocialController {
 
     @PostMapping("/friendsRequest/{userId}")
     public ResponseEntity<Void> sendFriendsRequest(@PathVariable("userId") String userId, @RequestBody UserChat user) {
-
-
         return ResponseEntity.badRequest().build();
     }
-
 }

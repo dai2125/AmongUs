@@ -1,5 +1,5 @@
 import React from 'react';
-import  '../CSS/WaitingRoom.css';
+import '../CSS/WaitingRoom.css';
 
 import ghost from '../Images/Character_Ghost_Movement/Ghost_South.png';
 import red from '../Images/Character_Red_Movement/Red_South_Left.png';

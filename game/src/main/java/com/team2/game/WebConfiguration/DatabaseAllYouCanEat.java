@@ -99,6 +99,5 @@ public class DatabaseAllYouCanEat implements CommandLineRunner {
                 .email("andreas.gottardi@fhv.at")
                 .password("ago1516")
                 .build());
-
     }
 }

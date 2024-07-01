@@ -14,10 +14,9 @@ public class User {
     private int x;
     private int y;
     private boolean isImpostor;
-    private TaskDTO tasks ;
+    private TaskDTO tasks;
     private String direction;
 
-//    private String userName;
     private String email;
 
     public User() {
@@ -59,13 +58,17 @@ public class User {
         return this.sessionId;
     }
 
-    public String getGameId() {return this.gameId;}
+    public String getGameId() {
+        return this.gameId;
+    }
 
     public void setUserId(String sessionId) {
         this.sessionId = sessionId;
     }
 
-    public void setGameId(String gameId) {this.gameId = gameId;}
+    public void setGameId(String gameId) {
+        this.gameId = gameId;
+    }
 
     public String getColor() {
         return color;
@@ -106,6 +109,7 @@ public class User {
     public TaskDTO getTasks() {
         return tasks;
     }
+
     public void setTasks(TaskDTO taskDTO) {
         this.tasks = taskDTO;
     }
@@ -113,10 +117,6 @@ public class User {
     public String getDirection() {
         return direction;
     }
-
-    //public void setTask(String task) {tasks.add(task);}
-
-    //public int getTaskSize() {return tasks.size();}
 
     @Override
     public String toString() {
@@ -128,5 +128,4 @@ public class User {
                 ", y=" + y +
                 '}';
     }
-
 }

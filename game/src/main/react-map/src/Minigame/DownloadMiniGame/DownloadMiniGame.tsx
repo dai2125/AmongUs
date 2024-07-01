@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 
 interface MiniGame2Props {
     onCompletion: (gameType: string) => void;
 }
 
-const DownloadMiniGame: React.FC<MiniGame2Props> = ({ onCompletion }) => {
+const DownloadMiniGame: React.FC<MiniGame2Props> = ({onCompletion}) => {
     const [progress, setProgress] = useState(0);
     const [isDownloading, setIsDownloading] = useState(false);
     const [isComplete, setIsComplete] = useState(false);
@@ -25,19 +25,26 @@ const DownloadMiniGame: React.FC<MiniGame2Props> = ({ onCompletion }) => {
                         clearInterval(timer);
                         setIsComplete(true);
                         setIsDownloading(false);
-                        onCompletion("Download the file"); // Call the onCompletion prop when download is complete
+                        onCompletion("Download the file");
                         return 100;
                     }
                     return nextProgress;
                 });
-            }, 500); // Adjust the interval speed as needed
+            }, 500);
         }
         return () => clearInterval(timer);
     }, [isDownloading, progress, onCompletion]);
 
     return (
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <div style={{ width: '100%', backgroundColor: '#e0e0e0', borderRadius: '10px', margin: '20px 0', position: 'relative', height: '30px' }}>
+        <div style={{textAlign: 'center', marginTop: '50px'}}>
+            <div style={{
+                width: '100%',
+                backgroundColor: '#e0e0e0',
+                borderRadius: '10px',
+                margin: '20px 0',
+                position: 'relative',
+                height: '30px'
+            }}>
                 <div style={{
                     width: `${progress}%`,
                     backgroundColor: '#76c7c0',
@@ -47,7 +54,7 @@ const DownloadMiniGame: React.FC<MiniGame2Props> = ({ onCompletion }) => {
                 }}></div>
             </div>
             {isComplete ? (
-                <div style={{ fontSize: '18px', fontWeight: 'bold', color: '#4caf50' }}>Download Complete!</div>
+                <div style={{fontSize: '18px', fontWeight: 'bold', color: '#4caf50'}}>Download Complete!</div>
             ) : (
                 <button onClick={startDownload} disabled={isDownloading} style={{
                     padding: '10px 20px',

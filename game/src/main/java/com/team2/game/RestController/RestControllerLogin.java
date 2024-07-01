@@ -13,22 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RestControllerLogin {
 
-//    private final IPersonService personService;
-
     @Autowired
     private PersonService personService;
 
-//    @Autowired
-//    public RestControllerLogin(IPersonService personService) {
-//        this.personService = personService;
-//    }
-
-    // TODO Exception with wrong Postman parameters not catched
-    // TODO missed one layer
     @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody PersonLoginDTO personLoginDTO) throws ResponseStatusExceptionCustom {
-        if(personService.loginRequest(personLoginDTO)) {
-//            return ResponseEntity.ok(ResponseStatusSuccesMessage.USER_LOG_IN.getMessage());
+        if (personService.loginRequest(personLoginDTO)) {
             return ResponseEntity.ok().build();
 
         }

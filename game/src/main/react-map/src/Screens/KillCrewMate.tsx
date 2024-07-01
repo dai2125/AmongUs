@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import killCrewmate from "../Images/Dead/you_died.jpg"
-// import roleImpostor from "../src/Impostor_Role_Reveal.jpg"
 
-// TODO if role is impostor, show roleImpostor else show roleCrewmate
 const Role = ({onStart}) => {
 
     const [count, setCount] = useState(1);
@@ -22,7 +20,15 @@ const Role = ({onStart}) => {
 
     return (
         <div>
-            <img src={killCrewmate} style={{position: 'fixed', top: '0', left: '0', minWidth: '100%', minHeight: '100%', width: 'auto', height: 'auto'}} ></img>
+            <img src={killCrewmate} style={{
+                position: 'fixed',
+                top: '0',
+                left: '0',
+                minWidth: '100%',
+                minHeight: '100%',
+                width: 'auto',
+                height: 'auto'
+            }}></img>
         </div>
     );
 }

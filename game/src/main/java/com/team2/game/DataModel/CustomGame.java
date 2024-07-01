@@ -1,9 +1,8 @@
 package com.team2.game.DataModel;
+
 import lombok.*;
 
-
 public class CustomGame {
-
 
     @Getter
     @Setter
@@ -14,8 +13,5 @@ public class CustomGame {
     @Getter
     @Setter
     private int imposters;
-
-
-
 
 }

@@ -1,18 +1,15 @@
 import React from 'react'
 
-const Result = ({ term, secretNum }) => {
+const Result = ({term, secretNum}) => {
     let result: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode>;
     if (term) {
         if (secretNum > term) {
             result = 'Lower'
-        }
-        else if (secretNum < term) {
+        } else if (secretNum < term) {
             result = 'Higher'
-        }
-        else if (secretNum == term) {
+        } else if (secretNum == term) {
             result = 'Yippee, correct!'
-        }
-        else {
+        } else {
             result = "Enter Valid Input"
         }
     }

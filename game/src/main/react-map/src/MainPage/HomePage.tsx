@@ -22,7 +22,7 @@ import dead from "../Images/Character_Movement/dead.png";
 import SockJS from "sockjs-client";
 import Stomp from "stompjs";
 
-type Props ={
+type Props = {
     loggesInUser: User;
     onPlayButtonClick(userColor, gameId): void;
     setUserColor(color: string): void;
@@ -45,16 +45,16 @@ const colorToImageUrl = {
     dead: dead,
 };
 
-export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor}: Props) {
+export default function HomePage({loggesInUser, onPlayButtonClick, setUserColor}: Props) {
 
     const [color, setColor] = useState("pink");
     const [playerImage, setPlayerImage] = useState(colorToImageUrl[color]);
 
     const [errorName, setErrorName] = useState("");
     const [errorEmail, setErrorEmail] = useState("");
-    const [errorMessage , setErrorMessage] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const [errorPassword, setErrorPassword] = useState("");
-    const [successMessage , setSuccessMessage] = useState("");
+    const [successMessage, setSuccessMessage] = useState("");
     const [showSocialBox, setShowSocialBox] = useState(false);
     const [errorOldPassword, setErrorOldPassword] = useState("");
     const [showAppearanceBox, setShowAppearanceBox] = useState(false);
@@ -64,7 +64,6 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
     const [showCustomPopUp, setCustomPopUp] = useState(false);
     const [gameId, setGameId] = useState('');
 
-
     const handleMyAccount = (event: FormEvent<HTMLFormElement>) => {
 
         event.preventDefault();
@@ -73,15 +72,13 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
         const form = event.currentTarget;
         const data = new FormData(form);
 
-        if (data.get('newUsername') === '' && data.get('newEmail')  === '') {
-            // setErrorName("At least one field must be filled out");
-            // setErrorEmail("At least one field must be filled out");
+        if (data.get('newUsername') === '' && data.get('newEmail') === '') {
             setErrorOldPassword("Password must be entered")
             return;
-        } else if (data.get('newPassword')  !== data.get('newPasswordConfirm') ) {
+        } else if (data.get('newPassword') !== data.get('newPasswordConfirm')) {
             setErrorPassword("Passwords do not match");
             return;
-        } else if (data.get('oldPassword')  === '') {
+        } else if (data.get('oldPassword') === '') {
             setErrorPassword("Please enter your old password");
             return;
         }
@@ -96,8 +93,6 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
             passwordConfirm: data.get('newPasswordConfirm') as string,
         }
 
-
-
         const passwordRegex = /^.{8,}$/;
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -107,59 +102,50 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
             (user.oldPassword == user.oldPasswordInput)) {
 
             fetch('http://localhost:8080/accountDetails', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(user),
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user),
             })
-            .then((data) => {
-                if (data.status === 200) {
-                    setSuccessMessage("Account Changed Successfully");
-                    setErrorMessage("");
-                    // alert("Account Created Successfully");
-                    loggesInUser.setUsername(user.newName);
-                    loggesInUser.setPassword(user.newPassword);
+                .then((data) => {
+                    if (data.status === 200) {
+                        setSuccessMessage("Account Changed Successfully");
+                        setErrorMessage("");
+                        // alert("Account Created Successfully");
+                        loggesInUser.setUsername(user.newName);
+                        loggesInUser.setPassword(user.newPassword);
 
-                } else if(data.status == 400){
-                    setErrorMessage("Email is already taken");
-                    setSuccessMessage("");
-                } else {
-                    setErrorMessage("Failed to create account, please make sure to enter all fields correctly");
-                    setSuccessMessage("");
-                    // alert("Failed to create account, please make sure to enter all fields correctly");
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                    } else if (data.status == 400) {
+                        setErrorMessage("Email is already taken");
+                        setSuccessMessage("");
+                    } else {
+                        setErrorMessage("Failed to create account, please make sure to enter all fields correctly");
+                        setSuccessMessage("");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         } else {
             alert("Email or password is not valid");
         }
     }
 
-        const onMyAccountButtonClick = () => {
-            if(!showAccountSettings) {
-                setShowAccountSettings(true);
-                setShowAppearanceBox(false);
-                setPlayOptions(false);
-            } else {
-                setShowAccountSettings(false);
-                setSuccessMessage("");
-                setErrorMessage("");
-            }
+    const onMyAccountButtonClick = () => {
+        if (!showAccountSettings) {
+            setShowAccountSettings(true);
+            setShowAppearanceBox(false);
+            setPlayOptions(false);
+        } else {
+            setShowAccountSettings(false);
+            setSuccessMessage("");
+            setErrorMessage("");
         }
-
-        const onFriendsButtonClick = () => {
-            if(!showSocialBox) {
-                setShowSocialBox(true);
-            } else {
-                setShowSocialBox(false);
-            }
-        }
+    }
 
     const onMyAppearancesButtonClick = () => {
-        if(!showAppearanceBox) {
+        if (!showAppearanceBox) {
             setShowAppearanceBox(true);
             setShowAccountSettings(false);
             setPlayOptions(false);
@@ -171,7 +157,7 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
     }
 
     const onPlayOptionsClick = () => {
-        if(!showPlayOptions) {
+        if (!showPlayOptions) {
             setPlayOptions(true);
             setShowAppearanceBox(false);
             setShowAccountSettings(false);
@@ -189,10 +175,6 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
         setErrorOldPassword("");
     }
 
-    // const setUserColor = (color: string) => {
-    //     loggesInUser.setColor(color);
-    // }
-
     const handleColorChange = (newColor) => {
         setColor(newColor);
         setUserColor(newColor);
@@ -200,8 +182,8 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
     }
 
     const handlePopUp = () => {
-        if(!showPopUp) {
-           setPopUp(true);
+        if (!showPopUp) {
+            setPopUp(true);
         } else {
             setPopUp(false);
             setErrorMessage("");
@@ -209,7 +191,7 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
         }
     }
     const handleCustomPopUp = () => {
-        if(!showCustomPopUp) {
+        if (!showCustomPopUp) {
             setCustomPopUp(true);
         } else {
             setCustomPopUp(false);
@@ -218,8 +200,7 @@ export default function HomePage({ loggesInUser, onPlayButtonClick, setUserColor
         }
     }
 
-const clientRef = useRef(null);
-
+    const clientRef = useRef(null);
 
     const handlePlay = (event) => {
 
@@ -228,7 +209,7 @@ const clientRef = useRef(null);
         handlePopUp()
 
     }
-    const handlePlayPrivate = (event: FormEvent<HTMLFormElement>) =>{
+    const handlePlayPrivate = (event: FormEvent<HTMLFormElement>) => {
 
         event.preventDefault();
 
@@ -276,18 +257,15 @@ const clientRef = useRef(null);
         const imposters = data.get('imposters');
         const crewmates = data.get('crewmates')
 
-
-        client.connect({},() =>{
-            client.subscribe('/topic/createGame/', (message)=>{
+        client.connect({}, () => {
+            client.subscribe('/topic/createGame/', (message) => {
                 const response = JSON.parse(message.body);
 
-                if(response === true){
-                    //setGameId(gameId);
+                if (response === true) {
                     setErrorMessage("");
                     handleCustomPopUp();
-                }else {
+                } else {
                     setErrorMessage("GameId is taken, choose a new one");
-                    //alert("gameId is taken");
                 }
             });
             sendCreateRequest(imposters, crewmates, gameId);
@@ -295,8 +273,6 @@ const clientRef = useRef(null);
     }
 
     const sendJoinRequest = (gameId) => {
-        console.log("AAAAA");
-        console.log(gameId);
         clientRef.current.send(`/app/tryConnect/`, {}, gameId);
     }
 
@@ -310,13 +286,14 @@ const clientRef = useRef(null);
         clientRef.current.send(`/app/createGame/`, {}, JSON.stringify(payload));
     }
 
-
     return (
         <div className="background grid grid-rows-12 min-h-screen w-screen p-10">
             {showCustomPopUp && (
-                <div id="popup" className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
+                <div id="popup"
+                     className="fixed z-50 top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 ">
 
-                    <div className="grid grid-rows-3 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-2/6 h-70">
+                    <div
+                        className="grid grid-rows-3 bg-black border-double rounded-lg border-2 border-fuchsia-800 w-2/6 h-70">
 
                         <div className="grid grid-rows-2 row-span-1 flex items-center justify-center text-white">
                             <div className="row-span-1">
@@ -332,22 +309,22 @@ const clientRef = useRef(null);
                                 <div>
                                     <label className="text-white">Enter Game ID</label><br/>
                                     <input name="gameId"
-                                        className="mt-1.5 bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                           className="mt-1.5 bg-white border border-gray-300 rounded-md w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
                                     /><br/>
                                 </div>
 
                                 <label className="text-white">Number of Crewmates:</label><br/>
                                 <input name="crewmates"
-                                    type="number" max="8" min="1"
+                                       type="number" max="8" min="1"
                                        className=" mt-1.5 w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                        required/>
+                                       required/>
 
                                 <label className="text-white">Number of imposters:</label><br/>
                                 <input name="imposters"
                                     type="number" max="1" min="1"
-                                       className=" mt-1.5 w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
-                                        required/>
 
+                                       className=" mt-1.5 w-full bg-white border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 bg-opacity-20 text-white"
+                                       required/>
 
                                 <div className="flex justify-between">
                                     <button type="submit"
@@ -406,31 +383,24 @@ const clientRef = useRef(null);
                 <div className="col-span-01 text-3xl text-cyan-500 text-center">
                     {loggesInUser.getUsername()}
                 </div>
-        {/*        <button onClick={onFriendsButtonClick}*/}
-        {/*                className="col-span-10 w-1/6 h-10 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 mt-1.5">*/}
-        {/*    <b className="text-3xl">FRIENDS</b>*/}
-        {/*</button>*/}
-        {showSocialBox ?
-            <div>
-                {/*<Socialbox></Socialbox>*/}
-            </div> :
-            <div>
-
+                {showSocialBox ?
+                    <div>
+                    </div> :
+                    <div>
+                    </div>
+                }
             </div>
-        }
-    </div>
 
-    <div className="grid row-span-10 grid-cols-3 mb-5 gap-2">
-        <div
-            className="grid rows-8 bg-transparent border-double rounded-lg border-2 border-fuchsia-800 col-span-1 w-full h-full justify-self-end">
-            <div className="row-span-1">
-                <img alt="amongUsIcon" src={amongUsIcon}></img>
-                {/*<p className="text-5xl text-center font-light text-amber-600 underline">AMONG US</p>*/}
-            </div>
-            <div
-                className="p-4 grid grid-rows-3 row-span-7 border-double rounded-lg border-2 border-fuchsia-800 w-11/12 h-5/6 justify-self-center align-items-center">
-                <button onClick={onPlayOptionsClick}
-                        className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
+            <div className="grid row-span-10 grid-cols-3 mb-5 gap-2">
+                <div
+                    className="grid rows-8 bg-transparent border-double rounded-lg border-2 border-fuchsia-800 col-span-1 w-full h-full justify-self-end">
+                    <div className="row-span-1">
+                        <img alt="amongUsIcon" src={amongUsIcon}></img>
+                    </div>
+                    <div
+                        className="p-4 grid grid-rows-3 row-span-7 border-double rounded-lg border-2 border-fuchsia-800 w-11/12 h-5/6 justify-self-center align-items-center">
+                        <button onClick={onPlayOptionsClick}
+                                className="w-full h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
                             <b className="play">Play</b>
                         </button>
 
@@ -445,83 +415,84 @@ const clientRef = useRef(null);
                     </div>
 
                 </div>
-                    <div className="bg-transparent border-double rounded-lg border-2 border-teal-400 col-span-2 w-full justify-self-start p-4">
+                <div
+                    className="bg-transparent border-double rounded-lg border-2 border-teal-400 col-span-2 w-full justify-self-start p-4">
 
-                        {showPlayOptions && (
-                            <div className="grid grid-rows-3 h-full ">
-                                <div className="row-span-1 flex justify-center items-center">
-                                    <button onClick={handlePlay}
+                    {showPlayOptions && (
+                        <div className="grid grid-rows-3 h-full ">
+                            <div className="row-span-1 flex justify-center items-center">
+                                <button onClick={handlePlay}
                                         className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
-                                        <b className="public">Public</b>
+                                    <b className="public">Public</b>
+                                </button>
+                            </div>
+                            <div className="grid grid-rows-2 col-span-1 ">
+                                <div className="row-span-2 flex justify-center items-center">
+                                    <button onClick={handlePopUp}
+                                            className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
+                                        <b className="private">Private</b>
                                     </button>
                                 </div>
-                                <div className="grid grid-rows-2 col-span-1 ">
-                                    <div className="row-span-2 flex justify-center items-center">
-                                        <button onClick={handlePopUp}
+                            </div>
+                            <div className="grid grid-rows-3 col-span-1">
+                                <div className="row-span-3 flex justify-center items-center">
+                                    <button onClick={handleCustomPopUp}
                                             className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
-                                            <b className="private">Private</b>
-                                        </button>
-                                    </div>
+                                        <b className="custom-game">Custom game</b>
+                                    </button>
                                 </div>
-                                <div className="grid grid-rows-3 col-span-1">
-                                    <div className="row-span-3 flex justify-center items-center">
-                                        <button onClick={handleCustomPopUp}
-                                            className="bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600 h-3/4 w-3/4">
-                                            <b className="custom-game">Custom game</b>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>)}
-                        {showAccountSettings ? (
-                            <div>
-                                <form onSubmit={handleMyAccount}>
-                                    <p className="text-2xl text-left font-light text-amber-600 ">Account Settings
-                                        {/*for {loggesInUser.getUsername()}*/}
-                                    </p>
-                                    <label className="form-label">New Username</label>
-                                    <div className="form-row">
-                                        <input name="newUsername"
-                                               className="input-field"
-                                               type="text" placeholder="Old or New Username"/>
-                                        <div className="error-notification">{errorName}</div>
-                                    </div>
-                                    <label className="form-label">New Email</label>
-                                    <div className="form-row">
-                                        <input name="newEmail"
-                                               className="input-field"
-                                               type="text" placeholder="New Email"/>
-                                        <div className="error-notification">{errorEmail}</div>
-                                    </div>
-                                    <label className="text-1xl text-left font-light text-amber-600 ">Password</label>
+                            </div>
+                        </div>)}
+                    {showAccountSettings ? (
+                        <div>
+                            <form onSubmit={handleMyAccount}>
+                                <p className="text-2xl text-left font-light text-amber-600 ">Account Settings
+                                </p>
+                                <label className="form-label">New Username</label>
                                 <div className="form-row">
-                                        <input name="oldPassword" type="text"
-                                               className="input-field"
-                                               placeholder="Password"/>
-                                        <div className="error-notification">{errorOldPassword}</div>
+                                    <input name="newUsername"
+                                           className="input-field"
+                                           type="text" placeholder="Old or New Username"/>
+                                    <div className="error-notification">{errorName}</div>
+                                </div>
+                                <label className="form-label">New Email</label>
+                                <div className="form-row">
+                                    <input name="newEmail"
+                                           className="input-field"
+                                           type="text" placeholder="New Email"/>
+                                    <div className="error-notification">{errorEmail}</div>
+                                </div>
+                                <label className="text-1xl text-left font-light text-amber-600 ">Password</label>
+                                <div className="form-row">
+                                    <input name="oldPassword" type="text"
+                                           className="input-field"
+                                           placeholder="Password"/>
+                                    <div className="error-notification">{errorOldPassword}</div>
                                 </div>
                                 <label className="text-1xl text-left font-light text-amber-600">New Password</label>
                                 <div className="form-row">
-                                        <input name="newPassword" type="text"
-                                               className="input-field"
-                                               placeholder="New Password"/>
-                                        <div className="error-notification">{errorPassword}</div>
+                                    <input name="newPassword" type="text"
+                                           className="input-field"
+                                           placeholder="New Password"/>
+                                    <div className="error-notification">{errorPassword}</div>
                                 </div>
-                                <label className="text-1xl text-left font-light text-amber-600">Confirm New Password</label>
+                                <label className="text-1xl text-left font-light text-amber-600">Confirm New
+                                    Password</label>
                                 <div className="form-row">
-                                            <input name="newPasswordConfirm" type="text"
-                                                   className="input-field"
-                                                   placeholder="Confirm Password"/>
-                                            <div className="error-notification">{errorPassword}</div>
-                                    </div>
-                                    <br/>
-                                    <button type="submit"
-                                            className="w-full-myAccount h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
-                                        UPDATE MY ACCOUNT
-                                    </button>
-                                    {successMessage &&
-                                        <p className="text-2xl-success text-left font-light text-amber-600 ">{successMessage}</p>}
-                                    {errorMessage &&
-                                        <p className="text-2xl-error text-left font-light text-amber-600 ">{successMessage}</p>}
+                                    <input name="newPasswordConfirm" type="text"
+                                           className="input-field"
+                                           placeholder="Confirm Password"/>
+                                    <div className="error-notification">{errorPassword}</div>
+                                </div>
+                                <br/>
+                                <button type="submit"
+                                        className="w-full-myAccount h-5/6 row-span-1 bg-cyan-400 bg-opacity-50 hover:bg-cyan-600 rounded-lg focus:ring-4 focus:ring-fuchsia-600">
+                                    UPDATE MY ACCOUNT
+                                </button>
+                                {successMessage &&
+                                    <p className="text-2xl-success text-left font-light text-amber-600 ">{successMessage}</p>}
+                                {errorMessage &&
+                                    <p className="text-2xl-error text-left font-light text-amber-600 ">{successMessage}</p>}
                             </form>
                         </div>
                     ) : (
@@ -530,7 +501,7 @@ const clientRef = useRef(null);
                     <div>
                         {showAppearanceBox ?
                             <div>
-                                <AppearanceBox setUserColor={handleColorChange} ></AppearanceBox>
+                                <AppearanceBox setUserColor={handleColorChange}></AppearanceBox>
                             </div> :
                             <div>
                             </div>

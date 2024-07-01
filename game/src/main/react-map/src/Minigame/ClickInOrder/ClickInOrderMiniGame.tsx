@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 
 interface NumberButtonGameProps {
     onCompletion: (gameType: string) => void;
 }
 
-const ClickInOrderMiniGame: React.FC<NumberButtonGameProps> = ({ onCompletion }) => {
+const ClickInOrderMiniGame: React.FC<NumberButtonGameProps> = ({onCompletion}) => {
     const [buttonOrder, setButtonOrder] = useState<number[]>([]);
     const [currentNumber, setCurrentNumber] = useState<number | null>(null);
     const [gameStarted, setGameStarted] = useState(false);
@@ -47,8 +47,8 @@ const ClickInOrderMiniGame: React.FC<NumberButtonGameProps> = ({ onCompletion })
         <div>
             <h2>Number Button Game</h2>
             {!gameStarted && <button onClick={startGame}>Start Game</button>}
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px' }}>
-                <div style={{ display: 'flex', marginBottom: '10px' }}>
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '20px'}}>
+                <div style={{display: 'flex', marginBottom: '10px'}}>
                     {buttonOrder.slice(0, 5).map((number, index) => (
                         <button
                             key={index}
@@ -67,7 +67,7 @@ const ClickInOrderMiniGame: React.FC<NumberButtonGameProps> = ({ onCompletion })
                         </button>
                     ))}
                 </div>
-                <div style={{ display: 'flex' }}>
+                <div style={{display: 'flex'}}>
                     {buttonOrder.slice(5).map((number, index) => (
                         <button
                             key={index + 5}

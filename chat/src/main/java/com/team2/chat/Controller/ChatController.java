@@ -28,7 +28,6 @@ public class ChatController {
 //    @SendTo("topic/votingChatIngoing/")
     public void votingChatIngoing(@Payload Message message) {
 
-        System.out.println("votingChatIngoing: " + message.getMessage());
 
         chatService.processMessage(message);
         messagingTemplate.convertAndSend("/topic/votingChatIngoing/", message);
@@ -37,7 +36,6 @@ public class ChatController {
     @MessageMapping("/votingChatIngoing/{userId}")
     public void votingChatIngoingUserId(@Payload Message message, @DestinationVariable String userId) {
 
-        System.out.println("ingoing: " + message.getMessage());
 
 
         message.setMessage(chatService.getSomething(message.getMessage()));
@@ -49,9 +47,6 @@ public class ChatController {
     @MessageMapping("/chatIngoing/")
 //    @SendTo("topic/ingoing/")
     public void chatIngoing(@Payload Message message) {
-
-        System.out.println("votingChatIngoing: " + message.getMessage());
-
         chatService.processMessage(message);
         messagingTemplate.convertAndSend("/topic/chatIngoing/", message);
     }
@@ -59,7 +54,6 @@ public class ChatController {
     @MessageMapping("/chatIngoing/{userId}")
     public void chatIngoingUserId(@Payload Message message, @DestinationVariable String userId) {
 
-        System.out.println("ingoing: " + message.getMessage());
 
 
         message.setMessage(chatService.getSomething(message.getMessage()));
