@@ -20,7 +20,6 @@ import DefeatCrewmate from "./Screens/DefeatCrewmate";
 import Votingbox from "./GameComponents/Votingbox";
 import YouKilledACrewmate from "./YouKilledACrewmate";
 import VotingActive from "./GameComponents/VotingActive";
-
 import GuessTheNumberMiniGame from './Minigame/GuessTheNumber/GuessTheNumberMiniGame';
 import DownloadMiniGame from './Minigame/DownloadMiniGame/DownloadMiniGame';
 import ClickInOrderMiniGame from './Minigame/ClickInOrder/ClickInOrderMiniGame';
@@ -109,34 +108,23 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const [showWaitingRoom, setShowWaitingRoom] = useState(true);
     const [sabotageActive, setSabotageActive] = useState(false);
     const [showChatbox, setShowChatbox] = useState(true);
-
     const webSocketServiceRef = useRef<WebSocketService | null>(null);
     const taskProgress = useRef<number>(0);
-
     const playerRef = useRef<Player>(new Player(userName, '', '', gameId, '', 2, 2, '', '', '', '', true, 'south'));
-
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentMiniGame, setCurrentMiniGame] = useState<React.ReactNode>(null);
-
     const [lastCompletedGuessTheNumber, setLastCompletedGuessTheNumber] = useState<number | null>(null);
     const [lastCompletedDownloadFile, setLastCompletedDownloadFile] = useState<number | null>(null);
     const [lastCompletedEnterNumberSequence, setLastCompletedEnterNumberSequence] = useState<number | null>(null);
     const [lastCompletedAnswerQuestion, setLastCompletedAnswerQuestion] = useState<number | null>(null);
     const [lastCompletedMemoryGame, setLastCompletedMemoryGame] = useState<number | null>(null);
-
+    const [showPopup, setShowPopup] = useState(false);
+    const [showMiniMap, setShowMiniMap] = useState(false);
+    const [showMapButton, setShowMapButton] = useState(false);
 
     useEffect(() => {
         playerRef.current.setColor(userColor);
     }, [userColor]);
-
-
-    // const toggleChat = () => {
-    //     if(!chatVisible) {
-    //         setChatVisible(true);
-    //     } else {
-    //         setChatVisible(false);
-    //     }
-    // };
 
 
     const handleStartTimer = () => {
@@ -144,7 +132,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
             setTimerStarted(true);
         }
 
-        // setShowMap(true);
     }
 
     const onStart = () => {
@@ -157,7 +144,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     const handleShhhhh = () => {
         setShowShhhhh(false);
         setShowThereIsAImpostorAmoungUs(true);
-        // setShowTaskList(true);
     }
 
     const handleThereIsAImpostorAmongUs = () => {
@@ -206,7 +192,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
     const updateTasks = () => {
 
-        console.log("IN TASK RESOLVED", taskProgress.current)
         if (completedTasksCount < 100) {
             setCompletedTasksCount(prevCount => prevCount + taskProgress.current );
         }
@@ -225,14 +210,11 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         }
     };
 
-    const [showPopup, setShowPopup] = useState(false);
 
     const togglePopup = () => {
         setShowPopup(!showPopup);
     };
 
-    const [showMiniMap, setShowMiniMap] = useState(false);
-    const [showMapButton, setShowMapButton] = useState(false);
 
 
     const handleShowMiniMap = () => {
@@ -445,7 +427,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
 
     const someoneGotEjected = (ejectedPlayer) => {
         setEjectedPlayer(ejectedPlayer);
-        // setShowMap(false);
         setShowOtherPlayerEjected(true);
         setTimeout(() => {
             setShowOtherPlayerEjected(false);
@@ -454,7 +435,6 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
     }
 
     const noOneGotEjected = () => {
-        // setShowMap(false);
         setNoOneGotEjected(true);
         setTimeout(() => {
             setNoOneGotEjected(false);

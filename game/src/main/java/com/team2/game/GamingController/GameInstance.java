@@ -15,44 +15,26 @@ public class GameInstance {
     private static final String TASK3 = "Enter the number sequence";
     private static final String TASK4 = "Answer the question";
     private static final String TASK5 = "Memory game";
-
     @Setter
     @Getter
-    private int GROUP_FULL = 4;
-
+    private int GROUP_FULL = 2;
     @Setter
     @Getter
     private int IMPOSTER_COUNT = 1;
-
     @Setter
     @Getter
-    private int CREWMATE_COUNT = 3;
-
+    private int CREWMATE_COUNT = 1;
     private int taskCounter = 0;
-
     private List<User> userList = new ArrayList<>();
     private List<String> taskList = Arrays.asList(TASK1, TASK2, TASK3, TASK4, TASK5);
-
-    //private List<String> taskListCopy = new ArrayList<>(taskList);
-    //public HashMap<String, Integer> votingList = new HashMap<>();
-    @Setter
     @Getter
-    private int taskResolvedCounter = 9;
+    @Setter
+    private int taskResolvedCounter = 3;
+    @Getter
     private int tasksToRemove = 0;
-
     @Setter
     @Getter
     private float taskPercentage = (float) 1 /(3 * CREWMATE_COUNT)*100;
-
-
-    public int getTaskResolvedCounter(){
-
-        return taskResolvedCounter;
-    }
-
-    public int getTasksToRemove() {
-        return tasksToRemove;
-    }
 
     TaskDTO taskDTO = new TaskDTO();
 
@@ -61,6 +43,7 @@ public class GameInstance {
     private boolean impostor = false;
     //int impostorIndex = (int) (Math.random() * GROUP_FULL);
     int counter = 0;
+
 
     public int getGroupSize() {
         return GROUP_FULL;
@@ -94,25 +77,10 @@ public class GameInstance {
         return userList;
     }
 
-    /*
-    public List<User> userListExceptTheSender(User user) {
-        List<User> tempUserList = new ArrayList<>();
-        for (User u : userList) {
-            if (!u.equals(user)) {
-                tempUserList.add(u);
-            }
-        }
-        return tempUserList;
-    }
-*/
     public void clearGroup() {
         userList.clear();
     }
-/*
-    public boolean isUserInGroup(User user) {
-        return userList.contains(user);
-    }
-*/
+
     public void setTheImposter() {
         random = (int) (Math.random() * userList.size());
         userList.get(random).setImpostor();
@@ -169,41 +137,6 @@ public class GameInstance {
     }
 
 
-    public void distributeTask(User u) {
-        Set<Integer> usedIndices = new HashSet<>();
-        int taskIndex;
-
-        if (!u.getImpostor()) {
-            taskDTO.setRole("crewmate");
-            for (int i = 0; i < 3; i++) {
-                do {
-                    taskIndex = (int) (Math.random() * taskList.size());
-                } while (usedIndices.contains(taskIndex));
-                usedIndices.add(taskIndex);
-
-                switch (i) {
-                    case 0:
-                        taskDTO.setTask1(taskList.get(taskIndex));
-                        break;
-                    case 1:
-                        taskDTO.setTask2(taskList.get(taskIndex));
-                        break;
-                    case 2:
-                        taskDTO.setTask3(taskList.get(taskIndex));
-                        break;
-                }
-                taskCounter++;
-            }
-        } else {
-            taskDTO.setRole("impostor");
-            impostor = true;
-            taskDTO.setTask1("Kill");
-            taskDTO.setTask2("Sabotage");
-            taskDTO.setTask3("Vent");
-        }
-        counter++;
-    }
-
 
     public TaskDTO getTask() {
         return taskDTO;
@@ -247,24 +180,29 @@ public class GameInstance {
     }
 
     public float taskResolved(String sessionId, String task) {
+
+        int index = getUserIndex(sessionId);
+
+        if (index == -1) {
+            return 0;
+        }
+
         for (int i = 0; i < 3; i++) {
-            if (userList.get(getUserIndex(sessionId)).getTasks().getTask1().equals(task)){
+            if (userList.get(index).getTasks().getTask1().equals(task)){
 
-                userList.get(getUserIndex(sessionId)).getTasks().setTask1("");
+                userList.get(index).getTasks().setTask1("");
             }
-            if (userList.get(getUserIndex(sessionId)).getTasks().getTask2().equals(task)){
+            if (userList.get(index).getTasks().getTask2().equals(task)){
 
-                userList.get(getUserIndex(sessionId)).getTasks().setTask2("");
+                userList.get(index).getTasks().setTask2("");
             }
-            if (userList.get(getUserIndex(sessionId)).getTasks().getTask3().equals(task)){
+            if (userList.get(index).getTasks().getTask3().equals(task)){
 
-                userList.get(getUserIndex(sessionId)).getTasks().setTask3("");
+                userList.get(index).getTasks().setTask3("");
             }
-            System.out.println("Task to remove is: " + task);
         }
 
         taskResolvedCounter--;
-        System.out.println("Remaining Tasks: " + taskResolvedCounter);
 
         return taskPercentage;
 

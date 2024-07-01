@@ -27,15 +27,12 @@ public class GroupManager {
         if (gameInstances.containsKey(gameId)) {
             return false;
         }
-
         GameInstance gameInstance = new GameInstance();
         gameInstance.setCREWMATE_COUNT(crewmates);
         gameInstance.setIMPOSTER_COUNT(imposters);
         gameInstance.setGROUP_FULL(crewmates + imposters);
         gameInstance.setTaskResolvedCounter(crewmates*3);
         gameInstance.setTaskPercentage((float) 1 /(3 * crewmates)*100);
-        System.out.println("Crewmate count: " + gameInstance.getCREWMATE_COUNT() + " Imposters: " + gameInstance.getIMPOSTER_COUNT() + " Group Full: " + gameInstance.getGROUP_FULL()+"Number Tasks: " + gameInstance.getTaskResolvedCounter());
-
 
         gameInstances.put(gameId, gameInstance);
         return true;

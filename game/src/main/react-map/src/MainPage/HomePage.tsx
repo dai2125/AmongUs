@@ -49,7 +49,6 @@ export default function HomePage({loggesInUser, onPlayButtonClick, setUserColor}
 
     const [color, setColor] = useState("pink");
     const [playerImage, setPlayerImage] = useState(colorToImageUrl[color]);
-
     const [errorName, setErrorName] = useState("");
     const [errorEmail, setErrorEmail] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
@@ -112,7 +111,6 @@ export default function HomePage({loggesInUser, onPlayButtonClick, setUserColor}
                     if (data.status === 200) {
                         setSuccessMessage("Account Changed Successfully");
                         setErrorMessage("");
-                        // alert("Account Created Successfully");
                         loggesInUser.setUsername(user.newName);
                         loggesInUser.setPassword(user.newPassword);
 
@@ -128,7 +126,7 @@ export default function HomePage({loggesInUser, onPlayButtonClick, setUserColor}
                     console.error('Error:', error);
                 });
         } else {
-            alert("Email or password is not valid");
+            setErrorMessage("Email is already taken");
         }
     }
 

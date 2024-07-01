@@ -1,6 +1,5 @@
 package com.team2.game.GamingController;
 
-import com.team2.game.DataModel.CustomGame;
 import com.team2.game.DataModel.ObjectInteraction;
 import com.team2.game.DataModel.User;
 //import com.example.messagingstompwebsocket.chat.Message;
@@ -24,9 +23,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Controller
 @PropertySource("classpath:application.properties")
@@ -123,19 +120,13 @@ public class GameController {
     @MessageMapping("/taskResolved/")
     public void taskResolved(@Payload User user, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
 
-        System.out.println("Hello from taskResolved Removing TASK: " + user.getColor());
-        // user.getColor here contains the name of the resolved task
         float updatesNeeded = registerService.taskResolved(user.getGameId(), user.getSessionId(), user.getColor());
-
-
-        //boolean crewmatesWon = groupManager.getGameInstance(user.getGameId()).getTasksToRemove() <= 0;
-        int percentage;
 
         if (groupManager.getGameInstance(user.getGameId()).getTaskResolvedCounter()<=0) {
             messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), updatesNeeded);
             messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
         } else {
-            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
+            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), updatesNeeded);
         }
 
     }
@@ -171,12 +162,6 @@ public class GameController {
 
     }
 
-    @MessageMapping("/createGame/")
-    public void processCreateGame(@Payload CustomGame game, SimpMessageHeaderAccessor simpMessageHeaderAccessor) throws JsonProcessingException {
-        boolean isSuccessful = registerService.getGroupManager().createNewCustomGame(game.getGameId(), game.getCrewmates(), game.getImposters());
-        messagingTemplate.convertAndSend("/topic/createGame/", isSuccessful);
-
-    }
 
     @MessageMapping("/task/{userId}")
     @SendTo("/topic/task/{userId}")
@@ -197,37 +182,26 @@ public class GameController {
             for(User u : registerService.getGroupManager().getGameInstance(objectInteraction.getGameId()).getUserList()) {
                 if (u.getUserName().equals(objectInteraction.getObjectTwo())){
 
-                    System.out.println("Killed name: " + u.getUserName());
 
                     messagingTemplate.convertAndSend("/topic/kill/" + objectInteraction.getObjectOne(), new ObjectMapper().writeValueAsString("kill"));
-                    System.out.println("KILL FUNCTION THIS PERSON MUST GET THE MESSAGE " + objectInteraction.getObjectTwo());
                     messagingTemplate.convertAndSend("/topic/dead/" + objectInteraction.getObjectTwo(), new ObjectMapper().writeValueAsString("dead"));
                     messagingTemplate.convertAndSend("/topic/someoneGotKilled/" + u.getGameId(), new ObjectMapper().writeValueAsString(u.getSessionId()));
 
-                    // TODO set location of dead player
-
                     groupManager.addDeadPlayerPosition(objectInteraction.getPositionDeadPlayerX(), objectInteraction.getPositionDeadPlayerY());
 
-
                     messagingTemplate.convertAndSend("/topic/killButtonNotActive/", new ObjectMapper().writeValueAsString("killButtonNotActive"));
-//                countdownKill();
+
                     for(int i = 15; i >= 0; i--) {
                         try {
                             Thread.sleep(1000);
-//                messagingTemplate.convertAndSend("/topic/killCooldown/" + userName, new ObjectMapper().writeValueAsString(i));
 
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
                             System.out.println("Thread was interrupted: " + e.getMessage());
                         }
                     }
-                    System.out.println("KILL BUTTON ACTIVE");
                     messagingTemplate.convertAndSend("/topic/killButtonActive/", new ObjectMapper().writeValueAsString("killButtonActive"));
-
-
                     registerService.crewmateDied(u);
-                    System.out.println("Hello After KILL OF " + objectInteraction.getObjectTwo());
-
                     break;
                 }
 
@@ -237,9 +211,7 @@ public class GameController {
 
                 try {Thread.sleep(1000);} catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
-                    System.out.println("Thread was interrupted: " + e.getMessage());
                 }
-                System.out.println("IMPOSTOR WINS");
                 messagingTemplate.convertAndSend("/topic/impostorWins/" + objectInteraction.getGameId(), new ObjectMapper().writeValueAsString("impostorWins"));
 
                 for(User u : registerService.getGroupManager().getGameInstance(objectInteraction.getGameId()).getUserList()) {
@@ -368,8 +340,6 @@ public class GameController {
 
     @MessageMapping("/sabotage/{userName}")
     public void processSabotage(@Payload User user) throws JsonProcessingException {
-//        alarmCounter = groupManager.getGameInstance(user.getGameId()).getUserList().size();
-//        alarmActive = true;
 
         if (!sabotageStop) {
 
@@ -481,8 +451,6 @@ public class GameController {
         for (int i = 15; i >= 0; i--) {
             try {
                 Thread.sleep(1000);
-//                messagingTemplate.convertAndSend("/topic/killCooldown/" + userName, new ObjectMapper().writeValueAsString(i));
-
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 System.out.println("Thread was interrupted: " + e.getMessage());
