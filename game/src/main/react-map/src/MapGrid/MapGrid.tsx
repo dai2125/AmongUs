@@ -174,7 +174,7 @@ const MapGrid: React.FC<MapGridProps> = ({
     const [playerDirection, setPlayerDirection] = useState('south');
     const [showReportButton, setShowReportButton] = useState(true);
     const [playerPosition, setPlayerPosition] = useState({x: currentPlayer.getX(), y: currentPlayer.getY()});
-    const [yourTheImpostor, setYourTheImpostor] = useState(currentPlayer.getRole() === 'Impostor');
+    const [yourTheImpostor, setYourTheImpostor] = useState(currentPlayer.getRole() === 'impostor');
     const [killActive, setKillActive] = useState(true);
     const [killCooldown, setKillCooldown] = useState(0);
     const [ventActive, setVentActive] = useState(true);

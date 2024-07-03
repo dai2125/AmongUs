@@ -135,7 +135,7 @@ public class GameController {
             messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), updatesNeeded);
             messagingTemplate.convertAndSend("/topic/crewmateWins/", new ObjectMapper().writeValueAsString("crewmatesWin"));
         } else {
-            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), crewmatesWon);
+            messagingTemplate.convertAndSend("/topic/taskResolved/" + user.getGameId(), "crewmatesWon");
         }
 
     }
