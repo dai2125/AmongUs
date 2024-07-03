@@ -34,6 +34,8 @@ class WebSocketService {
     private ejectMe: () => void;
     private someoneGotEjected: (ejectedPlayer) => void;
     private noOneGotEjected: () => void;
+    private setCompletedTaskCount: React.Dispatch<React.SetStateAction<number>>;
+    private taskProgress: React.MutableRefObject<number>;
 
     constructor(playerRef: React.MutableRefObject<Player>,
                 setOtherPlayers: React.Dispatch<React.SetStateAction<Player[]>>,
@@ -50,7 +52,9 @@ class WebSocketService {
                 votingNotActive: () => void,
                 ejectMe: () => void,
                 someoneGotEjected: (ejectedPlayer) => void,
-                noOneGotEjected: () => void) {
+                noOneGotEjected: () => void,
+                setTaskCompletedCount: React.Dispatch<React.SetStateAction<number>>,
+                taskProgress: React.MutableRefObject<number>) {
         this.playerRef = playerRef;
         this.setOtherPlayers = setOtherPlayers;
         this.startTimer = startTimer;
@@ -67,7 +71,10 @@ class WebSocketService {
         this.ejectMe = ejectMe;
         this.someoneGotEjected = someoneGotEjected;
         this.noOneGotEjected = noOneGotEjected;
+        this.setCompletedTaskCount = setTaskCompletedCount;
+        this.taskProgress = taskProgress;
     }
+
 
     connect() {
         const socket = new SockJS('http://localhost:8080/gs-guide-websocket');
@@ -170,7 +177,9 @@ class WebSocketService {
                     });
                 });
 
-                this.client.subscribe(`/topic/taskResolved/${playerRef.current.getGameId()}`, () => {
+                this.client.subscribe(`/topic/taskResolved/${playerRef.current.getGameId()}`, (message) => {
+                    const percentage = JSON.parse(message.body);
+                    this.taskProgress.current = percentage;
                     this.updateTasks();
                 });
 

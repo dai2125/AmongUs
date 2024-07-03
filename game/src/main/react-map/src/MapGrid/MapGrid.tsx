@@ -1006,12 +1006,16 @@ const MapGrid: React.FC<MapGridProps> = ({
                 return;
             }
 
-            let payload;
-            for (const player of otherPlayers) {
-                if ((player.getY() == currentPlayer.getY() && (player.getX() == currentPlayer.getX() + 1 || player.getX() == currentPlayer.getX() - 1)) ||
+            let payload = null;
+            for (let player of otherPlayers) {
+                if (((player.getY() == currentPlayer.getY() && (player.getX() == currentPlayer.getX() + 1 || player.getX() == currentPlayer.getX() - 1)) ||
                     (player.getX() == currentPlayer.getX() && (player.getY() == currentPlayer.getY() + 1 || player.getY() == currentPlayer.getY() - 1)) ||
                     (player.getY() == currentPlayer.getY() && (player.getX() == currentPlayer.getX() + 2 || player.getX() == currentPlayer.getX() - 2)) ||
-                    (player.getX() == currentPlayer.getX() && (player.getY() == currentPlayer.getY() + 2 || player.getY() == currentPlayer.getY() - 2))) {
+                    (player.getX() == currentPlayer.getX() && (player.getY() == currentPlayer.getY() + 2 || player.getY() == currentPlayer.getY() - 2)))
+                     && player.getMovable()) {
+                    player.setMovable(false);
+                    console.log("Hello from new kill inside ", currentPlayer.getGameId());
+
                     payload = JSON.stringify({
                         objectOne: currentPlayer.getUserName(),
                         objectTwo: player.getUserName(),
@@ -1022,7 +1026,10 @@ const MapGrid: React.FC<MapGridProps> = ({
                     break;
                 }
             }
-            client.send(`/app/kill/${currentPlayer.getUserName()}`, {}, payload);
+            if (payload){
+                client.send(`/app/kill/${currentPlayer.getUserName()}`, {}, payload);
+            }
+
         }
 
         const sendAirSystem = () => {
@@ -1132,6 +1139,7 @@ const MapGrid: React.FC<MapGridProps> = ({
                             const blinkClass = cellContent === 2 ? style.blink : '';
 
                             return (
+
                                 <span key={colIndex} className={`${style.cell} ${blinkClass}`} style={{cellStyle}}>
                                     {/*{cellContent}*/}
                                 </span>

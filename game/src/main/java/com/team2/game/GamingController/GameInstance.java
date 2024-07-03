@@ -33,10 +33,20 @@ public class GameInstance {
     private List<User> userList = new ArrayList<>();
     private List<String> taskList = Arrays.asList(TASK1, TASK2, TASK3, TASK4, TASK5);
 
+    //private List<String> taskListCopy = new ArrayList<>(taskList);
+    //public HashMap<String, Integer> votingList = new HashMap<>();
+    @Setter
+    @Getter
     private int taskResolvedCounter = 9;
     private int tasksToRemove = 0;
 
-    public int getTaskResolvedCounter() {
+    @Setter
+    @Getter
+    private float taskPercentage = (float) 1 /(3 * CREWMATE_COUNT)*100;
+
+
+    public int getTaskResolvedCounter(){
+
         return taskResolvedCounter;
     }
 
@@ -49,7 +59,7 @@ public class GameInstance {
     int random;
 
     private boolean impostor = false;
-    int impostorIndex = (int) (Math.random() * GROUP_FULL);
+    //int impostorIndex = (int) (Math.random() * GROUP_FULL);
     int counter = 0;
 
     public int getGroupSize() {
@@ -61,7 +71,7 @@ public class GameInstance {
     }
 
     public void removeFromTheGroup(User user) {
-        userList.remove(user);
+        //userList.remove(user);
         tasksToRemove = 0;
 
         if (!user.getImpostor()) {
@@ -84,6 +94,7 @@ public class GameInstance {
         return userList;
     }
 
+    /*
     public List<User> userListExceptTheSender(User user) {
         List<User> tempUserList = new ArrayList<>();
         for (User u : userList) {
@@ -93,15 +104,15 @@ public class GameInstance {
         }
         return tempUserList;
     }
-
+*/
     public void clearGroup() {
         userList.clear();
     }
-
+/*
     public boolean isUserInGroup(User user) {
         return userList.contains(user);
     }
-
+*/
     public void setTheImposter() {
         random = (int) (Math.random() * userList.size());
         userList.get(random).setImpostor();
@@ -157,6 +168,7 @@ public class GameInstance {
         counter++;
     }
 
+
     public void distributeTask(User u) {
         Set<Integer> usedIndices = new HashSet<>();
         int taskIndex;
@@ -191,6 +203,7 @@ public class GameInstance {
         }
         counter++;
     }
+
 
     public TaskDTO getTask() {
         return taskDTO;
@@ -229,28 +242,32 @@ public class GameInstance {
     }
 
     public void removePlayerFromList(User user) {
-        userList.remove(user);
+        //userList.remove(user);
+        //do not remove the player from the list when he dies because he needs to still exist as a ghost and do tasks
     }
 
-    public boolean taskResolved(String sessionId, String task) {
-
+    public float taskResolved(String sessionId, String task) {
         for (int i = 0; i < 3; i++) {
-            if (userList.get(getUserIndex(sessionId)).getTasks().getTask1().equals(task)) {
+            if (userList.get(getUserIndex(sessionId)).getTasks().getTask1().equals(task)){
+
                 userList.get(getUserIndex(sessionId)).getTasks().setTask1("");
             }
-            if (userList.get(getUserIndex(sessionId)).getTasks().getTask2().equals(task)) {
+            if (userList.get(getUserIndex(sessionId)).getTasks().getTask2().equals(task)){
+
                 userList.get(getUserIndex(sessionId)).getTasks().setTask2("");
             }
-            if (userList.get(getUserIndex(sessionId)).getTasks().getTask3().equals(task)) {
+            if (userList.get(getUserIndex(sessionId)).getTasks().getTask3().equals(task)){
+
                 userList.get(getUserIndex(sessionId)).getTasks().setTask3("");
             }
+            System.out.println("Task to remove is: " + task);
         }
 
         taskResolvedCounter--;
-        if (taskResolvedCounter > 0) {
-            return false;
-        } else {
-            return true;
-        }
+        System.out.println("Remaining Tasks: " + taskResolvedCounter);
+
+        return taskPercentage;
+
+       
     }
 }
