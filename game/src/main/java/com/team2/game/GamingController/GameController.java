@@ -213,7 +213,7 @@ public class GameController {
 //                countdownKill();
                     for(int i = 15; i >= 0; i--) {
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(500);
 //                messagingTemplate.convertAndSend("/topic/killCooldown/" + userName, new ObjectMapper().writeValueAsString(i));
 
                         } catch (InterruptedException e) {
@@ -235,10 +235,6 @@ public class GameController {
 
             if(registerService.areAllCrewmatesDead()) {
 
-                try {Thread.sleep(1000);} catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    System.out.println("Thread was interrupted: " + e.getMessage());
-                }
                 System.out.println("IMPOSTOR WINS");
                 messagingTemplate.convertAndSend("/topic/impostorWins/" + objectInteraction.getGameId(), new ObjectMapper().writeValueAsString("impostorWins"));
 

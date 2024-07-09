@@ -376,7 +376,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         }
         setTimeout(() => {
             onQuit();
-        }, 3000);
+        }, 1000);
     }
 
     const crewmateWinsTheGame = () => {
@@ -391,7 +391,7 @@ const CurrentPlayers: React.FC<Props> = ({onQuit, userColor, userName, gameId}) 
         }
         setTimeout(() => {
             onQuit();
-        }, 3000);
+        }, 1000);
     }
 
     const playerInstance = () => {

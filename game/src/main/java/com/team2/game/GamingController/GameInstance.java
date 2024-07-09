@@ -211,12 +211,17 @@ public class GameInstance {
 
     public boolean allCrewmatesAreDead() {
 
-        for (User user : userList) {
-            if (!user.getImpostor()) {
+//        for (User user : userList) {
+//            if (!user.getImpostor()) {
+//                return false;
+//            }
+//        }
+        if (CREWMATE_COUNT > 0) {
                 return false;
-            }
+            } else{
+            return true;
         }
-        return true;
+
     }
 
     public boolean allTasksAreSolved() {
@@ -242,6 +247,7 @@ public class GameInstance {
     }
 
     public void removePlayerFromList(User user) {
+        CREWMATE_COUNT --;
         //userList.remove(user);
         //do not remove the player from the list when he dies because he needs to still exist as a ghost and do tasks
     }
